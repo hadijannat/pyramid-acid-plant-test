@@ -113,6 +113,7 @@ Behaviour:
 - Clicking a space shows its ledger values and the claims that involve it.
 - Steps with a solver result can show it in place of the schematic (in this piece: the electromagnetic field slices).
 - A persistent label states that the animation shows the claim and is not a simulation result. Steps that fail screening are animated as claimed with the failing number shown beside them.
+- Nothing the hypothesis leaves unspecified is drawn as a concrete object. The pump, the valves, the reservoir, the gallery drain and the gas inlet appear as dashed placeholders labelled "not specified by the hypothesis", so the viewer never attributes a mechanism to the proponent that he did not describe.
 
 ### 5.5 Electromagnetic module
 
@@ -145,9 +146,9 @@ Metrics, computed identically for both codes:
 Criteria, fixed now:
 
 - **Benchmark.** B0 matches the Mie extinction spectrum within 2% across the band in both codes. Halving the cell size changes the R1 peak extinction by less than 3%.
-- **Reproduction.** Free-space peaks fall within 5% of 333 m and 230 m; the on-ground maximum falls within 10% of 250 m; peak cross-sections fall within 20% of the values read from the study's figures (0.09, 0.13 and 0.12 km²); the two codes agree within 10% (normalised root-mean-square difference over the band). No variant is interpreted until this passes.
-- **E19, "the shape concentrates field at the King's Chamber".** As modelled: `pass` if the volume-mean ratio in the King's Chamber in R1 is at least twice that in its control somewhere in the band. Under realism: `pass` if in V4 the volume-mean ratio is at least 2 and at least twice that in its control across the conductivity range measured in the pyramid's masonry (6.7e-4 to 3.3e-3 S/m); `fail` if it is below 2 at 6.7e-4 S/m; otherwise `conditional`, with the conductivity at which it drops below 2 reported.
-- **E20, "the flat top is functional and there was never a capstone".** `pass` only if the summit metric for the truncated apex is at least twice that for the pointed apex in the on-ground case. The free-space case with the wave from below is reported but does not decide the claim, because a wave arriving from below has no counterpart once the ground is present.
+- **Reproduction.** Free-space peaks fall within 5% of 333 m and 230 m; the on-ground maximum falls within 10% of 250 m; peak cross-sections fall within 20% of the values read from the study's figures (0.09, 0.13 and 0.12 km²); the two codes' extinction cross-sections agree within 10% (normalised root-mean-square difference over the band). Chamber ratios are sensitive to resolution, so both codes' values are reported side by side and do not gate the reproduction. No variant is interpreted until this passes.
+- **E19, "the shape concentrates field at the King's Chamber".** Each case is compared with its control at their own band maxima (peak against peak), never wavelength by wavelength, because the control's resonances fall elsewhere. As modelled: `pass` if the band-maximum volume-mean ratio in the King's Chamber in R1 is at least twice that of its control. Under realism: `pass` if in V4 the volume-mean ratio is at least 2 and at least twice that in its control across the conductivity range measured in the pyramid's masonry (6.7e-4 to 3.3e-3 S/m); `fail` if it is below 2 at 6.7e-4 S/m; otherwise `conditional`, with the conductivity at which it drops below 2 reported.
+- **E20, "the flat top is functional and there was never a capstone".** The claim concerns the real structure, so the comparison is the apex truncated at 137.4 m against the apex pointed at 146.71 m; the study's 138.75 m model is reported for reference. `pass` only if the band-maximum summit metric for the truncated apex is at least twice that for the pointed apex in the on-ground case. The free-space case with the wave from below is reported but does not decide the claim, because a wave arriving from below has no counterpart once the ground is present.
 
 ## 7. Environment
 
@@ -169,6 +170,7 @@ Criteria, fixed now:
 |---|---|
 | A Petrie figure is wrong in the research notes | Gate G0 (section 5.3) |
 | The three-dimensional absorbing-layer formulation in FEniCSx costs too much effort or memory | Use first-order edge elements on a finer mesh; if that fails, replace FEniCSx with Palace as the second code |
+| MEEP's grid is uniform, so resolving a 5 m chamber inside a 230 m pyramid approaches the memory budget | Use MEEP at coarser resolution for extinction spectra and peak positions and FEniCSx, with local refinement, for chamber fields; measure memory on a small case before fixing the resolution |
 | Values read from the study's figures are imprecise | Wavelengths of the peaks carry the reproduction criterion; magnitudes get a 20% band |
 | The study's chamber maxima are edge values | Report maximum and volume mean; criteria use the mean |
 | The animation is mistaken for evidence | Persistent label, verdict and failing number shown on every step |
