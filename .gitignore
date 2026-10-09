@@ -1,0 +1,6 @@
+.DS_Store
+.remember/
+
+# Third-party content: re-fetchable, not ours to redistribute
+youtube-transcript/
+.claude/skills/baoyu-youtube-transcript/
