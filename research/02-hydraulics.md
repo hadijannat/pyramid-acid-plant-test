@@ -12,12 +12,15 @@ How to read the "verified" column: `true` = I read that figure in the cited sour
 1. **What the hypothesis says (water part).** An external reservoir surrounds the pyramid and feeds the Subterranean Chamber; one-way valves sit in the chamber's pit; water rises in the well shaft to reservoir level; a pump travelling in the descending passage "compresses" water to fill the Queen's Chamber and Grand Gallery in four activations; retracting the pump draws more water up through the pit from an aquifer "directly below"; draining the Grand Gallery then acts as a syringe, pulling air down the King's Chamber shafts and gas through four grooves in the antechamber; product is "sucked out" through the Queen's Chamber. Drumm cites John Cadman's ram-pump model (but rejects Cadman's output line, because the south passage is a dead end) and an unnamed "German engineering team" drawing with a one-way valve [S1].
 
 2. **Elevations decide most of it.** The pyramid base is at about 60 m asl [S5]. Lehner's reconstruction of the 4th Dynasty waterfront puts the flood peak at 13.5 to 14.0 m asl, the floodplain at 12 m asl and low water at 7 m asl, with Khufu's valley temple platform at 14.5 m asl about 400 m from the plateau edge [S3]. Nile-fed water therefore stood roughly 46 m below the pyramid base at its annual maximum. The Sheisha 2022 and Ghoneim 2024 papers support navigable water at the *foot* of the plateau; neither claims water on the plateau [S6][S7]. The modern water table is about 15 to 17 m asl, i.e. about 43 to 45 m below the base, and one borehole on 65 m ground found water at 15 m [S4].
+   [Verification 2026-10-10: all figures in this item re-read and confirmed. Addition: Younes et al. 2024 [S18] argue the 4th Dynasty harbour levels were about 3 m higher than Lehner's (low water about 10 m, flood about 17 m asl), which puts the flood peak about 43 m below the base instead of 46 m. No value for the water table under Khufu itself exists in [S4].]
 
 3. **The Subterranean Chamber is above every documented water table.** Its floor is about 30 to 32 m below the base (about 28 to 30 m asl) [S2]: roughly 14 to 16 m above the Old Kingdom flood peak and 11 to 15 m above today's water table. The pit bottom (about 36 to 41 m below base, sources disagree) is nearer the modern water table but still above Lehner's Old Kingdom flood level on the best-supported depth.
+   [Verification 2026-10-10: corrected. The deep pit is an 1837-38 excavation (Vyse/Perring), 36 to 38 ft through solid rock, not an ancient feature; before 1837 the pit ended about 34.6 m below base (and part of that may be Caviglia's 1817 digging). The 1838 shaft bottom is 41 to 43 m below base (17 to 19 m asl; one reading that Perring's own arithmetic does not support would give 46 m), i.e. about 0 to 4 m above the modern water table and at or just above the top of the Old Kingdom flood-peak range (13.5 to 17 m asl, see the widened row in 2.2). See "Verification pass", checks 5 to 8.]
 
 4. **Water has been seen in the pit, with a mundane cause.** Petrie (1880-82) recorded that the roughly 30 ft pit holds water "after heavy rains have rushed down the entrance passage" [S2]. That is direct evidence of episodic water, and it is evidence for rain inflow, not for an aquifer connection. Drumm's "wet sand, level fluctuates" observation is anecdotal and not found in any publication I could open.
 
 5. **First-principles numbers (section 4).** Filling to the top of the Grand Gallery needs about 0.80 MPa (81.5 m head) at Subterranean Chamber level; the force on a piston filling the descending passage is about 0.58 to 0.95 MN (59 to 97 tonnes-force); the spaces to be filled hold about 860 m3 while one full 105 m stroke of the passage sweeps only about 133 m3, so "four activations" does not close on volume (about 6.5 full-length strokes, about 10 if only the bedrock part below base level is used); ideal work is about 260 MJ from a base-level reservoir, about 640 MJ from the Old Kingdom water table. Suction cannot lift water more than about 10 m, which is less than the 14 to 23 m between the Old Kingdom water table and the chamber floor.
+   [Verification 2026-10-10: every number in this item was recomputed independently and reproduced (0.80 MPa; 580 to 950 kN; 860 m3; 133 and 85 m3 per stroke; 6.5 and 10.1 strokes; 260 and 640 MJ). The lift range widens to 11 to 23 m when the higher flood level of [S18] is included.]
 
 6. **Containment is the least constrained input.** Core ("backing") limestone of Khufu's pyramid has 21 to 33 percent total porosity and 12 to 20 percent water absorption; the mortar is gypsum-based (gypsum dissolves at about 2 g/L); casing joints average 0.5 mm [S5][S2][S13]. Drumm's statement that the limestone "is not permeable" is contradicted for the measured backing stone. No measured hydraulic conductivity for Mokattam or Tura stone was found; leak-off is therefore a sensitivity parameter (cubic in joint aperture).
 
@@ -38,8 +41,8 @@ Overall: none of the hydraulic claims is supported by archaeological or hydrogeo
 | Entrance (descending passage mouth) height above pavement | +668.2 (16.97) | in (m) | +/-0.1 in | Petrie Sec. 35, 64 [S2] | true |
 | Descending passage total length, original entrance to end of slope | 4143 (105.2) | in (m) | Vyse gave 4137 | Petrie Sec. 35 [S2] | true |
 | Descending passage slope | 26 deg 31 min 23 s | deg | +/-5 s | Petrie Sec. 35 [S2] | true |
-| Passage cross-section (perpendicular) | about 41.5 x 47.3 (1.05 x 1.20) | in (m) | area 1.20 to 1.27 m2 | Petrie Sec. 38 gives plug blocks 41.6 wide, 47.3 high and "passages" 47 perpendicular; Wikipedia (citing Dormion 2004) gives 1.0 x 1.20 m [S2][S12] | false (inferred; Petrie's own width/height sentence for the descending passage did not come through) |
-| Passage cross-section area used | 1.27 | m2 | -5 percent if 1.0 x 1.2 | derived | false (derived) |
+| Passage cross-section (perpendicular) | 41.5 x 47 (1.054 x 1.194) (was: about 41.5 x 47.3 (1.05 x 1.20), inferred) | in (m) | area 1.20 to 1.27 m2 | Perring in Vyse vol. 2 Appendix pp. 109-110: entrance passage breadth 3 ft 5.5 in, height perpendicular to incline 3 ft 11 in [S15]; Petrie Sec. 38 gives plug blocks 41.6 wide, 47.3 high and "passages" 47 perpendicular; Wikipedia (citing Dormion 2004) gives 1.0 x 1.20 m [S2][S12] | true for Perring's figure (read 2026-10-10 in the archive.org OCR, same value in two separate extractions); Petrie's own width/height sentence is still not recovered (was: false, inferred) |
+| Passage cross-section area used | 1.27 | m2 | -5 percent if 1.0 x 1.2; 1.258 from Perring's 41.5 x 47 in | derived | false (derived; re-derived 2026-10-10: 1.258 to 1.266) |
 | End of descending passage floor | -1181 (-30.0) | in (m) | +/-1 in | Petrie Sec. 64 [S2] | true |
 | Subterranean Chamber roof | -1056 (-26.8) | in (m) | +/-2 in | Petrie Sec. 64 [S2] | true |
 | Subterranean Chamber plan | 553.5 x 325.9 (14.06 x 8.28) | in (m) | - | Petrie Sec. 37 [S2] | true |
@@ -47,11 +50,12 @@ Overall: none of the hydraulic claims is supported by archaeological or hydrogeo
 | Subterranean Chamber volume | about 300 | m3 | 250 to 470 (floor irregular) | derived from above; upper bound from Wikipedia 8.4 x 14.1 x 4 m [S12] | false (derived) |
 | Pit, ancient square part: ledge level | 1321 in under pavement (-33.6 m) | in (m) | - | Petrie Sec. 37 [S2] | true |
 | Pit depth as seen by Petrie | "about 30 feet" (about 9 m) | ft | rough | Petrie Sec. 37 [S2] | true |
-| Pit depth per Vyse/Perring | sunk to about 15 m (50 ft); Nile level said to be about 12 m further down | m | conflicts with Petrie | Wikipedia citing Perring 1839, Vyse 1840 [S12] | false (secondary) |
-| Pit bottom adopted | -36 to -41 (24 to 19 asl) | m | could be as low as -47 if 15 m is from the floor | derived | false (derived) |
+| Pit depth per Vyse/Perring | 50 ft (15.2 m) was the depth ORDERED in 1837; depth REACHED was 38 ft (11.6 m) "through the solid rock" by September 1838 (Vyse) or 36 ft (11.0 m) (Perring's own account); no chamber found, no water mentioned (was: sunk to about 15 m (50 ft); Nile level said to be about 12 m further down) | ft (m) | 36 vs 38 ft; datum of the depth (chamber floor, or bottom of the earlier few-feet excavation) not stated | Vyse 1840 vol. 1 pp. 223-224; vol. 2 Appendix p. 114 (Perring's account, summer 1838) [S15]. Wikipedia's version (Vyse ordered 50 ft; Perring cut about 12 m further, down to the then Nile level) is a paraphrase of the same pages [S12] | true (read 2026-10-10 in the archive.org OCR; 38 ft in two extractions, 36 ft in three) (was: false, secondary) |
+| Pit before Vyse's 1837-38 shaft | square shaft about 67 in deep (ledge at -33.55 m) plus a smaller shaft about 40 in deeper: bottom about -34.6 (about 25.4 asl) | m | +/-0.5; how much of this is ancient is uncertain: Vyse reports Caviglia saying he made the floor excavation, and Wikipedia (citing Perring 1839) has an ancient part about 1.5 m deep that Caviglia and Salt deepened to about 3 m [S12], so the ancient pit may be shallower still | Petrie Sec. 37 (who cites Vyse for the 40 in) [S2]; Vyse vol. 1 pp. 4, 12, 20: before 1837 the floor excavation went down only a few feet [S15] | true (added 2026-10-10) |
+| Pit bottom adopted (1838 shaft, as dug) | -41 to -43, best -41 to -42 (17 to 19 asl) (was: -36 to -41 (24 to 19 asl)) | m | -41.0 if Petrie's 30 ft is from the pit-mouth floor; -42.1 from Perring's own sum (floor datum); -41.4 to -43.4 if 36 to 38 ft is taken from Petrie's floor levels. Outlier, not adopted: -45.5 to -46.2 if the 36 to 38 ft were counted from the bottom of the pre-1837 pit, which Perring's arithmetic does not support. asl values carry a further +/-2 m (base elevation). The first pass's upper end (-36) is not supported: it needs the 30 ft to be measured from the roof | derived (section "Verification pass", working W1) | false (derived; corrected 2026-10-10) |
 | South (blind) passage length | 646 (16.4) | in (m) | - | Petrie Sec. 37 table: 672 to 1318 [S2]; Wikipedia 11 + 5.4 m [S12] | true |
 | Well shaft mouth in gallery floor | 21.8 to 49.0 in from N wall (27.2 in opening) | in | - | Petrie Sec. 46 [S2] | true |
-| Well shaft length | about 50 | m | 47 to 58 (Vyse table 191.5 ft, snippet only) | Wikipedia citing Haase 2004, Maragioglio & Rinaldi [S12] | false (secondary) |
+| Well shaft length | 50 to 58 (was: about 50) | m | Perring: 26 ft 1 in + 32 ft 5 in + 133 ft 0 in = 191 ft 6 in (58.4 m) along the shaft, 2 ft 4 in (0.71 m) square; Wikipedia segments sum to about 55 m | Vyse vol. 2 Appendix p. 113 [S15]; Wikipedia citing Haase 2004, Maragioglio & Rinaldi [S12] | true for Perring's 191 ft 6 in and 2 ft 4 in (read 2026-10-10, three extractions, parts sum correctly); the 50 m figure remains secondary (was: false, secondary) |
 | Well shaft passes a gravel-filled fissure (grotto) lined with small-stone courses | 10 courses, 7.25 to 8 in each | - | - | Petrie Sec. 46 [S2] | true |
 | Ascending passage sloping length; top level | 1546.8 (39.3); +852.6 (21.66) | in (m) | +/-0.3 in | Petrie Sec. 39, 64 [S2] | true |
 | Granite plugs in ascending passage | 1.57, 1.67, 1.0 long | m | - | Wikipedia citing Dormion 2004 [S12] | false (secondary) |
@@ -61,7 +65,7 @@ Overall: none of the hydraulic claims is supported by archaeological or hydrogeo
 | Grand Gallery floor, low end / high end | +852.6 / +1689.0 (21.66 / 42.90) | in (m) | +/-0.5 in | Petrie Sec. 64 [S2] | true |
 | Grand Gallery sloping floor length; roof horizontal length | 1883.6; 1648.4 | in | - | Petrie Sec. 45, 46 [S2] | true |
 | Grand Gallery top width | 40.9 to 41.3 (1.04 to 1.05) | in (m) | - | Petrie Sec. 46 [S2] | true |
-| Grand Gallery vertical height | 334 to 344 (8.5 to 8.7) | in (m) | from Petrie's "half the height ... 167 to 172"; Wikipedia 8.6 m | Petrie Sec. 46 [S2]; [S12] | false (derived / secondary) |
+| Grand Gallery vertical height | 334 to 344 (8.5 to 8.7) | in (m) | from Petrie's "half the height ... 167 to 172"; Wikipedia 8.6 m; Perring's table gives about 28 ft (8.53 m) | Petrie Sec. 46 [S2]; [S12]; Vyse vol. 2 Appendix pp. 110-111 [S15] | false (derived / secondary). 2026-10-10: Petrie's 167 to 172 half-height re-read (true); Perring's 28 ft seen in one extraction of a scrambled table, so supportive only |
 | Grand Gallery roof, high end | about +51.5 | m | +/-0.2 | derived (42.90 + 8.6) | false (derived) |
 | Antechamber floor / roof | +1692.6 / +1841.5 (42.99 / 46.77) | in (m) | +/-0.6 in | Petrie Sec. 64 [S2] | true |
 | Antechamber south-wall grooves | four, about 2.8 in deep (width not recovered) | in | - | Petrie Sec. 49 [S2] | true |
@@ -77,43 +81,51 @@ Overall: none of the hydraulic claims is supported by archaeological or hydrogeo
 
 | name | value | unit | uncertainty | source | verified |
 |---|---|---|---|---|---|
-| Khufu pyramid base elevation | 60 (rock base about 62; 60 at SE corner) | m asl | +/-2 | Hemeda & Sonbol 2020 [S5] | true |
+| Khufu pyramid base elevation | 60 (rock base about 62; 60 at SE corner) | m asl | +/-2 | Hemeda & Sonbol 2020 [S5]; second route: the 60 m contour runs beside the Khufu pyramid on Younes et al. 2024 Fig. 2 (adapted from Lehner 2014) [S18] | true (re-read 2026-10-10; no surveyed benchmark value for the pavement itself was found) |
 | Giza plateau top | 60 to 106 | m asl | - | Hemeda & Sonbol 2020 [S5] | true |
 | Northern escarpment | two steps of about 30 m each | m | - | Aigner 1983 [S8] | true |
 | Mokattam Formation dip | 5 to 10 deg SE | deg | Lehner gives 6 deg | Aigner 1983 [S8]; Lehner 2014 [S3] | true |
 | 4th Dynasty floodplain surface | 12 | m asl | model estimate | Lehner 2014 p. 18 [S3] | true |
-| 4th Dynasty flood peak | 13.5 to 14.0 | m asl | model estimate | Lehner 2014 pp. 18, 22 [S3] | true |
-| 4th Dynasty low water | 7 | m asl | model estimate | Lehner 2014 pp. 18, 22 [S3] | true |
+| 4th Dynasty flood peak | 13.5 to 14.0 (Lehner); 17 +/-0.5 (Younes et al.) (was: 13.5 to 14.0 only) | m asl | model estimates; the two differ by about 3 m. Lehner sets the peak 1 m below the Khufu Valley Temple platform (14.5 m asl) by assumption; Younes et al. raise all of Lehner's contours by about 3 m on the strength of one dated level in core Giza-3 | Lehner 2014 pp. 16, 18, 22 [S3]; Younes et al. 2024 pp. 3, 9 [S18] | true for both (page images read 2026-10-10) |
+| 4th Dynasty low water | 7 (Lehner); about 10 (Younes et al.) (was: 7 only) | m asl | model estimates | Lehner 2014 pp. 18, 22 [S3]; Younes et al. 2024 p. 9 [S18] | true for both (page images read 2026-10-10) |
 | Annual Nile rise before the Aswan dams | 7 | m | - | Lehner 2014 p. 14 [S3]; Sheisha 2022 [S6] | true |
 | Khufu Valley Temple platform | 14.5 | m asl | - | Lehner 2014 p. 18 [S3] | true |
 | Khufu Valley Temple distance from plateau edge | about 400 | m | - | Lehner 2014 p. 17 [S3] | true |
 | Sediment over Old Kingdom floodplain | 4 to 5 | m | - | Lehner 2014 p. 14 [S3] | true |
 | Khufu-branch level under Khufu, Khafre, Menkaure | about 40 percent of Holocene maximum (relative index, no metres) | - | - | Sheisha 2022 [S6] | true |
 | Ahramat Branch size | 64 km long, 200 to 700 m wide, 2 to 8 m deep, 2.5 to 10.25 km west of the modern Nile | - | 2023 abstract said about 100 km | Ghoneim 2024 [S7]; [S17] | true |
-| Modern water table, Sphinx area | 15 to 15.5 | m (datum not named in paper; consistent with asl) | - | Sharafeldin 2019 [S4] | true |
-| Modern water table, Nazlet El-Samman | 16 to 17 | m | - | Sharafeldin 2019 [S4]; [S5] | true |
-| Borehole MW6: ground 65 m, water table 15 m | 15 | m | location relative to Khufu not stated | Sharafeldin 2019 citing AECOM 2010 [S4] | true |
-| Perched water (W and SW high ground, modern) | 22 to 45 | m | attributed to runoff and capillary seepage | Sharafeldin 2019 [S4] | true |
-| Low Nile, 7 June 1837, below Great Pyramid base | 158 ft (48.2 m) | ft | - | Vyse 1841 vol. 2 appendix (Perring) [S15] | false (search snippet of the Heidelberg OCR; page itself blocked) |
-| Water in plateau shaft No. 1, June 1837, below base | 154 ft (46.9 m) | ft | - | same [S15] | false (snippet only) |
-| High Nile, 23 Oct 1838, below base | 137 ft 3 in (41.8 m) | ft | - | same [S15] | false (snippet only) |
-| Subterranean Chamber floor elevation | 28 to 30 | m asl | +/-2 (base elevation) | derived: 60 - 30.4 to 31.9 | false (derived) |
-| Chamber floor above Old Kingdom flood peak | 14 to 16 | m | +/-3 | derived | false (derived) |
-| Chamber floor above modern water table | 11 to 15 | m | +/-3 | derived | false (derived) |
+| Modern water table, Sphinx area | 15 to 15.5 (Sphinx Temple 15.5 to 15.8; whole surveyed area 14.5 to 17) | m (datum not named in paper; consistent with asl, since the Sphinx floor is given as 20 m) | - | Sharafeldin 2019 [S4] | true (re-read 2026-10-10) |
+| Modern water table, Nazlet El-Samman | 16 to 17 | m | - | Sharafeldin 2019 [S4]; [S5] | true (re-read 2026-10-10) |
+| Modern water table under or beside Khufu | not reported | - | no geophysical profile of [S4] is at Khufu; nearest values are Sphinx / Khafre Valley Temple, about 15 m | Sharafeldin 2019 [S4] | true that it is absent (checked 2026-10-10) |
+| Borehole MW6: ground 65 m, water table 15 m | 15 | m | location relative to Khufu not stated | Sharafeldin 2019 citing AECOM 2010 [S4] | true (re-read 2026-10-10) |
+| Perched water (W and SW high ground, modern) | 22 to 45 (text also gives 43 on the Menkaure causeway and 45 to 48 at the Menkaure queens' pyramids and quarry) | m | interpreted from resistivity, seismic refraction and GPR, not drilled; attributed to runoff, urban leakage and capillary seepage; host layer not stated; none reported at Khufu | Sharafeldin 2019 [S4] | true (re-read 2026-10-10) |
+| Low Nile, 7 June 1837, below Great Pyramid base | 158 ft (48.2 m) | ft | about 11.8 m asl if base = 60 | Vyse vol. 2 Appendix p. 148 (Perring) [S15] | true (read 2026-10-10 in the archive.org OCR; was: false, snippet only) |
+| Water in plateau shaft No. 1, June 1837, below base | 154 ft (46.9 m) | ft | about 13.1 m asl if base = 60; text says about 4 ft above the river, which matches 158 - 154 | same [S15] | true (2026-10-10; was: false, snippet only) |
+| High Nile, 23 Oct 1838, below base | 137 ft 3 in (41.8 m) | ft | about 18.2 m asl if base = 60 | same [S15] | true (2026-10-10; was: false, snippet only) |
+| Water in shaft No. 1, 23 Oct 1838, below base | 155 ft 4 in (47.3 m) | ft | text says 18 ft 1 in below the river, which matches 155 ft 4 in - 137 ft 3 in; i.e. the rock water table did NOT rise with the flood | Vyse vol. 2 Appendix p. 148 [S15] | true (added 2026-10-10) |
+| Water in other plateau shafts and wells, 1837-38, below base | about 146 to 152 ft (44.6 to 46.2 m) | ft | 13.8 to 15.4 m asl if base = 60; some inch fractions garbled in OCR | Vyse vol. 2 Appendix p. 149 [S15] | true to the foot (added 2026-10-10) |
+| Subterranean Chamber floor elevation | 28 to 30 | m asl | +/-2 (base elevation) | derived: 60 - 30.4 to 31.9 | false (derived; re-derived 2026-10-10: 28.1 to 29.6) |
+| Chamber floor above Old Kingdom flood peak | 11 to 16 (was: 14 to 16) | m | +/-2; 14.1 to 16.1 with Lehner's 13.5 to 14 m peak, 11.1 to 12.6 with Younes et al.'s 17 m | derived | false (derived; widened 2026-10-10) |
+| Chamber floor above modern water table | 11 to 15 | m | +/-3 | derived | false (derived; re-derived 2026-10-10: 11.1 to 14.6) |
+| Pre-1837 pit bottom above Old Kingdom flood peak | 8.4 to 11.9 | m | +/-2; 25.4 asl minus 17 or 13.5 | derived (added 2026-10-10) | false (derived) |
+| Bottom of the 1838 shaft relative to the modern water table | about 0 to 4 m above | m | pit bottom 17 to 19 asl against 15 to 17; both carry +/-2 m, so "at the water table" is not excluded (and the outlier reading would put it up to 3 m below) | derived (added 2026-10-10) | false (derived) |
+| Bottom of the 1838 shaft relative to water measured in plateau shafts and wells in 1837-38 | about 8 to 17 ft (2.5 to 5 m) above | ft (m) | 138 ft 2 in below base (Perring's sum) against 146 to 155 ft; independent of the base elevation | derived from [S15] (added 2026-10-10) | false (derived) |
 
 ### 2.3 Materials
 
 | name | value | unit | uncertainty | source | verified |
 |---|---|---|---|---|---|
-| Khufu backing (core) limestone, total porosity | 21 to 33 | percent | across the three pyramids' samples | Hemeda & Sonbol 2020 [S5] | true |
+| Khufu backing (core) limestone, total porosity | 21 to 33 | percent | across the three pyramids' backing-block samples, not broken down by pyramid; samples are fallen fragments | Hemeda & Sonbol 2020 [S5] | true (re-read 2026-10-10) |
+| Khufu backing limestone, pore sizes | 96.4 percent of measured pore volume in the 200 to 2330 angstrom class (0.02 to 0.23 micrometre); BET area 2.9 m2/g | - | five Khufu specimens; the paper's size classes sum to about 97 percent and it once calls the specimens sandstone, so treat as indicative | Hemeda & Sonbol 2020 [S5] | true (added 2026-10-10). Bears on C12: sub-micron pores point to a LOW matrix permeability despite the high porosity |
 | Backing limestone water absorption | 12 to 20 | percent | - | [S5] | true |
 | Backing limestone unit weight | 1.99 to 2.31 | g/cm3 | - | [S5] | true |
 | Backing limestone compressive strength; modulus | 12.1 to 15.2 MPa; 12.7 GPa | - | - | [S5] | true |
 | Structural mortar, Khufu | gypsum with calcite/dolomite rock fragments; matrix gypsum, anhydrite, calcite | - | no percentages given | [S5]; Regourd et al. 1988 classed it as gypsum plaster [S16, snippet only] | true for [S5] |
-| Gypsum solubility in water | about 2.0 to 2.5 | g/L at 25 C | retrograde with temperature | Wikipedia citing Bock 1961 [S13] | false (secondary) |
+| Gypsum solubility in water | about 2.0 to 2.5 | g/L at 25 C | retrograde with temperature | Wikipedia citing Bock 1961 [S13] | false (secondary; the Wikipedia page was re-read 2026-10-10 and says this, Bock 1961 itself not opened) |
 | Bedrock | nummulitic packstone; plateau karstified; three fracture sets (WNW, NW, NE) | - | apertures and spacing not given | [S5]; massive, thick-bedded, hard [S8] | true |
-| Hydraulic conductivity, Mokattam limestone matrix | not found | m/s | textbook range for limestone roughly 1e-9 to 6e-6 (recalled, Domenico & Schwartz; table not opened) | - | false |
-| Tura limestone porosity / conductivity | not found | - | - | - | false |
+| Hydraulic conductivity, Mokattam limestone matrix | not found | m/s | textbook range for limestone roughly 1e-9 to 6e-6 (recalled, Domenico & Schwartz; table not opened) | - | false. 2026-10-10: still unverifiable. [S5] gives no permeability value (the word appears once, without a number). Park & Shin 2009 measured porosity and permeability of Mokattam quarry limestone but the values are not in the abstract [S21]. The recalled textbook range must not be cited as a source |
+| Analogue only (NOT Giza): Middle Eocene nummulitic packstone and mudstone, Samalut Formation, SW Sinai | porosity 1.5 to 5.3 percent; permeability 0.012 to 0.110 mD (roughly 1e-10 to 1e-9 m/s for water, my conversion) | - | far less porous than the Giza backing stone, so of limited transfer value | Nabawy 2018, abstract only [S21] | true for the abstract (added 2026-10-10); not a simulation input |
+| Tura limestone porosity / conductivity | not found | - | - | - | false (2026-10-10: still not found) |
 | Joint apertures in core masonry and in the gallery lining | not found | mm | only the casing figure (0.5 mm) is sourced | - | false |
 
 ### 2.4 Hydraulic ram and Cadman
@@ -124,9 +136,10 @@ Overall: none of the hydraulic claims is supported by archaeological or hydrogeo
 | Ram energy efficiency | typically 60, up to 80 | percent | uncited on the page | [S11] | false (secondary) |
 | Delivered fraction | q/Q = efficiency x (supply head / delivery head); e.g. 2 m to 10 m at 70 percent gives 14 percent delivered, the rest spilled | - | - | [S11] | false (secondary) |
 | Drive pipe length | 3 to 7 x supply head | - | - | [S11] | false (secondary) |
-| Cadman model pulse rate | 60 to 80 | per minute | no measurement method given | Malkowski, repost [S9] | false (second-hand account) |
-| Cadman: well shaft effect | efficiency down 29 percent (circulating) and 68 percent (elevating) | percent | no raw data | [S9] | false (second-hand) |
-| Cadman model scale, pressure, flow, lift | not reported | - | - | [S9] | false |
+| Cadman model pulse rate | 60 to 80 | per minute | no measurement method given | Malkowski, repost [S9] | false (second-hand account; 2026-10-10: the repost was re-read and does say this) |
+| Cadman: well shaft effect | efficiency down 29 percent (circulating) and 68 percent (elevating) | percent | no raw data | [S9] | false (second-hand; re-read 2026-10-10, wording confirmed) |
+| Cadman model: other reported observations | pulse-generator model about 500 lb; pulses said to be felt about 20 ft away and heard nearly 100 ft away; pulse rate adjustable by at least 30 percent with back pressure | - | qualitative, no instruments named | [S9] | false (second-hand; added 2026-10-10) |
+| Cadman model scale, pressure, flow, lift | not reported | - | - | [S9] | false (2026-10-10: still not found; gizapyramid.com/cadman4.htm returns 404, a recalled and unconfirmed address on sentinelkennels.com also returned 404, and web.archive.org could not be fetched from this environment) |
 
 ---
 
@@ -139,6 +152,7 @@ Verdict vocabulary: supported / partly supported / no evidence / contradicted / 
 - For: Herodotus and Pliny wrote of Nile-fed channels or a well under the pyramid (reported second-hand by [S12]); Petrie saw water-wear in the NNE rock trench and thought it looked like a drain [S2]; rain does reach the plateau; modern perched water exists on high ground to the W and SW [S4]. Navigable Nile water did come to the foot of the plateau [S3][S6][S7].
 - Against: the base is about 60 m asl [S5]; the 4th Dynasty flood peaked at about 13.5 to 14 m asl [S3], so water would have to be raised about 46 m and held on a karstified limestone surface [S5]. What surrounds the pyramid archaeologically is a levelled limestone pavement 17 to 27 in thick, a basalt-paved temple on the east and rock-cut trenches and boat pits [S2][S12]; none of the sources opened reports a dam, retaining wall, lining or lake sediment at base level. Malkowski's version (aqueducts from a Nile course "higher than the plateau") [S9] conflicts with every measured river elevation above.
 - What would change the verdict: lacustrine sediment or waterproof lining on or beside the pavement; a conduit into the masonry at base level.
+- [Verification 2026-10-10: verdict unchanged, with two qualifications. (1) The flood peak may have been about 17 m asl rather than 13.5 to 14 [S18], i.e. about 43 m rather than 46 m below the base; this does not alter the conclusion. (2) "No evidence" for a rain-fed body is an absence-of-evidence statement, not a physical exclusion: the plateau rises to about 105 m asl west of Khufu [S5][S18], 4th Dynasty builders are credited with the 14 m high Sadd el-Kafara dam [S3], peer-reviewed (unexcavated, contested) proposals of wadi-fed dams and basins now exist for Saqqara and Dahshur [S14][S20], and a single 50 mm storm at 30 percent runoff (the upper-end figures used in [S14]) on about 0.06 km2 would yield one gallery fill. No such catchment work, basin or lining has been reported at Khufu. See "Steelman" in the verification pass.]
 
 ### C2. "The reservoir was used to introduce water into the Subterranean Chamber" - undefined by hypothesis
 
@@ -160,13 +174,19 @@ No piston, rail, seal, rope wear or actuator is described in the sources opened.
 
 Spaces that must fill before or with the gallery hold about 860 m3; one stroke of the entire 105 m passage sweeps about 133 m3. That is about 6.5 full-length strokes, or about 10 strokes if only the part below base level is used. The gallery alone (about 570 m3) is about 4.3 full-length strokes, so "four" is only reachable if the Queen's Chamber, both passages and the well shaft are somehow already full and the piston travels the entire passage, which leaves no room for the piston itself or an inlet.
 
+[Verification 2026-10-10: arithmetic reproduced independently (working W3). My own corbel geometry gives 572 to 600 m3 for the gallery (first pass 570 +/-40), so the gallery alone needs 4.3 to 4.5 full-length strokes and four full-length strokes deliver 533 m3: "four" is not reached even in the narrow exception unless the gallery volume sits at the bottom of its uncertainty. With water standing at base level only the 67 m of passage below base can displace water (85 m3 per stroke, 340 m3 in four). Verdict stands.]
+
 ### C7. "Retracting the pump draws water from an aquifer directly below, through the pit" - contradicted
 
 Suction lift is limited to about 10 m of water (section 4.4). Lehner's Old Kingdom water levels (7 to 14 m asl) [S3] are 14 to 23 m below the chamber floor (28 to 30 m asl); the modern table (15 to 17 m asl) [S4] is 11 to 15 m below it. Perring's 1837-38 levels, if the snippet is accurate, agree (42 to 48 m below base) [S15]. A piston higher up the passage has even more lift to overcome. The verdict would change only if a perched aquifer above about 20 m asl existed under Khufu in the Old Kingdom; none is documented there.
 
+[Verification 2026-10-10: verdict unchanged, margin restated. (a) Perring's levels are now confirmed from the text. (b) Younes et al. 2024 put the 4th Dynasty flood peak at about 17 m asl, 3 m above Lehner; the lift to the end of the descending passage (30 m asl) is then 13 m instead of 16 m, and to the lowest floor point at the pit mouth 11 m. All central cases still exceed the 10.1 m theoretical limit. Only if the base were 58 m asl AND the peak 17 m would the lowest floor point come within the theoretical limit (9.1 m); the passage end would still need 11 m. (c) New evidence against: the pit Drumm describes as leading to the aquifer was only about 2.7 m deep before 1837; Vyse and Perring then cut 11 to 11.6 m further through solid rock; no water or cavity is mentioned in the passages read. Perring's shaft water levels also show the rock water table on the plateau did not rise with the 1838 flood. Working W2 in "Verification pass".]
+
 ### C8. "The pit is filled with wet sand; the water level fluctuates; so there is still water below" - partly supported as an observation, not as an inference
 
 Petrie independently recorded water in the pit after heavy rain ran down the entrance passage [S2], and the Edgars are reported to have put sand and stones back into the pit in 1909 [S12, secondary]. So damp fill is credible. It does not establish an aquifer link: rain inflow is the documented cause, and the modern water table is itself raised by leakage and irrigation [S4].
+
+[Verification 2026-10-10: reasoning revised in both directions. For the observation: the bottom of the 1838 shaft (17 to 19 m asl) lies about 0 to 4 m above today's regional water table (15 to 17 m asl near the Sphinx; no measurement under Khufu), within the +/-2 m uncertainty of the base elevation, so present-day groundwater or its capillary fringe cannot be excluded as a second cause of wet fill; the first pass's statement that the pit bottom is clearly above the water table was too strong. Against the inference: that shaft was cut in 1837-38, and by Perring's own figures its bottom then stood about 8 to 17 ft above the water he measured in plateau shafts and wells the same years, so it was in all likelihood dry when dug. Plateau water has since risen by roughly 1 to 3 m (a comparison that carries the base-elevation uncertainty). Wetness at its bottom is therefore evidence about a 19th-century hole and a modern, raised water table, not about an ancient connection.]
 
 ### C9. "Draining the Grand Gallery acts like a syringe, pulling air through the King's Chamber shafts and gas through the antechamber" - partly supported (physics only)
 
@@ -184,9 +204,13 @@ The gallery's exit is at floor level at the high end (+42.9 to +43.0 m); the gal
 
 Backing limestone: 21 to 33 percent total porosity, 12 to 20 percent water absorption; gypsum mortar; karstified, fractured bedrock [S5]. The fine lining stone of the chambers and gallery was not tested in the sources opened, so its permeability is unknown, not zero.
 
+[Verification 2026-10-10: verdict softened to "contradicted as an absolute statement; through-flow permeability unmeasured". What [S5] measured is porosity and water absorption, which show the backing stone takes up water; it reports no permeability. The same paper puts about 96 percent of the pore volume of five Khufu specimens in the 0.02 to 0.23 micrometre class, which is the signature of a low-permeability micro-porous rock. So the matrix may well be tight enough that joints, not stone, control leak-off. "Not permeable" is still wrong as stated, but the first pass's wording implied more than the data show.]
+
 ### C13. Cadman's ram-pump model ("best other theory") - no evidence beyond a small-scale demonstration
 
 What he built: three prototypes 1999-2000 (the third said to work), a flow-visualisation model whose glass top shattered in pulse mode, and a fibreglass/epoxy/concrete "pulse generator" of about 500 lb, run from a creek-fed pond; reported 60 to 80 pulses per minute [S9]. Not reported: scale, pressures, flows, lift. Not found: any peer-reviewed description or test, or any formal published rebuttal; the only critical material located is the Skeptic's Dictionary entry on the parent "Pharaoh's Pump" idea (which does not name Cadman) and a reader comment there noting the 10 m suction limit and the lack of a water source [S10]. Physics objection: a ram spills most of its drive water (about 78 percent for a 30 m fall and 81.5 m lift at 60 percent efficiency) and needs an outfall below the supply; the chamber's only other opening is a 16.4 m blind passage [S2]. Drumm himself confirms the dead end [S1].
+
+[Verification 2026-10-10: verdict unchanged. The Malkowski repost was re-read; the 60 to 80 pulses per minute, 29 and 68 percent and 500 lb figures are as reported there. Two factual errors in that account bear on its reliability: it credits Caviglia (1816) with deepening the pit by thirty feet, whereas Vyse's text assigns the deep shaft to his own 1837-38 work under Perring [S15]; and it has the reservoir fed from a western Nile said to be higher than the plateau, which no measured or reconstructed level supports. Cadman's own write-up could not be opened by any route.]
 
 ### C14. "The product is sucked out of the Queen's Chamber" and "the Big Void was a water-filled heat exchanger with a fill shaft" - undefined by hypothesis
 
@@ -329,10 +353,10 @@ Start with B, E (lumped) and F in one 1D model; it answers most pass/fail questi
 
 | item | baseline (evidence-based) | hypothesis-favourable alternative |
 |---|---|---|
-| External water level | none at base level; Nile-linked water 7 to 14 m asl (-53 to -46 m) [S3] | reservoir at 0 m (pavement) or at +17 m (entrance); state clearly that this is assumed |
-| Water table under Khufu | -46 to -53 m (Old Kingdom); -43 to -45 m (modern) | perched table at -35 to -40 m |
+| External water level | none at base level; Nile-linked water 7 to 14 m asl (-53 to -46 m) [S3]; sweep the peak up to 17 m asl (-43 m) to cover Younes et al. 2024 [S18] (added 2026-10-10) | reservoir at 0 m (pavement) or at +17 m (entrance); state clearly that this is assumed |
+| Water table under Khufu | -46 to -53 m (Old Kingdom; -43 m at the flood peak if [S18] is right); -43 to -45 m (modern); 1837-38 measured in plateau shafts -44.6 to -47.3 m [S15] | perched table at -35 to -40 m |
 | Inlet | descending passage mouth at +16.97 m | assumed conduit at base level |
-| Pit | bottom -36 to -41 m, rock, no valve | check valve at pit rim, cracking pressure 0 to 5 kPa |
+| Pit | pre-1837 state: bottom about -34.6 m (ancient part possibly shallower), solid rock below, no valve. As dug in 1838: bottom -41 to -43 m, with -46 m as an outlier case for sensitivity (was: bottom -36 to -41 m, rock, no valve) | check valve at pit rim, cracking pressure 0 to 5 kPa; conduit to water assumed below the ancient pit |
 | Piston | none | rigid, area 1.2 to 1.27 m2, stroke 10 to 100 m, gap 0.1 to 5 mm |
 | Masonry joints (gallery, Queen's Chamber, passages) | aperture 0.05 to 0.5 mm, gypsum mortar | perfectly sealed |
 | Matrix conductivity | 1e-9 to 1e-6 m/s (unmeasured) | zero |
@@ -372,16 +396,23 @@ A result favourable to the hypothesis would be: tests 2 to 7 passing with bounda
 ## 6. Open questions
 
 1. **Pit depth and what is at the bottom.** Petrie's "about 30 feet" versus the secondary "about 15 m (50 ft)" attributed to Vyse/Perring; Vyse's volumes could not be opened (Heidelberg scans are bot-blocked). Is there a published modern survey or any water or moisture measurement in the pit? Not found.
+   [2026-10-10: partly resolved. The 50 ft was the order; 36 to 38 ft was reached (Vyse vol. 1 pp. 223-224; vol. 2 App. p. 114). Still open: whether the 36 to 38 ft is counted from the chamber floor or from the bottom of the earlier excavation, and any modern survey or moisture measurement.]
 2. **Perring's 1837-38 water levels** (low Nile 158 ft, shaft water 154 ft, high Nile 137 ft 3 in below the base) need to be checked against the facsimile of Vyse vol. 2/3; Vyse himself notes errors in the levels plate.
+   [2026-10-10: the three figures are confirmed in the archive.org OCR of vol. 2 Appendix p. 148 and agree with the differences stated in the text. A look at the page image is still worthwhile. One extraction of vol. 1 also reported a footnote giving the base as 146 ft 5 in above the Nile in May 1837; a second extraction of the same pages did not find it, so it is NOT used.]
 3. **Water table directly under Khufu.** Sharafeldin et al. give no value there, and the location of borehole MW6 (65 m ground, 15 m water) is not stated. AECOM 2010 and the Cairo University 2008 reports were not opened.
 4. **Hydraulic conductivity** of Mokattam core stone, Tura lining stone and gypsum mortar: not found. Leads not opened: a 1981 petrophysical study of 58 Eocene samples from Giza and Saqqara (Qatar University repository, access denied); Park & Shin 2009 (Engineering Geology); Aly et al. 2014.
 5. **Joint apertures inside** the Grand Gallery, Queen's Chamber and passages, and whether those joints are mortared: not found (only the casing value). Maragioglio & Rinaldi and Dormion were not opened.
 6. **Descending passage cross-section**: Petrie's own figures did not come through extraction; 41.5 x 47.3 in is inferred. Check the printed text (Sec. 35-36).
+   [2026-10-10: Petrie's Sec. 35-36 as transcribed contain no width or height for this passage (re-checked twice). Perring's table gives 3 ft 5.5 in by 3 ft 11 in, which is now the sourced value.]
 7. **King's Chamber shaft lengths, bends and outlet heights** from Gantenbrink's survey: not opened; my 53 m and 71 m are derived.
 8. **Antechamber groove widths** and the original seating of the portcullis slabs: not recovered.
 9. **The "German engineering team" drawing**: not identified. The video frame would need to be inspected for a name.
 10. **Cadman's primary write-up**: gizapyramid.com pages return 404; only Malkowski's second-hand article was read. Scale, head, flow and pressure data, if they exist, were not found.
+   [2026-10-10: still not found. gizapyramid.com/cadman4.htm returns 404, web.archive.org is not reachable from this environment, and a video-listing page that cites gizapyramid.com returned 403.]
 11. **Lehner 2020, "Lake Khufu"** (fuller elevation model) exceeded the fetch size limit; the 2014 AERAGRAM article was used instead.
+   [2026-10-10: still unread (a copy at ancientportsantiques.com/.../GizehPorts-Lehner2020.pdf exceeds the 10 MB fetch limit; the publisher page is paywalled). Its levels are summarised second-hand by Younes et al. 2024 [S18], who then argue for levels about 3 m higher. Page range and editors of the 2020 chapter were not confirmed and are not cited here.]
+15. **Which Old Kingdom flood level to use** (added 2026-10-10): Lehner's 13.5 to 14 m asl or Younes et al.'s 17 m asl. Perring's measured 1838 high Nile (about 18.2 m asl if the base is 60) minus Lehner's 4 to 5 m of later sediment gives about 13 to 14 m, which favours Lehner, but this is my own cross-check, not a published reconciliation. A 17 m flood would also stand 2.5 m above the Khufu Valley Temple platform that Lehner reports at 14.5 m asl, a tension [S18] does not address; use Lehner's level as the baseline and 17 m as the upper end of the sweep.
+16. **Datum of the 36 to 38 ft** and the present condition and fill of the pit (added 2026-10-10): decides whether the shaft bottom is above or below today's water table.
 12. **Enclosure wall and court dimensions** around the pyramid: not opened in a primary source this session; needed for the "what stood where the reservoir would be" argument.
 13. **Tura limestone properties**: not found.
 14. **Interior temperature and humidity** for initial conditions: not sourced.
@@ -404,8 +435,126 @@ A result favourable to the hypothesis would be: tests 2 to 7 passing with bounda
 - [S12] Wikipedia, "Great Pyramid of Giza" (interior section; cites Maragioglio & Rinaldi 1965, Dormion 2004, Haase 2004, Perring 1839, Vyse 1840, Petrie 1883, Edgar & Edgar 1910, Lehner & Hawass 2017). https://en.wikipedia.org/wiki/Great_Pyramid_of_Giza (secondary)
 - [S13] Wikipedia, "Gypsum" (cites E. Bock 1961, Can. J. Chem. 39(9), 1746-1751). https://en.wikipedia.org/wiki/Gypsum (secondary)
 - [S14] X. Landreau et al. (2024), "On the possible use of hydraulic force to assist with building the step pyramid of Saqqara", PLOS ONE 19(8) e0306690. https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0306690 (context only: a peer-reviewed hydraulic proposal for a different pyramid whose authors state that water supply was not clearly sufficient and that key connections are unconfirmed; it does not concern Giza)
+  [Verification 2026-10-10: the parenthesis above is slightly too negative. As read this session, the authors find supply insufficient only under their pessimistic assumptions, sufficient under intermediate ones and about eight times demand under optimistic ones; they do list several connections as unconfirmed. The body text names no Giza pyramid and only asks whether other Old Kingdom pyramids used similar processes.]
 - [S15] H. Vyse (1840-42), *Operations Carried On at the Pyramids of Gizeh in 1837*, vol. 2 appendix (Perring's remarks on water levels), Heidelberg University Library scans, e.g. https://digi.ub.uni-heidelberg.de/diglit/howard_vyse1841bd2/0185 . NOT opened (access denied); figures known only from search-result excerpts of the OCR. Treat as unverified.
+  [Verification 2026-10-10: now opened by another route. Vol. 1 (1840): https://archive.org/stream/operationscarrie01howa/operationscarrie01howa_djvu.txt (pp. 4, 12, 20, 199, 222-224). Vol. 2 (1840): https://archive.org/stream/operationscarrie02howa/operationscarrie02howa_djvu.txt (Appendix pp. 109-114, 148-149). These are OCR text files read through an extraction tool; each figure used was seen in at least two separate extractions or checked by the text's own stated differences. Heidelberg is still bot-blocked. A facsimile check of the page images is still advisable before quoting.]
+- [S18] G. Younes, N. Marriner, D. Kaniewski, H. Sheisha, Z. Chen, A. Salama, G. El-Qady, C. Morhange (2024), "The pyramid builders' waterways: Reconstructing the ancient topography of Khufu's Pharaonic Harbour at Giza, Egypt", Journal of Archaeological Science: Reports 53, 104303. DOI 10.1016/j.jasrep.2023.104303. Author copy at https://www.ancientportsantiques.com/wp-content/uploads/Documents/PLACES/Egypt-Libya/GizehPorts-Younes2024.pdf (pp. 1-9 read as page images, 2026-10-10).
+- [S19] G. Younes, H. Sheisha, D. Kaniewski, N. Marriner, C. Morhange, A. Saleem, A. Véron (2026), "Dryland Nile waterscapes and human footprints at Giza (Egypt): 8000 years of Khufu-branch dynamics, harbour palaeotopography, agropastoral adaptation, and early copper pollution", EGU General Assembly 2026, abstract EGU26-12933. https://meetingorganizer.copernicus.org/EGU26/EGU26-12933.html (abstract read 2026-10-10; proposes no engineered water structure on the plateau).
+- [S20] X. Landreau, G. Piton, S. Hemeda (2026), "Two possible ancient dams near the Red Pyramid on the Dahshur Plateau, Egypt", npj Heritage Science 14, 454. https://www.nature.com/articles/s40494-026-02833-9 (first 100,000 characters read 2026-10-10; DOI inferred from the URL as 10.1038/s40494-026-02833-9, not seen printed). Remote sensing only, no excavation, chronology unknown.
+- [S21] Abstracts only, read through the Consensus search tool 2026-10-10: B. S. Nabawy (2018), "Impacts of fossil anisotropy on the electric and permeability anisotropy of highly fossiliferous limestone: a case study", Marine Geophysical Research, DOI 10.1007/s11001-017-9335-2; H. D. Park et al. (2009), "Geotechnical and geological properties of Mokattam limestones: Implications for conservation strategies for ancient Egyptian stone monuments", Engineering Geology, DOI 10.1016/j.enggeo.2008.10.009. Volume and page numbers were not shown and are not given here.
 - [S16] M. Regourd, J. Kerisel, P. Deletie, B. Haguenauer (1988), "Microstructure of mortars from three Egyptian pyramids", Cement and Concrete Research 18(1), 81-90. NOT opened; bibliographic record and abstract-level summary only (via search results for mci.si.edu and architexturez.net records).
 - [S17] E. Ghoneim et al. (2023), conference abstract, 13th International Congress of Egyptologists, Leiden (gives "about 100 km" for the branch). https://researchers.mq.edu.au/en/publications/the-discovery-of-the-ahramat-nile-branch-a-hidden-ancient-waterwa/
 
 Sources attempted but not readable this session: Lehner 2020 "Lake Khufu" (file too large); gizamedia.rc.fas.harvard.edu documents (host not resolving); Bauval & Gilbert, Discussions in Egyptology 28 (scanned, no text layer); qspace.qu.edu.qa record 10576/9650 (403); aqtesolv.com aquifer-properties table (certificate error); neutrium.net Joukowsky page (403).
+
+---
+
+## Verification pass (2026-10-10)
+
+Second review of this file by a different reviewer. Method: each load-bearing figure was re-opened in its cited source, or in an independent primary source, during this session; derived values were recomputed from scratch (script kept outside the project). "Confirmed" means I read the figure myself this session. Old texts (Petrie, Vyse) were read as transcriptions or OCR through an extraction tool, so each such figure was accepted only if it appeared in two separate extractions or agreed with a difference stated in the same text. First-pass content has been left in place; corrections carry a "was:" note or a dated bracket.
+
+### Checks
+
+| # | item | first-pass value | status | evidence | source |
+|---|---|---|---|---|---|
+| 1 | Elevation of the pyramid base | 60 m asl (+/-2) | confirmed | Paper gives rock base about 62 m, 60 m at the SE corner, and separately +60 m for Khufu. Second route: 60 m contour drawn beside the Khufu pyramid. No surveyed benchmark for the pavement was found, so +/-2 m stays | [S5]; [S18] Fig. 2 |
+| 2 | Lehner's 4th Dynasty levels | floodplain 12, flood 13.5 to 14, low water 7, valley temple 14.5 m asl; 7 m annual rise; 4 to 5 m later sediment; temple about 400 m from the plateau | confirmed | All read on the page images (pp. 14, 16, 17, 18, 22). The flood peak is an assumption set 1 m below the temple platform, as the first pass said | [S3] |
+| 3 | Old Kingdom flood peak, published range | 13.5 to 14 m asl only | corrected (widened) | A 2024 core study of the Khufu harbour concludes Lehner's contours are about 3 m too low: harbour water about 10 m asl at low season and about 17 +/-0.5 m in flood. Row and boundary table widened to 13.5 to 17 | [S18] pp. 3, 9 |
+| 4 | Sheisha et al. 2022 | Khufu branch at about 40 percent of Holocene maximum, no metres; water at the foot of the plateau only | confirmed | Re-read. No absolute level is given; cores G1 and G4 are on ground at 18 and 19 m asl; the paper speaks of water at the base of the plateau, never on it | [S6] |
+| 5 | Present-day water table | 15 to 15.5 (Sphinx), 16 to 17 (Nazlet El-Samman), MW6 65/15, perched 22 to 45 | confirmed, with a gap stated | Re-read. Datum is never named (consistent with asl). No profile is at Khufu and no value under the pyramid exists. Perched water is interpreted from geophysics toward Menkaure (22 to 45; also 43 and 45 to 48 in the text), cause runoff, leakage, capillary seepage | [S4] |
+| 6 | Perring's 1837-38 levels | low Nile 158 ft, shaft water 154 ft, high Nile 137 ft 3 in below base; flagged snippet-only | confirmed (was unverified) | Read in vol. 2 Appendix p. 148. The text's own differences check: 158 - 154 = 4 ft; 155 ft 4 in - 137 ft 3 in = 18 ft 1 in. New: shaft water stayed at 154 to 155 ft through the 1838 flood | [S15] |
+| 7 | Depth of the pit shaft (Vyse/Perring) | "sunk to about 15 m (50 ft); Nile about 12 m further down" | corrected | 50 ft was the order given in 1837. Reached: 38 ft through solid rock by September 1838 (vol. 1 p. 224); Perring's account says 36 ft (vol. 2 App. p. 114). No water or cavity is mentioned in the passages read. Before 1837 the hole was a few feet deep | [S15]; [S2] Sec. 37 |
+| 8 | Pit-bottom elevation | -36 to -41 m (24 to 19 m asl) | corrected | -41 to -43 m, best -41 to -42 (17 to 19 m asl); -46 m only on a reading Perring's own sum does not support; working W1. Pre-1837 pit bottom about -34.6 m (25.4 m asl) | derived from [S2], [S15] |
+| 9 | Petrie's levels for chamber, passage, gallery, Queen's Chamber, antechamber, King's Chamber | Section 64 values as tabulated in 2.1 | confirmed | Section 64 table re-read: -1181, -1056, +852.6, +834.4, +1078.7, +1689.0, +1692.6, +1841.5, +1692.8, +1921.6 to 1923.7 in. Sec. 37: floor 140 to 198 in below roof, ledge 1321 in under pavement, pit about 30 ft, water after rain | [S2] |
+| 10 | Suction-lift margin | lift 14 to 23 m (Old Kingdom), 11 to 15 m (modern), limit about 10 m | confirmed, range widened | Limit 10.33 m, 10.09 m less vapour pressure. Lift to the passage end: 13 to 23 m (Old Kingdom, both flood models), 13 to 15 m (modern). One corner case comes within the limit for the lowest floor point only; working W2 | derived |
+| 11 | Descending-passage cross-section | about 41.5 x 47.3 in, inferred; A = 1.27 m2 | confirmed by a primary figure | Perring: breadth 3 ft 5.5 in, height perpendicular to the incline 3 ft 11 in, i.e. 1.054 x 1.194 m = 1.258 m2. First-pass 1.266 m2 is 0.6 percent higher; no result changes | [S15] vol. 2 App. pp. 109-110 |
+| 12 | Pressure, piston force, work | 0.80 MPa; 580 / 640 / 950 kN; 260 MJ (base-level source), 640 MJ (from -46 m) | confirmed | Recomputed: 799 kPa for 81.5 m head; 580, 640, 950 kN; 260 MJ; 509 MJ from -30 m; 641 MJ from -46 m (616 MJ from -43 m). Working W3 | derived |
+| 13 | Fill volume and stroke count | 860 m3; 133 m3 per full stroke; 6.5 strokes (10 for the part below base); gallery alone 4.3 | confirmed | Own corbel geometry gives the gallery 572 to 600 m3 (first pass 570 +/-40); total 860 to 890 m3; 6.5 to 6.7 full-length strokes, 10.1 to 10.5 below-base strokes. Volumes included are listed in W3 | derived from [S2], [S12], [S15] |
+| 14 | Core-stone porosity, absorption, mortar, joints | 21 to 33 percent; 12 to 20 percent; gypsum mortar; 0.5 mm casing joints | confirmed | Re-read. The ranges are for backing blocks of all three pyramids (fallen fragments). Added: pore sizes of five Khufu specimens are almost all sub-micron | [S5] |
+| 15 | Permeability / hydraulic conductivity of core, lining stone, mortar | "not found"; textbook range recalled from memory | unverifiable | No measured value for Giza stone in any source opened. [S5] has no permeability number. Park & Shin 2009 measured it for Mokattam quarry stone but the abstract gives no value. One Sinai analogue (abstract) reports 0.012 to 0.110 mD at 1.5 to 5.3 percent porosity | [S5]; [S21] |
+| 16 | Well shaft length | about 50 m (secondary) | corrected (range) | Perring's table: 26 ft 1 in + 32 ft 5 in + 133 ft = 191 ft 6 in (58.4 m) measured along the shaft; 2 ft 4 in square. Volume 25 to 30 m3 | [S15] vol. 2 App. p. 113 |
+| 17 | Cadman model data | 60 to 80 pulses per minute; 29 and 68 percent; no scale, pressure, flow or lift | confirmed as reported second-hand; primary unverifiable | Repost re-read: figures as stated. Cadman's own pages could not be opened by any route (404; archive not reachable). No pressure, flow, head or scale exists in anything read | [S9] |
+| 18 | Landreau et al. 2024 and its relevance | "authors state that water supply was not clearly sufficient"; does not concern Giza | corrected (characterisation) | Authors: insufficient under pessimistic, sufficient under intermediate, about 8 times demand under optimistic assumptions; several links unconfirmed. No Giza pyramid is analysed. Transfer to Giza assessed under "Steelman" | [S14] |
+| 19 | Gypsum solubility | 2.0 to 2.5 g/L at 25 C | unverifiable at primary level | The Wikipedia page says this and cites Bock 1961; Bock was not opened. Stays flagged secondary | [S13] |
+
+Spot-checks of arithmetic only (inputs not re-sourced): cubic-law coefficient 8.2e5 and the three leak rows in 4.6 reproduce; piston-gap flow 0.28 m3/s reproduces; ram delivered fraction 0.22 and about 3000 m3 spilled reproduce; drain flow 0.158 m3/s reproduces.
+
+### Working
+
+**W1. Pit bottom.** Petrie levels: roof -1056 in (-26.82 m); floor 140 to 198 in below roof (-30.38 to -31.85 m, the lower figure at the pit mouth); ledge of the ancient square shaft -1321 in (-33.55 m); small shaft about 40 in more (-34.57 m). 36 ft = 10.97 m, 38 ft = 11.58 m, 30 ft = 9.14 m.
+
+| reading | bottom (m rel. base) | m asl if base = 60 |
+|---|---|---|
+| Petrie's roughly 30 ft from the pit-mouth floor | -41.0 | 19.0 |
+| Perring's own sum: 90 ft 8 in to ceiling + 11 ft 6 in chamber + 36 ft shaft = 138 ft 2 in | -42.1 | 17.9 |
+| 36 ft below Petrie's general floor level (-30.38) | -41.4 | 18.6 |
+| 36 to 38 ft below Petrie's pit-mouth floor level (-31.85) | -42.8 to -43.4 | 17.2 to 16.6 |
+| outlier, not adopted: 36 to 38 ft below the bottom of the pre-1837 pit | -45.5 to -46.2 | 14.5 to 13.8 |
+
+Two independent sources (Petrie's rough depth and Perring's sum) converge on -41 to -42 m; adopted range -41 to -43 m. Perring's sum treats the chamber floor as the datum for the 36 ft, and it puts the shaft bottom (138 ft 2 in below base) level with the 1838 high Nile (137 ft 3 in) and 8 to 17 ft above the water he measured in plateau shafts and wells (146 to 155 ft), so the shaft was in all likelihood dry when dug. His stated reasoning: Nile in 1838 137 ft below the base, plus 10 ft for the rise of the river bed = 147 ft; less 90 ft 8 in, 11 ft 6 in and 10 ft for a possible chamber = about 35 ft still to sink; hence a 36 ft shaft. So the shaft was dug specifically to reach the supposed ancient river level and found nothing.
+
+**W2. Suction.** Target elevations (m rel. base): end of descending passage -30.00; lowest floor at pit mouth -31.85; pre-1837 pit bottom -34.57. Lift = base + target - water level.
+
+| water level (m asl) | to passage end, base 60 (58 to 62) | to floor at pit mouth, base 60 (58 to 62) |
+|---|---|---|
+| Lehner low water, 7 | 23.0 (21.0 to 25.0) | 21.1 (19.1 to 23.1) |
+| Younes low water, 10 | 20.0 (18.0 to 22.0) | 18.1 (16.1 to 20.1) |
+| Lehner flood peak, 14 | 16.0 (14.0 to 18.0) | 14.1 (12.1 to 16.1) |
+| Younes flood peak, 17 | 13.0 (11.0 to 15.0) | 11.1 (9.1 to 13.1) |
+| modern table, 15 to 17 | 15.0 to 13.0 (11.0 to 17.0) | 13.1 to 11.1 (9.1 to 15.1) |
+
+Theoretical limit 10.1 m; practical 6 to 8 m. Every case for the passage end exceeds the theoretical limit. The pump must be re-primed at least to the passage end (the well-shaft mouth is higher still), so that is the governing column. The floor-at-pit-mouth column drops below 10.1 m only where the base is taken as 58 m and the water as 17 m. All of this assumes the plateau rock water table follows the river; Perring's 1838 measurement shows it lagging 18 ft below the flood in a shaft near the Second Pyramid.
+
+**W3. Pressure, force, volumes, strokes, work (item e).**
+
+- Head from passage end (-30.00 m) to gallery roof at the high end (42.90 + 8.6 = 51.50 m): 81.5 m; 9.81 x 81.5 = 799 kPa.
+- Piston force, A = 1.266 m2: 9.81 x 76.5 x 1.266 = 950 kN (piston at -25 m, water at +51.5); 9.81 x 46.66 x 1.266 = 580 kN (water at +21.66); 9.81 x 51.5 x 1.266 = 640 kN (piston at 0). With Perring's 1.258 m2: 944, 576, 636 kN.
+- Gallery: horizontal length 42.90 m at the floor (1883.6 in x cos 26 deg 16 min 40 s), 41.87 m at the roof, mean 42.38 m. Vertical section: slot between ramps 1.05 x 0.60; lower wall 2.09 wide; seven laps each stepping in about 3 in a side to 1.05 at the top; total height 8.6 m. Taking the lower wall as 2.29 m above the ramps gives 13.87 m2 (588 m3); taking 2.29 m as including the ramp gives 13.50 m2 (572 m3); 8.5 to 8.7 m height gives 582 to 594 m3; eight equal bands (the first-pass simplification) gives 559 m3. Adopt 585 +/-25; the first-pass 570 +/-40 is consistent.
+- Volumes INCLUDED in "about 860 m3": Grand Gallery 570 to 585; Queen's Chamber 164 + niche 5; Queen's Chamber passage 51; ascending passage above the granite plugs 44.5; well shaft 25 to 30 (whole length; about 13 of it is above base level). Sum 860 to 875 m3 (848 to 863 m3 above base level).
+- Volumes EXCLUDED: the Subterranean Chamber (about 300 m3), the two subterranean passages and the descending passage itself (133 m3), which are taken as already full; the antechamber and King's Chamber (assumed dry); relieving chambers; the Big Void.
+- Not allowed for: air trapped in the Queen's Chamber if its shafts are closed, as the hypothesis says. About 113 m3 of air above the doorway top would be compressed to about 30 m3 at 382 kPa absolute with the gallery full, so the chamber would accept about 83 m3 less water than its geometric volume. This lowers the fill volume by about 10 percent and does not rescue the stroke count.
+- Swept volume: whole passage 105.2 m x 1.266 = 133 m3; part below base level 30.0 / sin 26 deg 31 min 23 s = 67.2 m, 85 m3.
+- Strokes: 860 / 133 = 6.5; 860 / 85 = 10.1; gallery alone 570 / 133 = 4.3 (585 / 133 = 4.4). Four strokes deliver 533 m3 (full length) or 340 m3 (below base).
+- Work from a base-level reservoir: 9.81 x (570 x 36.2 + 167 x 23.9 + 51 x 22.2 + 45 x 13.6 + 12 x 10.8) = 260 MJ (72 kWh). Adding the lift of 845 m3 from -30 m: 509 MJ; from -46 m: 641 MJ; from -43 m: 616 MJ.
+
+**W4. Cross-check of base elevation and flood level.** Perring's 1838 high Nile is 41.8 m below the base, i.e. about 18.2 m asl if the base is 60. Lehner's flood peak of 13.5 to 14 m plus his 4 to 5 m of later sediment gives 17.5 to 19 m. The two agree, which supports both the 60 m base and Lehner's lower flood level; it sits less comfortably with a 17 m Old Kingdom flood. This is my own consistency check, not a published one.
+
+### Verdict changes
+
+| claim | first-pass verdict | after verification | reason |
+|---|---|---|---|
+| C7, aquifer drawn up through the pit | contradicted | contradicted (unchanged); margin narrower on levels, evidence stronger on the pit | Higher published flood level trims the lift by 3 m but not below the limit for the passage. New: the deep pit is an 1837-38 excavation through solid rock that met no water or cavity; before 1837 the pit stopped about 2.7 m below the floor |
+| C8, wet sand and a fluctuating level | partly supported as observation, not as inference | observation more credible than stated; inference weaker than stated | The 1838 shaft bottom is about 0 to 4 m above today's water table (within the base-elevation uncertainty), so modern groundwater is a possible cause beside rain. Because the shaft is 19th-century and was in all likelihood dry when dug, its wetness cannot show an ancient link |
+| C12, limestone "is not permeable" | contradicted for the measured stone | contradicted as an absolute; through-flow permeability unmeasured and possibly low | Only porosity and absorption were measured. Sub-micron pore sizes suggest a tight matrix. The first pass's wording was stronger than its evidence |
+| C1, external reservoir | contradicted (Nile-fed); no evidence (any water) | unchanged, with the absence-of-evidence nature of the second half made explicit | Flood peak may be 43 rather than 46 m below base; a small rain-fed supply is not excluded by water budget, but nothing on the ground supports it |
+| C6, four strokes | contradicted by geometry (one narrow exception) | unchanged; the exception is narrower | Gallery alone needs 4.3 to 4.5 full-length strokes |
+| C13, Cadman | no evidence beyond a small-scale demonstration | unchanged | No primary data found; the second-hand account contains two checkable errors |
+| C2 to C5, C9 to C11, C14, C15 | as stated | not re-examined beyond the numbers above | - |
+
+### Steelman: the strongest published material in favour, and what it does and does not show
+
+1. **Perched water does occur on the plateau today.** Geophysics interprets perched water at about 22 to 48 m elevation on the higher ground toward Menkaure, tens of metres above the regional table [S4]. This shows the rock sequence can hold water above the regional level. It is modern, attributed to runoff and urban leakage, not drilled, and nothing of the kind is reported at Khufu. A perched body above about 20 m asl under Khufu in the Old Kingdom would overturn C7; none is documented.
+2. **A higher Old Kingdom flood.** Younes et al. 2024 put the flood about 3 m higher than Lehner [S18]. That is the most favourable published level; it still leaves the water about 43 m below the base.
+3. **Rain reaches the pit.** Petrie saw water in the pit after heavy rain ran down the entrance passage [S2], and the Giza floodplain cores record wadi outwash from torrential rain on the plateau (dated 1150 to 900 BCE) [S18]. Runoff on the plateau is real; the documented drainage runs south-east toward the central wadi, away from Khufu [S3][S18].
+4. **Hydraulic works at other pyramids are now argued in peer-reviewed journals.** Landreau et al. 2024 (Saqqara) [S14] and Landreau, Piton and Hemeda 2026 (two possible dams at Dahshur, crest near 60 m asl, reservoir about 230,000 m3, catchment 3.2 km2) [S20]. Both rest on remote sensing and re-reading of known structures; neither has been excavated or dated, and the Saqqara paper has drawn published criticism (a critique and an authors' reply in Ancient Egypt magazine were seen in search results only and were not opened). Drumm's statement that reservoir-fed shafts exist at the Step and Red pyramids therefore has a published, though unconfirmed, counterpart for the reservoir part only.
+5. **Does the Saqqara argument transfer to Giza?** No, for specific reasons. It depends on (a) a wadi catchment upslope of the monument (15 km2, perhaps 400 km2 by an unconfirmed diversion), (b) a dam whose outlet (48.7 m asl) is at or above the level of the works, (c) a rock-cut trench holding water at 40 to 52 m asl beside the pyramid, and (d) a 7 m square, 28 m deep shaft that fills by gravity under 10 to 20 m of head. At Khufu there is no reported dam, moat or trench; the natural drainage leads away from the pyramid; the only known entry is 17 m above the pavement; and the hypothesis needs water raised 51.5 m above the base through passages about 1.05 x 1.2 m, not let in by gravity. What transfers is only the general proposition that Old Kingdom builders could impound runoff, which the 14 m high Sadd el-Kafara dam already shows [S3]. The authors themselves raise other pyramids only as a question.
+6. **Water budget alone does not exclude a rain-fed supply.** With the rainfall and runoff ranges used in [S14] (50 to 150 mm per year at 1 to 3 percent; storms of 50 mm at up to 30 percent), one square kilometre yields 500 to 4500 m3 per year, or 15,000 m3 in one storm, against about 860 m3 per gallery fill. This is my arithmetic, it assumes a catchment and a basin for which there is no evidence at Khufu, and it says nothing about holding the water on karstified limestone.
+7. **The stone may be tighter than its porosity suggests.** See C12. This favours the hypothesis on matrix seepage and leaves joints as the deciding unknown.
+8. **Cadman.** Nothing quantitative could be added in his favour: no primary write-up was reachable, and the second-hand account has no pressures, flows, heads or scale.
+
+Not found, after searching specifically for it: any published report of an Old Kingdom canal, basin, cistern, lining, lacustrine sediment or rain-harvesting work at or above the level of Khufu's pavement.
+
+### Rows not re-checked in this pass
+
+Their flags are the first pass's and should not be read as confirmed twice: Queen's Chamber plan and heights and its passage (Petrie Sec. 40-41 did not come through); King's Chamber shaft sizes, angles and blockages (Sec. 56); antechamber grooves (Sec. 49); granite plug lengths; base side; pavement thickness and casing-joint figure in Petrie ch. 6 (the 0.5 mm is confirmed only via [S5]); Aigner 1983; Ghoneim 2024 and the 2023 abstract; all hydraulic-ram rows from [S11]; the air-flow, leak-off and ram calculations of 4.5 to 4.7 beyond the arithmetic spot-checks; Herodotus, Pliny, the Edgars and the rock trench as reported in C1 and C8.
+
+### Still open after this pass
+
+1. Water table under the Great Pyramid itself, today and in the Old Kingdom (AECOM 2010, Cairo University 2008 and El-Arabi 2013 reports not located).
+2. Datum of Perring's 36 to 38 ft and the present state of the pit; a facsimile check of Vyse vol. 1 pp. 222-224 and vol. 2 Appendix pp. 113-114, 148-149.
+3. Which Old Kingdom flood level to adopt (13.5 to 14 or 17 m asl); Lehner 2020 remains unread.
+4. A surveyed elevation for the pavement (the +/-2 m dominates several margins).
+5. Measured permeability of Giza core stone, Tura lining stone and gypsum mortar; joint apertures inside the gallery and chambers.
+6. Position of the well-shaft mouth in the descending passage (it limits the useful stroke further).
+7. Cadman's own write-up and any measurements.
+8. The published critique of Landreau et al. 2024 and the authors' reply (not opened).
