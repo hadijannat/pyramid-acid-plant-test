@@ -138,7 +138,7 @@ The cinematic HUD is one card: step id and title; the claim as stated (`claims.j
 
 ### 5.4 Scene state
 
-Each step carries `scene: {interior: bool, weather: 'clear' | 'storm'}`. Look and weather cross-fade when they change between steps. A Python test asserts that `interior` is true exactly when the step's camera target (the first keyframe's) lies inside the masonry's bounding box, so the flag cannot drift from the camera.
+Each step carries `scene: {interior: bool, weather: 'clear' | 'storm'}`. Look and weather cross-fade when they change between steps. A Python test asserts that `interior` is true exactly when the step's first keyframe *position* lies inside the bounding box of the masonry and bedrock together, so the flag cannot drift from the camera. (Amended 2026-10-10 while planning: the first wording tested the target, which puts the underground steps, whose camera stands inside the bedrock looking at the Subterranean Chamber, on the wrong side; and S01, whose camera stands outside looking at a point under the plateau, on the wrong side too.)
 
 ### 5.5 Controls
 
