@@ -1,6 +1,7 @@
 """Tests for the geometry: the gmsh session, the builders of the spaces, the model and its self-checks."""
 import dataclasses
 import functools
+import math
 
 import gmsh
 import pytest
@@ -8,6 +9,7 @@ import pytest
 from pyramid import ledger
 from pyramid.geometry import frame
 from pyramid.geometry import model
+from pyramid.geometry import spaces
 
 occ = gmsh.model.occ
 
@@ -118,3 +120,126 @@ def test_package_reexports_the_model():
     import pyramid.geometry as geometry
     assert (geometry.build, geometry.Variants, geometry.Model, geometry.Space) == (
         model.build, model.Variants, model.Model, model.Space)
+
+
+def test_ledger_holds_the_grotto_placeholder():
+    side = led().quantities["grotto.plan_side"]
+    assert (side.value, side.unit, side.verified) == (1.04, "m", False)
+    assert side.note.startswith("assumed for the model")
+
+
+C45 = math.cos(math.radians(45))
+
+
+@pytest.mark.parametrize("end, expected", [
+    # rising to the north: the far end is 7.071 m north and 7.071 m up
+    ((0.0, 10 * C45, 10 * C45), (-0.5, -0.3536, 0.0, 0.5, 7.0711, 7.4246)),
+    # rising to the south: the mirror image, with the roof still above the floor
+    ((0.0, -10 * C45, 10 * C45), (-0.5, -7.0711, 0.0, 0.5, 0.3536, 7.4246)),
+    # falling to the south: the floor ends 7.071 m down, the roof starts 0.354 m above the start
+    ((0.0, -10 * C45, -10 * C45), (-0.5, -7.4246, -7.0711, 0.5, 0.0, 0.3536)),
+])
+def test_duct_runs_from_start_to_end_with_its_roof_up(gm, end, expected):
+    tag = spaces._duct((0.0, 0.0, 0.0), end, 1.0, 0.5)  # 10 m long, 1 m wide, 0.5 m high
+    assert box(tag) == pytest.approx(expected, abs=1e-3)
+    assert volume(tag) == pytest.approx(10 * 1.0 * 0.5)
+
+
+def test_duct_can_be_centred_on_its_axis_and_lengthened(gm):
+    # a vertical shaft 4 m deep, 0.6 m east-west by 0.8 m north-south, about its axis
+    shaft = spaces._duct((0.0, 0.0, 0.0), (0.0, 0.0, -4.0), 0.6, 0.8, centred=True)
+    assert box(shaft) == pytest.approx((-0.3, -0.4, -4.0, 0.3, 0.4, 0.0), abs=1e-3)
+    # a level duct 2 m long heading north, carried 0.5 m further
+    longer = spaces._duct((1.0, 2.0, 3.0), (1.0, 4.0, 3.0), 1.0, 1.0, extend=0.5)
+    assert box(longer) == pytest.approx((0.5, 2.0, 3.0, 1.5, 4.5, 4.0), abs=1e-3)
+
+
+def test_descending_passage_runs_between_its_two_surveyed_ends(gm):
+    q = led().q
+    tag = spaces.descending_passage(led())
+    x0, y0, z0, x1, y1, z1 = box(tag)
+    slope, height = math.radians(q("dp.angle")), q("dp.height")
+    # the floor at the entrance (y 101.854, z 16.972) and at the south end (y 7.772, z -29.997)
+    assert y1 == pytest.approx(q("dp.entrance.y"), abs=0.08)
+    assert z1 - height * math.cos(slope) == pytest.approx(q("dp.entrance.z"), abs=0.08)
+    assert y0 + height * math.sin(slope) == pytest.approx(q("dp.south_end.y"), abs=0.08)
+    assert z0 == pytest.approx(q("dp.south_end.z"), abs=0.08)
+    assert (y1, z0) == pytest.approx((101.854, -29.9974), abs=1e-3)
+    assert (x0, x1) == pytest.approx((6.7624, 7.8172), abs=1e-3)  # 1.055 m wide about the passage plane
+    assert volume(tag) == pytest.approx(133.10, abs=0.05)  # 105.155 m x 1.0549 m x 1.1999 m
+    low, high = led().rng("dp.volume")
+    assert low <= volume(tag) <= high
+
+
+def test_subterranean_chamber_has_its_ramped_floor_its_recess_and_its_entrance_passage(gm):
+    q = led().q
+    tag = spaces.subterranean_chamber(led())
+    x0, y0, z0, x1, y1, z1 = box(tag)
+    assert (x0, x1) == pytest.approx((-6.3754, 7.6912), abs=1e-3)  # 14.067 m east-west about x = 0.658
+    assert y0 == pytest.approx(-9.2952, abs=1e-3)  # the south wall
+    assert y1 == pytest.approx(q("dp.south_end.y"), abs=0.08)  # the passage starts at the foot of the slope
+    assert z1 == pytest.approx(q("sub.roof_centre.z"), abs=1e-3)  # the roof, -26.822
+    assert z0 == pytest.approx(-31.8516, abs=1e-3)  # the floor of the recess, 198 in under the roof
+    assert volume(tag) == pytest.approx(330.25, abs=0.2)  # 317.94 chamber + 5.32 recess + 6.99 passage
+    low, high = led().rng("sub.volume")
+    assert low <= volume(tag) <= high
+
+
+def test_pit_before_1837_and_as_excavated(gm):
+    q = led().q
+    old, dug = spaces.pit(led()), spaces.pit(led(), excavated=True)
+    # set diagonally at the centre of the chamber's east half: 1.9 m sides, 2.687 m corner to corner
+    assert box(old)[:2] == pytest.approx((2.8310, -6.4997), abs=1e-3)
+    assert box(old)[3:5] == pytest.approx((5.5180, -3.8127), abs=1e-3)
+    assert (box(old)[2], box(old)[5]) == pytest.approx((q("pit.original_bottom.z"), -31.8516), abs=1e-3)
+    assert box(dug)[2] == pytest.approx(q("pit.excavated_bottom.z"), abs=1e-3)  # -42.1
+    assert volume(old) == pytest.approx(8.136, abs=0.01)  # 1.9^2 x 1.702 + 1.4^2 x 1.017
+    assert volume(dug) == pytest.approx(22.895, abs=0.01)  # 1.9^2 x 1.702 + 1.4^2 x 8.547
+    for key, value in (("pit.volume", volume(old)), ("pit.volume_excavated", volume(dug))):
+        low, high = led().rng(key)
+        assert low <= value <= high
+
+
+def test_south_passage_runs_from_the_chamber_wall_to_its_surveyed_dead_end(gm):
+    q = led().q
+    tag = spaces.south_passage(led())
+    x0, y0, z0, x1, y1, z1 = box(tag)
+    assert y0 == pytest.approx(q("sp.south_end.y"), abs=1e-3)  # -25.705
+    assert z0 == pytest.approx(q("sp.north_end.z"), abs=1e-3)  # -30.963, the floor at the chamber
+    assert y1 == pytest.approx(-9.2952, abs=0.01)  # the chamber's south wall; the tilted roof edge is 7 mm past it
+    assert (x0, x1) == pytest.approx((6.8765, 7.5965), abs=1e-3)
+    assert volume(tag) == pytest.approx(8.862, abs=0.01)  # 16.41 m x 0.72 m x 0.75 m
+    low, high = led().rng("sp.volume")
+    assert low <= volume(tag) <= high
+
+
+def test_well_shaft_joins_the_gallery_foot_to_the_descending_passage(gm):
+    q = led().q
+    x, corners = spaces._well_axis(led())
+    assert x == pytest.approx(5.0116, abs=1e-3)
+    # Haase's first three segments end "a good metre above base"; the fourth runs down at 45 deg
+    assert corners[3] == pytest.approx((37.0829, 1.3802), abs=1e-3)
+    assert corners[4] == pytest.approx((18.3445, -17.3582), abs=1e-3)
+    # the closing segment lands on the surveyed lower mouth, within 10 percent of Haase's 9.50 m
+    assert corners[5] == pytest.approx((13.9057, -26.2648), abs=1e-3)
+    assert math.dist(corners[4], corners[5]) == pytest.approx(q("ws.seg5.length"), rel=0.10)  # 9.95 m
+    tag = spaces.well_shaft(led())  # joining parts that do not touch would raise
+    x0, y0, z0, x1, y1, z1 = box(tag)
+    assert z1 == pytest.approx(q("ws.top.z") + q("ws.upper_side"), abs=1e-3)  # 22.41, roof of the level run
+    assert x1 == pytest.approx(q("gg.north_end.x") - q("gg.slot_width") / 2, abs=1e-3)  # 6.767, the slot
+    assert (x0, y1) == pytest.approx((4.6566, 40.7766), abs=1e-3)
+    assert (y0, z0) == pytest.approx((13.552, -26.618), abs=0.01)  # the link at the lower mouth
+    assert volume(tag) == pytest.approx(29.26, abs=0.05)  # 29.68 m3 of parts less 0.42 m3 where they overlap
+    low, high = led().rng("ws.volume")
+    assert low <= volume(tag) <= high  # 23.0 to 34.6
+
+
+def test_grotto_wraps_the_lined_stretch_of_the_well_shaft(gm):
+    q = led().q
+    tag = spaces.grotto(led())
+    x0, y0, z0, x1, y1, z1 = box(tag)
+    assert ((x0 + x1) / 2, (y0 + y1) / 2) == pytest.approx((5.0116, 37.0829), abs=1e-3)  # on the shaft's axis
+    assert (x1 - x0, y1 - y0) == pytest.approx((1.04, 1.04), abs=1e-3)
+    assert (z0, z1) == pytest.approx((3.530, 5.530), abs=1e-3)  # standing on the 2.15 m rock-cut stretch
+    assert z1 < q("site.bedrock_z_at_well_shaft")  # under the rock surface Haase gives, 5.70 m
+    assert volume(tag) == pytest.approx(1.04 * 1.04 * 2.0)
