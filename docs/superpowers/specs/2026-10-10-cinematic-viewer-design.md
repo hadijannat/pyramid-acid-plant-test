@@ -138,7 +138,7 @@ The cinematic HUD is one card: step id and title; the claim as stated (`claims.j
 
 ### 5.4 Scene state
 
-Each step carries `scene: {interior: bool, weather: 'clear' | 'storm'}`. Look and weather cross-fade when they change between steps. A Python test asserts that `interior` is true exactly when the step has at least one actor of type `water`, `gas`, `placeholder` or `coat`: a step that draws something inside the stone is an interior step, whether the camera stands inside or outside looking in, and the glass cutaway is what lets an outside camera see it. (Amended 2026-10-11 while planning: two earlier wordings tied the flag to the camera's target and then to its position; both put steps on the wrong side, because many interior steps are filmed from outside the masonry so the whole passage system stays in frame.)
+Each step carries `scene: {interior: bool, weather: 'clear' | 'storm'}`. Look and weather cross-fade when they change between steps. A Python test asserts that `interior` is true exactly when the step has an actor of type `water`, `placeholder` or `coat`, or a `gas` actor whose first space is one of the claim's `spaces`: a step that draws, or acts on, something inside the stone is an interior step, whether the camera stands inside or outside looking in, and the glass cutaway is what lets an outside camera see it; a gas tint that merely persists in a space the claim does not name does not count. The ground plane fades out only while the camera itself is inside the model's bounds, so an interior step filmed from outside keeps its plateau. (Amended 2026-10-11 while planning: two earlier wordings tied the flag to the camera's target and then to its position; both put steps on the wrong side, because many interior steps are filmed from outside the masonry so the whole passage system stays in frame.)
 
 ### 5.5 Controls
 
@@ -239,7 +239,7 @@ Interior steps at `high` on a recent laptop: under 16 ms per frame with bloom an
 
 ## 10. Testing
 
-Python: contract tests for `cycle.json` (every step has a path of 2 to 4 keyframes, `scene.interior` agrees with the masonry bounds, species ids exist, reaction steps carry `reaction`), for `species.yaml`, for the results schema against the fixture and against a deliberately broken copy, and for the marking rule driven through every status. Generated files are regenerated on a clean tree after the code commit, as the README says.
+Python: contract tests for `cycle.json` (every step has a path of 2 to 4 keyframes, `scene.interior` follows the rule of section 5.4, species ids exist, reaction steps carry `reaction`), for `species.yaml`, for the results schema against the fixture and against a deliberately broken copy, and for the marking rule driven through every status. Generated files are regenerated on a clean tree after the code commit, as the README says.
 
 Browser, reviewer-driven through `window.viewer` as in plan A: the prologue plays and the page does not autoplay; the cross-fade occurs on the first interior step; a hydraulic step, a reaction step and a gas step are checked at 1280 px and 375 px; the inspector opens without a camera jump; the cutaway clips masonry only; species labels and hatching appear on S16 and S20; results mode loads the fixture and draws its plots and the outline where claim and result differ; `?quality=low` yields the low tier; `prefers-reduced-motion` cuts instead of flying; no console errors from the page.
 
