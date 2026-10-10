@@ -1,5 +1,6 @@
 """Load and validate the ledger: ledger/parameters.yaml and ledger/claims.yaml."""
-from dataclasses import dataclass
+import math
+from dataclasses import dataclass, fields
 from hashlib import sha256
 from pathlib import Path
 
@@ -107,6 +108,34 @@ def _get(entry: dict, key: str, where: str, check, what: str, default=_ABSENT):
     return entry[key]
 
 
+def _known_keys(entry: dict, where: str, kind: type) -> None:
+    """LedgerError if the entry has a key that is no field of `kind`: a misspelt key must not read as an absent one."""
+    unknown = [repr(key) for key in entry if key not in {field.name for field in fields(kind)}]
+    if unknown:
+        raise LedgerError(f"{where}: unknown key {', '.join(unknown)}")
+
+
+def _number(entry: dict, key: str, where: str, default=_ABSENT) -> float:
+    """entry[key] as a finite number. Text that Python reads as a number, but YAML does not, gets the form to write."""
+    raw = entry.get(key)
+    try:
+        looks_numeric = isinstance(raw, str) and math.isfinite(float(raw))
+    except ValueError:
+        looks_numeric = False
+    if looks_numeric:  # PyYAML reads 1e-3 and 1.0e5 as text
+        mantissa, e, exponent = raw.strip().lower().partition("e")
+        mantissa += "" if "." in mantissa else ".0"
+        exponent = ("+" if exponent[:1].isdigit() else "") + exponent
+        raise LedgerError(
+            f"{where}: {key} must be a number; write {mantissa}{e}{exponent}: "
+            "YAML needs a decimal point and a signed exponent"
+        )
+    number = float(_get(entry, key, where, _is_number, "a number", default))
+    if not math.isfinite(number):
+        raise LedgerError(f"{where}: {key} must be finite")
+    return number
+
+
 def _entries(raw: bytes, name: str) -> list[dict]:
     """The items of one ledger file, which must be a YAML list of mappings."""
     try:
@@ -124,15 +153,16 @@ def _load_quantities(raw: bytes) -> dict[str, Quantity]:
         key = _get(entry, "id", f"parameters.yaml entry {number}", _is_text, "text")
         if key in quantities:
             raise LedgerError(f"duplicate id: {key}")
+        _known_keys(entry, key, Quantity)
         source = _get(entry, "source", key, _is_text, "text").strip()
         if not source:
             raise LedgerError(f"{key}: missing source")
         unit = _get(entry, "unit", key, _is_text, "text")
         if unit not in UNITS:
             raise LedgerError(f"{key}: unknown unit {unit!r}")
-        value = float(_get(entry, "value", key, _is_number, "a number"))
-        low = float(_get(entry, "low", key, _is_number, "a number", value))
-        high = float(_get(entry, "high", key, _is_number, "a number", value))
+        value = _number(entry, "value", key)
+        low = _number(entry, "low", key, value)
+        high = _number(entry, "high", key, value)
         if not low <= value <= high:
             raise LedgerError(f"{key}: value {value} outside its range {low} to {high}")
         quantities[key] = Quantity(
@@ -154,6 +184,7 @@ def _load_claims(raw: bytes, quantities: dict[str, Quantity]) -> dict[str, Claim
         key = _get(entry, "id", f"claims.yaml entry {number}", _is_text, "text")
         if key in claims:
             raise LedgerError(f"duplicate id: {key}")
+        _known_keys(entry, key, Claim)
         status = _get(entry, "status", key, _is_text, "text")
         if status not in STATUSES:
             raise LedgerError(f"{key}: unknown status {status!r}")

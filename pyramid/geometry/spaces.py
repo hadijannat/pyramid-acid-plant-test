@@ -301,8 +301,9 @@ def _qc_shaft(led: Ledger, side: str) -> int:
     half, apex = faces(led)
     exit_z = q(f"qcs.{side}.projected_exit.z")
     z = exit_z - (half * (1 - exit_z / apex) - way * knee) * math.tan(slope)
-    # ponytail: the north shaft is drawn straight, in the plane of the passage. It turns west, but the
-    # bend is unsurveyed (see the note on qcs.north.length_to_slab).
+    # ponytail: the north shaft is drawn straight, in its own north-south plane through the middle of
+    # the chamber, 2.34 m west of the plane of the passages. It turns west, but the bend is unsurveyed
+    # (see the note on qcs.north.length_to_slab).
     rest = q(f"qcs.{side}.length_to_slab") - q(f"qcs.{side}.horizontal_length")
     end = (x, knee + way * rest * math.cos(slope), z + rest * math.sin(slope))
     width, height = q("qcs.width"), q(f"qcs.{side}.height")
@@ -431,8 +432,10 @@ def relieving_chambers(led: Ledger) -> int:
     ponytail: Davison's plan, the sum of the five mean heights, the top at the surveyed apex.
     The granite floors between the compartments are left out, because no source read gives a
     level for the four lower ones. Split it when Maragioglio and Rinaldi's plates are read.
-    The block's plan is centred on the King's Chamber. Its underside stands above the chamber
-    ceiling, where the lowest real compartment rests on the beams.
+    The block's plan is centred on the King's Chamber. The block is the five compartments' summed
+    void height hung from the surveyed apex, which leaves a gap of about 9.3 m between its underside
+    and the King's Chamber ceiling. The real structure has no such gap: its compartments and their
+    beam layers are interleaved from the ceiling upward.
     """
     q = led.q
     x = (q("kc.east_wall.x") + q("kc.west_wall.x")) / 2

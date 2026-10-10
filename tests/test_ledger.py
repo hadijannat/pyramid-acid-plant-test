@@ -176,6 +176,24 @@ BROKEN_LEDGERS = [
      "parameters.yaml: not valid YAML"),
     ("claims file is not YAML", PARAMS, "- id: [S12\n",
      "claims.yaml: not valid YAML"),
+    # final review: a misspelt or foreign key must not load as if it were absent
+    ("misspelt high", PARAMS.replace("high: 618.8", "hihg: 618.8"), CLAIMS,
+     "gg.volume: unknown key 'hihg'"),
+    ("range in place of low and high", PARAMS.replace("low: 527.2, high: 618.8", "range: [527.2, 618.8]"), CLAIMS,
+     "gg.volume: unknown key 'range'"),
+    ("misspelt spaces", PARAMS, CLAIMS.replace("  spaces:", "  spcaes:"),
+     "S12: unknown key 'spcaes'"),
+    # PyYAML reads 1e-3 and 1.0e5 as text; the message gives the form it reads as a number
+    ("value without a decimal point", PARAMS.replace("value: 573.0", "value: 1e-3"), CLAIMS,
+     "gg.volume: value must be a number; write 1.0e-3: YAML needs a decimal point and a signed exponent"),
+    ("high without an exponent sign", PARAMS.replace("high: 618.8", "high: 1.0e5"), CLAIMS,
+     "gg.volume: high must be a number; write 1.0e+5: YAML needs a decimal point and a signed exponent"),
+    ("value is infinite", PARAMS.replace("value: 573.0", "value: .inf"), CLAIMS,
+     "gg.volume: value must be finite"),
+    ("high is infinite", PARAMS.replace("high: 618.8", "high: .inf"), CLAIMS,
+     "gg.volume: high must be finite"),
+    ("low is not a number", PARAMS.replace("low: 527.2", "low: .nan"), CLAIMS,
+     "gg.volume: low must be finite"),
 ]
 
 
@@ -188,6 +206,14 @@ def test_load_rejects_a_broken_ledger(tmp_path, params, claims, message):
     assert (params, claims) != (PARAMS, CLAIMS)  # the edit above really changed the text
     with pytest.raises(ledger.LedgerError, match=re.escape(message)):
         ledger.load(write_ledger(tmp_path, params, claims))
+
+
+@pytest.mark.parametrize(("written", "advised"), [("1e-3", "1.0e-3"), ("1.0e5", "1.0e+5"), ("-2E7", "-2.0e+7")])
+def test_the_form_the_loader_advises_is_one_yaml_reads_as_the_same_number(tmp_path, written, advised):
+    with pytest.raises(ledger.LedgerError, match=re.escape(f"value must be a number; write {advised}:")):
+        ledger.load(write_ledger(tmp_path, PARAMS.replace("value: 60", f"value: {written}")))
+    led = ledger.load(write_ledger(tmp_path, PARAMS.replace("value: 60", f"value: {advised}")))
+    assert led.q("site.base_elevation_asl") == float(written)
 
 
 def test_omitted_spaces_default_to_an_empty_tuple(tmp_path):
@@ -326,6 +352,13 @@ SPACES = {
     "relieving_chambers", "big_void", "north_face_corridor",
     "paper_kings_chamber", "paper_queens_chamber", "paper_lower_chamber",
 }
+
+
+def test_the_reworded_criterion_of_s09_carries_its_dated_note():
+    criterion = real().claims["S09"].criterion
+    assert criterion.startswith("Conditional on the external reservoir of S08 existing at or above the level")
+    assert "[Reworded 2026-10-10, before any solver run: the first wording, 'Fails unless" in criterion
+    assert criterion.endswith("tested S10's pump rather than this step.]")
 
 
 def test_claims_hold_all_71_ids_once_and_in_order():

@@ -84,10 +84,12 @@ export function createPanel(root, claims, cycle, { onJump, onClose }) {
     const quantities = el('ul', 'quantities');
     for (const quantity of space.quantities) {
       const item = el('li');
-      item.append(
-        el('code', '', quantity.id), ' ', withUnit(quantity.value, quantity.unit),
-        el('div', 'source', quantity.source),
-      );
+      item.append(el('code', '', quantity.id), ' ', withUnit(quantity.value, quantity.unit));
+      // an assumed or computed figure must not pass for one read in its source: tag it and say why
+      if (!quantity.verified) {
+        item.append(' ', el('span', 'unverified', 'not verified at source'), el('div', 'note', quantity.note));
+      }
+      item.append(el('div', 'source', quantity.source));
       quantities.append(item);
     }
 

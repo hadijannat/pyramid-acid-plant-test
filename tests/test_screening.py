@@ -132,6 +132,11 @@ CHEMISTRY_CASES = [
     ("t0.temperature_rise", {}, 1.82),  # row 28: in 573 m3
     ("t0.temperature_rise", {"gg.volume": 550.0}, 1.89),  # row 28: in 550 m3
     ("t0.oxygen_supply_time", {}, 2.7 * YEAR),  # row 33: full batch, the favourable transfer coefficient
+    # row 32: the 158 mol of oxygen dissolved in 573 m3 against the 6660 mol a full batch needs, nothing crossing
+    ("t0.sulfate_yield_day", {"chem.kl_surface": 0.0}, 158.0 / 6660.0),
+    ("t0.sulfate_yield_day", {"chem.kl_surface": 0.0, "gg.volume": 550.0}, 152.0 / 6660.0),  # row 32: 152 mol in 550 m3
+    # rows 32, 33 and 16: and one day (86400 s) through 27.6 m2 at 1e-5 m/s from water holding 0.276 mol/m3
+    ("t0.sulfate_yield_day", {}, (158.0 + 1e-5 * 0.276 * 27.6 * 86400) / 6660.0),
     ("t0.gas_phase_lifetime", {}, 2.8e17),  # row 30
 ]
 
@@ -139,6 +144,15 @@ CHEMISTRY_CASES = [
 @pytest.mark.parametrize(("result_id", "overrides", "expected"), CHEMISTRY_CASES)
 def test_chemistry_quantities_match_09(led, result_id, overrides, expected):
     assert at(led, result_id, overrides) == pytest.approx(expected, rel=0.02)
+
+
+def test_sulfate_yield_reads_what_s20_depends_on_and_never_exceeds_the_whole_batch(led, results):
+    made = results["t0.sulfate_yield_day"]
+    assert made.unit == "1" and made.inputs == results["t0.oxygen_supply_time"].inputs
+    # S20 is the claim this yield decides, and the viewer shows a result only if the claim names every input
+    assert set(made.inputs) <= set(led.claims["S20"].depends_on)
+    # a surface stirred hard enough to bring the oxygen in within the day cannot oxidise more than the batch
+    assert at(led, "t0.sulfate_yield_day", {"chem.kl_surface": 1.0}) == 1.0
 
 
 ELECTRICITY_CASES = [
@@ -245,17 +259,18 @@ def test_claim_deciding_quantities_match_09(led, result_id, overrides, expected)
 
 ALL_IDS = GEOMETRY_AND_HYDRAULICS + [
     "t0.so2_inventory", "t0.acid_ceiling_sulfur", "t0.acid_ceiling_oxygen", "t0.temperature_rise",
-    "t0.oxygen_supply_time", "t0.gas_phase_lifetime", "t0.lightning_strikes", "t0.relaxation_limestone",
-    "t0.relaxation_granite", "t0.skin_depth_resonance", "t0.skin_depth_lightning", "t0.piezo_displacement",
-    "t0.piezo_intensity", "t0.leaf_sound_level", "t0.required_sound_level", "t0.slab_source_level",
-    "t0.shaft_link_loss", "t0.vein_contrast", "t0.ram_delivered_fraction", "t0.pit_clearance",
-    "t0.boiling_margin", "t0.gypsum_saturation_loss", "t0.hcl_partial_pressure", "t0.arrhenius_gain",
+    "t0.oxygen_supply_time", "t0.sulfate_yield_day", "t0.gas_phase_lifetime", "t0.lightning_strikes",
+    "t0.relaxation_limestone", "t0.relaxation_granite", "t0.skin_depth_resonance", "t0.skin_depth_lightning",
+    "t0.piezo_displacement", "t0.piezo_intensity", "t0.leaf_sound_level", "t0.required_sound_level",
+    "t0.slab_source_level", "t0.shaft_link_loss", "t0.vein_contrast", "t0.ram_delivered_fraction",
+    "t0.pit_clearance", "t0.boiling_margin", "t0.gypsum_saturation_loss", "t0.hcl_partial_pressure",
+    "t0.arrhenius_gain",
 ]
 
 
-def test_all_36_results_are_present_ordered_and_well_formed(led, results):
+def test_all_37_results_are_present_ordered_and_well_formed(led, results):
     assert list(results) == ALL_IDS
-    assert len(results) == 36
+    assert len(results) == 37
     for r in results.values():
         assert math.isfinite(r.low) and math.isfinite(r.high), r.id
         assert r.low <= r.value <= r.high, r.id
@@ -314,6 +329,14 @@ def test_hydraulic_verdicts_follow_the_research(decided, claim, status, number):
     assert basis.endswith(".") and ". " not in basis  # one sentence
 
 
+def test_s09_states_the_comparison_its_criterion_makes(decided):
+    status, basis = decided["S09"]
+    assert status == "conditional"
+    for text in ("No reservoir or inlet is evidenced", "21.7 m below the top of the well shaft",
+                 "51.5 m below the Gallery roof", "the pump of S10 must supply"):
+        assert text in basis, basis
+
+
 def test_every_claim_gets_a_verdict_and_a_claim_without_a_rule_keeps_its_status(led, decided):
     assert list(decided) == list(led.claims)
     assert len(decided) == 71
@@ -339,12 +362,14 @@ def test_hydraulic_rules_can_go_either_way(led, results):
 OTHER_VERDICTS = [
     ("S07", "fail", "76 dB"),  # 04 C6 and 05 C7: short by many orders of magnitude
     ("S16", "fail", "2.8e+17 s"),  # 03 C3: contradicted on rate and mechanism
-    ("S20", "conditional", "2.7 to 28 years"),  # 03 C5 after verification: oxygen supply, not chemistry, limits
+    ("S20", "fail", "2.5 percent"),  # 03 C5 after verification: oxygen supply limits; the criterion's 5 percent line
     ("S24", "fail", "1.8 K"),  # 03 C7: contradicted at the stated geometry
-    ("S25", "fail", "-52 dB"),  # 05 C12: contradicted by the link budget
+    # 05 C12: contradicted by the link budget; the arrival level is the difference of the two figures as printed
+    ("S25", "fail", "emits 50 dB and the path to the north slab loses 101 dB at 13 kHz, so the signal arrives at -51 dB "
+                    "(-55 dB at the least)"),
     ("S28", "conditional", "2.7e+05 times"),  # 07 C11 after verification: doubtful, not settled
     ("S29", "conditional", "2.7e+05 times"),  # 07 section 4.2 after verification: measurement needed
-    ("S30", "undefined", "23 mol/m3"),  # 03 C14: no target strength or gas fraction stated
+    ("S30", "conditional", "0.023 mol/L"),  # 03 C14 and the criterion's two lines: no gas fraction stated
     ("S31", "undefined", "0.12 times per year"),  # criterion: no required rate stated
     ("E22", "fail", "5.3 ms"),  # 04 C5: contradicted on the function
     ("E38", "conditional", "2.7e+05 times"),
@@ -371,18 +396,29 @@ def test_remaining_rules_can_go_either_way(led, results):
     # 0.2 percent in six hours
     go("S16", "conditional", ["1.0e+07 s", "2e-03 at most"], ["Even at the collision limit"],
        gas_phase_lifetime=(1e7, 1e7, 1e7))
-    go("S20", "pass", ["1.0 to 2.0 h"], ["years", "aerates"], oxygen_supply_time=(3600.0, 1800.0, 7200.0))
-    # the whole range is beyond a day: only an aerated surface would do
-    go("S20", "conditional", ["2.7 to 28 years", "holds only if something aerates the water"], ["part of the ranges"])
-    # the centre is within a day but the high end is not: the ranges decide, and no year figure rounds to 0
-    go("S20", "conditional", ["1.0 to 48.0 h", "over only part of the ranges of the inputs"],
-       ["0.0 to 0 years", "years", "holds only if something aerates"], oxygen_supply_time=(3600.0, 1800.0, 172800.0))
+    # S20 is driven from the ledger in test_s20_evaluates_the_yield_criterion_at_one_day; here only its two lines
+    go("S20", "pass", ["60.0 percent of a full batch (55.0 percent at the least)", "at least the 50 percent"],
+       ["below the 5 percent", "aeration"], sulfate_yield_day=(0.6, 0.55, 0.7))
+    go("S20", "conditional", ["20.0 percent of a full batch (10.0 to 30.0 percent"],
+       ["below the 5 percent", "at least the 50 percent"], sulfate_yield_day=(0.2, 0.1, 0.3))
     go("S24", "pass", ["25.0 K", "at least the 20 K"], ["below the 5 K"], temperature_rise=(25.0, 22.0, 30.0))
     go("S24", "conditional", ["4.0 K", "leaves open"], ["below the 5 K", "at least the 20 K"],
        temperature_rise=(4.0, 3.0, 6.0))
     go("S25", "pass", ["20 dB (16 dB at the least)"], ["short"], shaft_link_loss=(30.0, 28.0, 32.0))
     go("S25", "conditional", ["0 dB (-7 dB at the least)"], ["short", "-0 dB"], shaft_link_loss=(50.0, 45.0, 55.0))
-    go("S30", "fail", ["2 mol/m3"], acid_ceiling_sulfur=(2.0, 1.0, 3.0))
+    # the criterion's lines are 0.05 and 0.005 mol/L, which are 50 and 5 mol/m3
+    go("S30", "conditional", ["0.023 mol/L (0.026 mol/L at most)", "or 0.012 mol/L if its oxygen",
+                              "below the 0.05 mol/L pass line at any gas fraction",
+                              "at least 22 percent (19 percent with every input at its favourable end)",
+                              "the hypothesis states no gas fraction"], ["mol/m3", "even as the pure gas"])
+    go("S30", "fail", ["0.002 mol/L (0.003 mol/L at most)", "below the 0.005 mol/L fail line even as the pure gas",
+                       "the hypothesis states no gas fraction"], ["percent"], acid_ceiling_sulfur=(2.0, 1.0, 3.0))
+    go("S30", "pass", ["0.100 mol/L", "0.060 mol/L if its oxygen", "0.055 mol/L or more", "at least 5 percent"],
+       ["below the 0.05 mol/L pass line", "even as the pure gas"],
+       acid_ceiling_sulfur=(100.0, 90.0, 110.0), acid_ceiling_oxygen=(60.0, 55.0, 65.0))
+    # the sulfur ceiling passes the line but the oxygen-limited one does not: within reach, not assured
+    go("S30", "conditional", ["0.060 mol/L (0.065 mol/L at most)", "can reach the 0.05 mol/L pass line"],
+       ["at any gas fraction"], acid_ceiling_sulfur=(60.0, 55.0, 65.0))
     go("E22", "pass", ["5000.0 ms", "9000 ms"], relaxation_granite=(5.0, 2.0, 9.0))
     go("E22", "conditional", ["50.0 ms", "500 ms"], relaxation_granite=(0.05, 0.01, 0.5))
     go("E38", "pass", ["1.0e-06 times"], vein_contrast=(1e-6, 1e-6, 1e-6))  # any vein would do
@@ -443,6 +479,56 @@ def test_last_six_rules_can_go_either_way(led, results):
        gypsum_saturation_loss=(0.95, 0.9, 1.0))
 
 
+def test_s20_evaluates_the_yield_criterion_at_one_day(led):
+    # The yield and the time to reach 5 percent are both recomputed from the ledger, so they cannot disagree.
+    def at_transfer(value, low, high):
+        return with_quantities(led, {"chem.kl_surface": (value, low, high)})["S20"]
+
+    status, basis = with_quantities(led, {})["S20"]  # the ledger's still surface, 1e-6 to 1e-5 m/s
+    assert status == "fail"
+    for text in ("In one day", "2.5 percent of a full batch (2.1 to 2.8 percent over the ranges of the inputs)",
+                 "below the 5 percent", "the 50 percent", "27 days (22 to 302 days over the ranges of the inputs)",
+                 "to bring the yield to 5 percent", "the hypothesis describes no aeration"):
+        assert text in basis, basis
+
+    # A surface stirred a thousand times harder brings the oxygen for 97 percent or more of the batch in a day.
+    status, basis = at_transfer(1e-2, 1e-2, 1e-2)
+    assert status == "pass"
+    assert "100.0 percent of a full batch (97.0 percent at the least)" in basis and "at least the 50 percent" in basis
+    for text in ("below the 5 percent", "to bring the yield to 5 percent", "aeration"):
+        assert text not in basis, basis
+
+    # Between the two, the centre stays below 5 percent but the favourable end does not.
+    status, basis = at_transfer(1e-4, 1e-5, 5e-4)
+    assert status == "conditional"
+    assert "3.4 percent of a full batch (2.2 to 7.9 percent over the ranges of the inputs)" in basis
+    assert "neither always under the 5 percent line" in basis and "the hypothesis describes no aeration" in basis
+    assert "to bring the yield to 5 percent" not in basis
+
+
+def test_e17_closing_clause_follows_the_clearance_over_todays_water_table(led):
+    table = "hydro.modern_water_table_asl"
+
+    def at_table(level):
+        return with_quantities(led, {table: (level, level, level)})["E17"]
+
+    # the ledger: 60 - 42.1 - 15 = 2.9 m, and 58 - 43.4 - 17 = -2.4 m to 62 - 41 - 14.5 = 6.5 m over the ranges
+    status, basis = with_quantities(led, {})["E17"]
+    assert status == "fail"
+    assert ("a clearance of 2.9 m over today's water table (-2.4 to 6.5 m over the ranges of the inputs), so modern "
+            "groundwater cannot be excluded as the cause of wet fill") in basis
+
+    status, basis = at_table(10.0)  # a water table 4.6 m or more below the shaft's bottom
+    assert status == "fail"
+    assert "a clearance of 7.9 m over today's water table (4.6 to 11.0 m over the ranges of the inputs)" in basis
+    assert "stays clear of today's water table" in basis and "cannot be excluded" not in basis
+
+    status, basis = at_table(25.0)  # a water table above the shaft's bottom at every end
+    assert status == "fail"
+    assert "a clearance of -7.1 m over today's water table (-10.4 to -4.0 m over the ranges of the inputs)" in basis
+    assert "today's groundwater stands in it" in basis and "cannot be excluded" not in basis
+
+
 def test_e18_basis_follows_the_gain_it_is_computed_from(led):
     # The gain is recomputed from the ledger, so that the gains printed in the basis agree with the status.
     def at_level(level):
@@ -493,6 +579,11 @@ def test_pass_needs_the_unfavourable_end_and_fail_the_favourable_end_of_every_ra
     # in the shortest pass, so the step cannot pass.
     go("S16", "conditional", ["1.0e+06 s", "9e-01 at most", "6e-07 at the least"],
        gas_phase_lifetime=(1e6, 1e4, 1e9))
+    # The centre of the yield passes the 50 percent line, but the unfavourable end does not.
+    go("S20", "conditional", ["60.0 percent of a full batch (40.0 to 70.0 percent"],
+       sulfate_yield_day=(0.6, 0.4, 0.7))
+    # The centre of the yield is below the 5 percent line, but the favourable end is not.
+    go("S20", "conditional", ["3.0 percent of a full batch (2.0 to 6.0 percent"], sulfate_yield_day=(0.03, 0.02, 0.06))
     # The centre of the path loss leaves 12 dB at the north slab, but the worst end of the source and loss leaves 3 dB.
     go("S25", "conditional", ["12 dB (3 dB at the least)"], shaft_link_loss=(38.0, 28.0, 45.0))
     near_four = {"strokes_below_junction": (4.5, 4.4, 4.6), "strokes_below_pavement": (4.8, 4.7, 4.9)}
@@ -513,7 +604,7 @@ def test_table_has_one_row_per_result(results):
     lines = screening.table_markdown(results).splitlines()
     assert lines[0] == "| Id | Quantity | Value | Low | High | Unit | Formula |"
     assert lines[1] == "|---|---|---|---|---|---|---|"
-    assert len(lines) == 2 + len(results) == 38
+    assert len(lines) == 2 + len(results) == 39
     assert [line.split(" | ")[0] for line in lines[2:]] == [f"| {id}" for id in results]
     assert all(line.count("|") == 8 for line in lines)
     assert lines[4] == (

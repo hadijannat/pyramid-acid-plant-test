@@ -1,5 +1,6 @@
 """Tests for the exporters: STEP, the gmsh mesh and the viewer's glb."""
 import functools
+import json
 
 import gmsh
 import pytest
@@ -65,6 +66,24 @@ def test_step_file_holds_every_solid(tmp_path):
     assert len(volumes) == 4
     assert [v / volumes[0] for v in volumes] == pytest.approx(
         [1.0, 150.0 / 133.952, 605.0 / 133.952, 2445870.0 / 133.952], rel=1e-6)
+
+
+def test_main_writes_both_step_files_and_the_manifest(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(export, "REPO_ROOT", tmp_path)  # write under a temporary folder, not the repository
+    export.main()
+    out = tmp_path / "results" / "geometry"
+    assert sorted(path.name for path in out.iterdir()) == ["manifest.json", "paper.step", "survey.step"]
+    for name in ("survey.step", "paper.step"):
+        assert (out / name).read_text().startswith("ISO-10303-21"), name
+    manifest = json.loads((out / "manifest.json").read_text())
+    assert set(manifest) == {
+        "case", "timestamp", "commit", "ledger", "python", "versions", "files", "failed_self_checks",
+    }
+    assert (manifest["case"], manifest["ledger"]) == ("geometry", led().digest)
+    assert manifest["files"] == ["survey.step", "paper.step"]
+    assert manifest["failed_self_checks"] == {"survey": [], "paper": []}
+    lines = capsys.readouterr().out.splitlines()
+    assert [line.split(":")[0] for line in lines] == ["survey", "paper"]
 
 
 def test_msh_file_holds_named_groups_of_tetrahedra(tmp_path):

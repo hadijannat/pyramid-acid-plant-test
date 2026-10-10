@@ -123,6 +123,12 @@ button:focus-visible, summary:focus-visible, input:focus-visible {
 .quantities, .involved { margin: 0; padding: 0; list-style: none; font-size: 13px; }
 .quantities li, .involved li { padding: 5px 0; border-top: 1px solid var(--line); }
 .quantities code { color: var(--accent); }
+/* a figure not read in its source: a dashed tag after the value, and the ledger's note under it */
+.unverified {
+  padding: 0 6px; border: 1px dashed var(--conditional); border-radius: 4px;
+  color: var(--conditional); font-size: 11px; white-space: nowrap;
+}
+.note { font-size: 12px; }
 .involved .chip { margin-right: 4px; }
 
 /* verdict badge and step chips: one colour per verdict; "undefined" is an outline with no fill */

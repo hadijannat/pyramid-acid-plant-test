@@ -12,6 +12,8 @@ G = 9.80665  # standard gravity, m/s2
 R = 8.314462618  # molar gas constant, J/mol/K
 O2_PER_SO2 = 0.5  # stoichiometry of SO2 + 1/2 O2 -> SO3: a reaction coefficient, not a measurement
 YEAR = 365.25 * 24 * 3600  # seconds in a year, for readable verdict sentences
+DAY = 24 * 3600  # seconds in a day
+LITRE = 1000  # litres in a cubic metre: a strength in mol/m3 is 1000 times the same strength in mol/L
 
 
 @dataclass(frozen=True)
@@ -323,18 +325,44 @@ def temperature_rise(q):
     return -q["chem.dh_so2_to_sulfate"] * concentration / (q["hydro.water_density"] * q["chem.water_cp"])
 
 
+_OXYGEN = _SO2 + _GG_SECTION + ("gg.angle", "gg.volume", "chem.henry_o2", "chem.o2_fraction", "chem.kl_surface")
+
+
+def _oxygen(q) -> tuple[float, float, float]:
+    """Oxygen for a full batch, in mol: held in the Gallery water, crossing its still surface per second, needed."""
+    dissolved = q["chem.henry_o2"] * q["chem.o2_fraction"] * q["site.atm_pressure"]  # mol/m3 at air saturation
+    surface = _gg_section(q) / math.tan(math.radians(q["gg.angle"]))  # level water in the inclined Gallery
+    return dissolved * q["gg.volume"], q["chem.kl_surface"] * dissolved * surface, O2_PER_SO2 * _so2_moles(q)
+
+
 @quantity(
     "t0.oxygen_supply_time",
     "Time for the oxygen of one full batch to cross the still water surface in the Gallery",
     "s",
     "t = (0.5 n_SO2 - c_O2 V_gallery) / (k_L c_O2 A); c_O2 = H x_O2 p; A = S / tan(a)",
-    _SO2 + _GG_SECTION + ("gg.angle", "gg.volume", "chem.henry_o2", "chem.o2_fraction", "chem.kl_surface"),
+    _OXYGEN,
 )
 def oxygen_supply_time(q):
-    dissolved = q["chem.henry_o2"] * q["chem.o2_fraction"] * q["site.atm_pressure"]  # mol/m3 at air saturation
-    surface = _gg_section(q) / math.tan(math.radians(q["gg.angle"]))  # level water in the inclined Gallery
-    shortfall = O2_PER_SO2 * _so2_moles(q) - dissolved * q["gg.volume"]
-    return shortfall / (q["chem.kl_surface"] * dissolved * surface)
+    held, per_second, needed = _oxygen(q)
+    return (needed - held) / per_second
+
+
+@quantity(
+    "t0.sulfate_yield_day",
+    "Share of a full batch that the oxygen in the Gallery water and across its still surface can oxidise in one day",
+    "1",
+    "y = min(1, (c_O2 V_gallery + k_L c_O2 A t) / (0.5 n_SO2)); c_O2 = H x_O2 p; A = S / tan(a); t = 86400 s",
+    _OXYGEN,
+)
+def sulfate_yield_day(q):
+    held, per_second, needed = _oxygen(q)
+    return min(1.0, (held + per_second * DAY) / needed)  # the oxygen cannot oxidise more than all of the batch
+
+
+def _days_to_yield(q, share: float) -> float:
+    """Days a still surface needs to bring in the oxygen that oxidises `share` of a full batch."""
+    held, per_second, needed = _oxygen(q)
+    return (share * needed - held) / per_second / DAY
 
 
 @quantity(
@@ -638,11 +666,13 @@ def _three_way(holds_at_worst: bool, holds_at_best: bool) -> str:
 
 def _s09(ledger, r):
     # 01 premise P1: the only stated source is a reservoir at pavement level (Z = 0), which nothing on site attests.
-    # No number changes that, so the status is fixed; heights in the ledger are already measured from the pavement.
+    # The criterion passes the step only if such a reservoir or inlet is evidenced, and no number changes that, so
+    # the status is fixed; heights in the ledger are already measured from the pavement.
     return "conditional", (
-        f"Water standing at the level of an assumed pavement-level reservoir stops {ledger.q('ws.top.z'):.1f} m "
-        f"below the top of the well shaft and {ledger.q('gg.roof_top.z'):.1f} m below the Gallery roof, so the "
-        "step holds only with that reservoir and a pump."
+        "No reservoir or inlet is evidenced on site, so the step is conditional on the reservoir of S08; water "
+        f"standing at the level of a pavement-level reservoir stops {ledger.q('ws.top.z'):.1f} m below the top of "
+        f"the well shaft and {ledger.q('gg.roof_top.z'):.1f} m below the Gallery roof, a head that the pump of S10 "
+        "must supply."
     )
 
 
@@ -704,25 +734,32 @@ def _s16(ledger, r):
 
 
 def _s20(ledger, r):
-    time = r["t0.oxygen_supply_time"]
-    status = "pass" if time.high <= 86400 else "conditional"  # 86400 s: within a day counts as quickly
-    if time.value >= YEAR:
-        needs = f"{time.value / YEAR:.1f} to {time.high / YEAR:.0f} years"
-    else:
-        needs = f"{time.value / 3600:.1f} to {time.high / 3600:.1f} h"
+    made = r["t0.sulfate_yield_day"]
+    # Judgement call: the criterion asks for the yield "within one stated cycle" and the hypothesis states no cycle
+    # time, so the yield is taken after one day, this rule's reading of "quickly".
+    # The criterion's lines: pass from 50 percent, fail below 5 percent.
+    status = _three_way(made.low >= 0.50, made.high >= 0.05)
+    head = (
+        "In one day, taken as the cycle because the hypothesis states none, the oxygen dissolved in the Gallery water "
+        f"and the oxygen crossing its still surface can oxidise {100 * made.value:.1f} percent of a full batch "
+    )
     if status == "pass":
-        outcome = "within the day that counts as quick"
-    elif time.low > 86400:
-        outcome = (
-            "so quick oxidation holds only if something aerates the water, which the hypothesis does not describe"
+        return status, head + (
+            f"({100 * made.low:.1f} percent at the least), at least the 50 percent from which the criterion passes "
+            "the claim."
         )
-    else:
-        outcome = (
-            "so quick oxidation holds over only part of the ranges of the inputs, and the hypothesis describes no "
-            "aeration that would make up the rest"
+    spread = f"({100 * made.low:.1f} to {100 * made.high:.1f} percent over the ranges of the inputs), "
+    if status == "conditional":
+        return status, head + spread + (
+            "which over those ranges is neither always under the 5 percent line below which the criterion fails "
+            "the claim nor always at the 50 percent from which it passes it, and the hypothesis describes no aeration."
         )
-    return status, (
-        f"The oxygen for a full batch needs {needs} to cross the still water surface in the Gallery, {outcome}."
+    # Every end of the ranges is below 5 percent after one day, so every one of these waits is longer than a day.
+    wait, shortest, longest = _evaluate(ledger, made.inputs, lambda q: _days_to_yield(q, 0.05))
+    return status, head + spread + (
+        "below the 5 percent under which the criterion fails the claim and the 50 percent from which it passes it; a "
+        f"still surface would need {wait:.0f} days ({shortest:.0f} to {longest:.0f} days over the ranges of the "
+        "inputs) to bring the yield to 5 percent, and the hypothesis describes no aeration."
     )
 
 
@@ -743,26 +780,49 @@ def _s24(ledger, r):
 
 def _s25(ledger, r):
     source, loss = r["t0.slab_source_level"], r["t0.shaft_link_loss"]
-    received = source.value - loss.value
     worst = source.low - loss.high  # least favourable: weakest source, longest loss
     # Judgement call: the criterion's source (05 section 5.5) allows ten times the measured coefficient, 20 dB more.
     # source.high is not used: it lends the slab a microscope-scale granite value 500 times the bulk one.
     best = source.value + 20 - loss.low
     status = "pass" if worst >= 10 else "conditional" if best >= 10 else "fail"
+    # The arrival level is printed as the difference of the two figures as printed, so that the sentence adds up.
+    emitted, lost = round(source.value), round(loss.value)
     return status, (
-        f"A slab driven at the air-breakdown field emits {source.value:.0f} dB and the path to the north slab "
-        f"loses {loss.value:.0f} dB at {ledger.q('ac.link_frequency') / 1000:.0f} kHz, so the signal arrives at "
-        f"{round(received)} dB ({round(worst)} dB at the least), against the 10 dB needed above a 0 dB noise floor."
+        f"A slab driven at the air-breakdown field emits {emitted} dB and the path to the north slab "
+        f"loses {lost} dB at {ledger.q('ac.link_frequency') / 1000:.0f} kHz, so the signal arrives at "
+        f"{emitted - lost} dB ({round(worst)} dB at the least), against the 10 dB needed above a 0 dB noise floor."
     )
 
 
 def _s30(ledger, r):
     sulfur, oxygen = r["t0.acid_ceiling_sulfur"], r["t0.acid_ceiling_oxygen"]
-    status = "fail" if sulfur.high < 5 else "undefined"  # 5 mol/m3 is the fail line, 0.005 mol/L
-    return status, (
-        "The hypothesis gives no gas fraction or target strength, and pure sulfur dioxide at one atmosphere caps "
-        f"the product at {sulfur.value:.0f} mol/m3, or {oxygen.value:.0f} mol/m3 if its oxygen comes with the same "
-        "draw of air."
+    passes, fails = 0.05 * LITRE, 0.005 * LITRE  # the criterion's lines, 0.05 and 0.005 mol/L, in mol/m3
+    # Judgement call: the favourable end is the sulfur ceiling at its highest (a chamber of the pure gas, with the
+    # oxygen from elsewhere); the unfavourable end is the oxygen-limited ceiling at its lowest.
+    status = _three_way(oxygen.low >= passes, sulfur.high >= fails)
+    head = (
+        f"Pure sulfur dioxide at one atmosphere caps the product at {sulfur.value / LITRE:.3f} mol/L "
+        f"({sulfur.high / LITRE:.3f} mol/L at most), or {oxygen.value / LITRE:.3f} mol/L if its oxygen comes with "
+        "the same draw of air, "
+    )
+    if status == "fail":
+        return status, head + (
+            "below the 0.005 mol/L fail line even as the pure gas, and the hypothesis states no gas fraction."
+        )
+    if status == "pass":
+        against = (
+            f"and the latter stays at {oxygen.low / LITRE:.3f} mol/L or more over the ranges of the inputs, at or "
+            "above the 0.05 mol/L pass line"
+        )
+    elif sulfur.high < passes:
+        against = "below the 0.05 mol/L pass line at any gas fraction"
+    else:
+        against = "which can reach the 0.05 mol/L pass line but does not at the unfavourable end of the ranges"
+    return status, head + against + (
+        "; the ceiling scales with the sulfur dioxide fraction of the chamber gas, so the product stays above the "
+        f"0.005 mol/L fail line only if that fraction is at least {100 * fails / sulfur.value:.0f} percent "
+        f"({100 * fails / sulfur.high:.0f} percent with every input at its favourable end), and the hypothesis "
+        "states no gas fraction."
     )
 
 
@@ -847,10 +907,18 @@ def _e17(ledger, r):
     clearance = r["t0.pit_clearance"]
     # The evidence counts only if the old pit reached the water, so a clearance of zero or less is what passes.
     status = _three_way(clearance.high <= 0, clearance.low <= 0)
-    today = (
-        ledger.q("site.base_elevation_asl") + ledger.q("pit.excavated_bottom.z")
-        - ledger.q("hydro.modern_water_table_asl")
+    # the bottom of the shaft sunk in 1837 and 1838 over today's water table, with its range from the ledger's own
+    today, lowest, highest = _evaluate(
+        ledger,
+        ("site.base_elevation_asl", "pit.excavated_bottom.z", "hydro.modern_water_table_asl"),
+        lambda q: q["site.base_elevation_asl"] + q["pit.excavated_bottom.z"] - q["hydro.modern_water_table_asl"],
     )
+    if lowest > 0:
+        modern = "so it stays clear of today's water table over those ranges"
+    elif highest <= 0:
+        modern = "so today's groundwater stands in it"
+    else:
+        modern = "so modern groundwater cannot be excluded as the cause of wet fill"
     reached = {
         "pass": "it reached a documented water table",
         "conditional": "it may have reached a documented water table",
@@ -858,9 +926,9 @@ def _e17(ledger, r):
     }[status]
     return status, (
         f"The pit as it stood before 1837 had a clearance of {clearance.value:.1f} m over the Old Kingdom flood "
-        f"peak ({clearance.low:.1f} m at the least), so {reached}, while the shaft sunk in 1837 and 1838 ends "
-        f"{today:.1f} m above today's water table, near enough that modern groundwater cannot be excluded as the "
-        "cause of wet fill."
+        f"peak ({clearance.low:.1f} m at the least), so {reached}, while the shaft sunk in 1837 and 1838 has a "
+        f"clearance of {today:.1f} m over today's water table ({lowest:.1f} to {highest:.1f} m over the ranges of "
+        f"the inputs), {modern}."
     )
 
 

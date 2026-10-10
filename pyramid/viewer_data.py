@@ -84,7 +84,8 @@ def claims_payload(ledger: Ledger, results: dict[str, Result],
         name: {
             "label": label,
             "quantities": [
-                {"id": quantity.id, "value": quantity.value, "unit": quantity.unit, "source": quantity.source}
+                {"id": quantity.id, "value": quantity.value, "unit": quantity.unit, "source": quantity.source,
+                 "verified": quantity.verified, "note": quantity.note}
                 for quantity in ledger.quantities.values()
                 if quantity.id.startswith(prefix) and not (skip and quantity.id.startswith(skip))
             ],

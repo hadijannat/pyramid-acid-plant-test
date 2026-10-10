@@ -108,7 +108,9 @@ def test_space_index_lists_every_header_space_with_its_quantities_and_claims():
     assert list(payload["spaces"]) == SURVEY_SPACES + PAPER_SPACES
     assert payload["spaces"]["grand_gallery"] == {
         "label": "Grand Gallery",
-        "quantities": [{"id": "gg.volume", "value": 573.0, "unit": "m3", "source": TABLE_F}],
+        "quantities": [
+            {"id": "gg.volume", "value": 573.0, "unit": "m3", "source": TABLE_F, "verified": False, "note": "computed"},
+        ],
         "claims": ["S12"],
     }
     # a shaft gets the quantities both shafts share and its own, never the other shaft's
@@ -131,6 +133,17 @@ def test_real_claims_payload_covers_all_71_claims_and_is_strict_json():
     assert "S12" in gallery["claims"]
     assert any(quantity["id"] == "gg.volume" for quantity in gallery["quantities"])
     json.dumps(payload, allow_nan=False)
+    # the inspector must be able to tell an assumed figure from a sourced one
+    for space in payload["spaces"].values():
+        for quantity in space["quantities"]:
+            assert set(quantity) == {"id", "value", "unit", "source", "verified", "note"}, quantity["id"]
+            assert isinstance(quantity["verified"], bool) and isinstance(quantity["note"], str), quantity["id"]
+    grotto = {quantity["id"]: quantity for quantity in payload["spaces"]["grotto"]["quantities"]}
+    side = grotto["grotto.plan_side"]
+    assert side["verified"] is False and side["note"].startswith("assumed for the model")
+    # a claim with a verdict shows the figure the verdict was reached on
+    for claim in payload["claims"]:
+        assert claim["status"] == "pending" or claim["numbers"], claim["id"]
 
 
 STEP_IDS = [f"S{i:02d}" for i in range(1, 32)]

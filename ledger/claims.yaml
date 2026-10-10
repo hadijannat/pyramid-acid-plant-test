@@ -89,7 +89,7 @@
   timestamp: "F 00:40:47-00:41:15"
   tier: 0
   piece: 3
-  criterion: "Fails unless the hypothesis specifies an inlet below pavement level or a pump able to deliver at least 51.5 m of head, because a reservoir at pavement level gives no static head for the Queen's Chamber or the Gallery (01 premise P1)."
+  criterion: "Conditional on the external reservoir of S08 existing at or above the level the water is to reach; passes only if such a reservoir or inlet is evidenced. A reservoir at pavement level leaves the water 51.5 m below the Gallery roof, which the pump of S10 must supply (01 premise P1). [Reworded 2026-10-10, before any solver run: the first wording, 'Fails unless the hypothesis specifies an inlet below pavement level or a pump able to deliver at least 51.5 m of head', tested S10's pump rather than this step.]"
   status: pending
   depends_on: [ws.top.z, qc.floor.z, gg.north_end.z, gg.roof_top.z, dp.south_end.z, hydro.water_density]
   spaces: [subterranean_chamber, south_passage, well_shaft]

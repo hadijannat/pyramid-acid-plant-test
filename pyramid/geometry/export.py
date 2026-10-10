@@ -1,6 +1,7 @@
 """Write a built model out: STEP for CAD, a gmsh mesh for solvers, glb for the viewer.
 
-Call these inside the frame.session() that built the model, with that model alone in the session.
+Call the writers inside the frame.session() that built the model, with that model alone in the session.
+Run as `uv run python -m pyramid.geometry.export` to write the STEP files of both levels.
 """
 from pathlib import Path
 
@@ -8,7 +9,11 @@ import gmsh
 import numpy as np
 import trimesh
 
-from pyramid.geometry.model import Model
+from pyramid import REPO_ROOT
+from pyramid.geometry.frame import session
+from pyramid.geometry.model import Model, build, check
+from pyramid.ledger import load
+from pyramid.provenance import write_manifest
 
 occ = gmsh.model.occ
 
@@ -77,3 +82,24 @@ def write_msh(model: Model, path: Path, size: float) -> None:
     gmsh.option.setNumber("Mesh.MeshSizeMax", size)
     gmsh.model.mesh.generate(3)
     gmsh.write(str(path))
+
+
+def main() -> None:
+    """Build and check both levels; write results/geometry/{survey.step,paper.step,manifest.json}."""
+    ledger = load()
+    out_dir = REPO_ROOT / "results" / "geometry"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    failed = {}
+    for level in ("survey", "paper"):
+        with session():  # one model per session: write_step writes everything in the session
+            model = build(ledger, level)
+            failed[level] = check(model, ledger)
+            write_step(model, out_dir / f"{level}.step")
+        outcome = "; ".join(failed[level]) or "every self-check passed"
+        print(f"{level}: {(out_dir / f'{level}.step').relative_to(REPO_ROOT)}, {len(model.spaces)} spaces, {outcome}")
+    write_manifest(out_dir, "geometry", ledger, {"files": [f"{level}.step" for level in failed],
+                                                 "failed_self_checks": failed})
+
+
+if __name__ == "__main__":
+    main()
