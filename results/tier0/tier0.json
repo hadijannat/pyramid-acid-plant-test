@@ -637,7 +637,7 @@
     },
     "S11": {
       "status": "fail",
-      "basis": "A pump at the foot of the Descending Passage would have to lift water 5.9 m beyond the suction limit at the Old Kingdom flood peak, and 0.4 m beyond it at the most favourable documented levels."
+      "basis": "The suction margin of a pump at the foot of the Descending Passage is -5.9 m at the Old Kingdom flood peak and -0.4 m at the most favourable documented levels, against the 0 m it needs to draw."
     },
     "S12": {
       "status": "conditional",
@@ -657,7 +657,7 @@
     },
     "S16": {
       "status": "fail",
-      "basis": "Even at the collision limit, sulfur dioxide lasts 2.8e+17 s (8.8e+09 years) against oxygen with no catalyst, so a 6 h pass converts a fraction of 9e-14 at most."
+      "basis": "At the collision limit, sulfur dioxide lasts 2.8e+17 s (8.8e+09 years) against oxygen with no catalyst, so a pass of 10 min to 6 h converts a fraction of 9e-14 at most and 2e-15 at the least."
     },
     "S17": {
       "status": "pending",
@@ -677,7 +677,7 @@
     },
     "S21": {
       "status": "pass",
-      "basis": "Even if the first of the 4 claimed fills took the whole heat of the largest batch, it would warm by 7.3 K and stay 72.7 K below boiling (62.3 K at the least), so nothing boils over with or without the dilute-acid step."
+      "basis": "If the first of the 4 claimed fills took the whole heat of the largest batch, it would warm by 7.3 K and leave a margin of 72.7 K below boiling (62.3 K at the least), so nothing boils over with or without the dilute-acid step."
     },
     "S22": {
       "status": "pending",
@@ -693,7 +693,7 @@
     },
     "S25": {
       "status": "fail",
-      "basis": "A slab driven at the air-breakdown field emits 50 dB and the path to the north slab loses 101 dB at 13 kHz, so the signal arrives at -52 dB, 62 dB short of 10 dB above a 0 dB noise floor."
+      "basis": "A slab driven at the air-breakdown field emits 50 dB and the path to the north slab loses 101 dB at 13 kHz, so the signal arrives at -52 dB (-55 dB at the least), against the 10 dB needed above a 0 dB noise floor."
     },
     "S26": {
       "status": "pending",
@@ -785,7 +785,7 @@
     },
     "E17": {
       "status": "fail",
-      "basis": "The pit as it stood before 1837 ended 11.4 m above the Old Kingdom flood peak (5.4 m at the least) and so reached no documented water table, while the shaft sunk in 1837 and 1838 ends 2.9 m above today's water table, near enough that modern groundwater cannot be excluded as the cause of wet fill."
+      "basis": "The pit as it stood before 1837 had a clearance of 11.4 m over the Old Kingdom flood peak (5.4 m at the least), so it reached no documented water table, while the shaft sunk in 1837 and 1838 ends 2.9 m above today's water table, near enough that modern groundwater cannot be excluded as the cause of wet fill."
     },
     "E18": {
       "status": "conditional",
