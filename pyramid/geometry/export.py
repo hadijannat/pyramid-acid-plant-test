@@ -62,11 +62,16 @@ def write_step(model: Model, path: Path) -> None:
 def write_msh(model: Model, path: Path, size: float) -> None:
     """A tetrahedral mesh with elements up to `size` metres, one named physical group per solid.
 
-    ponytail: nothing here makes the mesh conformal. Spaces that overlap one another are meshed
-    on top of each other, and nodes need not be shared where the masonry meets a space.
-    Fragment the model first when a solver needs one conformal mesh.
+    Meshes from scratch on every call, so `size` always applies, and replaces any earlier groups.
+
+    ponytail: nothing here makes the mesh conformal, and it cannot mesh the survey model as it is.
+    Tetrahedral meshing of the survey model fails on its overlapping and coincident boundaries
+    ("Invalid boundary mesh (overlapping facets)"), so fragment the model (occ.fragment) first;
+    the solver plan does. The paper model meshes as it is, each solid on its own.
     """
     occ.synchronize()
+    gmsh.model.mesh.clear()
+    gmsh.model.removePhysicalGroups(gmsh.model.getPhysicalGroups(3))
     for name, tag in _solids(model).items():
         gmsh.model.addPhysicalGroup(3, [tag], name=name)
     gmsh.option.setNumber("Mesh.MeshSizeMax", size)

@@ -77,3 +77,31 @@ def test_msh_file_holds_named_groups_of_tetrahedra(tmp_path):
         tetrahedra, _ = gmsh.model.mesh.getElementsByType(4)  # type 4: 4-node tetrahedron
     assert names == PAPER_NODES
     assert len(tetrahedra) > 100
+
+
+def test_msh_size_applies_on_every_call_and_the_groups_are_replaced(tmp_path):
+    def tetrahedra() -> int:
+        return len(gmsh.model.mesh.getElementsByType(4)[0])  # type 4: 4-node tetrahedron
+
+    with frame.session():
+        export.write_msh(model.build(led(), level="paper"), tmp_path / "fresh.msh", size=10.0)
+        fresh = tetrahedra()
+    with frame.session():
+        built = model.build(led(), level="paper")
+        export.write_glb(built, tmp_path / "paper.glb")  # leaves a default-size surface mesh in the session
+        export.write_msh(built, tmp_path / "coarse.msh", size=30.0)
+        coarse = tetrahedra()
+        export.write_msh(built, tmp_path / "fine.msh", size=10.0)
+        fine = tetrahedra()
+        groups = gmsh.model.getPhysicalGroups(3)
+        names = {gmsh.model.getPhysicalName(3, tag) for _, tag in groups}
+    assert fine > coarse
+    assert fine == fresh  # the same mesh as in a session that never meshed before
+    assert len(groups) == len(PAPER_NODES) and names == PAPER_NODES
+
+
+# Pins the state the solver plan starts from: the survey model has overlapping and coincident boundaries.
+@pytest.mark.xfail(strict=True, raises=Exception, reason="tetrahedral meshing needs the model fragmented (occ.fragment)")
+def test_msh_file_of_the_unfragmented_survey_model(tmp_path):
+    with frame.session():
+        export.write_msh(model.build(led()), tmp_path / "interior.msh", size=40.0)
