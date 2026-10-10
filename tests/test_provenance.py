@@ -1,0 +1,51 @@
+"""Tests for the provenance manifest written beside every generated result."""
+import json
+import platform
+import re
+import subprocess
+from datetime import datetime, timedelta
+
+import numpy
+import yaml
+
+from pyramid import ledger, provenance
+
+
+def test_manifest_records_case_commit_ledger_and_versions():
+    led = ledger.load()
+    record = provenance.manifest("tier0", led)
+    assert record["case"] == "tier0"
+    assert record["ledger"] == led.digest
+    assert re.fullmatch(r"[0-9a-f]{40}", record["commit"])
+    assert datetime.fromisoformat(record["timestamp"]).utcoffset() == timedelta(0)
+    assert record["python"] == platform.python_version()
+    assert set(record["versions"]) == {"numpy", "scipy", "pyyaml", "gmsh", "trimesh", "matplotlib", "pytest"}
+    assert record["versions"]["numpy"] == numpy.__version__
+    assert record["versions"]["pyyaml"] == yaml.__version__
+
+
+def test_manifest_merges_extra():
+    record = provenance.manifest("R1", ledger.load(), {"wall_time_s": 1.5, "mesh": {"cells": 10}})
+    assert record["case"] == "R1"
+    assert record["wall_time_s"] == 1.5
+    assert record["mesh"] == {"cells": 10}
+
+
+def test_commit_is_unknown_outside_a_repository(monkeypatch):
+    def not_a_repository(*args, **kwargs):
+        raise subprocess.CalledProcessError(128, "git")
+
+    monkeypatch.setattr(subprocess, "run", not_a_repository)
+    assert provenance.manifest("tier0", ledger.load())["commit"] == "unknown"
+
+
+def test_write_manifest_writes_manifest_json_into_out_dir(tmp_path):
+    led = ledger.load()
+    out_dir = tmp_path / "results" / "tier0"  # does not exist yet
+    path = provenance.write_manifest(out_dir, "tier0", led, {"note": "screening table"})
+    assert path == out_dir / "manifest.json"
+    written = json.loads(path.read_text())
+    assert written["case"] == "tier0"
+    assert written["ledger"] == led.digest
+    assert written["note"] == "screening table"
+    assert written["versions"]["numpy"] == numpy.__version__
