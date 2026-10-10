@@ -641,7 +641,7 @@
     },
     "S12": {
       "status": "conditional",
-      "basis": "Filling the Gallery alone takes 4.3 strokes if a stroke sweeps the whole Descending Passage, 5.9 if it sweeps the part below the Ascending Passage junction and 6.7 if it sweeps the part below the pavement, against the 4 claimed, and the hypothesis fixes no stroke."
+      "basis": "Filling the Gallery alone takes 4.3 strokes (3.9 to 4.7 over the ranges of the inputs) if a stroke sweeps the whole Descending Passage, 5.9 (5.4 to 6.4) if it sweeps the part below the Ascending Passage junction and 6.7 (6.2 to 7.3) if it sweeps the part below the pavement, against the 4 claimed, and the hypothesis fixes no stroke."
     },
     "S13": {
       "status": "pending",
@@ -665,7 +665,7 @@
     },
     "S18": {
       "status": "conditional",
-      "basis": "Filling the Gallery alone takes 4.3 strokes if a stroke sweeps the whole Descending Passage, 5.9 if it sweeps the part below the Ascending Passage junction and 6.7 if it sweeps the part below the pavement, against the 4 claimed, and the hypothesis fixes no stroke."
+      "basis": "Filling the Gallery alone takes 4.3 strokes (3.9 to 4.7 over the ranges of the inputs) if a stroke sweeps the whole Descending Passage, 5.9 (5.4 to 6.4) if it sweeps the part below the Ascending Passage junction and 6.7 (6.2 to 7.3) if it sweeps the part below the pavement, against the 4 claimed, and the hypothesis fixes no stroke."
     },
     "S19": {
       "status": "pending",
@@ -705,11 +705,11 @@
     },
     "S28": {
       "status": "conditional",
-      "basis": "A vein must conduct 2.7e+05 times better than the rock to carry current 100 m; the best measured specular hematite reaches 3.3e+04 times in 100 ohm m rock and 1.0e+06 times in the most resistive 3000 ohm m rock, earthy red hematite conducts worse than the rock, and no Giza vein has been measured."
+      "basis": "A vein must conduct 2.7e+05 times better than the rock to carry current 100 m; the best measured specular hematite reaches 3.3e+04 times in 100 ohm m rock and 1.0e+06 times in the most resistive 3000 ohm m rock, earthy red hematite reaches 4.2e-02 times at most, and no Giza vein has been measured."
     },
     "S29": {
       "status": "conditional",
-      "basis": "A vein must conduct 2.7e+05 times better than the rock to carry current 100 m; the best measured specular hematite reaches 3.3e+04 times in 100 ohm m rock and 1.0e+06 times in the most resistive 3000 ohm m rock, earthy red hematite conducts worse than the rock, and no Giza vein has been measured."
+      "basis": "A vein must conduct 2.7e+05 times better than the rock to carry current 100 m; the best measured specular hematite reaches 3.3e+04 times in 100 ohm m rock and 1.0e+06 times in the most resistive 3000 ohm m rock, earthy red hematite reaches 4.2e-02 times at most, and no Giza vein has been measured."
     },
     "S30": {
       "status": "undefined",
@@ -789,7 +789,7 @@
     },
     "E18": {
       "status": "conditional",
-      "basis": "The strongest airborne ultrasound engineered, 172 dB, speeds a dry-gas reaction 2.2 times if its barrier is the 150 kJ/mol of the direct gas reaction and 1.5 times if it is 100 kJ/mol, so the doubling the criterion asks for is met only at the higher barrier."
+      "basis": "The strongest airborne ultrasound engineered, 172 dB, speeds a dry-gas reaction 2.2 times if its barrier is the 150 kJ/mol of the direct gas reaction and 1.5 times if it is 100 kJ/mol, so the doubling the criterion asks for is met only at the higher barrier, and over the ranges of the inputs the gain runs from 1.4 to 2.3 times."
     },
     "E19": {
       "status": "pending",
@@ -869,7 +869,7 @@
     },
     "E38": {
       "status": "conditional",
-      "basis": "A vein must conduct 2.7e+05 times better than the rock to carry current 100 m; the best measured specular hematite reaches 3.3e+04 times in 100 ohm m rock and 1.0e+06 times in the most resistive 3000 ohm m rock, earthy red hematite conducts worse than the rock, and no Giza vein has been measured."
+      "basis": "A vein must conduct 2.7e+05 times better than the rock to carry current 100 m; the best measured specular hematite reaches 3.3e+04 times in 100 ohm m rock and 1.0e+06 times in the most resistive 3000 ohm m rock, earthy red hematite reaches 4.2e-02 times at most, and no Giza vein has been measured."
     },
     "E39": {
       "status": "pending",
