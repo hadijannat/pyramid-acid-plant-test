@@ -1,5 +1,7 @@
 """Tests for the ledger loader and for the ledger files themselves."""
+import functools
 import hashlib
+import math
 import re
 from pathlib import Path
 
@@ -191,3 +193,114 @@ def test_load_rejects_a_broken_ledger(tmp_path, params, claims, message):
 def test_omitted_spaces_default_to_an_empty_tuple(tmp_path):
     led = ledger.load(write_ledger(tmp_path, claims=without_line(CLAIMS, "spaces")))
     assert led.claims["S12"].spaces == ()
+
+
+@functools.cache
+def real() -> ledger.Ledger:
+    """The ledger kept in the repository, loaded once per test run."""
+    return ledger.load()
+
+
+def test_real_ledger_has_site_and_exterior():
+    led = real()
+    assert led.q("pyr.base_side") == pytest.approx(230.3475)
+    assert led.quantities["pyr.base_side"].unit == "m"
+    assert led.quantities["pyr.base_side"].note.startswith("9068.8 in")
+    assert led.q("pyr.face_slope") == pytest.approx(51.8667)
+    assert led.q("pyr.height_original") == pytest.approx(146.7104)
+    assert led.q("pyr.height_present") == pytest.approx(137.3759)
+    assert led.rng("pyr.height_present") == (137.3607, 137.3937)
+    assert round(led.q("pyr.height_present"), 1) == 137.4  # the rounded figure the spec uses
+    assert led.q("pyr.passage_plane_x") == pytest.approx(7.2898)
+    assert led.rng("site.base_elevation_asl") == (58.0, 62.0)
+    assert led.q("site.atm_pressure") == 101325.0
+
+
+def test_real_ledger_has_the_lower_system():
+    led = real()
+    assert led.q("dp.entrance.z") == pytest.approx(16.9723)
+    assert led.q("dp.south_end.z") == pytest.approx(-29.9974)
+    assert led.q("dp.width") * led.q("dp.height") == pytest.approx(1.2658, abs=2e-4)
+    # the two surveyed ends of the passage reproduce its stated length and slope
+    run = led.q("dp.entrance.y") - led.q("dp.south_end.y")
+    drop = led.q("dp.entrance.z") - led.q("dp.south_end.z")
+    assert math.hypot(run, drop) == pytest.approx(led.q("dp.length"), abs=0.01)
+    assert math.degrees(math.atan2(drop, run)) == pytest.approx(led.q("dp.angle"), abs=0.02)
+    assert led.q("sub.roof_centre.z") == pytest.approx(-26.8224)
+    assert led.rng("sub.volume") == (200.0, 450.0)
+    assert led.q("pit.original_bottom.z") == pytest.approx(-34.57)
+    assert led.rng("pit.excavated_bottom.z") == (-43.4, -41.0)
+    assert led.q("sp.length") == pytest.approx(16.4084)
+    # Haase's seven well-shaft segments sum to the stated length
+    segments = sum(led.q(f"ws.seg{i}.length") for i in range(7))
+    assert segments == pytest.approx(led.q("ws.length"), abs=0.005)
+
+
+def test_real_ledger_has_the_upper_system():
+    led = real()
+    assert led.q("ap.end.z") == pytest.approx(21.656)
+    # the Ascending Passage ends where the Grand Gallery floor begins
+    for axis in "xyz":
+        assert led.q(f"gg.north_end.{axis}") == led.q(f"ap.end.{axis}")
+    assert led.q("gg.south_end.z") + led.q("gg.height") == pytest.approx(led.q("gg.roof_top.z"), abs=0.01)
+    assert led.rng("gg.volume") == (527.2, 618.8)
+    # the Queen's passage, run south from the Gallery's north wall, closes on the chamber's north wall
+    assert led.q("gg.north_end.y") - led.q("qp.length") == pytest.approx(led.q("qc.north_wall.y"), abs=0.05)
+    # the King's Chamber box reproduces its stated volume, and its walls its stated width
+    box = led.q("kc.length") * led.q("kc.width") * led.q("kc.height")
+    assert box == pytest.approx(led.q("kc.volume"), abs=0.1)
+    low, high = led.rng("kc.volume")
+    assert low < box < high
+    assert led.q("kc.north_wall.y") - led.q("kc.south_wall.y") == pytest.approx(led.q("kc.width"), abs=0.01)
+    assert led.q("qcs.stone_left") == pytest.approx(0.127)
+    assert led.rng("ante.groove_connected_area") == (0.0, 0.002)
+    assert led.rng("bv.length") == (30.0, 40.0)
+    assert led.q("nfc.length") == pytest.approx(9.06)
+
+
+def test_real_ledger_has_the_2018_model():
+    led = real()
+    assert (led.q("paper.height"), led.q("paper.base_side")) == (138.75, 230.0)
+    assert (led.q("paper.eps_real"), led.q("paper.eps_imag")) == (5.0, 0.1)
+    assert (led.q("paper.wavelength_min"), led.q("paper.wavelength_max")) == (200.0, 600.0)
+    keys = ("length", "width", "height", "axis_offset", "centre.z")
+    assert [led.q(f"paper.kc.{k}") for k in keys] == [11.0, 5.0, 11.0, 5.0, 40.5]
+    assert [led.q(f"paper.qc.{k}") for k in keys] == [5.0, 5.0, 6.0, 2.5, 20.8]
+    assert [led.q(f"paper.lower.{k}") for k in keys] == [5.2, 5.6, 4.6, 2.4, -29.8]
+
+
+PREFIXES = {
+    "site", "pyr", "dp", "sub", "pit", "sp", "ws", "grotto", "ap", "qp", "qc", "qcs", "gg", "ante",
+    "kc", "kcs", "rc", "bv", "nfc", "paper", "hydro", "chem", "em", "ac", "plateau",
+}
+
+
+def test_real_ledger_has_the_physical_inputs():
+    led = real()
+    assert led.q("hydro.water_density") == pytest.approx(998.2)
+    assert led.q("hydro.claimed_strokes") == 4.0
+    assert led.rng("hydro.modern_water_table_asl") == (14.5, 17.0)
+    assert led.q("chem.dh_so2_to_sulfate") == pytest.approx(-326700.0)
+    # the stored reaction enthalpy follows from the stored formation enthalpies
+    derived = led.q("chem.dfh_sulfate_aq") - led.q("chem.dfh_so2") - led.q("chem.dfh_h2o_liquid")
+    assert derived == pytest.approx(led.q("chem.dh_so2_to_sulfate"), abs=50.0)
+    # so does the barrier of the direct gas reaction SO2 + O2 -> SO3 + O; its low end is 05's illustrative 100 kJ/mol
+    barrier = led.q("chem.dfh_so3") + led.q("chem.dfh_o_atom") - led.q("chem.dfh_so2")
+    assert barrier == pytest.approx(150220.0)
+    assert led.q("ac.arrhenius_barrier") == pytest.approx(barrier)
+    assert led.rng("ac.arrhenius_barrier") == pytest.approx((100000.0, barrier))
+    assert led.rng("em.granite_piezo_d") == (1.4e-15, 7.0e-13)
+    assert led.q("em.flash_density") == pytest.approx(2.0e-7)
+    assert led.quantities["em.flash_density"].unit == "1/m2/yr"
+    assert led.q("ac.absorption_40khz") == pytest.approx(1.318)
+    assert led.q("plateau.vein_area") == pytest.approx(0.03)
+
+
+def test_real_ledger_is_complete_and_annotated():
+    led = real()
+    assert {key.split(".")[0] for key in led.quantities} >= PREFIXES
+    for quantity in led.quantities.values():
+        assert re.fullmatch(r"[a-z][a-z0-9_]*(\.[a-z0-9_]+)+", quantity.id), quantity.id
+        assert "research/" in quantity.source, quantity.id
+        if not quantity.verified:
+            assert quantity.note.strip(), f"{quantity.id}: an unverified figure must say why in its note"
