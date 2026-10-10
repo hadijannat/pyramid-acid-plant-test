@@ -136,3 +136,9 @@ button:focus-visible, summary:focus-visible, input:focus-visible {
 .status-undefined { background: transparent; color: var(--undefined); border: 1px dashed var(--undefined); }
 #step-list { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip[aria-current="step"] { box-shadow: 0 0 0 2px var(--text); }
+
+/* On a phone the page scrolls, so scrollIntoView would put the inspector's top under the fixed notice (28 px).
+   Not on a wide window: there the panel scrolls inside its own box, below the notice. */
+@media (max-width: 760px) {
+  #space-card { scroll-margin-top: 36px; }
+}

@@ -64,6 +64,8 @@ export function createPanel(root, claims, cycle, { onJump, onClose }) {
       el('p', 'statement', claim.statement),
       el('p', 'meta', `Source ${claim.timestamp} · Tier ${claim.tier} · Piece ${claim.piece} · ${claim.subsystem}`),
       el('p', 'basis', claim.basis),
+      // a pending claim's figures are screening numbers, not a verdict; say so over the table
+      ...(claim.status === 'pending' && claim.numbers.length ? [el('h3', '', 'Screening figures, no verdict')] : []),
       numbers,
       el('p', 'criterion', `Criterion: ${claim.criterion}`),
     );
@@ -97,6 +99,7 @@ export function createPanel(root, claims, cycle, { onJump, onClose }) {
       item.append(chips.has(id) ? chip(id) : el('span', `chip status-${claim.status}`, id), ' ', claim.statement);
       involved.append(item);
     }
+    if (!space.claims.length) involved.append(el('li', '', 'None in the ledger.'));
 
     spaceCard.replaceChildren(
       head,
