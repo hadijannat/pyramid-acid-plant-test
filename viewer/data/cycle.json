@@ -1,0 +1,3651 @@
+{
+ "notice": "Animation of the claim. Not a simulation result.",
+ "steps": [
+  {
+   "id": "S01",
+   "title": "Hydrogen sulfide rises under the plateau",
+   "duration": 5.0,
+   "camera": {
+    "position": [
+     260,
+     20,
+     100
+    ],
+    "target": [
+     0,
+     -10,
+     0
+    ]
+   },
+   "actors": []
+  },
+  {
+   "id": "S02",
+   "title": "Satellite pyramids convert it to sulfur dioxide",
+   "duration": 5.0,
+   "camera": {
+    "position": [
+     300,
+     120,
+     -60
+    ],
+    "target": [
+     0,
+     40,
+     0
+    ]
+   },
+   "actors": []
+  },
+  {
+   "id": "S03",
+   "title": "Sulfur dioxide fills the King's Chamber",
+   "duration": 6.0,
+   "camera": {
+    "position": [
+     45,
+     52,
+     30
+    ],
+    "target": [
+     3,
+     44,
+     11
+    ]
+   },
+   "actors": [
+    {
+     "type": "gas",
+     "path": [
+      "kings_chamber"
+     ],
+     "color": "#d9c24a"
+    },
+    {
+     "type": "placeholder",
+     "kind": "gas_inlet",
+     "at": [
+      2.5,
+      41,
+      11
+     ],
+     "label": "Gas inlet: not specified by the hypothesis"
+    }
+   ]
+  },
+  {
+   "id": "S04",
+   "title": "Ground currents charge the flat top",
+   "duration": 6.0,
+   "camera": {
+    "position": [
+     300,
+     60,
+     80
+    ],
+    "target": [
+     0,
+     60,
+     0
+    ]
+   },
+   "actors": [
+    {
+     "type": "field",
+     "slice": "fields/R2_333m.png"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "kings_chamber"
+     ],
+     "color": "#d9c24a"
+    }
+   ]
+  },
+  {
+   "id": "S05",
+   "title": "Operators wait for a storm",
+   "duration": 4.0,
+   "camera": {
+    "position": [
+     -280,
+     90,
+     100
+    ],
+    "target": [
+     0,
+     45,
+     0
+    ]
+   },
+   "actors": [
+    {
+     "type": "gas",
+     "path": [
+      "kings_chamber"
+     ],
+     "color": "#d9c24a"
+    }
+   ]
+  },
+  {
+   "id": "S06",
+   "title": "Lightning strikes the top",
+   "duration": 6.0,
+   "camera": {
+    "position": [
+     300,
+     120,
+     90
+    ],
+    "target": [
+     0,
+     105,
+     0
+    ]
+   },
+   "actors": [
+    {
+     "type": "lightning"
+    },
+    {
+     "type": "field",
+     "slice": "fields/R1_230m.png"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "kings_chamber"
+     ],
+     "color": "#d9c24a"
+    }
+   ]
+  },
+  {
+   "id": "S07",
+   "title": "Granite emits ultrasound",
+   "duration": 5.0,
+   "camera": {
+    "position": [
+     40,
+     52,
+     25
+    ],
+    "target": [
+     5,
+     46,
+     8
+    ]
+   },
+   "actors": [
+    {
+     "type": "gas",
+     "path": [
+      "kings_chamber"
+     ],
+     "color": "#d9c24a"
+    }
+   ]
+  },
+  {
+   "id": "S08",
+   "title": "Reservoir water enters the Subterranean Chamber",
+   "duration": 6.0,
+   "camera": {
+    "position": [
+     200,
+     15,
+     -40
+    ],
+    "target": [
+     7,
+     -8,
+     -55
+    ]
+   },
+   "actors": [
+    {
+     "type": "water",
+     "space": "subterranean_chamber",
+     "from": 0.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "pit",
+     "from": 0.0,
+     "to": 1.0
+    },
+    {
+     "type": "placeholder",
+     "kind": "reservoir",
+     "at": [
+      7,
+      0,
+      -125
+     ],
+     "label": "Reservoir: not specified by the hypothesis"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "kings_chamber"
+     ],
+     "color": "#d9c24a"
+    }
+   ]
+  },
+  {
+   "id": "S09",
+   "title": "Water rises in the well shaft",
+   "duration": 6.0,
+   "camera": {
+    "position": [
+     110,
+     5,
+     -5
+    ],
+    "target": [
+     5,
+     -5,
+     -20
+    ]
+   },
+   "actors": [
+    {
+     "type": "water",
+     "space": "subterranean_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "pit",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "south_passage",
+     "from": 0.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "descending_passage",
+     "from": 0.0,
+     "to": 0.64
+    },
+    {
+     "type": "water",
+     "space": "well_shaft",
+     "from": 0.0,
+     "to": 0.58
+    },
+    {
+     "type": "placeholder",
+     "kind": "valve",
+     "at": [
+      1,
+      -35,
+      5
+     ],
+     "label": "Lower one-way valve: not specified by the hypothesis"
+    },
+    {
+     "type": "placeholder",
+     "kind": "valve",
+     "at": [
+      6,
+      -27,
+      -14
+     ],
+     "label": "Well-shaft one-way valve: not specified by the hypothesis"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "kings_chamber"
+     ],
+     "color": "#d9c24a"
+    }
+   ]
+  },
+  {
+   "id": "S10",
+   "title": "Pump push stroke",
+   "duration": 8.0,
+   "camera": {
+    "position": [
+     170,
+     20,
+     -20
+    ],
+    "target": [
+     7,
+     5,
+     -35
+    ]
+   },
+   "actors": [
+    {
+     "type": "water",
+     "space": "subterranean_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "pit",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "south_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "descending_passage",
+     "from": 0.64,
+     "to": 0.0
+    },
+    {
+     "type": "water",
+     "space": "well_shaft",
+     "from": 0.58,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "ascending_passage",
+     "from": 0.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_passage",
+     "from": 0.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_chamber",
+     "from": 0.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "grand_gallery",
+     "from": 0.0,
+     "to": 0.25
+    },
+    {
+     "type": "placeholder",
+     "kind": "pump",
+     "at": [
+      7.3,
+      3,
+      -72
+     ],
+     "label": "Pump: not specified by the hypothesis"
+    },
+    {
+     "type": "placeholder",
+     "kind": "valve",
+     "at": [
+      1,
+      -35,
+      5
+     ],
+     "label": "Lower one-way valve: not specified by the hypothesis"
+    },
+    {
+     "type": "placeholder",
+     "kind": "valve",
+     "at": [
+      6,
+      -27,
+      -14
+     ],
+     "label": "Well-shaft one-way valve: not specified by the hypothesis"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "kings_chamber"
+     ],
+     "color": "#d9c24a"
+    }
+   ]
+  },
+  {
+   "id": "S11",
+   "title": "Pump return stroke",
+   "duration": 6.0,
+   "camera": {
+    "position": [
+     135,
+     -5,
+     -30
+    ],
+    "target": [
+     5,
+     -12,
+     -44
+    ]
+   },
+   "actors": [
+    {
+     "type": "water",
+     "space": "subterranean_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "pit",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "south_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "descending_passage",
+     "from": 0.0,
+     "to": 0.64
+    },
+    {
+     "type": "water",
+     "space": "well_shaft",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "ascending_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "grand_gallery",
+     "from": 0.25,
+     "to": 0.25
+    },
+    {
+     "type": "placeholder",
+     "kind": "pump",
+     "at": [
+      7.3,
+      3,
+      -72
+     ],
+     "label": "Pump: not specified by the hypothesis"
+    },
+    {
+     "type": "placeholder",
+     "kind": "valve",
+     "at": [
+      1,
+      -35,
+      5
+     ],
+     "label": "Lower one-way valve: not specified by the hypothesis"
+    },
+    {
+     "type": "placeholder",
+     "kind": "valve",
+     "at": [
+      6,
+      -27,
+      -14
+     ],
+     "label": "Well-shaft one-way valve: not specified by the hypothesis"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "kings_chamber"
+     ],
+     "color": "#d9c24a"
+    }
+   ]
+  },
+  {
+   "id": "S12",
+   "title": "Four activations fill the Grand Gallery",
+   "duration": 8.0,
+   "camera": {
+    "position": [
+     150,
+     30,
+     -10
+    ],
+    "target": [
+     7,
+     15,
+     -28
+    ]
+   },
+   "actors": [
+    {
+     "type": "water",
+     "space": "subterranean_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "pit",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "south_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "descending_passage",
+     "from": 0.64,
+     "to": 0.64
+    },
+    {
+     "type": "water",
+     "space": "well_shaft",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "ascending_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "grand_gallery",
+     "from": 0.25,
+     "to": 1.0
+    },
+    {
+     "type": "placeholder",
+     "kind": "pump",
+     "at": [
+      7.3,
+      3,
+      -72
+     ],
+     "label": "Pump: not specified by the hypothesis"
+    },
+    {
+     "type": "placeholder",
+     "kind": "valve",
+     "at": [
+      1,
+      -35,
+      5
+     ],
+     "label": "Lower one-way valve: not specified by the hypothesis"
+    },
+    {
+     "type": "placeholder",
+     "kind": "valve",
+     "at": [
+      6,
+      -27,
+      -14
+     ],
+     "label": "Well-shaft one-way valve: not specified by the hypothesis"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "kings_chamber"
+     ],
+     "color": "#d9c24a"
+    }
+   ]
+  },
+  {
+   "id": "S13",
+   "title": "Gallery level is lowered",
+   "duration": 6.0,
+   "camera": {
+    "position": [
+     95,
+     48,
+     5
+    ],
+    "target": [
+     6,
+     38,
+     -10
+    ]
+   },
+   "actors": [
+    {
+     "type": "water",
+     "space": "subterranean_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "pit",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "south_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "descending_passage",
+     "from": 0.64,
+     "to": 0.64
+    },
+    {
+     "type": "water",
+     "space": "well_shaft",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "ascending_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "grand_gallery",
+     "from": 1.0,
+     "to": 0.8
+    },
+    {
+     "type": "placeholder",
+     "kind": "drain",
+     "at": [
+      7.3,
+      19,
+      -43
+     ],
+     "label": "Gallery drain: not specified by the hypothesis"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "kings_chamber"
+     ],
+     "color": "#d9c24a"
+    }
+   ]
+  },
+  {
+   "id": "S14",
+   "title": "Air is drawn down the King's Chamber shafts",
+   "duration": 6.0,
+   "camera": {
+    "position": [
+     150,
+     70,
+     10
+    ],
+    "target": [
+     4,
+     60,
+     0
+    ]
+   },
+   "actors": [
+    {
+     "type": "water",
+     "space": "subterranean_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "pit",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "south_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "descending_passage",
+     "from": 0.64,
+     "to": 0.64
+    },
+    {
+     "type": "water",
+     "space": "well_shaft",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "ascending_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "grand_gallery",
+     "from": 0.8,
+     "to": 0.6
+    },
+    {
+     "type": "placeholder",
+     "kind": "drain",
+     "at": [
+      7.3,
+      19,
+      -43
+     ],
+     "label": "Gallery drain: not specified by the hypothesis"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "kings_chamber"
+     ],
+     "color": "#d9c24a"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "kc_shaft_north"
+     ],
+     "color": "#bcd6e6"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "kc_shaft_south"
+     ],
+     "color": "#bcd6e6"
+    }
+   ]
+  },
+  {
+   "id": "S15",
+   "title": "Gas is drawn through the grooves",
+   "duration": 6.0,
+   "camera": {
+    "position": [
+     42,
+     50,
+     12
+    ],
+    "target": [
+     6,
+     45,
+     7
+    ]
+   },
+   "actors": [
+    {
+     "type": "water",
+     "space": "subterranean_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "pit",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "south_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "descending_passage",
+     "from": 0.64,
+     "to": 0.64
+    },
+    {
+     "type": "water",
+     "space": "well_shaft",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "ascending_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "grand_gallery",
+     "from": 0.6,
+     "to": 0.4
+    },
+    {
+     "type": "placeholder",
+     "kind": "drain",
+     "at": [
+      7.3,
+      19,
+      -43
+     ],
+     "label": "Gallery drain: not specified by the hypothesis"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "kings_chamber",
+      "antechamber"
+     ],
+     "color": "#d9c24a"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "kc_shaft_north"
+     ],
+     "color": "#bcd6e6"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "kc_shaft_south"
+     ],
+     "color": "#bcd6e6"
+    }
+   ]
+  },
+  {
+   "id": "S16",
+   "title": "Sulfur dioxide becomes trioxide in the antechamber",
+   "duration": 6.0,
+   "camera": {
+    "position": [
+     30,
+     48,
+     8
+    ],
+    "target": [
+     7,
+     45,
+     4.4
+    ]
+   },
+   "actors": [
+    {
+     "type": "water",
+     "space": "subterranean_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "pit",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "south_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "descending_passage",
+     "from": 0.64,
+     "to": 0.64
+    },
+    {
+     "type": "water",
+     "space": "well_shaft",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "ascending_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "grand_gallery",
+     "from": 0.4,
+     "to": 0.2
+    },
+    {
+     "type": "placeholder",
+     "kind": "drain",
+     "at": [
+      7.3,
+      19,
+      -43
+     ],
+     "label": "Gallery drain: not specified by the hypothesis"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "kings_chamber"
+     ],
+     "color": "#d9c24a"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "antechamber"
+     ],
+     "color": "#e08a3c"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "kc_shaft_north"
+     ],
+     "color": "#bcd6e6"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "kc_shaft_south"
+     ],
+     "color": "#bcd6e6"
+    }
+   ]
+  },
+  {
+   "id": "S17",
+   "title": "Gases enter the Grand Gallery",
+   "duration": 6.0,
+   "camera": {
+    "position": [
+     80,
+     50,
+     2
+    ],
+    "target": [
+     7,
+     40,
+     -12
+    ]
+   },
+   "actors": [
+    {
+     "type": "water",
+     "space": "subterranean_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "pit",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "south_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "descending_passage",
+     "from": 0.64,
+     "to": 0.64
+    },
+    {
+     "type": "water",
+     "space": "well_shaft",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "ascending_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "grand_gallery",
+     "from": 0.2,
+     "to": 0.0
+    },
+    {
+     "type": "placeholder",
+     "kind": "drain",
+     "at": [
+      7.3,
+      19,
+      -43
+     ],
+     "label": "Gallery drain: not specified by the hypothesis"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "antechamber",
+      "grand_gallery"
+     ],
+     "color": "#e08a3c"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "kings_chamber"
+     ],
+     "color": "#bcd6e6"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "kc_shaft_north"
+     ],
+     "color": "#bcd6e6"
+    },
+    {
+     "type": "gas",
+     "path": [
+      "kc_shaft_south"
+     ],
+     "color": "#bcd6e6"
+    }
+   ]
+  },
+  {
+   "id": "S18",
+   "title": "Gallery is refilled in four activations",
+   "duration": 6.0,
+   "camera": {
+    "position": [
+     150,
+     30,
+     -10
+    ],
+    "target": [
+     7,
+     15,
+     -28
+    ]
+   },
+   "actors": [
+    {
+     "type": "water",
+     "space": "subterranean_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "pit",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "south_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "descending_passage",
+     "from": 0.64,
+     "to": 0.64
+    },
+    {
+     "type": "water",
+     "space": "well_shaft",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "ascending_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "grand_gallery",
+     "from": 0.0,
+     "to": 0.25
+    },
+    {
+     "type": "gas",
+     "path": [
+      "grand_gallery"
+     ],
+     "color": "#e08a3c"
+    },
+    {
+     "type": "placeholder",
+     "kind": "pump",
+     "at": [
+      7.3,
+      3,
+      -72
+     ],
+     "label": "Pump: not specified by the hypothesis"
+    },
+    {
+     "type": "placeholder",
+     "kind": "valve",
+     "at": [
+      1,
+      -35,
+      5
+     ],
+     "label": "Lower one-way valve: not specified by the hypothesis"
+    },
+    {
+     "type": "placeholder",
+     "kind": "valve",
+     "at": [
+      6,
+      -27,
+      -14
+     ],
+     "label": "Well-shaft one-way valve: not specified by the hypothesis"
+    }
+   ]
+  },
+  {
+   "id": "S19",
+   "title": "Sulfur dioxide dissolves",
+   "duration": 5.0,
+   "camera": {
+    "position": [
+     95,
+     44,
+     -5
+    ],
+    "target": [
+     7,
+     35,
+     -20
+    ]
+   },
+   "actors": [
+    {
+     "type": "water",
+     "space": "subterranean_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "pit",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "south_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "descending_passage",
+     "from": 0.64,
+     "to": 0.64
+    },
+    {
+     "type": "water",
+     "space": "well_shaft",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "ascending_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "grand_gallery",
+     "from": 0.25,
+     "to": 0.5
+    },
+    {
+     "type": "gas",
+     "path": [
+      "grand_gallery"
+     ],
+     "color": "#d9c24a"
+    }
+   ]
+  },
+  {
+   "id": "S20",
+   "title": "Sulfurous acid oxidises",
+   "duration": 5.0,
+   "camera": {
+    "position": [
+     95,
+     44,
+     -5
+    ],
+    "target": [
+     7,
+     35,
+     -20
+    ]
+   },
+   "actors": [
+    {
+     "type": "water",
+     "space": "subterranean_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "pit",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "south_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "descending_passage",
+     "from": 0.64,
+     "to": 0.64
+    },
+    {
+     "type": "water",
+     "space": "well_shaft",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "ascending_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "grand_gallery",
+     "from": 0.5,
+     "to": 0.75
+    },
+    {
+     "type": "gas",
+     "path": [
+      "grand_gallery"
+     ],
+     "color": "#bcd6e6"
+    }
+   ]
+  },
+  {
+   "id": "S21",
+   "title": "Sulfur trioxide dissolves in the dilute acid",
+   "duration": 5.0,
+   "camera": {
+    "position": [
+     95,
+     44,
+     -5
+    ],
+    "target": [
+     7,
+     35,
+     -20
+    ]
+   },
+   "actors": [
+    {
+     "type": "water",
+     "space": "subterranean_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "pit",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "south_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "descending_passage",
+     "from": 0.64,
+     "to": 0.64
+    },
+    {
+     "type": "water",
+     "space": "well_shaft",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "ascending_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "grand_gallery",
+     "from": 0.75,
+     "to": 1.0
+    },
+    {
+     "type": "gas",
+     "path": [
+      "grand_gallery"
+     ],
+     "color": "#e08a3c"
+    }
+   ]
+  },
+  {
+   "id": "S22",
+   "title": "No gas is pushed back",
+   "duration": 4.0,
+   "camera": {
+    "position": [
+     80,
+     48,
+     0
+    ],
+    "target": [
+     6,
+     38,
+     -13
+    ]
+   },
+   "actors": [
+    {
+     "type": "water",
+     "space": "subterranean_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "pit",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "south_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "descending_passage",
+     "from": 0.64,
+     "to": 0.64
+    },
+    {
+     "type": "water",
+     "space": "well_shaft",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "ascending_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "grand_gallery",
+     "from": 1.0,
+     "to": 1.0
+    }
+   ]
+  },
+  {
+   "id": "S23",
+   "title": "Calcium sulfate coats the walls",
+   "duration": 5.0,
+   "camera": {
+    "position": [
+     85,
+     40,
+     0
+    ],
+    "target": [
+     6,
+     32,
+     -15
+    ]
+   },
+   "actors": [
+    {
+     "type": "water",
+     "space": "subterranean_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "pit",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "south_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "descending_passage",
+     "from": 0.64,
+     "to": 0.64
+    },
+    {
+     "type": "water",
+     "space": "well_shaft",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "ascending_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "grand_gallery",
+     "from": 1.0,
+     "to": 1.0
+    }
+   ]
+  },
+  {
+   "id": "S24",
+   "title": "Big Void as heat exchanger (speculative)",
+   "duration": 5.0,
+   "camera": {
+    "position": [
+     110,
+     62,
+     0
+    ],
+    "target": [
+     7,
+     50,
+     -15
+    ]
+   },
+   "actors": [
+    {
+     "type": "water",
+     "space": "subterranean_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "pit",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "south_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "descending_passage",
+     "from": 0.64,
+     "to": 0.64
+    },
+    {
+     "type": "water",
+     "space": "well_shaft",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "ascending_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "grand_gallery",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "big_void",
+     "from": 1.0,
+     "to": 1.0
+    }
+   ]
+  },
+  {
+   "id": "S25",
+   "title": "Shaft slab as level meter (speculative)",
+   "duration": 5.0,
+   "camera": {
+    "position": [
+     150,
+     50,
+     10
+    ],
+    "target": [
+     5,
+     42,
+     0
+    ]
+   },
+   "actors": [
+    {
+     "type": "water",
+     "space": "subterranean_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "pit",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "south_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "descending_passage",
+     "from": 0.64,
+     "to": 0.64
+    },
+    {
+     "type": "water",
+     "space": "well_shaft",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "ascending_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "grand_gallery",
+     "from": 1.0,
+     "to": 1.0
+    }
+   ]
+  },
+  {
+   "id": "S26",
+   "title": "Liquid is withdrawn through the Queen's Chamber",
+   "duration": 7.0,
+   "camera": {
+    "position": [
+     80,
+     36,
+     5
+    ],
+    "target": [
+     6,
+     28,
+     -10
+    ]
+   },
+   "actors": [
+    {
+     "type": "water",
+     "space": "subterranean_chamber",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "pit",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "south_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "descending_passage",
+     "from": 0.64,
+     "to": 0.64
+    },
+    {
+     "type": "water",
+     "space": "well_shaft",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "ascending_passage",
+     "from": 1.0,
+     "to": 1.0
+    },
+    {
+     "type": "water",
+     "space": "queens_passage",
+     "from": 1.0,
+     "to": 0.0
+    },
+    {
+     "type": "water",
+     "space": "queens_chamber",
+     "from": 1.0,
+     "to": 0.0
+    },
+    {
+     "type": "water",
+     "space": "grand_gallery",
+     "from": 1.0,
+     "to": 0.0
+    },
+    {
+     "type": "placeholder",
+     "kind": "drain",
+     "at": [
+      5,
+      19,
+      0
+     ],
+     "label": "Queen's Chamber outlet: not specified by the hypothesis"
+    }
+   ]
+  },
+  {
+   "id": "S27",
+   "title": "Acid goes to the central pyramid",
+   "duration": 4.0,
+   "camera": {
+    "position": [
+     220,
+     120,
+     -200
+    ],
+    "target": [
+     0,
+     40,
+     0
+    ]
+   },
+   "actors": []
+  },
+  {
+   "id": "S28",
+   "title": "Acid fills the boat pits",
+   "duration": 4.0,
+   "camera": {
+    "position": [
+     200,
+     140,
+     220
+    ],
+    "target": [
+     0,
+     20,
+     0
+    ]
+   },
+   "actors": []
+  },
+  {
+   "id": "S29",
+   "title": "Iron veins carry voltage across the plateau",
+   "duration": 4.0,
+   "camera": {
+    "position": [
+     260,
+     180,
+     160
+    ],
+    "target": [
+     0,
+     30,
+     0
+    ]
+   },
+   "actors": []
+  },
+  {
+   "id": "S30",
+   "title": "Acids are used for mining and metallurgy",
+   "duration": 4.0,
+   "camera": {
+    "position": [
+     -260,
+     150,
+     160
+    ],
+    "target": [
+     0,
+     40,
+     0
+    ]
+   },
+   "actors": []
+  },
+  {
+   "id": "S31",
+   "title": "The cycle repeats with the next storm",
+   "duration": 5.0,
+   "camera": {
+    "position": [
+     280,
+     110,
+     120
+    ],
+    "target": [
+     0,
+     40,
+     0
+    ]
+   },
+   "actors": []
+  }
+ ],
+ "curves": {
+  "ascending_passage": [
+   [
+    7.21210579000134,
+    0.0
+   ],
+   [
+    7.606639050239754,
+    0.20833470003456853
+   ],
+   [
+    8.001172310478168,
+    0.8333391169705722
+   ],
+   [
+    8.395705570716583,
+    1.8604255597589516
+   ],
+   [
+    8.790238830954996,
+    3.000178041131279
+   ],
+   [
+    9.18477209119341,
+    4.139930522503606
+   ],
+   [
+    9.579305351431824,
+    5.279683003875934
+   ],
+   [
+    9.973838611670239,
+    6.419435485248254
+   ],
+   [
+    10.368371871908652,
+    7.5591879666205815
+   ],
+   [
+    10.762905132147065,
+    8.698940447992904
+   ],
+   [
+    11.15743839238548,
+    9.83869292936524
+   ],
+   [
+    11.551971652623894,
+    10.978445410737564
+   ],
+   [
+    11.94650491286231,
+    12.118197892109901
+   ],
+   [
+    12.341038173100722,
+    13.25795037348222
+   ],
+   [
+    12.735571433339135,
+    14.397702854854549
+   ],
+   [
+    13.13010469357755,
+    15.537455336226873
+   ],
+   [
+    13.524637953815965,
+    16.6772078175992
+   ],
+   [
+    13.919171214054376,
+    17.81696029897152
+   ],
+   [
+    14.313704474292791,
+    18.956712780343853
+   ],
+   [
+    14.708237734531206,
+    20.09646526171619
+   ],
+   [
+    15.102770994769621,
+    21.23621774308851
+   ],
+   [
+    15.497304255008034,
+    22.375970224460843
+   ],
+   [
+    15.891837515246449,
+    23.51572270583316
+   ],
+   [
+    16.286370775484862,
+    24.655475187205486
+   ],
+   [
+    16.680904035723277,
+    25.795227668577823
+   ],
+   [
+    17.07543729596169,
+    26.934980149950157
+   ],
+   [
+    17.469970556200103,
+    28.074732631322476
+   ],
+   [
+    17.864503816438518,
+    29.214485112694796
+   ],
+   [
+    18.259037076676933,
+    30.354237594067122
+   ],
+   [
+    18.653570336915344,
+    31.49399007543945
+   ],
+   [
+    19.048103597153762,
+    32.63374255681179
+   ],
+   [
+    19.442636857392174,
+    33.773495038184095
+   ],
+   [
+    19.83717011763059,
+    34.91324751955645
+   ],
+   [
+    20.231703377869003,
+    36.053000000928776
+   ],
+   [
+    20.626236638107414,
+    37.192752482301096
+   ],
+   [
+    21.020769898345833,
+    38.33250496367342
+   ],
+   [
+    21.415303158584244,
+    39.47225744504575
+   ],
+   [
+    21.80983641882266,
+    40.586451022402066
+   ],
+   [
+    22.204369679061074,
+    41.42699624718282
+   ],
+   [
+    22.598902939299485,
+    41.93132333091977
+   ],
+   [
+    22.9934361995379,
+    42.09943227361291
+   ]
+  ],
+  "big_void": [
+   [
+    62.94185086727967,
+    0.0
+   ],
+   [
+    63.10425832391569,
+    10.199994033525027
+   ],
+   [
+    63.266665780551705,
+    20.399994347550127
+   ],
+   [
+    63.429073237187716,
+    30.599994661574783
+   ],
+   [
+    63.59148069382373,
+    40.79999497559988
+   ],
+   [
+    63.75388815045975,
+    50.99999528962499
+   ],
+   [
+    63.91629560709576,
+    61.19999560364964
+   ],
+   [
+    64.07870306373178,
+    71.39999591767473
+   ],
+   [
+    64.2411105203678,
+    81.59999623169983
+   ],
+   [
+    64.40351797700382,
+    91.79999654572494
+   ],
+   [
+    64.56592543363983,
+    101.99999685975004
+   ],
+   [
+    64.72833289027585,
+    112.19999717377513
+   ],
+   [
+    64.89074034691185,
+    122.39999748779935
+   ],
+   [
+    65.05314780354787,
+    132.59999780182446
+   ],
+   [
+    65.21555526018389,
+    142.79999811584955
+   ],
+   [
+    65.37796271681991,
+    152.99999842987467
+   ],
+   [
+    65.54037017345593,
+    163.19999874389976
+   ],
+   [
+    65.70277763009194,
+    173.39999905792484
+   ],
+   [
+    65.86518508672796,
+    183.59999937194996
+   ],
+   [
+    66.02759254336398,
+    193.79999968597508
+   ],
+   [
+    66.19,
+    204.00000000000014
+   ],
+   [
+    66.352407456636,
+    214.20000031402435
+   ],
+   [
+    66.51481491327202,
+    224.4000006280495
+   ],
+   [
+    66.67722236990804,
+    234.60000094207453
+   ],
+   [
+    66.83962982654405,
+    244.80000125609962
+   ],
+   [
+    67.00203728318007,
+    255.00000157012477
+   ],
+   [
+    67.16444473981609,
+    265.20000188414986
+   ],
+   [
+    67.32685219645211,
+    275.40000219817495
+   ],
+   [
+    67.48925965308811,
+    285.6000025121991
+   ],
+   [
+    67.65166710972413,
+    295.8000028262243
+   ],
+   [
+    67.81407456636015,
+    306.0000031402493
+   ],
+   [
+    67.97648202299617,
+    316.20000345427445
+   ],
+   [
+    68.13888947963218,
+    326.40000376829954
+   ],
+   [
+    68.3012969362682,
+    336.60000408232463
+   ],
+   [
+    68.46370439290422,
+    346.8000043963498
+   ],
+   [
+    68.62611184954024,
+    357.00000471037487
+   ],
+   [
+    68.78851930617625,
+    367.20000502439996
+   ],
+   [
+    68.95092676281226,
+    377.40000533842414
+   ],
+   [
+    69.11333421944828,
+    387.6000056524492
+   ],
+   [
+    69.2757416760843,
+    397.80000596647443
+   ],
+   [
+    69.43814913272031,
+    407.9999999999999
+   ]
+  ],
+  "descending_passage": [
+   [
+    -29.997400100000004,
+    0.0
+   ],
+   [
+    -28.796318907156678,
+    1.8825047696860557
+   ],
+   [
+    -27.595237714313352,
+    5.2861117326937626
+   ],
+   [
+    -26.394156521470027,
+    8.68971869570147
+   ],
+   [
+    -25.193075328626698,
+    12.093325658709189
+   ],
+   [
+    -23.991994135783372,
+    15.49693262171689
+   ],
+   [
+    -22.790912942940047,
+    18.9005395847246
+   ],
+   [
+    -21.58983175009672,
+    22.30414654773231
+   ],
+   [
+    -20.388750557253395,
+    25.70775351074002
+   ],
+   [
+    -19.18766936441007,
+    29.11136047374773
+   ],
+   [
+    -17.986588171566744,
+    32.51496743675543
+   ],
+   [
+    -16.78550697872342,
+    35.91857439976314
+   ],
+   [
+    -15.584425785880091,
+    39.32218136277084
+   ],
+   [
+    -14.383344593036767,
+    42.72578832577853
+   ],
+   [
+    -13.182263400193438,
+    46.12939528878627
+   ],
+   [
+    -11.981182207350116,
+    49.53300225179399
+   ],
+   [
+    -10.780101014506787,
+    52.936609214801734
+   ],
+   [
+    -9.579019821663461,
+    56.3402161778094
+   ],
+   [
+    -8.377938628820136,
+    59.74382314081707
+   ],
+   [
+    -7.17685743597681,
+    63.147430103824846
+   ],
+   [
+    -5.975776243133485,
+    66.55103706683252
+   ],
+   [
+    -4.774695050290159,
+    69.95464402984024
+   ],
+   [
+    -3.5736138574468335,
+    73.35825099284791
+   ],
+   [
+    -2.3725326646035043,
+    76.76185795585565
+   ],
+   [
+    -1.1714514717601787,
+    80.16546491886336
+   ],
+   [
+    0.029629721083143323,
+    83.56907188187094
+   ],
+   [
+    1.230710913926469,
+    86.9726788448787
+   ],
+   [
+    2.4317921067697945,
+    90.3762858078865
+   ],
+   [
+    3.632873299613127,
+    93.77989277089415
+   ],
+   [
+    4.833954492456453,
+    97.18349973390177
+   ],
+   [
+    6.035035685299771,
+    100.58710669690953
+   ],
+   [
+    7.236116878143097,
+    103.9907136599173
+   ],
+   [
+    8.43719807098643,
+    107.39432062292497
+   ],
+   [
+    9.638279263829755,
+    110.79792758593251
+   ],
+   [
+    10.83936045667308,
+    114.20153454894022
+   ],
+   [
+    12.0404416495164,
+    117.60514151194786
+   ],
+   [
+    13.241522842359732,
+    121.00874847495577
+   ],
+   [
+    14.442604035203058,
+    124.4123554379635
+   ],
+   [
+    15.643685228046383,
+    127.81596240097116
+   ],
+   [
+    16.84476642088971,
+    131.219569363979
+   ],
+   [
+    18.04584761373303,
+    133.10207413366487
+   ]
+  ],
+  "grand_gallery": [
+   [
+    21.655999849999994,
+    0.0
+   ],
+   [
+    22.402114857499996,
+    0.6087877197453839
+   ],
+   [
+    23.148229864999994,
+    3.182193895054923
+   ],
+   [
+    23.894344872499993,
+    8.10832275259255
+   ],
+   [
+    24.640459879999995,
+    15.314571552878864
+   ],
+   [
+    25.386574887499997,
+    24.66257514030558
+   ],
+   [
+    26.132689894999995,
+    36.01235077097741
+   ],
+   [
+    26.878804902499994,
+    49.22391570099904
+   ],
+   [
+    27.624919909999996,
+    64.15728718647539
+   ],
+   [
+    28.371034917499998,
+    80.6734973969305
+   ],
+   [
+    29.117149924999996,
+    98.63800476537638
+   ],
+   [
+    29.863264932499995,
+    117.91163331391031
+   ],
+   [
+    30.609379939999997,
+    138.240911022201
+   ],
+   [
+    31.3554949475,
+    158.73358345599814
+   ],
+   [
+    32.101609955,
+    179.22625588979528
+   ],
+   [
+    32.847724962499996,
+    199.71892832359222
+   ],
+   [
+    33.59383997,
+    220.21160075738914
+   ],
+   [
+    34.3399549775,
+    240.7042731911863
+   ],
+   [
+    35.086069984999995,
+    261.19694562498324
+   ],
+   [
+    35.832184992500004,
+    281.6896180587806
+   ],
+   [
+    36.5783,
+    302.1822904925774
+   ],
+   [
+    37.324415007499994,
+    322.67496292637435
+   ],
+   [
+    38.070530015,
+    343.1676353601717
+   ],
+   [
+    38.8166450225,
+    363.6603077939685
+   ],
+   [
+    39.56276003,
+    384.15298022776557
+   ],
+   [
+    40.3088750375,
+    404.6456526615628
+   ],
+   [
+    41.054990045,
+    425.13832509535956
+   ],
+   [
+    41.801105052500006,
+    445.63099752915684
+   ],
+   [
+    42.54722006,
+    465.93920894783366
+   ],
+   [
+    43.293335067499996,
+    485.522237044163
+   ],
+   [
+    44.039450075000005,
+    504.50774853223623
+   ],
+   [
+    44.7855650825,
+    521.1886037615474
+   ],
+   [
+    45.53168009,
+    535.5342497472225
+   ],
+   [
+    46.277795097500004,
+    547.6752812987471
+   ],
+   [
+    47.023910105,
+    557.7516811600166
+   ],
+   [
+    47.7700251125,
+    565.9010850941434
+   ],
+   [
+    48.51614012,
+    572.2586995798856
+   ],
+   [
+    49.2622551275,
+    576.9643677507391
+   ],
+   [
+    50.00837013500001,
+    580.1580723505991
+   ],
+   [
+    50.7544851425,
+    581.979796123361
+   ],
+   [
+    51.500600150000004,
+    582.5695218129198
+   ]
+  ],
+  "pit": [
+   [
+    -34.57000015,
+    0.0
+   ],
+   [
+    -34.5020401425,
+    0.13320132070000007
+   ],
+   [
+    -34.434080134999995,
+    0.26640293540001053
+   ],
+   [
+    -34.3661201275,
+    0.39960455010000706
+   ],
+   [
+    -34.29816012,
+    0.5328061648000035
+   ],
+   [
+    -34.2302001125,
+    0.6660077795000001
+   ],
+   [
+    -34.162240104999995,
+    0.7992093942000106
+   ],
+   [
+    -34.0942800975,
+    0.932411008900007
+   ],
+   [
+    -34.02632009,
+    1.0656126236000034
+   ],
+   [
+    -33.9583600825,
+    1.1988142383000002
+   ],
+   [
+    -33.890400074999995,
+    1.3320158530000104
+   ],
+   [
+    -33.8224400675,
+    1.4652174677000072
+   ],
+   [
+    -33.75448006,
+    1.5984190824000033
+   ],
+   [
+    -33.6865200525,
+    1.7316206970999999
+   ],
+   [
+    -33.618560044999995,
+    1.8648223118000105
+   ],
+   [
+    -33.5506000375,
+    2.0026438646250173
+   ],
+   [
+    -33.48264003,
+    2.247979491700011
+   ],
+   [
+    -33.4146800225,
+    2.4933151187750044
+   ],
+   [
+    -33.346720014999995,
+    2.7386507458500238
+   ],
+   [
+    -33.2787600075,
+    2.9839863729250173
+   ],
+   [
+    -33.2108,
+    3.2293220000000114
+   ],
+   [
+    -33.1428399925,
+    3.474657627075005
+   ],
+   [
+    -33.074879984999995,
+    3.7199932541500242
+   ],
+   [
+    -33.0069199775,
+    3.965328881225018
+   ],
+   [
+    -32.93895997,
+    4.210664508300011
+   ],
+   [
+    -32.870999962499994,
+    4.456000135375031
+   ],
+   [
+    -32.803039954999996,
+    4.701335762450024
+   ],
+   [
+    -32.7350799475,
+    4.946671389525018
+   ],
+   [
+    -32.66711994,
+    5.192007016600012
+   ],
+   [
+    -32.599159932499994,
+    5.437342643675031
+   ],
+   [
+    -32.531199924999996,
+    5.682678270750024
+   ],
+   [
+    -32.4632399175,
+    5.928013897825018
+   ],
+   [
+    -32.39527991,
+    6.173349524900012
+   ],
+   [
+    -32.327319902499994,
+    6.418685151975031
+   ],
+   [
+    -32.259359894999996,
+    6.664020779050025
+   ],
+   [
+    -32.1913998875,
+    6.909356406125018
+   ],
+   [
+    -32.12343988,
+    7.1546920332000115
+   ],
+   [
+    -32.055479872499994,
+    7.400027660275033
+   ],
+   [
+    -31.987519864999996,
+    7.645363287350025
+   ],
+   [
+    -31.919559857499998,
+    7.890698914425019
+   ],
+   [
+    -31.851599849999996,
+    8.136034000000016
+   ]
+  ],
+  "queens_chamber": [
+   [
+    21.193799849999998,
+    0.0
+   ],
+   [
+    21.349437357499998,
+    4.936267969121357
+   ],
+   [
+    21.505074864999997,
+    9.872540695713646
+   ],
+   [
+    21.660712372499997,
+    14.808813422305935
+   ],
+   [
+    21.816349879999997,
+    19.74508614889822
+   ],
+   [
+    21.971987387499997,
+    24.68135887549051
+   ],
+   [
+    22.127624894999997,
+    29.617631602082795
+   ],
+   [
+    22.2832624025,
+    34.526446148574735
+   ],
+   [
+    22.43889991,
+    39.419491899054194
+   ],
+   [
+    22.5945374175,
+    44.31253764953369
+   ],
+   [
+    22.750174925,
+    49.20558340001317
+   ],
+   [
+    22.9058124325,
+    54.09862915049263
+   ],
+   [
+    23.06144994,
+    58.991674900972114
+   ],
+   [
+    23.2170874475,
+    63.87303122570229
+   ],
+   [
+    23.372724955,
+    68.72285000006895
+   ],
+   [
+    23.5283624625,
+    73.57266877443557
+   ],
+   [
+    23.68399997,
+    78.42248754880225
+   ],
+   [
+    23.8396374775,
+    83.27230632316895
+   ],
+   [
+    23.995274985,
+    88.12212509753562
+   ],
+   [
+    24.150912492499998,
+    92.97194387190225
+   ],
+   [
+    24.30655,
+    97.78261499875804
+   ],
+   [
+    24.4621875075,
+    102.5892067970119
+   ],
+   [
+    24.617825015,
+    107.3957985952658
+   ],
+   [
+    24.7734625225,
+    112.20239039351965
+   ],
+   [
+    24.92910003,
+    117.00898219177351
+   ],
+   [
+    25.0847375375,
+    121.81557399002733
+   ],
+   [
+    25.240375045,
+    126.59878689512132
+   ],
+   [
+    25.3960125525,
+    131.36215171726232
+   ],
+   [
+    25.55165006,
+    136.12551653940335
+   ],
+   [
+    25.7072875675,
+    140.88888136154446
+   ],
+   [
+    25.862925075,
+    145.65224618368552
+   ],
+   [
+    26.018562582500003,
+    150.1462564837592
+   ],
+   [
+    26.17420009,
+    154.16743761534804
+   ],
+   [
+    26.329837597500003,
+    157.71553856016848
+   ],
+   [
+    26.485475105,
+    160.7905593182202
+   ],
+   [
+    26.641112612500002,
+    163.39249988950345
+   ],
+   [
+    26.796750120000002,
+    165.5213602740179
+   ],
+   [
+    26.952387627500002,
+    167.17714047176378
+   ],
+   [
+    27.108025135000002,
+    168.35984048274102
+   ],
+   [
+    27.2636626425,
+    169.06946030694974
+   ],
+   [
+    27.41930015,
+    169.30599994439
+   ]
+  ],
+  "queens_passage": [
+   [
+    21.20649989999999,
+    0.0
+   ],
+   [
+    21.248499904999992,
+    0.24396505817298883
+   ],
+   [
+    21.29049990999999,
+    0.487930697216505
+   ],
+   [
+    21.332499914999993,
+    0.7318963362600419
+   ],
+   [
+    21.37449991999999,
+    0.9758619753035581
+   ],
+   [
+    21.416499924999993,
+    1.2198276143470952
+   ],
+   [
+    21.45849992999999,
+    1.4637932533906113
+   ],
+   [
+    21.500499934999993,
+    1.7077588924341485
+   ],
+   [
+    21.542499939999992,
+    1.9517245314776646
+   ],
+   [
+    21.584499944999994,
+    2.1956901705212015
+   ],
+   [
+    21.626499949999996,
+    2.439655809564738
+   ],
+   [
+    21.668499954999994,
+    2.6836214486082546
+   ],
+   [
+    21.710499959999996,
+    3.0565591463440236
+   ],
+   [
+    21.752499964999995,
+    4.764547939675936
+   ],
+   [
+    21.794499969999997,
+    6.4725367330079955
+   ],
+   [
+    21.836499974999995,
+    8.180525526339908
+   ],
+   [
+    21.878499979999997,
+    9.888514319671962
+   ],
+   [
+    21.920499984999996,
+    11.596503113003877
+   ],
+   [
+    21.962499989999998,
+    13.304491906335935
+   ],
+   [
+    22.004499994999996,
+    15.012480699667849
+   ],
+   [
+    22.046499999999998,
+    16.720469492999907
+   ],
+   [
+    22.088500005,
+    18.428458286331963
+   ],
+   [
+    22.13050001,
+    20.136447079663878
+   ],
+   [
+    22.172500015,
+    21.844435872995938
+   ],
+   [
+    22.21450002,
+    23.55242466632785
+   ],
+   [
+    22.256500025,
+    25.260413459659908
+   ],
+   [
+    22.29850003,
+    26.968402252991822
+   ],
+   [
+    22.340500035,
+    28.67639104632388
+   ],
+   [
+    22.38250004,
+    30.384379839655786
+   ],
+   [
+    22.424500045000002,
+    32.09236863298785
+   ],
+   [
+    22.46650005,
+    33.80035742631976
+   ],
+   [
+    22.508500055000003,
+    35.50834621965182
+   ],
+   [
+    22.550500060000005,
+    37.216335012983876
+   ],
+   [
+    22.592500065000003,
+    38.92432380631579
+   ],
+   [
+    22.634500070000005,
+    40.63231259964785
+   ],
+   [
+    22.676500075000003,
+    42.340301392979754
+   ],
+   [
+    22.718500080000005,
+    44.04829018631181
+   ],
+   [
+    22.760500085000004,
+    45.756278979643724
+   ],
+   [
+    22.802500090000006,
+    47.464267772975795
+   ],
+   [
+    22.844500095000004,
+    49.1722565663077
+   ],
+   [
+    22.886500100000006,
+    50.542121700000095
+   ]
+  ],
+  "south_passage": [
+   [
+    -30.9626001,
+    0.0
+   ],
+   [
+    -30.94004090356415,
+    0.0197286655621893
+   ],
+   [
+    -30.917481707128296,
+    0.07891501206220501
+   ],
+   [
+    -30.894922510692446,
+    0.17755903950041818
+   ],
+   [
+    -30.872363314256596,
+    0.3156607478768358
+   ],
+   [
+    -30.849804117820742,
+    0.4932201371914829
+   ],
+   [
+    -30.827244921384892,
+    0.710237207444311
+   ],
+   [
+    -30.80468572494904,
+    0.9655331829776441
+   ],
+   [
+    -30.78212652851319,
+    1.232091905141433
+   ],
+   [
+    -30.75956733207734,
+    1.4986506273052222
+   ],
+   [
+    -30.737008135641485,
+    1.7652093494690533
+   ],
+   [
+    -30.714448939205635,
+    2.031768071632843
+   ],
+   [
+    -30.69188974276978,
+    2.2983267937966736
+   ],
+   [
+    -30.66933054633393,
+    2.564885515960463
+   ],
+   [
+    -30.64677134989808,
+    2.831444238124252
+   ],
+   [
+    -30.624212153462228,
+    3.0980029602880834
+   ],
+   [
+    -30.601652957026378,
+    3.364561682451872
+   ],
+   [
+    -30.579093760590528,
+    3.631120404615661
+   ],
+   [
+    -30.556534564154674,
+    3.897679126779492
+   ],
+   [
+    -30.533975367718824,
+    4.164237848943281
+   ],
+   [
+    -30.511416171282974,
+    4.43079657110707
+   ],
+   [
+    -30.48885697484712,
+    4.697355293270902
+   ],
+   [
+    -30.46629777841127,
+    4.963914015434691
+   ],
+   [
+    -30.443738581975417,
+    5.230472737598522
+   ],
+   [
+    -30.421179385539567,
+    5.497031459762312
+   ],
+   [
+    -30.398620189103717,
+    5.7635901819261
+   ],
+   [
+    -30.376060992667863,
+    6.030148904089932
+   ],
+   [
+    -30.353501796232013,
+    6.296707626253718
+   ],
+   [
+    -30.33094259979616,
+    6.563266348417552
+   ],
+   [
+    -30.30838340336031,
+    6.829825070581341
+   ],
+   [
+    -30.28582420692446,
+    7.09638379274513
+   ],
+   [
+    -30.263265010488606,
+    7.36294251490896
+   ],
+   [
+    -30.240705814052756,
+    7.629501237072752
+   ],
+   [
+    -30.218146617616906,
+    7.896059959236539
+   ],
+   [
+    -30.195587421181052,
+    8.151355934769924
+   ],
+   [
+    -30.173028224745202,
+    8.36837300502275
+   ],
+   [
+    -30.150469028309352,
+    8.545932394337376
+   ],
+   [
+    -30.1279098318735,
+    8.684034102713767
+   ],
+   [
+    -30.10535063543765,
+    8.78267813015198
+   ],
+   [
+    -30.082791439001795,
+    8.841864476651951
+   ],
+   [
+    -30.060232242565945,
+    8.861593142214181
+   ]
+  ],
+  "subterranean_chamber": [
+   [
+    -31.85160015,
+    0.0
+   ],
+   [
+    -31.7258701425,
+    0.45388478557500544
+   ],
+   [
+    -31.600140135,
+    0.9077701126500042
+   ],
+   [
+    -31.4744101275,
+    1.3616554397250034
+   ],
+   [
+    -31.348680119999997,
+    1.815540766800015
+   ],
+   [
+    -31.222950112499998,
+    2.2694260938750137
+   ],
+   [
+    -31.097220104999998,
+    2.723311420950013
+   ],
+   [
+    -30.9714900975,
+    3.177196748025012
+   ],
+   [
+    -30.84576009,
+    3.631082075100011
+   ],
+   [
+    -30.7200300825,
+    4.084967402175009
+   ],
+   [
+    -30.594300075,
+    4.538852729250008
+   ],
+   [
+    -30.4685700675,
+    4.992738056325007
+   ],
+   [
+    -30.34284006,
+    7.3997187676639
+   ],
+   [
+    -30.217110052499997,
+    14.937981958840407
+   ],
+   [
+    -30.091380044999998,
+    22.754970869078868
+   ],
+   [
+    -29.965650037499998,
+    30.898607869422907
+   ],
+   [
+    -29.83992003,
+    40.09005422729824
+   ],
+   [
+    -29.7141900225,
+    49.654260425040675
+   ],
+   [
+    -29.588460015,
+    59.497305293834124
+   ],
+   [
+    -29.4627300075,
+    69.6191888336786
+   ],
+   [
+    -29.336999999999996,
+    80.01991104457439
+   ],
+   [
+    -29.211269992499997,
+    90.69947192652093
+   ],
+   [
+    -29.085539984999997,
+    101.65787147951843
+   ],
+   [
+    -28.959809977499997,
+    112.64573961785447
+   ],
+   [
+    -28.834079969999998,
+    123.25068894265678
+   ],
+   [
+    -28.708349962499998,
+    134.13366076257884
+   ],
+   [
+    -28.582619955,
+    145.29535830156303
+   ],
+   [
+    -28.4568899475,
+    156.7357815596093
+   ],
+   [
+    -28.331159939999996,
+    168.4549305367181
+   ],
+   [
+    -28.205429932499996,
+    180.45280523288872
+   ],
+   [
+    -28.079699924999996,
+    192.7294056481215
+   ],
+   [
+    -27.953969917499997,
+    205.28473178241637
+   ],
+   [
+    -27.828239909999997,
+    218.11878363577347
+   ],
+   [
+    -27.702509902499997,
+    231.2315612081927
+   ],
+   [
+    -27.576779894999998,
+    244.623064499674
+   ],
+   [
+    -27.451049887499998,
+    258.29329351021755
+   ],
+   [
+    -27.325319879999995,
+    272.2422482398236
+   ],
+   [
+    -27.1995898725,
+    286.46992868849094
+   ],
+   [
+    -27.073859864999996,
+    300.97627797318586
+   ],
+   [
+    -26.948129857499996,
+    315.6164158788994
+   ],
+   [
+    -26.822399849999996,
+    330.25653631845023
+   ]
+  ],
+  "well_shaft": [
+   [
+    -26.618394203564904,
+    0.0
+   ],
+   [
+    -25.39268434472578,
+    1.3755107027987896
+   ],
+   [
+    -24.16697448588666,
+    2.060258687489678
+   ],
+   [
+    -22.941264627047538,
+    2.745006672180566
+   ],
+   [
+    -21.715554768208413,
+    3.4297546568714576
+   ],
+   [
+    -20.48984490936929,
+    4.114502641562348
+   ],
+   [
+    -19.264135050530168,
+    4.799250626253237
+   ],
+   [
+    -18.038425191691047,
+    5.483998610944124
+   ],
+   [
+    -16.812715332851923,
+    6.203224639564556
+   ],
+   [
+    -15.5870054740128,
+    6.993662110257103
+   ],
+   [
+    -14.361295615173677,
+    7.784099580949649
+   ],
+   [
+    -13.135585756334555,
+    8.574537051642197
+   ],
+   [
+    -11.909875897495434,
+    9.364974522334743
+   ],
+   [
+    -10.68416603865631,
+    10.155411993027293
+   ],
+   [
+    -9.458456179817187,
+    10.945849463719838
+   ],
+   [
+    -8.232746320978062,
+    11.736286934412385
+   ],
+   [
+    -7.007036462138942,
+    12.526724405104934
+   ],
+   [
+    -5.781326603299821,
+    13.317161875797485
+   ],
+   [
+    -4.555616744460696,
+    14.107599346490034
+   ],
+   [
+    -3.3299068856215754,
+    14.898036817182573
+   ],
+   [
+    -2.104197026782451,
+    15.688474287875117
+   ],
+   [
+    -0.8784871679433266,
+    16.478911758567683
+   ],
+   [
+    0.3472226908957943,
+    17.269349229260218
+   ],
+   [
+    1.5729325497349151,
+    17.990352968634927
+   ],
+   [
+    2.798642408574036,
+    18.540458004052933
+   ],
+   [
+    4.024352267413164,
+    19.09055658869994
+   ],
+   [
+    5.250062126252285,
+    19.640655173346946
+   ],
+   [
+    6.475771985091406,
+    20.190896122022036
+   ],
+   [
+    7.70148184393053,
+    20.843794349937284
+   ],
+   [
+    8.927191702769647,
+    21.525549873478656
+   ],
+   [
+    10.152901561608779,
+    22.207305397020058
+   ],
+   [
+    11.378611420447896,
+    22.889060920561402
+   ],
+   [
+    12.60432127928702,
+    23.570816444102785
+   ],
+   [
+    13.830031138126145,
+    24.228043452543254
+   ],
+   [
+    15.055740996965262,
+    24.845923792384042
+   ],
+   [
+    16.281450855804394,
+    25.46380413222485
+   ],
+   [
+    17.50716071464351,
+    26.081684472065646
+   ],
+   [
+    18.732870573482636,
+    26.69956481190645
+   ],
+   [
+    19.958580432321753,
+    27.317445151747258
+   ],
+   [
+    21.184290291160877,
+    27.935325491588053
+   ],
+   [
+    22.410000150000002,
+    29.258945755813805
+   ]
+  ]
+ }
+}

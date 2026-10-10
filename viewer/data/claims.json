@@ -1,0 +1,3390 @@
+{
+ "manifest": {
+  "case": "viewer",
+  "timestamp": "2026-10-10T10:39:10+00:00",
+  "commit": "f43b987bec571f59d80fd6a22838047aa8f169c5",
+  "ledger": "69618950b42a32ec7d1ea7d3c9e600e40bfa2f34439d5c11e3833573938c3315",
+  "python": "3.12.12",
+  "versions": {
+   "numpy": "2.5.3",
+   "scipy": "1.18.1",
+   "pyyaml": "6.0.3",
+   "gmsh": "4.15.2",
+   "trimesh": "5.1.1",
+   "matplotlib": "3.11.2",
+   "pytest": "9.1.1"
+  },
+  "fields": []
+ },
+ "claims": [
+  {
+   "id": "S01",
+   "statement": "Hydrogen sulfide rises from natural caves, tunnels and old vent features under the plateau.",
+   "subsystem": "gas",
+   "timestamp": "F 00:09:08-00:09:42",
+   "tier": 2,
+   "piece": 5,
+   "criterion": "Pass if a geologically defensible hydrogen sulfide flux can supply the chemistry model's minimum feed; fail if the required flux exceeds active-seep analogues by orders of magnitude (07 section 4.4).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 5.",
+   "numbers": [],
+   "spaces": []
+  },
+  {
+   "id": "S02",
+   "statement": "Hydrogen sulfide is turned into sulfur dioxide in three unnamed steps inside the satellite pyramids.",
+   "subsystem": "gas",
+   "timestamp": "F 00:14:18-00:14:39",
+   "tier": 2,
+   "piece": 4,
+   "criterion": "Undefined until the hypothesis names the three steps; then pass if a mass balance for a plausible hydrogen sulfide flux gives a stated mass of acid per cycle and per year (00 section 7 item 12).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 4.",
+   "numbers": [],
+   "spaces": []
+  },
+  {
+   "id": "S03",
+   "statement": "Sulfur dioxide travels up a shaft from below, enters by a floor opening beside the granite box and fills the King's Chamber.",
+   "subsystem": "gas",
+   "timestamp": "F 00:15:36-00:16:25",
+   "tier": 2,
+   "piece": 4,
+   "criterion": "Pass if sulfur dioxide remains in the King's Chamber between delivery and draw with the air shafts open (00 section 7 item 5).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 4.",
+   "numbers": [],
+   "spaces": [
+    "kings_chamber",
+    "kc_shaft_north",
+    "kc_shaft_south"
+   ]
+  },
+  {
+   "id": "S04",
+   "statement": "Ground currents, concentrated by ore deposits and iron veins, enter from below and build a positive electric field at the flat top.",
+   "subsystem": "electrical",
+   "timestamp": "F 01:03:33-01:07:11",
+   "tier": 1,
+   "piece": 2,
+   "criterion": "Pass only if a direct-current conduction model with a far field of 1e-7 to 2e-2 V/m gives a non-negligible field or charge at the summit or in the granite (04 section 5.3).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 2.",
+   "numbers": [],
+   "spaces": []
+  },
+  {
+   "id": "S05",
+   "statement": "Operators wait for a storm, warned by wind-driven whistle formations in the western field.",
+   "subsystem": "electrical",
+   "timestamp": "F 01:09:08-01:10:54",
+   "tier": 2,
+   "piece": 6,
+   "criterion": "Cannot be simulated; held as a documented constraint with no computed verdict (06, evidence that cannot be simulated).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 6.",
+   "numbers": [],
+   "spaces": []
+  },
+  {
+   "id": "S06",
+   "statement": "Negative cloud-to-ground lightning strikes the top, the field passes through the structure, and the granite round the King's Chamber and antechamber stores it.",
+   "subsystem": "electrical",
+   "timestamp": "F 01:07:11-01:07:59",
+   "tier": 1,
+   "piece": 2,
+   "criterion": "Pass if the peak field in the granite exceeds what the piezoelectric model needs to reach the acoustic threshold; fail if the interior field is screened to the conduction value of order kV/m or less (04 section 5.2).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 2.",
+   "numbers": [],
+   "spaces": [
+    "kings_chamber",
+    "antechamber"
+   ]
+  },
+  {
+   "id": "S07",
+   "statement": "The field drives the inverse piezoelectric effect in the granite's quartz, giving ultrasound that the antechamber's upper cavity focuses and amplifies.",
+   "subsystem": "electrical",
+   "timestamp": "F 00:58:48-01:00:47",
+   "tier": 0,
+   "piece": 2,
+   "criterion": "Pass if the sound level in the antechamber gas reaches 189 dB, or the intensity sent into a liquid film reaches 1 W/cm2, for granite coefficients up to ten times the measured value and fields up to air breakdown (05 section 5.5 item 1).",
+   "status": "fail",
+   "basis": "The granite leaf driven at the air-breakdown field radiates 76 dB, and 158 dB with every input at its generous end, against the 190 dB needed to cavitate a wet film.",
+   "numbers": [
+    {
+     "label": "Sound level from the antechamber's granite leaf driven at the air-breakdown field",
+     "value": 75.7620902930747,
+     "low": 69.44875462406314,
+     "high": 158.29335556315047,
+     "unit": "dB"
+    },
+    {
+     "label": "Sound level in air needed to cavitate a wet film from the gas side",
+     "value": 189.66384082197962,
+     "low": 189.66384082197962,
+     "high": 194.4934033315235,
+     "unit": "dB"
+    }
+   ],
+   "spaces": [
+    "antechamber",
+    "kings_chamber"
+   ]
+  },
+  {
+   "id": "S08",
+   "statement": "Water from the external reservoir is let into the Subterranean Chamber; the inlet is not described.",
+   "subsystem": "hydraulic",
+   "timestamp": "F 00:37:26-00:37:42",
+   "tier": 2,
+   "piece": 3,
+   "criterion": "Pass requires an explicitly assumed reservoir, because the evidence-based boundary has no water at base level; report the level and volume it must have (02 section 5.5 item 1).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 3.",
+   "numbers": [],
+   "spaces": [
+    "subterranean_chamber",
+    "descending_passage"
+   ]
+  },
+  {
+   "id": "S09",
+   "statement": "Blocked by the dead-end south passage and the lower valve, the water rises in the well shaft until it stands at the reservoir's level.",
+   "subsystem": "hydraulic",
+   "timestamp": "F 00:40:47-00:41:15",
+   "tier": 0,
+   "piece": 3,
+   "criterion": "Fails unless the hypothesis specifies an inlet below pavement level or a pump able to deliver at least 51.5 m of head, because a reservoir at pavement level gives no static head for the Queen's Chamber or the Gallery (01 premise P1).",
+   "status": "conditional",
+   "basis": "Water standing at the level of an assumed pavement-level reservoir stops 21.7 m below the top of the well shaft and 51.5 m below the Gallery roof, so the step holds only with that reservoir and a pump.",
+   "numbers": [
+    {
+     "label": "Water pressure at the foot of the Descending Passage with the Gallery full",
+     "value": 797777.8880501221,
+     "low": 796060.8977956601,
+     "high": 799955.89912,
+     "unit": "Pa"
+    }
+   ],
+   "spaces": [
+    "subterranean_chamber",
+    "south_passage",
+    "well_shaft"
+   ]
+  },
+  {
+   "id": "S10",
+   "statement": "Push stroke: a pump driven down the descending passage forces water up to fill the Queen's Chamber and the Grand Gallery.",
+   "subsystem": "hydraulic",
+   "timestamp": "F 00:41:15-00:41:55",
+   "tier": 0,
+   "piece": 3,
+   "criterion": "Pass only if a named actuator and seal can supply the peak piston force of 0.6 to 1 MN and hold 0.5 to 0.8 MPa (02 section 5.5 item 4).",
+   "status": "undefined",
+   "basis": "The hypothesis names no actuator or seal for the pump, which must push with 0.43 to 1.01 MN depending on its position and hold 0.80 MPa with the Gallery full.",
+   "numbers": [
+    {
+     "label": "Water pressure at the foot of the Descending Passage with the Gallery full",
+     "value": 797777.8880501221,
+     "low": 796060.8977956601,
+     "high": 799955.89912,
+     "unit": "Pa"
+    },
+    {
+     "label": "Force on a piston at the foot of the Descending Passage, Gallery full",
+     "value": 1009806.915335478,
+     "low": 1000800.421027226,
+     "high": 1015294.3636958427,
+     "unit": "N"
+    },
+    {
+     "label": "Force on a piston at the entrance of the Descending Passage, Gallery full",
+     "value": 427821.13577400974,
+     "low": 423043.1449410382,
+     "high": 430403.0716723141,
+     "unit": "N"
+    }
+   ],
+   "spaces": [
+    "descending_passage",
+    "well_shaft",
+    "queens_passage",
+    "queens_chamber",
+    "grand_gallery"
+   ]
+  },
+  {
+   "id": "S11",
+   "statement": "Return stroke: the pump is drawn back up, the lower valve opens, and water is sucked from the aquifer into the chamber and passage.",
+   "subsystem": "hydraulic",
+   "timestamp": "F 00:41:26-00:42:55",
+   "tier": 0,
+   "piece": 3,
+   "criterion": "Fail if the suction lift from the water table to the pump exceeds about 10 m (02 section 5.5 item 2).",
+   "status": "fail",
+   "basis": "The suction margin of a pump at the foot of the Descending Passage is -5.9 m at the Old Kingdom flood peak and -0.4 m at the most favourable documented levels, against the 0 m it needs to draw.",
+   "numbers": [
+    {
+     "label": "Suction-lift margin for a pump at the foot of the Descending Passage at the Old Kingdom flood peak",
+     "value": -5.890737713722681,
+     "low": -8.434339065837976,
+     "high": -0.3653377137226794,
+     "unit": "m"
+    },
+    {
+     "label": "Height of the pit bottom, as it stood before 1837, above the Old Kingdom flood peak",
+     "value": 11.43,
+     "low": 5.43,
+     "high": 14.43,
+     "unit": "m"
+    }
+   ],
+   "spaces": [
+    "pit",
+    "subterranean_chamber",
+    "descending_passage"
+   ]
+  },
+  {
+   "id": "S12",
+   "statement": "The two strokes repeat; four activations fill the Grand Gallery.",
+   "subsystem": "hydraulic",
+   "timestamp": "F 00:42:41-00:43:10",
+   "tier": 0,
+   "piece": 3,
+   "criterion": "Pass if the stroke count, filled volume divided by swept volume, is within 25 percent of 4 for a stroke definition the hypothesis commits to in advance (01 premise P2).",
+   "status": "conditional",
+   "basis": "Filling the Gallery alone takes 4.3 strokes (3.9 to 4.7 over the ranges of the inputs) if a stroke sweeps the whole Descending Passage, 5.9 (5.4 to 6.4) if it sweeps the part below the Ascending Passage junction and 6.7 (6.2 to 7.3) if it sweeps the part below the pavement, against the 4 claimed, and the hypothesis fixes no stroke.",
+   "numbers": [
+    {
+     "label": "Strokes to fill the Gallery if a stroke sweeps the whole Descending Passage",
+     "value": 4.305157053537449,
+     "low": 3.9473887705416244,
+     "high": 4.683239862180389,
+     "unit": "1"
+    },
+    {
+     "label": "Strokes to fill the Gallery if a stroke sweeps the passage below the Ascending Passage junction",
+     "value": 5.883662974764169,
+     "low": 5.393031892375262,
+     "high": 6.401696374886313,
+     "unit": "1"
+    },
+    {
+     "label": "Strokes to fill the Gallery if a stroke sweeps the passage below pavement level",
+     "value": 6.738963567167098,
+     "low": 6.161529783035644,
+     "high": 7.3338425755295145,
+     "unit": "1"
+    }
+   ],
+   "spaces": [
+    "descending_passage",
+    "grand_gallery",
+    "queens_chamber",
+    "queens_passage",
+    "ascending_passage",
+    "well_shaft"
+   ]
+  },
+  {
+   "id": "S13",
+   "statement": "With the gallery full of water and the King's Chamber full of sulfur dioxide, the gallery level is lowered slowly; the outlet is not stated.",
+   "subsystem": "hydraulic",
+   "timestamp": "F 00:44:16-00:45:35",
+   "tier": 1,
+   "piece": 3,
+   "criterion": "Pass if, with the gallery filled, water stays out of the King's Chamber while gas can still pass the antechamber, and a drain route is stated (02 section 5.5 item 6).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 3.",
+   "numbers": [],
+   "spaces": [
+    "grand_gallery",
+    "antechamber",
+    "kings_chamber"
+   ]
+  },
+  {
+   "id": "S14",
+   "statement": "The falling water draws outside air down the King's Chamber shafts into the chamber.",
+   "subsystem": "gas",
+   "timestamp": "F 00:44:38-00:46:06",
+   "tier": 2,
+   "piece": 3,
+   "criterion": "Pass if, for a stated drain rate and realistic leak areas, most of the replacement gas comes down the shafts; report the pressure difference (02 section 5.5 item 7).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 3.",
+   "numbers": [
+    {
+     "label": "Pressure drop that draws replacement air down both King's Chamber shafts while the Gallery drains",
+     "value": 25.690054175544628,
+     "low": 0.5743028749083946,
+     "high": 1130.5033976205514,
+     "unit": "Pa"
+    }
+   ],
+   "spaces": [
+    "kc_shaft_north",
+    "kc_shaft_south",
+    "kings_chamber",
+    "grand_gallery"
+   ]
+  },
+  {
+   "id": "S15",
+   "statement": "The same suction pulls sulfur dioxide and air from the King's Chamber through the four grooves, past the three slabs, into the antechamber.",
+   "subsystem": "gas",
+   "timestamp": "F 00:49:11-00:50:48",
+   "tier": 2,
+   "piece": 3,
+   "criterion": "Pass only if a connected duct from the King's Chamber to the Gallery exists in the as-surveyed geometry with the slabs down; the blind-groove case fails and the connected case allows at most about 0.002 m2 (01 premise P3).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 3.",
+   "numbers": [],
+   "spaces": [
+    "kings_chamber",
+    "antechamber"
+   ]
+  },
+  {
+   "id": "S16",
+   "statement": "In the antechamber, ultrasound from the granite makes sulfur dioxide react with oxygen from the air to give sulfur trioxide.",
+   "subsystem": "reaction",
+   "timestamp": "F 00:46:59-00:47:10",
+   "tier": 0,
+   "piece": 4,
+   "criterion": "Pass if gas-phase conversion of sulfur dioxide to trioxide per pass through the antechamber, with no added catalyst, heat or nitrogen oxides, is at least 10 percent; fail below 0.1 percent (03 section 4.4).",
+   "status": "fail",
+   "basis": "At the collision limit, sulfur dioxide lasts 2.8e+17 s (8.8e+09 years) against oxygen with no catalyst, so a pass of 10 min to 6 h converts a fraction of 9e-14 at most and 2e-15 at the least.",
+   "numbers": [
+    {
+     "label": "Shortest possible lifetime of sulfur dioxide against uncatalysed oxidation in air",
+     "value": 2.788807984668792e+17,
+     "low": 2.472777230608715e+17,
+     "high": 3.145228724642502e+17,
+     "unit": "s"
+    }
+   ],
+   "spaces": [
+    "antechamber"
+   ]
+  },
+  {
+   "id": "S17",
+   "statement": "Sulfur trioxide, leftover sulfur dioxide and air pass on into the gas space of the Grand Gallery above the falling water.",
+   "subsystem": "gas",
+   "timestamp": "F 00:52:13-00:52:37",
+   "tier": 2,
+   "piece": 3,
+   "criterion": "Pass if, with the openings as surveyed, more than 90 percent of the displaced volume is drawn through the antechamber path rather than through other openings (01 premise P4).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 3.",
+   "numbers": [],
+   "spaces": [
+    "antechamber",
+    "grand_gallery"
+   ]
+  },
+  {
+   "id": "S18",
+   "statement": "The pump is worked again and the gallery level is raised slowly, again in four activations, bringing the gases into contact with water.",
+   "subsystem": "hydraulic",
+   "timestamp": "F 00:52:34-00:53:13",
+   "tier": 0,
+   "piece": 3,
+   "criterion": "Pass if four strokes raise the water surface to the gallery roof given the real swept volume; report the number of strokes actually needed (02 section 5.5 item 3).",
+   "status": "conditional",
+   "basis": "Filling the Gallery alone takes 4.3 strokes (3.9 to 4.7 over the ranges of the inputs) if a stroke sweeps the whole Descending Passage, 5.9 (5.4 to 6.4) if it sweeps the part below the Ascending Passage junction and 6.7 (6.2 to 7.3) if it sweeps the part below the pavement, against the 4 claimed, and the hypothesis fixes no stroke.",
+   "numbers": [
+    {
+     "label": "Strokes to fill the Gallery if a stroke sweeps the whole Descending Passage",
+     "value": 4.305157053537449,
+     "low": 3.9473887705416244,
+     "high": 4.683239862180389,
+     "unit": "1"
+    },
+    {
+     "label": "Strokes to fill the Gallery if a stroke sweeps the passage below the Ascending Passage junction",
+     "value": 5.883662974764169,
+     "low": 5.393031892375262,
+     "high": 6.401696374886313,
+     "unit": "1"
+    },
+    {
+     "label": "Strokes to fill the Gallery if a stroke sweeps the passage below pavement level",
+     "value": 6.738963567167098,
+     "low": 6.161529783035644,
+     "high": 7.3338425755295145,
+     "unit": "1"
+    }
+   ],
+   "spaces": [
+    "descending_passage",
+    "grand_gallery"
+   ]
+  },
+  {
+   "id": "S19",
+   "statement": "Leftover sulfur dioxide dissolves in the water to give sulfurous acid.",
+   "subsystem": "reaction",
+   "timestamp": "F 00:53:11-00:53:46",
+   "tier": 2,
+   "piece": 4,
+   "criterion": "Pass if at least 90 percent of the sulfur is captured into the liquid in any oxidation state within the cycle; fail below 50 percent (03 section 4.4).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 4.",
+   "numbers": [],
+   "spaces": [
+    "grand_gallery"
+   ]
+  },
+  {
+   "id": "S20",
+   "statement": "Sulfurous acid is oxidised quickly by air to dilute sulfuric acid.",
+   "subsystem": "reaction",
+   "timestamp": "F 00:53:30-00:53:46",
+   "tier": 0,
+   "piece": 4,
+   "criterion": "Pass if the overall yield of sulfate from dissolved sulfur dioxide within one stated cycle is at least 50 percent; fail below 5 percent (03 section 4.4).",
+   "status": "conditional",
+   "basis": "The oxygen for a full batch needs 2.7 to 28 years to cross the still water surface in the Gallery, so quick oxidation holds only if something aerates the water, which the hypothesis does not describe.",
+   "numbers": [
+    {
+     "label": "Sulfur dioxide the King's Chamber holds if filled with the pure gas",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
+    },
+    {
+     "label": "Acid strength ceiling set by the sulfur in one King's Chamber of gas",
+     "value": 23.245046231757737,
+     "low": 20.710608660387354,
+     "high": 25.831181654665567,
+     "unit": "mol/m3"
+    },
+    {
+     "label": "Acid strength ceiling if the oxygen must arrive in the same Gallery-volume of drawn gas",
+     "value": 12.275075057349957,
+     "low": 11.87015752288352,
+     "high": 12.488073062856635,
+     "unit": "mol/m3"
+    },
+    {
+     "label": "Time for the oxygen of one full batch to cross the still water surface in the Gallery",
+     "value": 85501639.42708224,
+     "low": 80556008.54091254,
+     "high": 891242783.8344532,
+     "unit": "s"
+    }
+   ],
+   "spaces": [
+    "grand_gallery"
+   ]
+  },
+  {
+   "id": "S21",
+   "statement": "Sulfur trioxide then dissolves into that dilute acid, not plain water, which is said to avoid a violent reaction and boil-over.",
+   "subsystem": "reaction",
+   "timestamp": "F 00:43:10-00:43:57",
+   "tier": 0,
+   "piece": 4,
+   "criterion": "Pass if four-stage filling keeps the batch below boiling for the stated chemistry; report the adiabatic temperature rise against the boiling margin (00 section 7 item 10).",
+   "status": "pass",
+   "basis": "If the first of the 4 claimed fills took the whole heat of the largest batch, it would warm by 7.3 K and leave a margin of 72.7 K below boiling (62.3 K at the least), so nothing boils over with or without the dilute-acid step.",
+   "numbers": [
+    {
+     "label": "Sulfur dioxide the King's Chamber holds if filled with the pure gas",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
+    },
+    {
+     "label": "Acid strength ceiling set by the sulfur in one King's Chamber of gas",
+     "value": 23.245046231757737,
+     "low": 20.710608660387354,
+     "high": 25.831181654665567,
+     "unit": "mol/m3"
+    },
+    {
+     "label": "Adiabatic temperature rise of the Gallery water for the largest batch",
+     "value": 1.820059984506862,
+     "low": 1.5077124917119311,
+     "high": 2.0287422212216213,
+     "unit": "K"
+    },
+    {
+     "label": "Margin to boiling if the first of the claimed fills takes the whole heat of the largest batch",
+     "value": 72.71976006197255,
+     "low": 62.28656346963536,
+     "high": 78.65520677615864,
+     "unit": "K"
+    }
+   ],
+   "spaces": [
+    "grand_gallery"
+   ]
+  },
+  {
+   "id": "S22",
+   "statement": "No gas is pushed back into the King's Chamber, because both gases dissolve as fast as the water rises.",
+   "subsystem": "reaction",
+   "timestamp": "F 00:58:25-00:58:55",
+   "tier": 2,
+   "piece": 4,
+   "criterion": "Pass if gas uptake keeps pace with the rising water so that no gas is forced back through the grooves (00 section 7 item 9).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 4.",
+   "numbers": [],
+   "spaces": [
+    "grand_gallery",
+    "antechamber",
+    "kings_chamber"
+   ]
+  },
+  {
+   "id": "S23",
+   "statement": "Acid attacks the limestone walls of the gallery and Queen's Chamber, forming a calcium sulfate layer that stops further attack and re-forms where it chips off.",
+   "subsystem": "reaction",
+   "timestamp": "F 01:18:47-01:21:00",
+   "tier": 2,
+   "piece": 4,
+   "criterion": "Pass if a calcium sulfate layer forms and persists over ten fill and drain cycles with fresh water and limits wall loss to a rate compatible with the surviving surfaces; fail if it is stripped each cycle (03 section 4.4; 00 section 7 item 11).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 4.",
+   "numbers": [],
+   "spaces": [
+    "grand_gallery",
+    "queens_chamber"
+   ]
+  },
+  {
+   "id": "S24",
+   "statement": "Offered as speculation: heat from the gallery reaction is removed by a water-filled chamber in the Big Void above the gallery.",
+   "subsystem": "auxiliary",
+   "timestamp": "F 00:34:03-00:34:30",
+   "tier": 0,
+   "piece": 4,
+   "criterion": "Pass if the bulk temperature rise of the batch is at least 20 K, which would justify a heat exchanger; fail below 5 K (03 section 4.4).",
+   "status": "fail",
+   "basis": "The largest possible batch warms the Gallery water by 1.8 K (2.0 K at most), below the 5 K at which a heat exchanger would start to matter.",
+   "numbers": [
+    {
+     "label": "Sulfur dioxide the King's Chamber holds if filled with the pure gas",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
+    },
+    {
+     "label": "Acid strength ceiling set by the sulfur in one King's Chamber of gas",
+     "value": 23.245046231757737,
+     "low": 20.710608660387354,
+     "high": 25.831181654665567,
+     "unit": "mol/m3"
+    },
+    {
+     "label": "Adiabatic temperature rise of the Gallery water for the largest batch",
+     "value": 1.820059984506862,
+     "low": 1.5077124917119311,
+     "high": 2.0287422212216213,
+     "unit": "K"
+    }
+   ],
+   "spaces": [
+    "big_void",
+    "grand_gallery"
+   ]
+  },
+  {
+   "id": "S25",
+   "statement": "Offered as speculation: the slab with copper pins in the Queen's Chamber south shaft is an ultrasonic emitter, with a receiver in the north shaft, used to monitor the liquid level.",
+   "subsystem": "auxiliary",
+   "timestamp": "F 01:21:08-01:24:12",
+   "tier": 0,
+   "piece": 2,
+   "criterion": "Pass if the through-path signal-to-noise ratio at the north slab is at least 10 dB with the bounded source and the received signal varies monotonically with liquid level over a useful range (05 section 5.5 item 5).",
+   "status": "fail",
+   "basis": "A slab driven at the air-breakdown field emits 50 dB and the path to the north slab loses 101 dB at 13 kHz, so the signal arrives at -52 dB (-55 dB at the least), against the 10 dB needed above a 0 dB noise floor.",
+   "numbers": [
+    {
+     "label": "Sound level from the Queen's Chamber shaft slab driven at the air-breakdown field",
+     "value": 49.558576392138505,
+     "low": 47.974951471186,
+     "high": 107.36967600710793,
+     "unit": "dB"
+    },
+    {
+     "label": "Path loss from the south slab to the north slab of the Queen's Chamber shafts at 13 kHz",
+     "value": 101.1534943536241,
+     "low": 83.92844290698613,
+     "high": 103.26400657527503,
+     "unit": "dB"
+    }
+   ],
+   "spaces": [
+    "qc_shaft_south",
+    "qc_shaft_north",
+    "queens_chamber"
+   ]
+  },
+  {
+   "id": "S26",
+   "statement": "All the liquid, water and product, is withdrawn through the Queen's Chamber; route, driver and destination are not stated.",
+   "subsystem": "output",
+   "timestamp": "F 00:54:28-00:54:42",
+   "tier": 2,
+   "piece": 3,
+   "criterion": "Undefined until the hypothesis names the outlet, driver and destination; the Queen's Chamber shafts are dead-end ducts and no other outlet is surveyed (06, geometry facts handed to other domains).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 3.",
+   "numbers": [],
+   "spaces": [
+    "queens_chamber",
+    "queens_passage"
+   ]
+  },
+  {
+   "id": "S27",
+   "statement": "Dilute sulfuric acid goes to the central (Khafre) pyramid and reacts with sodium chloride to give hydrogen chloride gas, collected as hydrochloric acid.",
+   "subsystem": "output",
+   "timestamp": "F 00:27:55-00:28:12",
+   "tier": 0,
+   "piece": 4,
+   "criterion": "Pass if the partial pressure of hydrogen chloride over the dilute acid and salt mixture is at least 1e-3 atm; fail below 1e-5 atm (03 section 4.4).",
+   "status": "fail",
+   "basis": "Hydrogen chloride stands at 1.2e-07 atm over the dilute acid and salt mixture, and at 1.5e-07 atm over saturated brine, against the 1e-05 atm below which the criterion fails the claim.",
+   "numbers": [
+    {
+     "label": "Hydrogen chloride pressure over the dilute acid and salt mixture",
+     "value": 0.0125,
+     "low": 0.00375,
+     "high": 0.01525,
+     "unit": "Pa"
+    }
+   ],
+   "spaces": []
+  },
+  {
+   "id": "S28",
+   "statement": "Dilute acid is run through cut channels into the boat pits, where the electrolyte bridges gaps the pits cut in the iron-vein network (circuit breakers).",
+   "subsystem": "output",
+   "timestamp": "F 01:33:34-01:36:29",
+   "tier": 0,
+   "piece": 5,
+   "criterion": "Pass only if the pit's resistance ratio between empty and acid-filled exceeds about 10 and the veins on either side can carry current over the link length; fail if the vein-to-host conductivity contrast is below 1e3 (07 section 4.2).",
+   "status": "conditional",
+   "basis": "A vein must conduct 2.7e+05 times better than the rock to carry current 100 m; the best measured specular hematite reaches 3.3e+04 times in 100 ohm m rock and 1.0e+06 times in the most resistive 3000 ohm m rock, earthy red hematite reaches 4.2e-02 times at most, and no Giza vein has been measured.",
+   "numbers": [
+    {
+     "label": "Vein-to-rock conductivity contrast a vein needs to carry current over the link length",
+     "value": 274712.19114066666,
+     "low": 502.24295096399356,
+     "high": 5670704.42776228,
+     "unit": "1"
+    }
+   ],
+   "spaces": []
+  },
+  {
+   "id": "S29",
+   "statement": "Closed breakers route voltage along the iron veins to the Osiris Shaft, the satellite pyramids, mastabas, temples, the third pyramid and the Khentkawes structures.",
+   "subsystem": "output",
+   "timestamp": "F 01:31:41-01:32:25",
+   "tier": 0,
+   "piece": 5,
+   "criterion": "Pass only if a vein's leakage length is at least the claimed link length and the power delivered at the load is non-trivial for a realistic driving field (07 section 4.2).",
+   "status": "conditional",
+   "basis": "A vein must conduct 2.7e+05 times better than the rock to carry current 100 m; the best measured specular hematite reaches 3.3e+04 times in 100 ohm m rock and 1.0e+06 times in the most resistive 3000 ohm m rock, earthy red hematite reaches 4.2e-02 times at most, and no Giza vein has been measured.",
+   "numbers": [
+    {
+     "label": "Vein-to-rock conductivity contrast a vein needs to carry current over the link length",
+     "value": 274712.19114066666,
+     "low": 502.24295096399356,
+     "high": 5670704.42776228,
+     "unit": "1"
+    }
+   ],
+   "spaces": []
+  },
+  {
+   "id": "S30",
+   "statement": "The acids are used on the plateau for leach mining, metal separation and metallurgy.",
+   "subsystem": "output",
+   "timestamp": "F 00:09:38-00:10:10",
+   "tier": 0,
+   "piece": 4,
+   "criterion": "Pass if the product strength at draw-off is at least 0.05 mol/L; fail below 0.005 mol/L (03 section 4.4).",
+   "status": "undefined",
+   "basis": "The hypothesis gives no gas fraction or target strength, and pure sulfur dioxide at one atmosphere caps the product at 23 mol/m3, or 12 mol/m3 if its oxygen comes with the same draw of air.",
+   "numbers": [
+    {
+     "label": "Sulfur dioxide the King's Chamber holds if filled with the pure gas",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
+    },
+    {
+     "label": "Acid strength ceiling set by the sulfur in one King's Chamber of gas",
+     "value": 23.245046231757737,
+     "low": 20.710608660387354,
+     "high": 25.831181654665567,
+     "unit": "mol/m3"
+    },
+    {
+     "label": "Acid strength ceiling if the oxygen must arrive in the same Gallery-volume of drawn gas",
+     "value": 12.275075057349957,
+     "low": 11.87015752288352,
+     "high": 12.488073062856635,
+     "unit": "mol/m3"
+    }
+   ],
+   "spaces": [
+    "kings_chamber",
+    "grand_gallery"
+   ]
+  },
+  {
+   "id": "S31",
+   "statement": "The whole sequence then repeats, not continuously but paced by storms.",
+   "subsystem": "all",
+   "timestamp": "F 01:09:08-01:09:55",
+   "tier": 0,
+   "piece": 2,
+   "criterion": "Report the cycles per year allowed by the expected direct-strike rate; the hypothesis states no required rate, so the number has no pass threshold until one is given (04 section 4.4; 00 section 5 item 26).",
+   "status": "undefined",
+   "basis": "Direct strikes come at most 0.12 times per year, one every 8 years, and the hypothesis states no cycle rate to compare this with.",
+   "numbers": [
+    {
+     "label": "Direct lightning strikes on the pyramid per year, at most",
+     "value": 0.12171502150680269,
+     "low": 0.0303550461598388,
+     "high": 0.244020431814095,
+     "unit": "1/yr"
+    }
+   ],
+   "spaces": []
+  },
+  {
+   "id": "E01",
+   "statement": "Cited paper: hydrogen sulfide rises under the Giza plateau, tied to hydrocarbon seepage and sulfuric-acid cave formation.",
+   "subsystem": "gas",
+   "timestamp": "F 00:24:18-00:28:49",
+   "tier": 2,
+   "piece": 5,
+   "criterion": "Pass if an opened source gives a measured hydrogen sulfide flux, composition or source pressure under the plateau that meets the chemistry model's minimum feed; fail if the required flux exceeds active-seep analogues by orders of magnitude (07 section 4.4).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 5.",
+   "numbers": [],
+   "spaces": []
+  },
+  {
+   "id": "E02",
+   "statement": "That paper's X-ray fluorescence analyses found metal compounds matching samples from the plateau's iron deposits.",
+   "subsystem": "output",
+   "timestamp": "F 00:28:12-00:29:32",
+   "tier": 2,
+   "piece": 5,
+   "criterion": "Documentary check, not simulated: pass if the elements and levels reported in the cited paper match those reported for the iron-oxide vein samples.",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 5.",
+   "numbers": [],
+   "spaces": []
+  },
+  {
+   "id": "E03",
+   "statement": "Cited paper: caves can form in iron-ore bodies, as at the Tomb of the Birds.",
+   "subsystem": "gas",
+   "timestamp": "F 00:22:10-00:24:03",
+   "tier": 2,
+   "piece": 5,
+   "criterion": "Documentary check, not simulated: pass if a survey of the Giza caves shows cave forms cut in iron ore; cases at other sites do not decide it.",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 5.",
+   "numbers": [],
+   "spaces": []
+  },
+  {
+   "id": "E04",
+   "statement": "Rock forms near the trial passages and the Tomb of the Birds look like Austrian sulfuric-acid caves.",
+   "subsystem": "gas",
+   "timestamp": "F 00:20:49-00:22:32",
+   "tier": 2,
+   "piece": 5,
+   "criterion": "Documentary check, not simulated: pass only if mineral evidence of sulfuric-acid cave formation is published for those sites; visual likeness does not decide it.",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 5.",
+   "numbers": [],
+   "spaces": []
+  },
+  {
+   "id": "E05",
+   "statement": "Cited paper: a planned off-world sulfuric-acid process for metal extraction mirrors the pyramid's purpose.",
+   "subsystem": "output",
+   "timestamp": "F 00:06:10-00:08:25",
+   "tier": 2,
+   "piece": 6,
+   "criterion": "Analogy only, no test: recorded so that the reply can state what the cited paper does and does not say about the pyramid.",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 6.",
+   "numbers": [],
+   "spaces": []
+  },
+  {
+   "id": "E06",
+   "statement": "Ancient Egyptians mined native sulfur at sites near the Suez Canal.",
+   "subsystem": "gas",
+   "timestamp": "F 00:11:20-00:12:22",
+   "tier": 2,
+   "piece": 6,
+   "criterion": "Documentary check, not simulated: pass if a dated archaeological source records Old Kingdom sulfur mining; the claim belongs to the superseded sulfur-burning version of the hypothesis.",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 6.",
+   "numbers": [],
+   "spaces": []
+  },
+  {
+   "id": "E07",
+   "statement": "Cited patent: sulfuric acid can be made from hydrogen sulfide in three steps with a heat exchanger.",
+   "subsystem": "reaction",
+   "timestamp": "F 00:33:49-00:35:14",
+   "tier": 2,
+   "piece": 4,
+   "criterion": "Pass only if every step of the cited patent can run at ambient temperature without a catalyst, since the hypothesis supplies neither heat nor catalyst (03 section 2c and check V14).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 4.",
+   "numbers": [],
+   "spaces": []
+  },
+  {
+   "id": "E08",
+   "statement": "A hole in the King's Chamber floor beside the box existed before excavators dug it further, found debris and gave up.",
+   "subsystem": "gas",
+   "timestamp": "F 00:13:30-00:17:47",
+   "tier": 2,
+   "piece": 6,
+   "criterion": "Documentary check, not simulated: pass if a survey older than the excavations records an original lined shaft in the King's Chamber floor.",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 6.",
+   "numbers": [],
+   "spaces": [
+    "kings_chamber"
+   ]
+  },
+  {
+   "id": "E09",
+   "statement": "That hole connected to the satellite pyramids; the speaker concedes this is not known.",
+   "subsystem": "gas",
+   "timestamp": "F 00:17:46-00:17:56",
+   "tier": 2,
+   "piece": 6,
+   "criterion": "Pass only if a surveyed conduit from below the structure to the King's Chamber floor exists; the chamber floor is about 43 m above the pavement.",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 6.",
+   "numbers": [],
+   "spaces": [
+    "kings_chamber"
+   ]
+  },
+  {
+   "id": "E10",
+   "statement": "The King's Chamber air shafts were blocked, and air flowed once they were cleared.",
+   "subsystem": "gas",
+   "timestamp": "F 00:16:50-00:17:18",
+   "tier": 2,
+   "piece": 6,
+   "criterion": "Documentary check, not simulated: pass if the excavation record reports air flow resuming when a shaft was cleared.",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 6.",
+   "numbers": [],
+   "spaces": [
+    "kc_shaft_north",
+    "kc_shaft_south",
+    "kings_chamber"
+   ]
+  },
+  {
+   "id": "E11",
+   "statement": "The King's Chamber air shafts ended horizontally at the casing and aim at no stars.",
+   "subsystem": "gas",
+   "timestamp": "F 00:46:59-00:49:12",
+   "tier": 2,
+   "piece": 1,
+   "criterion": "Geometric premise: pass for a shaft only if a survey shows its outer end running level through the casing; carried as the kc_shaft_ends_level variant, and the shaft exits must fall on the casing plane at Z = 80 +/- 1 m in either case (01 fidelity criterion).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 1.",
+   "numbers": [],
+   "spaces": [
+    "kc_shaft_north",
+    "kc_shaft_south"
+   ]
+  },
+  {
+   "id": "E12",
+   "statement": "The antechamber held three granite slabs and has four grooves on its south wall.",
+   "subsystem": "gas",
+   "timestamp": "F 00:36:36-00:36:52",
+   "tier": 2,
+   "piece": 1,
+   "criterion": "Geometric premise: pass for the grooves as a gas path only if a connected duct exists in the as-surveyed geometry; the blind-groove case fails (01 premise P3).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 1.",
+   "numbers": [],
+   "spaces": [
+    "antechamber"
+   ]
+  },
+  {
+   "id": "E13",
+   "statement": "The antechamber's upper cavity has the most striking acoustics in the pyramid.",
+   "subsystem": "electrical",
+   "timestamp": "F 00:59:54-01:00:47",
+   "tier": 1,
+   "piece": 2,
+   "criterion": "Rank the modal quality factor and decay time of the antechamber, King's Chamber and Grand Gallery in an audio-band model; pass if the antechamber ranks first (05 section 5.5 item 4).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 2.",
+   "numbers": [
+    {
+     "label": "King's Chamber volume, floor to ceiling",
+     "value": 320.416169419015,
+     "low": 317.002503781392,
+     "high": 324.003095458416,
+     "unit": "m3"
+    }
+   ],
+   "spaces": [
+    "antechamber",
+    "kings_chamber",
+    "grand_gallery"
+   ]
+  },
+  {
+   "id": "E14",
+   "statement": "An external reservoir fed the Subterranean Chamber and check valves existed there, after Cadman's ram-pump model.",
+   "subsystem": "hydraulic",
+   "timestamp": "F 00:37:42-00:39:44",
+   "tier": 0,
+   "piece": 3,
+   "criterion": "Pass if a ram cycle sustains itself with the chamber as it exists, which has no outfall; report the delivered fraction and the water that must be spilled (02 section 5.5 item 8).",
+   "status": "fail",
+   "basis": "A ram at the foot of the Descending Passage delivers 22 percent of its drive water to the Gallery roof, so one Gallery fill spills 2022 m3 (1259 m3 at the least) into a chamber of 300 m3 (450 m3 at most) that has no outfall.",
+   "numbers": [
+    {
+     "label": "Share of its drive water that a hydraulic ram delivers to the Gallery roof",
+     "value": 0.22084680002061413,
+     "low": 0.2205932141017149,
+     "high": 0.29516300287073816,
+     "unit": "1"
+    }
+   ],
+   "spaces": [
+    "subterranean_chamber",
+    "well_shaft"
+   ]
+  },
+  {
+   "id": "E15",
+   "statement": "The south passage of the Subterranean Chamber is a dead end.",
+   "subsystem": "hydraulic",
+   "timestamp": "F 00:38:16-00:39:09",
+   "tier": 2,
+   "piece": 1,
+   "criterion": "Geometric premise: pass if the surveyed passage ends blind in rock with no outlet (01 claim 6).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 1.",
+   "numbers": [],
+   "spaces": [
+    "south_passage"
+   ]
+  },
+  {
+   "id": "E16",
+   "statement": "One-way valves sat at the base of the shaft, after a drawing by an unnamed German engineering team.",
+   "subsystem": "hydraulic",
+   "timestamp": "F 00:39:19-00:39:44",
+   "tier": 2,
+   "piece": 3,
+   "criterion": "Documentary check, not simulated: pass if valve seats or valve parts are recorded in the Subterranean Chamber or its pit.",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 3.",
+   "numbers": [],
+   "spaces": [
+    "subterranean_chamber",
+    "pit"
+   ]
+  },
+  {
+   "id": "E17",
+   "statement": "The debris-filled shaft under the pyramid holds wet sand and a fluctuating water level.",
+   "subsystem": "hydraulic",
+   "timestamp": "F 00:42:10-00:42:43",
+   "tier": 0,
+   "piece": 3,
+   "criterion": "Counts as evidence of an ancient aquifer link only if the pit as it stood before 1837 reaches a documented water table; the suction test then decides the draw (02 section 5.5 item 2).",
+   "status": "fail",
+   "basis": "The pit as it stood before 1837 had a clearance of 11.4 m over the Old Kingdom flood peak (5.4 m at the least), so it reached no documented water table, while the shaft sunk in 1837 and 1838 ends 2.9 m above today's water table, near enough that modern groundwater cannot be excluded as the cause of wet fill.",
+   "numbers": [
+    {
+     "label": "Height of the pit bottom, as it stood before 1837, above the Old Kingdom flood peak",
+     "value": 11.43,
+     "low": 5.43,
+     "high": 14.43,
+     "unit": "m"
+    }
+   ],
+   "spaces": [
+    "pit"
+   ]
+  },
+  {
+   "id": "E18",
+   "statement": "Two cited papers: ultrasound can enhance or alter chemical reactions.",
+   "subsystem": "reaction",
+   "timestamp": "F 01:00:45-01:01:47",
+   "tier": 0,
+   "piece": 4,
+   "criterion": "Pass for a dry gas if the time-averaged Arrhenius enhancement reaches 2 for the sulfur dioxide oxidation barrier, which needs a temperature swing of about 12 K or about 174 dB (05 section 5.5 item 2).",
+   "status": "conditional",
+   "basis": "The strongest airborne ultrasound engineered, 172 dB, speeds a dry-gas reaction 2.2 times if its barrier is the 150 kJ/mol of the direct gas reaction and 1.5 times if it is 100 kJ/mol, so the doubling the criterion asks for is met only at the higher barrier, and over the ranges of the inputs the gain runs from 1.4 to 2.3 times.",
+   "numbers": [
+    {
+     "label": "Speed-up of a dry-gas reaction by the temperature swing of the strongest airborne ultrasound",
+     "value": 2.212359170578301,
+     "low": 1.4378371160747938,
+     "high": 2.265069424195323,
+     "unit": "1"
+    }
+   ],
+   "spaces": [
+    "antechamber"
+   ]
+  },
+  {
+   "id": "E19",
+   "statement": "Cited 2018 study: the pyramid's shape concentrates electric field near the King's Chamber for waves from above and at the top for waves from below.",
+   "subsystem": "electrical",
+   "timestamp": "F 01:01:45-01:07:43",
+   "tier": 1,
+   "piece": 1,
+   "criterion": "As modelled, pass if the band-maximum volume-mean field-intensity ratio in the King's Chamber in case R1 is at least twice that of its control; under realism, pass if in case V4 the ratio is at least 2 and at least twice its control across 6.7e-4 to 3.3e-3 S/m, fail if it is below 2 at 6.7e-4 S/m, otherwise conditional (spec section 6).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 1.",
+   "numbers": [],
+   "spaces": [
+    "paper_kings_chamber",
+    "paper_queens_chamber",
+    "paper_lower_chamber",
+    "kings_chamber"
+   ]
+  },
+  {
+   "id": "E20",
+   "statement": "The speaker's reading of that study: the field excludes the tip, so the flat top is functional and there never was a capstone.",
+   "subsystem": "electrical",
+   "timestamp": "F 01:03:46-01:04:44",
+   "tier": 1,
+   "piece": 1,
+   "criterion": "Pass only if the band-maximum summit metric, the volume mean of the field-intensity ratio in the masonry between Z 132.4 m and 137.4 m, for the apex truncated at 137.4 m is at least twice that for the apex pointed at 146.71 m in the on-ground case (spec section 6).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 1.",
+   "numbers": [],
+   "spaces": []
+  },
+  {
+   "id": "E21",
+   "statement": "Telluric currents concentrate over ore deposits, and the pyramids were sited for that.",
+   "subsystem": "electrical",
+   "timestamp": "F 01:04:02-01:06:17",
+   "tier": 1,
+   "piece": 2,
+   "criterion": "Pass only if a direct-current conduction model with conductive sheets for the ore bodies gives a non-negligible field or charge at the summit or in the granite (04 section 5.3).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 2.",
+   "numbers": [],
+   "spaces": []
+  },
+  {
+   "id": "E22",
+   "statement": "Red granite has a dielectric constant of 9 and stores electric field better than limestone.",
+   "subsystem": "electrical",
+   "timestamp": "F 01:07:20-01:07:59",
+   "tier": 0,
+   "piece": 2,
+   "criterion": "Pass if the charge relaxation time of the granite is at least as long as the time over which the source field changes, which is seconds for a storm; fail if it is shorter by orders of magnitude (04 sections 4.3 and 5.2).",
+   "status": "fail",
+   "basis": "Charge in the granite relaxes in 5.3 ms in the driest measured case (21 ms at most) and in the limestone in 31 ns, against a storm field that changes over seconds.",
+   "numbers": [
+    {
+     "label": "Charge relaxation time of the limestone masonry",
+     "value": 3.0989e-08,
+     "low": 1.3280999999999998e-08,
+     "high": 1.1952899999999998e-07,
+     "unit": "s"
+    },
+    {
+     "label": "Charge relaxation time of the granite, driest measured case",
+     "value": 0.005312399999999999,
+     "low": 3.0989e-07,
+     "high": 0.021249599999999997,
+     "unit": "s"
+    }
+   ],
+   "spaces": [
+    "kings_chamber",
+    "antechamber"
+   ]
+  },
+  {
+   "id": "E23",
+   "statement": "The speaker's earlier hypothesis: the Serapeum boxes worked as field-driven ultrasound transducers.",
+   "subsystem": "electrical",
+   "timestamp": "F 00:50:48-00:51:13",
+   "tier": 2,
+   "piece": 6,
+   "criterion": "Analogy only, no test in this project.",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 6.",
+   "numbers": [],
+   "spaces": []
+  },
+  {
+   "id": "E24",
+   "statement": "Whistle-like rock formations in the western field signalled wind changes.",
+   "subsystem": "electrical",
+   "timestamp": "F 01:09:52-01:10:54",
+   "tier": 2,
+   "piece": 6,
+   "criterion": "Cannot be simulated; held as a documented constraint with no computed verdict (06, evidence that cannot be simulated).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 6.",
+   "numbers": [],
+   "spaces": []
+  },
+  {
+   "id": "E25",
+   "statement": "The Queen's Chamber shafts were closed by 3 to 5 in of limestone and had to be broken into.",
+   "subsystem": "auxiliary",
+   "timestamp": "F 01:14:28-01:14:57",
+   "tier": 2,
+   "piece": 1,
+   "criterion": "Geometric premise: pass if the survey record shows the shaft mouths closed by uncut wall stone of about that thickness until they were opened (01 claim 3).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 1.",
+   "numbers": [],
+   "spaces": [
+    "qc_shaft_north",
+    "qc_shaft_south",
+    "queens_chamber"
+   ]
+  },
+  {
+   "id": "E26",
+   "statement": "Salt from the Queen's Chamber was analysed in 1978 and held calcium carbonate, sodium chloride and calcium sulfate.",
+   "subsystem": "reaction",
+   "timestamp": "F 01:17:14-01:18:01",
+   "tier": 2,
+   "piece": 4,
+   "criterion": "Documentary check, not simulated: pass if the 1978 analysis letter lists those three phases.",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 4.",
+   "numbers": [],
+   "spaces": [
+    "queens_chamber"
+   ]
+  },
+  {
+   "id": "E27",
+   "statement": "No calcium chloride was found, so no hydrochloric acid was present there.",
+   "subsystem": "reaction",
+   "timestamp": "F 01:17:28-01:18:01",
+   "tier": 2,
+   "piece": 4,
+   "criterion": "Counts for the hypothesis only if the acid-wall model predicts something the no-acid salt model cannot, such as no sodium chloride in the wetted zone, and that is then found (06, pass/fail item 4).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 4.",
+   "numbers": [],
+   "spaces": [
+    "queens_chamber"
+   ]
+  },
+  {
+   "id": "E28",
+   "statement": "Calcium sulfate covers the Grand Gallery walls.",
+   "subsystem": "reaction",
+   "timestamp": "F 00:54:39-00:55:10",
+   "tier": 2,
+   "piece": 4,
+   "criterion": "Pass if a crust is found whose upper limit follows a level surface at the modelled fill height in both the Queen's Chamber and the Grand Gallery (06, pass/fail item 1).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 4.",
+   "numbers": [],
+   "spaces": [
+    "grand_gallery",
+    "queens_chamber"
+   ]
+  },
+  {
+   "id": "E29",
+   "statement": "Calcium sulfate is insoluble in dilute sulfuric acid and forms a protective coat on carbonate.",
+   "subsystem": "reaction",
+   "timestamp": "F 01:19:17-01:20:15",
+   "tier": 0,
+   "piece": 4,
+   "criterion": "Pass if at least 80 percent of the acid survives wall contact for one cycle; fail below 20 percent (03 section 4.4).",
+   "status": "conditional",
+   "basis": "Bare limestone neutralises 41 percent of the strongest possible batch (32 to 77 percent over the input ranges) before gypsum saturates and can coat it, so 59 percent of the acid survives one cycle, and more only where a coat is already in place.",
+   "numbers": [
+    {
+     "label": "Sulfur dioxide the King's Chamber holds if filled with the pure gas",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
+    },
+    {
+     "label": "Acid strength ceiling set by the sulfur in one King's Chamber of gas",
+     "value": 23.245046231757737,
+     "low": 20.710608660387354,
+     "high": 25.831181654665567,
+     "unit": "mol/m3"
+    },
+    {
+     "label": "Share of the strongest batch that bare limestone neutralises before gypsum can coat it",
+     "value": 0.41491278820027744,
+     "low": 0.32268683950713095,
+     "high": 0.7722484601556031,
+     "unit": "1"
+    }
+   ],
+   "spaces": [
+    "grand_gallery",
+    "queens_chamber"
+   ]
+  },
+  {
+   "id": "E30",
+   "statement": "Small pits all over the Queen's Chamber walls record repeated loss and re-forming of that coat.",
+   "subsystem": "reaction",
+   "timestamp": "F 01:20:15-01:21:11",
+   "tier": 2,
+   "piece": 4,
+   "criterion": "Pass if gypsum is found as a replacement rind on etched calcite with dissolution textures beneath it, not as efflorescence on an intact tooled surface (06, pass/fail item 2).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 4.",
+   "numbers": [],
+   "spaces": [
+    "queens_chamber"
+   ]
+  },
+  {
+   "id": "E31",
+   "statement": "The slab at the end of the Queen's Chamber south shaft is Tura limestone with copper pins, and Tura limestone has much more quartz than the local bedrock.",
+   "subsystem": "auxiliary",
+   "timestamp": "F 01:21:08-01:22:28",
+   "tier": 2,
+   "piece": 2,
+   "criterion": "Documentary check, not simulated: pass if quantitative mineralogy shows Tura limestone to be quartz-rich compared with Mokattam bedrock.",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 2.",
+   "numbers": [],
+   "spaces": [
+    "qc_shaft_south"
+   ]
+  },
+  {
+   "id": "E32",
+   "statement": "A large void lies above the Grand Gallery, found by muon imaging.",
+   "subsystem": "auxiliary",
+   "timestamp": "F 00:35:48-00:36:32",
+   "tier": 2,
+   "piece": 1,
+   "criterion": "Geometric premise: pass if a published void of comparable size lies above the Gallery; its use as a heat exchanger is judged separately by the thermal criterion for the masonry between them (01 premise P5).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 1.",
+   "numbers": [],
+   "spaces": [
+    "big_void",
+    "grand_gallery"
+   ]
+  },
+  {
+   "id": "E33",
+   "statement": "Sodium chloride deposits cover the inside of the central pyramid's main chamber.",
+   "subsystem": "output",
+   "timestamp": "F 01:27:56-01:28:55",
+   "tier": 2,
+   "piece": 5,
+   "criterion": "Documentary check, not simulated: pass if a published analysis identifies sodium chloride on the walls of Khafre's burial chamber.",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 5.",
+   "numbers": [],
+   "spaces": []
+  },
+  {
+   "id": "E34",
+   "statement": "Chemical analysis shows catalyst material inside the Red Pyramid.",
+   "subsystem": "output",
+   "timestamp": "F 01:28:17-01:28:36",
+   "tier": 2,
+   "piece": 6,
+   "criterion": "Documentary check, not simulated: pass if a published analysis is produced; none is attributed in the transcripts.",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 6.",
+   "numbers": [],
+   "spaces": []
+  },
+  {
+   "id": "E35",
+   "statement": "Cited article: the iron veins may be lightning vitrification or hydrothermal mineralisation, and the Sphinx stela records lightning striking the plateau.",
+   "subsystem": "output",
+   "timestamp": "F 01:29:03-01:30:14",
+   "tier": 2,
+   "piece": 5,
+   "criterion": "Documentary check, not simulated: pass if laboratory data show vitrified vein material and if the stela's lightning passage stands in a primary edition of the text.",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 5.",
+   "numbers": [],
+   "spaces": []
+  },
+  {
+   "id": "E36",
+   "statement": "Vein samples show a hydrothermal origin, fulgurites and silica microspheres show high-voltage current, and many metals including rare earths are present.",
+   "subsystem": "output",
+   "timestamp": "F 01:30:14-01:31:43",
+   "tier": 2,
+   "piece": 5,
+   "criterion": "Documentary check, not simulated: pass if the sample analyses report fulgurite, glass or spherules, and metal levels above those of the local control sample.",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 5.",
+   "numbers": [],
+   "spaces": []
+  },
+  {
+   "id": "E37",
+   "statement": "Iron veins occur in the Osiris Shaft second level, in the Great Pyramid's subterranean shaft and in the central pyramid's bedrock chamber.",
+   "subsystem": "output",
+   "timestamp": "F 01:31:41-01:33:00",
+   "tier": 2,
+   "piece": 5,
+   "criterion": "Counts as wiring only if a four-point measurement along a vein against the adjacent rock gives a conductivity contrast high enough for the claimed link lengths; fail below 1e3 (07 section 4.2).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 5.",
+   "numbers": [],
+   "spaces": [
+    "pit",
+    "subterranean_chamber"
+   ]
+  },
+  {
+   "id": "E38",
+   "statement": "The veins start under the two large pyramids and link features across the plateau.",
+   "subsystem": "output",
+   "timestamp": "F 01:32:42-01:33:35",
+   "tier": 0,
+   "piece": 5,
+   "criterion": "Pass only if the vein-to-host conductivity contrast reaches the value that a leakage length equal to the link length needs, about 2.7e5 for 100 m with a 0.03 m2 section; fail if it is below 1e3 (07 section 4.2).",
+   "status": "conditional",
+   "basis": "A vein must conduct 2.7e+05 times better than the rock to carry current 100 m; the best measured specular hematite reaches 3.3e+04 times in 100 ohm m rock and 1.0e+06 times in the most resistive 3000 ohm m rock, earthy red hematite reaches 4.2e-02 times at most, and no Giza vein has been measured.",
+   "numbers": [
+    {
+     "label": "Vein-to-rock conductivity contrast a vein needs to carry current over the link length",
+     "value": 274712.19114066666,
+     "low": 502.24295096399356,
+     "high": 5670704.42776228,
+     "unit": "1"
+    }
+   ],
+   "spaces": []
+  },
+  {
+   "id": "E39",
+   "statement": "Boat pits by the Great Pyramid hold only sulfate compounds and those by the central pyramid only chloride compounds; channels lead into the pits.",
+   "subsystem": "output",
+   "timestamp": "F 01:33:34-01:36:29",
+   "tier": 2,
+   "piece": 5,
+   "criterion": "Pass if the pit walls show metres of retreat or thick gypsum crusts in the Khufu pits and none in the Khafre pits; tool-marked, uncorroded walls count against it (07 section 4.3).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 5.",
+   "numbers": [],
+   "spaces": []
+  },
+  {
+   "id": "E40",
+   "statement": "An underground shaft joins the Great Pyramid to the Sphinx enclosure, on the word of an unnamed ministry contact.",
+   "subsystem": "output",
+   "timestamp": "F 00:56:39-00:57:36",
+   "tier": 2,
+   "piece": 6,
+   "criterion": "Cannot be simulated; held as a documented constraint with no computed verdict (06, evidence that cannot be simulated).",
+   "status": "pending",
+   "basis": "No Tier 0 rule; tested in piece 6.",
+   "numbers": [],
+   "spaces": []
+  }
+ ],
+ "spaces": {
+  "descending_passage": {
+   "label": "Descending Passage",
+   "quantities": [
+    {
+     "id": "dp.entrance.x",
+     "value": 7.2898,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "dp.entrance.y",
+     "value": 101.854,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "dp.entrance.z",
+     "value": 16.9723,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "dp.south_end.x",
+     "value": 7.2746,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "dp.south_end.y",
+     "value": 7.7724,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "dp.south_end.z",
+     "value": -29.9974,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "dp.angle",
+     "value": 26.5231,
+     "unit": "deg",
+     "source": "Petrie 1883 s.36; research/01-geometry.md table C"
+    },
+    {
+     "id": "dp.width",
+     "value": 1.0549,
+     "unit": "m",
+     "source": "Petrie 1883 s.30; research/01-geometry.md table C; research/09-recomputation.md K5"
+    },
+    {
+     "id": "dp.height",
+     "value": 1.1999,
+     "unit": "m",
+     "source": "Petrie 1883 s.30; research/01-geometry.md table C; research/09-recomputation.md K5"
+    },
+    {
+     "id": "dp.length",
+     "value": 105.15,
+     "unit": "m",
+     "source": "research/01-geometry.md table C; research/09-recomputation.md row 1 and K5"
+    },
+    {
+     "id": "dp.junction_distance",
+     "value": 28.2103,
+     "unit": "m",
+     "source": "Petrie 1883 s.38; research/01-geometry.md table C"
+    },
+    {
+     "id": "dp.rock_entry_distance",
+     "value": 31.94,
+     "unit": "m",
+     "source": "Petrie 1883 s.35; research/01-geometry.md table C"
+    },
+    {
+     "id": "dp.horizontal.length",
+     "value": 8.7884,
+     "unit": "m",
+     "source": "Petrie 1883 s.37; research/01-geometry.md table C"
+    },
+    {
+     "id": "dp.horizontal.width",
+     "value": 0.8242,
+     "unit": "m",
+     "source": "Petrie 1883 s.37; research/01-geometry.md table C"
+    },
+    {
+     "id": "dp.horizontal.height",
+     "value": 0.9652,
+     "unit": "m",
+     "source": "Petrie 1883 s.37; research/01-geometry.md table C"
+    },
+    {
+     "id": "dp.horizontal_end.x",
+     "value": 7.272,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "dp.horizontal_end.y",
+     "value": -1.016,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "dp.horizontal_end.z",
+     "value": -29.9212,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "dp.volume",
+     "value": 133.1,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+    }
+   ],
+   "claims": [
+    "S08",
+    "S10",
+    "S11",
+    "S12",
+    "S18"
+   ]
+  },
+  "subterranean_chamber": {
+   "label": "Subterranean Chamber",
+   "quantities": [
+    {
+     "id": "sub.roof_centre.x",
+     "value": 0.6579,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "sub.roof_centre.y",
+     "value": -5.1562,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "sub.roof_centre.z",
+     "value": -26.8224,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "sub.length_ew",
+     "value": 14.0665,
+     "unit": "m",
+     "source": "Petrie 1883 s.37; research/01-geometry.md table C"
+    },
+    {
+     "id": "sub.width_ns",
+     "value": 8.2779,
+     "unit": "m",
+     "source": "Petrie 1883 s.37; research/01-geometry.md table C"
+    },
+    {
+     "id": "sub.floor_depth_east",
+     "value": 3.556,
+     "unit": "m",
+     "source": "Petrie 1883 s.37; research/01-geometry.md table C"
+    },
+    {
+     "id": "sub.floor_depth_knob",
+     "value": 3.937,
+     "unit": "m",
+     "source": "Petrie 1883 s.37; research/09-recomputation.md section 1 item 2"
+    },
+    {
+     "id": "sub.floor_depth_pit",
+     "value": 5.0292,
+     "unit": "m",
+     "source": "Petrie 1883 s.37; research/01-geometry.md table C"
+    },
+    {
+     "id": "sub.west_rock_clearance",
+     "value": 0.254,
+     "unit": "m",
+     "source": "Petrie 1883 s.37; research/01-geometry.md table C"
+    },
+    {
+     "id": "sub.volume",
+     "value": 300.0,
+     "unit": "m3",
+     "source": "research/09-recomputation.md row 3 and K3"
+    }
+   ],
+   "claims": [
+    "S08",
+    "S09",
+    "S11",
+    "E14",
+    "E16",
+    "E37"
+   ]
+  },
+  "pit": {
+   "label": "Pit",
+   "quantities": [
+    {
+     "id": "pit.side",
+     "value": 1.9,
+     "unit": "m",
+     "source": "Petrie 1883 s.37; research/01-geometry.md tables C and F"
+    },
+    {
+     "id": "pit.ledge.z",
+     "value": -33.5534,
+     "unit": "m",
+     "source": "Petrie 1883 s.37; research/01-geometry.md table C"
+    },
+    {
+     "id": "pit.ledge_depth",
+     "value": 1.7018,
+     "unit": "m",
+     "source": "Petrie 1883 s.37; research/01-geometry.md check 2"
+    },
+    {
+     "id": "pit.lower_side",
+     "value": 1.4,
+     "unit": "m",
+     "source": "Petrie 1883 s.37; research/01-geometry.md tables C and F"
+    },
+    {
+     "id": "pit.lower_depth_original",
+     "value": 1.016,
+     "unit": "m",
+     "source": "Petrie 1883 s.37; research/01-geometry.md check 2"
+    },
+    {
+     "id": "pit.original_bottom.z",
+     "value": -34.57,
+     "unit": "m",
+     "source": "research/09-recomputation.md K4; research/02-hydraulics.md working W1"
+    },
+    {
+     "id": "pit.excavated_bottom.z",
+     "value": -42.1,
+     "unit": "m",
+     "source": "research/02-hydraulics.md working W1; research/01-geometry.md check 2"
+    },
+    {
+     "id": "pit.excavated_depth",
+     "value": 10.9728,
+     "unit": "m",
+     "source": "Vyse 1840 vol. 1 p. 224 and vol. 2 appendix; research/01-geometry.md check 2"
+    },
+    {
+     "id": "pit.volume",
+     "value": 8.1,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F"
+    },
+    {
+     "id": "pit.volume_excavated",
+     "value": 35.0,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F"
+    }
+   ],
+   "claims": [
+    "S11",
+    "E16",
+    "E17",
+    "E37"
+   ]
+  },
+  "south_passage": {
+   "label": "South passage",
+   "quantities": [
+    {
+     "id": "sp.north_end.x",
+     "value": 7.2365,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "sp.north_end.y",
+     "value": -9.2964,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "sp.north_end.z",
+     "value": -30.9626,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "sp.south_end.x",
+     "value": 7.0383,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "sp.south_end.y",
+     "value": -25.7048,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "sp.south_end.z",
+     "value": -30.8102,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "sp.length",
+     "value": 16.4084,
+     "unit": "m",
+     "source": "Petrie 1883 s.37; research/01-geometry.md table C"
+    },
+    {
+     "id": "sp.width",
+     "value": 0.72,
+     "unit": "m",
+     "source": "Petrie 1883 s.37; research/01-geometry.md tables C and F"
+    },
+    {
+     "id": "sp.height",
+     "value": 0.75,
+     "unit": "m",
+     "source": "research/01-geometry.md table C"
+    },
+    {
+     "id": "sp.volume",
+     "value": 8.9,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+    }
+   ],
+   "claims": [
+    "S09",
+    "E15"
+   ]
+  },
+  "well_shaft": {
+   "label": "Well shaft",
+   "quantities": [
+    {
+     "id": "ws.top.z",
+     "value": 21.7,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.mouth_near_edge",
+     "value": 0.5537,
+     "unit": "m",
+     "source": "Petrie 1883 s.46; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.mouth_far_edge",
+     "value": 1.2446,
+     "unit": "m",
+     "source": "Petrie 1883 s.46; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.offset_west",
+     "value": 1.4,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.seg0.length",
+     "value": 1.4,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.seg1.length",
+     "value": 7.96,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.seg2.length",
+     "value": 7.9,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.seg2.angle",
+     "value": 65.0,
+     "unit": "deg",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.seg3.length",
+     "value": 5.2,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.seg3.rock_cut_length",
+     "value": 2.15,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.seg4.length",
+     "value": 26.5,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.seg4.angle",
+     "value": 45.0,
+     "unit": "deg",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.seg5.length",
+     "value": 9.5,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.seg5.angle",
+     "value": 75.0,
+     "unit": "deg",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.seg6.length",
+     "value": 1.85,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.upper_side",
+     "value": 0.71,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.seg3.side_a",
+     "value": 0.66,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.seg3.side_b",
+     "value": 0.68,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.seg4.height",
+     "value": 0.76,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.seg4.width",
+     "value": 0.6,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.lower_area",
+     "value": 0.5,
+     "unit": "m2",
+     "source": "research/01-geometry.md table F"
+    },
+    {
+     "id": "ws.lower_mouth_side",
+     "value": 0.79,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.lower_mouth_distance",
+     "value": 98.0,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ws.length",
+     "value": 60.31,
+     "unit": "m",
+     "source": "research/01-geometry.md table C; research/09-recomputation.md K2"
+    },
+    {
+     "id": "ws.volume",
+     "value": 28.8,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+    },
+    {
+     "id": "ws.volume_above_base",
+     "value": 12.0,
+     "unit": "m3",
+     "source": "research/02-hydraulics.md working W3"
+    },
+    {
+     "id": "ws.centroid_above_base.z",
+     "value": 10.8,
+     "unit": "m",
+     "source": "research/02-hydraulics.md working W3"
+    }
+   ],
+   "claims": [
+    "S09",
+    "S10",
+    "S12",
+    "E14"
+   ]
+  },
+  "grotto": {
+   "label": "Grotto",
+   "quantities": [
+    {
+     "id": "grotto.height",
+     "value": 2.0,
+     "unit": "m",
+     "source": "Haase 2004; Petrie 1883 s.46; research/01-geometry.md table C; research/02-hydraulics.md section 2.1"
+    },
+    {
+     "id": "grotto.plan_side",
+     "value": 1.04,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    }
+   ],
+   "claims": []
+  },
+  "ascending_passage": {
+   "label": "Ascending Passage",
+   "quantities": [
+    {
+     "id": "ap.start.x",
+     "value": 7.2796,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "ap.start.y",
+     "value": 76.614,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "ap.start.z",
+     "value": 4.3917,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "ap.end.x",
+     "value": 7.2898,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "ap.end.y",
+     "value": 41.3207,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "ap.end.z",
+     "value": 21.656,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "ap.angle",
+     "value": 26.0417,
+     "unit": "deg",
+     "source": "Petrie 1883 s.38-39; research/01-geometry.md table C"
+    },
+    {
+     "id": "ap.length",
+     "value": 39.2887,
+     "unit": "m",
+     "source": "Petrie 1883 s.38-39; research/01-geometry.md table C"
+    },
+    {
+     "id": "ap.width",
+     "value": 1.0566,
+     "unit": "m",
+     "source": "Petrie 1883 s.38; research/01-geometry.md table C"
+    },
+    {
+     "id": "ap.height",
+     "value": 1.2014,
+     "unit": "m",
+     "source": "Petrie 1883 s.38; research/01-geometry.md table C"
+    },
+    {
+     "id": "ap.plug_start",
+     "value": 1.8847,
+     "unit": "m",
+     "source": "Petrie 1883 s.38; research/01-geometry.md table C"
+    },
+    {
+     "id": "ap.plug_length",
+     "value": 4.5339,
+     "unit": "m",
+     "source": "Petrie 1883 s.38; research/01-geometry.md table C"
+    },
+    {
+     "id": "ap.plug_width",
+     "value": 0.9919,
+     "unit": "m",
+     "source": "Petrie 1883 s.38; research/01-geometry.md table C; research/09-recomputation.md row 6"
+    },
+    {
+     "id": "ap.volume",
+     "value": 44.3,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+    },
+    {
+     "id": "ap.volume_gross",
+     "value": 49.9,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+    },
+    {
+     "id": "ap.centroid.z",
+     "value": 13.6,
+     "unit": "m",
+     "source": "research/02-hydraulics.md section 4.3"
+    },
+    {
+     "id": "ap.volume_above_plugs",
+     "value": 41.7,
+     "unit": "m3",
+     "source": "research/01-geometry.md tables C and F"
+    }
+   ],
+   "claims": [
+    "S12"
+   ]
+  },
+  "queens_passage": {
+   "label": "Queen's Chamber passage",
+   "quantities": [
+    {
+     "id": "qp.length",
+     "value": 38.7071,
+     "unit": "m",
+     "source": "Petrie 1883 s.40; research/01-geometry.md table C"
+    },
+    {
+     "id": "qp.step_distance",
+     "value": 33.1978,
+     "unit": "m",
+     "source": "Petrie 1883 s.40; research/01-geometry.md table C"
+    },
+    {
+     "id": "qp.floor_north.z",
+     "value": 21.7068,
+     "unit": "m",
+     "source": "Petrie 1883 s.40; research/01-geometry.md table C"
+    },
+    {
+     "id": "qp.floor_south.z",
+     "value": 21.2065,
+     "unit": "m",
+     "source": "Petrie 1883 s.40; research/01-geometry.md table C"
+    },
+    {
+     "id": "qp.width",
+     "value": 1.05,
+     "unit": "m",
+     "source": "research/01-geometry.md table C"
+    },
+    {
+     "id": "qp.height_north",
+     "value": 1.17,
+     "unit": "m",
+     "source": "research/01-geometry.md table C"
+    },
+    {
+     "id": "qp.height_south",
+     "value": 1.68,
+     "unit": "m",
+     "source": "research/01-geometry.md table C"
+    },
+    {
+     "id": "qp.volume",
+     "value": 50.5,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+    },
+    {
+     "id": "qp.centroid.z",
+     "value": 22.2,
+     "unit": "m",
+     "source": "research/02-hydraulics.md section 4.3"
+    }
+   ],
+   "claims": [
+    "S10",
+    "S12",
+    "S26"
+   ]
+  },
+  "queens_chamber": {
+   "label": "Queen's Chamber",
+   "quantities": [
+    {
+     "id": "qc.north_wall.y",
+     "value": 2.5908,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "qc.east_wall.x",
+     "value": 7.8232,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "qc.floor.z",
+     "value": 21.1938,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "qc.west_wall.x",
+     "value": 2.0709,
+     "unit": "m",
+     "source": "research/01-geometry.md table B note"
+    },
+    {
+     "id": "qc.length_ew",
+     "value": 5.7523,
+     "unit": "m",
+     "source": "Petrie 1883 s.41; research/01-geometry.md table C"
+    },
+    {
+     "id": "qc.width_ns",
+     "value": 5.2286,
+     "unit": "m",
+     "source": "Petrie 1883 s.41; research/01-geometry.md table C"
+    },
+    {
+     "id": "qc.wall_height",
+     "value": 4.6855,
+     "unit": "m",
+     "source": "Petrie 1883 s.41; research/01-geometry.md table C"
+    },
+    {
+     "id": "qc.ridge_height",
+     "value": 6.2255,
+     "unit": "m",
+     "source": "Petrie 1883 s.41; research/01-geometry.md table C"
+    },
+    {
+     "id": "qc.ridge.z",
+     "value": 27.399,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "qc.niche.depth",
+     "value": 1.0414,
+     "unit": "m",
+     "source": "Petrie 1883 s.43; research/01-geometry.md table C"
+    },
+    {
+     "id": "qc.niche.width_base",
+     "value": 1.5748,
+     "unit": "m",
+     "source": "Petrie 1883 s.43; research/01-geometry.md table C"
+    },
+    {
+     "id": "qc.niche.width_top",
+     "value": 0.508,
+     "unit": "m",
+     "source": "Petrie 1883 s.43; research/01-geometry.md table C"
+    },
+    {
+     "id": "qc.niche.overlaps",
+     "value": 4.0,
+     "unit": "1",
+     "source": "Petrie 1883 s.43; research/01-geometry.md table C"
+    },
+    {
+     "id": "qc.niche.top_width_level",
+     "value": 3.9624,
+     "unit": "m",
+     "source": "Petrie 1883 s.43; research/01-geometry.md table C"
+    },
+    {
+     "id": "qc.niche.height",
+     "value": 4.6736,
+     "unit": "m",
+     "source": "Petrie 1883 s.43; research/01-geometry.md table C"
+    },
+    {
+     "id": "qc.volume",
+     "value": 164.1,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+    },
+    {
+     "id": "qc.niche.volume",
+     "value": 5.1,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+    },
+    {
+     "id": "qc.centroid.z",
+     "value": 23.9,
+     "unit": "m",
+     "source": "research/02-hydraulics.md section 4.3"
+    },
+    {
+     "id": "qc.volume_with_niche",
+     "value": 169.2,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F; research/09-recomputation.md K7"
+    }
+   ],
+   "claims": [
+    "S10",
+    "S12",
+    "S23",
+    "S25",
+    "S26",
+    "E25",
+    "E26",
+    "E27",
+    "E28",
+    "E29",
+    "E30"
+   ]
+  },
+  "qc_shaft_north": {
+   "label": "Queen's Chamber north shaft",
+   "quantities": [
+    {
+     "id": "qcs.width",
+     "value": 0.2032,
+     "unit": "m",
+     "source": "Petrie 1883 s.44; research/01-geometry.md table C; research/05-sonochemistry-acoustics.md section 2.1"
+    },
+    {
+     "id": "qcs.north.height",
+     "value": 0.2184,
+     "unit": "m",
+     "source": "Petrie 1883 s.44; research/01-geometry.md table C"
+    },
+    {
+     "id": "qcs.north.horizontal_length",
+     "value": 1.9304,
+     "unit": "m",
+     "source": "Petrie 1883 s.44; research/01-geometry.md table C"
+    },
+    {
+     "id": "qcs.north.angle",
+     "value": 37.4667,
+     "unit": "deg",
+     "source": "Petrie 1883 s.44; research/01-geometry.md table C"
+    },
+    {
+     "id": "qcs.stone_left",
+     "value": 0.127,
+     "unit": "m",
+     "source": "Smyth 1877 as quoted by Sakovich and by Edgar; research/01-geometry.md check 11"
+    },
+    {
+     "id": "qcs.north.length_to_slab",
+     "value": 63.4,
+     "unit": "m",
+     "source": "Hawass, The Secret Doors Inside the Great Pyramid (web article); research/05-sonochemistry-acoustics.md section 2.1"
+    },
+    {
+     "id": "qcs.slab_thickness",
+     "value": 0.06,
+     "unit": "m",
+     "source": "Richardson et al. 2013, J. Field Robotics 30 (Djedi), p. 344; research/05-sonochemistry-acoustics.md check 14"
+    },
+    {
+     "id": "qcs.cavity_depth",
+     "value": 0.19,
+     "unit": "m",
+     "source": "Richardson et al. 2013, J. Field Robotics 30 (Djedi), Fig. 24; research/05-sonochemistry-acoustics.md check 14"
+    },
+    {
+     "id": "qcs.north.projected_exit.z",
+     "value": 67.089,
+     "unit": "m",
+     "source": "Petrie 1883 s.44; research/01-geometry.md table C"
+    },
+    {
+     "id": "qcs.volume",
+     "value": 2.8,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+    }
+   ],
+   "claims": [
+    "S25",
+    "E25"
+   ]
+  },
+  "qc_shaft_south": {
+   "label": "Queen's Chamber south shaft",
+   "quantities": [
+    {
+     "id": "qcs.width",
+     "value": 0.2032,
+     "unit": "m",
+     "source": "Petrie 1883 s.44; research/01-geometry.md table C; research/05-sonochemistry-acoustics.md section 2.1"
+    },
+    {
+     "id": "qcs.south.height",
+     "value": 0.2235,
+     "unit": "m",
+     "source": "Petrie 1883 s.44; research/01-geometry.md table C"
+    },
+    {
+     "id": "qcs.south.horizontal_length",
+     "value": 2.032,
+     "unit": "m",
+     "source": "Petrie 1883 s.44; research/01-geometry.md table C"
+    },
+    {
+     "id": "qcs.south.angle",
+     "value": 38.4667,
+     "unit": "deg",
+     "source": "Petrie 1883 s.44; research/01-geometry.md table C"
+    },
+    {
+     "id": "qcs.stone_left",
+     "value": 0.127,
+     "unit": "m",
+     "source": "Smyth 1877 as quoted by Sakovich and by Edgar; research/01-geometry.md check 11"
+    },
+    {
+     "id": "qcs.south.length_to_slab",
+     "value": 63.6,
+     "unit": "m",
+     "source": "Richardson et al. 2013, J. Field Robotics 30 (Djedi), p. 344; research/05-sonochemistry-acoustics.md check 14; research/09-recomputation.md K21"
+    },
+    {
+     "id": "qcs.slab_thickness",
+     "value": 0.06,
+     "unit": "m",
+     "source": "Richardson et al. 2013, J. Field Robotics 30 (Djedi), p. 344; research/05-sonochemistry-acoustics.md check 14"
+    },
+    {
+     "id": "qcs.cavity_depth",
+     "value": 0.19,
+     "unit": "m",
+     "source": "Richardson et al. 2013, J. Field Robotics 30 (Djedi), Fig. 24; research/05-sonochemistry-acoustics.md check 14"
+    },
+    {
+     "id": "qcs.south.projected_exit.z",
+     "value": 68.0491,
+     "unit": "m",
+     "source": "Petrie 1883 s.44; research/01-geometry.md table C"
+    },
+    {
+     "id": "qcs.volume",
+     "value": 2.8,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+    }
+   ],
+   "claims": [
+    "S25",
+    "E25",
+    "E31"
+   ]
+  },
+  "grand_gallery": {
+   "label": "Grand Gallery",
+   "quantities": [
+    {
+     "id": "gg.north_end.x",
+     "value": 7.2898,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "gg.north_end.y",
+     "value": 41.3207,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "gg.north_end.z",
+     "value": 21.656,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "gg.south_end.x",
+     "value": 7.2238,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "gg.south_end.y",
+     "value": -1.5672,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "gg.south_end.z",
+     "value": 42.9006,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "gg.step_face.y",
+     "value": -0.0102,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "gg.step_top.z",
+     "value": 43.0301,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "gg.floor_length",
+     "value": 47.8434,
+     "unit": "m",
+     "source": "Petrie 1883 s.45; research/01-geometry.md table C"
+    },
+    {
+     "id": "gg.floor_length_to_step",
+     "value": 46.1137,
+     "unit": "m",
+     "source": "Petrie 1883 s.45; research/01-geometry.md table C"
+    },
+    {
+     "id": "gg.roof_length_horizontal",
+     "value": 41.8694,
+     "unit": "m",
+     "source": "Petrie 1883 s.46; research/01-geometry.md table C"
+    },
+    {
+     "id": "gg.roof_length_sloping",
+     "value": 46.7004,
+     "unit": "m",
+     "source": "Petrie 1883 s.46; research/01-geometry.md table C"
+    },
+    {
+     "id": "gg.angle",
+     "value": 26.2778,
+     "unit": "deg",
+     "source": "Petrie 1883 s.45; research/01-geometry.md table C"
+    },
+    {
+     "id": "gg.width",
+     "value": 2.0935,
+     "unit": "m",
+     "source": "Petrie 1883 s.30; research/01-geometry.md table C and check 8"
+    },
+    {
+     "id": "gg.slot_width",
+     "value": 1.0465,
+     "unit": "m",
+     "source": "Petrie 1883 s.30, s.46; research/01-geometry.md table C"
+    },
+    {
+     "id": "gg.roof_width",
+     "value": 1.0439,
+     "unit": "m",
+     "source": "Petrie 1883 s.46; research/01-geometry.md table C"
+    },
+    {
+     "id": "gg.ramp_height",
+     "value": 0.606,
+     "unit": "m",
+     "source": "Petrie 1883 s.30; research/01-geometry.md table C"
+    },
+    {
+     "id": "gg.overhang",
+     "value": 0.522,
+     "unit": "m",
+     "source": "Petrie 1883 s.46; research/01-geometry.md check 8"
+    },
+    {
+     "id": "gg.laps",
+     "value": 7.0,
+     "unit": "1",
+     "source": "Petrie 1883 s.46; research/01-geometry.md table C"
+    },
+    {
+     "id": "gg.first_lap_height",
+     "value": 2.29,
+     "unit": "m",
+     "source": "research/01-geometry.md table C"
+    },
+    {
+     "id": "gg.height",
+     "value": 8.6,
+     "unit": "m",
+     "source": "Morishima et al. 2017; research/01-geometry.md table C and check 7"
+    },
+    {
+     "id": "gg.roof_top.z",
+     "value": 51.5,
+     "unit": "m",
+     "source": "research/02-hydraulics.md section 2.1; research/09-recomputation.md row 17; research/01-geometry.md check 7"
+    },
+    {
+     "id": "gg.step_height",
+     "value": 0.8981,
+     "unit": "m",
+     "source": "Petrie 1883 s.46; research/01-geometry.md table C"
+    },
+    {
+     "id": "gg.step_length",
+     "value": 1.5557,
+     "unit": "m",
+     "source": "Petrie 1883 s.46; research/01-geometry.md table C"
+    },
+    {
+     "id": "gg.volume",
+     "value": 573.0,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F; research/09-recomputation.md row 10 and K1"
+    },
+    {
+     "id": "gg.wall_area",
+     "value": 1000.0,
+     "unit": "m2",
+     "source": "research/09-recomputation.md row 24 and K9"
+    },
+    {
+     "id": "gg.centroid.z",
+     "value": 36.2,
+     "unit": "m",
+     "source": "research/02-hydraulics.md section 4.3; research/09-recomputation.md row 21"
+    }
+   ],
+   "claims": [
+    "S10",
+    "S12",
+    "S13",
+    "S14",
+    "S17",
+    "S18",
+    "S19",
+    "S20",
+    "S21",
+    "S22",
+    "S23",
+    "S24",
+    "S30",
+    "E13",
+    "E28",
+    "E29",
+    "E32"
+   ]
+  },
+  "antechamber": {
+   "label": "Antechamber",
+   "quantities": [
+    {
+     "id": "ante.north_end.y",
+     "value": -2.888,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "ante.south_end.y",
+     "value": -5.8369,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "ante.floor.z",
+     "value": 42.992,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "ante.roof.z",
+     "value": 46.7741,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "ante.x",
+     "value": 7.2238,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "ante.length",
+     "value": 2.954,
+     "unit": "m",
+     "source": "Petrie 1883 s.48; research/01-geometry.md table C"
+    },
+    {
+     "id": "ante.width",
+     "value": 1.651,
+     "unit": "m",
+     "source": "Petrie 1883 s.48; research/01-geometry.md table C"
+    },
+    {
+     "id": "ante.height",
+     "value": 3.7935,
+     "unit": "m",
+     "source": "Petrie 1883 s.48; research/01-geometry.md table C"
+    },
+    {
+     "id": "ante.wainscot_height_east",
+     "value": 2.6213,
+     "unit": "m",
+     "source": "research/01-geometry.md table C"
+    },
+    {
+     "id": "ante.slot_count",
+     "value": 3.0,
+     "unit": "1",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ante.slot_width",
+     "value": 0.55,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ante.slab_width",
+     "value": 1.21,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ante.slab_thickness",
+     "value": 0.535,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ante.slab_clearance",
+     "value": 0.015,
+     "unit": "m",
+     "source": "research/01-geometry.md claim 2, verification"
+    },
+    {
+     "id": "ante.leaf_thickness",
+     "value": 0.3983,
+     "unit": "m",
+     "source": "Petrie 1883 s.50; research/01-geometry.md table C"
+    },
+    {
+     "id": "ante.leaf_width",
+     "value": 1.0389,
+     "unit": "m",
+     "source": "Petrie 1883 s.50; research/01-geometry.md table C"
+    },
+    {
+     "id": "ante.leaf_top_below_ceiling",
+     "value": 1.4,
+     "unit": "m",
+     "source": "Petrie 1883 s.50; research/01-geometry.md table C"
+    },
+    {
+     "id": "ante.groove_count",
+     "value": 4.0,
+     "unit": "1",
+     "source": "Petrie 1883 s.49; research/01-geometry.md table C"
+    },
+    {
+     "id": "ante.groove_width",
+     "value": 0.105,
+     "unit": "m",
+     "source": "Haase 2004; research/01-geometry.md table C"
+    },
+    {
+     "id": "ante.groove_depth",
+     "value": 0.0711,
+     "unit": "m",
+     "source": "Petrie 1883 s.49; research/01-geometry.md check 1"
+    },
+    {
+     "id": "ante.groove_residual_depth",
+     "value": 0.0051,
+     "unit": "m",
+     "source": "research/01-geometry.md check 1"
+    },
+    {
+     "id": "ante.groove_connected_area",
+     "value": 0.002,
+     "unit": "m2",
+     "source": "research/01-geometry.md check 1 and P3 note"
+    },
+    {
+     "id": "ante.passage_from_gg.length",
+     "value": 1.3213,
+     "unit": "m",
+     "source": "Petrie 1883 s.47; research/01-geometry.md table C"
+    },
+    {
+     "id": "ante.passage_to_kc.length",
+     "value": 2.5603,
+     "unit": "m",
+     "source": "Petrie 1883 s.47; research/01-geometry.md table C"
+    },
+    {
+     "id": "ante.low_passage.width",
+     "value": 1.0516,
+     "unit": "m",
+     "source": "research/01-geometry.md table C and check 18"
+    },
+    {
+     "id": "ante.low_passage.height",
+     "value": 1.11,
+     "unit": "m",
+     "source": "research/01-geometry.md table C and check 18"
+    },
+    {
+     "id": "ante.volume",
+     "value": 18.5,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F; research/09-recomputation.md row 11"
+    },
+    {
+     "id": "ante.surface_area",
+     "value": 44.7,
+     "unit": "m2",
+     "source": "research/05-sonochemistry-acoustics.md section 2.1; research/09-recomputation.md row 11"
+    }
+   ],
+   "claims": [
+    "S06",
+    "S07",
+    "S13",
+    "S15",
+    "S16",
+    "S17",
+    "S22",
+    "E12",
+    "E13",
+    "E18",
+    "E22"
+   ]
+  },
+  "kings_chamber": {
+   "label": "King's Chamber",
+   "quantities": [
+    {
+     "id": "kc.north_wall.y",
+     "value": -8.4049,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "kc.south_wall.y",
+     "value": -13.6398,
+     "unit": "m",
+     "source": "Petrie 1883 s.55; research/01-geometry.md table B"
+    },
+    {
+     "id": "kc.east_wall.x",
+     "value": 7.747,
+     "unit": "m",
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+    },
+    {
+     "id": "kc.west_wall.x",
+     "value": -2.7356,
+     "unit": "m",
+     "source": "Petrie 1883 s.55; research/01-geometry.md table B"
+    },
+    {
+     "id": "kc.floor.z",
+     "value": 42.9971,
+     "unit": "m",
+     "source": "Petrie 1883 s.55, s.64; research/01-geometry.md tables B and C"
+    },
+    {
+     "id": "kc.wall_base.z",
+     "value": 42.8879,
+     "unit": "m",
+     "source": "Petrie 1883 s.55, s.64; research/01-geometry.md table B; research/09-recomputation.md K11"
+    },
+    {
+     "id": "kc.ceiling.z",
+     "value": 48.8353,
+     "unit": "m",
+     "source": "Petrie 1883 s.55; research/01-geometry.md table B"
+    },
+    {
+     "id": "kc.length",
+     "value": 10.4711,
+     "unit": "m",
+     "source": "Petrie 1883 s.52; research/01-geometry.md table C; research/09-recomputation.md K10"
+    },
+    {
+     "id": "kc.width",
+     "value": 5.2357,
+     "unit": "m",
+     "source": "Petrie 1883 s.52; research/01-geometry.md table C"
+    },
+    {
+     "id": "kc.height",
+     "value": 5.8445,
+     "unit": "m",
+     "source": "Petrie 1883 s.55; research/01-geometry.md table C; research/09-recomputation.md K11"
+    },
+    {
+     "id": "kc.wall_height",
+     "value": 5.969,
+     "unit": "m",
+     "source": "research/09-recomputation.md K11; research/03-chemistry.md section 2f"
+    },
+    {
+     "id": "kc.volume",
+     "value": 320.4,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+    },
+    {
+     "id": "kc.coffer.length",
+     "value": 2.2763,
+     "unit": "m",
+     "source": "Petrie 1883 s.59; research/01-geometry.md table C"
+    },
+    {
+     "id": "kc.coffer.width",
+     "value": 0.9779,
+     "unit": "m",
+     "source": "Petrie 1883 s.59; research/01-geometry.md table C"
+    },
+    {
+     "id": "kc.coffer.height",
+     "value": 1.0493,
+     "unit": "m",
+     "source": "Petrie 1883 s.59; research/01-geometry.md table C"
+    },
+    {
+     "id": "kc.coffer.inner_length",
+     "value": 1.9827,
+     "unit": "m",
+     "source": "Petrie 1883 s.59; research/01-geometry.md table C"
+    },
+    {
+     "id": "kc.coffer.inner_width",
+     "value": 0.681,
+     "unit": "m",
+     "source": "Petrie 1883 s.59; research/01-geometry.md table C"
+    },
+    {
+     "id": "kc.coffer.inner_depth",
+     "value": 0.8743,
+     "unit": "m",
+     "source": "Petrie 1883 s.59; research/01-geometry.md table C"
+    },
+    {
+     "id": "kc.coffer.solid_volume",
+     "value": 1.155,
+     "unit": "m3",
+     "source": "Petrie 1883 s.61; research/01-geometry.md table C"
+    },
+    {
+     "id": "kc.volume_with_passage",
+     "value": 323.4,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F"
+    }
+   ],
+   "claims": [
+    "S03",
+    "S06",
+    "S07",
+    "S13",
+    "S14",
+    "S15",
+    "S22",
+    "S30",
+    "E08",
+    "E09",
+    "E10",
+    "E13",
+    "E19",
+    "E22"
+   ]
+  },
+  "kc_shaft_north": {
+   "label": "King's Chamber north shaft",
+   "quantities": [
+    {
+     "id": "kcs.mouth_height",
+     "value": 0.9144,
+     "unit": "m",
+     "source": "Thomas 1953 after Perring; research/01-geometry.md table C"
+    },
+    {
+     "id": "kcs.horizontal_length",
+     "value": 1.524,
+     "unit": "m",
+     "source": "Thomas 1953 after Perring; research/01-geometry.md table C"
+    },
+    {
+     "id": "kcs.mouth_from_east_wall",
+     "value": 2.5,
+     "unit": "m",
+     "source": "research/01-geometry.md table C"
+    },
+    {
+     "id": "kcs.north.width",
+     "value": 0.2299,
+     "unit": "m",
+     "source": "Petrie 1883 s.56; research/01-geometry.md table C"
+    },
+    {
+     "id": "kcs.north.height",
+     "value": 0.2217,
+     "unit": "m",
+     "source": "Petrie 1883 s.56; research/01-geometry.md table C"
+    },
+    {
+     "id": "kcs.north.angle",
+     "value": 31.55,
+     "unit": "deg",
+     "source": "Petrie 1883 s.56; research/01-geometry.md table C; research/09-recomputation.md K22"
+    },
+    {
+     "id": "kcs.north.length",
+     "value": 71.0184,
+     "unit": "m",
+     "source": "Vyse 1840 vol. 1 p. 286; research/01-geometry.md check 6"
+    },
+    {
+     "id": "kcs.exit.z",
+     "value": 80.0,
+     "unit": "m",
+     "source": "research/01-geometry.md table C; research/09-recomputation.md row 13"
+    },
+    {
+     "id": "kcs.level_end_length",
+     "value": 3.048,
+     "unit": "m",
+     "source": "Thomas 1953 after Perring pl. 4; research/01-geometry.md check 4"
+    },
+    {
+     "id": "kcs.north.volume",
+     "value": 3.6,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+    }
+   ],
+   "claims": [
+    "S03",
+    "S14",
+    "E10",
+    "E11"
+   ]
+  },
+  "kc_shaft_south": {
+   "label": "King's Chamber south shaft",
+   "quantities": [
+    {
+     "id": "kcs.mouth_height",
+     "value": 0.9144,
+     "unit": "m",
+     "source": "Thomas 1953 after Perring; research/01-geometry.md table C"
+    },
+    {
+     "id": "kcs.horizontal_length",
+     "value": 1.524,
+     "unit": "m",
+     "source": "Thomas 1953 after Perring; research/01-geometry.md table C"
+    },
+    {
+     "id": "kcs.mouth_from_east_wall",
+     "value": 2.5,
+     "unit": "m",
+     "source": "research/01-geometry.md table C"
+    },
+    {
+     "id": "kcs.south.width",
+     "value": 0.2159,
+     "unit": "m",
+     "source": "Petrie 1883 s.56; research/01-geometry.md table C"
+    },
+    {
+     "id": "kcs.south.height",
+     "value": 0.2235,
+     "unit": "m",
+     "source": "Petrie 1883 s.56; research/01-geometry.md table C"
+    },
+    {
+     "id": "kcs.south.angle",
+     "value": 45.2278,
+     "unit": "deg",
+     "source": "Petrie 1883 s.56; research/01-geometry.md table C; research/09-recomputation.md K22"
+    },
+    {
+     "id": "kcs.south.length",
+     "value": 53.1114,
+     "unit": "m",
+     "source": "Vyse 1840 vol. 1 p. 286; research/01-geometry.md check 6"
+    },
+    {
+     "id": "kcs.exit.z",
+     "value": 80.0,
+     "unit": "m",
+     "source": "research/01-geometry.md table C; research/09-recomputation.md row 13"
+    },
+    {
+     "id": "kcs.level_end_length",
+     "value": 3.048,
+     "unit": "m",
+     "source": "Thomas 1953 after Perring pl. 4; research/01-geometry.md check 4"
+    },
+    {
+     "id": "kcs.south.volume",
+     "value": 2.6,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+    }
+   ],
+   "claims": [
+    "S03",
+    "S14",
+    "E10",
+    "E11"
+   ]
+  },
+  "relieving_chambers": {
+   "label": "Relieving chambers",
+   "quantities": [
+    {
+     "id": "rc.davison.length",
+     "value": 11.684,
+     "unit": "m",
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+    },
+    {
+     "id": "rc.davison.width",
+     "value": 5.207,
+     "unit": "m",
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+    },
+    {
+     "id": "rc.davison.height",
+     "value": 0.9144,
+     "unit": "m",
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+    },
+    {
+     "id": "rc.wellington.length",
+     "value": 11.7348,
+     "unit": "m",
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+    },
+    {
+     "id": "rc.wellington.width",
+     "value": 5.1816,
+     "unit": "m",
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+    },
+    {
+     "id": "rc.wellington.height",
+     "value": 0.889,
+     "unit": "m",
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+    },
+    {
+     "id": "rc.nelson.length",
+     "value": 11.811,
+     "unit": "m",
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+    },
+    {
+     "id": "rc.nelson.width",
+     "value": 5.08,
+     "unit": "m",
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+    },
+    {
+     "id": "rc.nelson.height",
+     "value": 1.0414,
+     "unit": "m",
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+    },
+    {
+     "id": "rc.arbuthnot.length",
+     "value": 11.3792,
+     "unit": "m",
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+    },
+    {
+     "id": "rc.arbuthnot.width",
+     "value": 4.9784,
+     "unit": "m",
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+    },
+    {
+     "id": "rc.arbuthnot.height",
+     "value": 0.8763,
+     "unit": "m",
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+    },
+    {
+     "id": "rc.campbell.length",
+     "value": 11.5316,
+     "unit": "m",
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+    },
+    {
+     "id": "rc.campbell.width",
+     "value": 6.2484,
+     "unit": "m",
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+    },
+    {
+     "id": "rc.campbell.height",
+     "value": 2.1971,
+     "unit": "m",
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+    },
+    {
+     "id": "rc.apex_above_kc_floor",
+     "value": 21.1074,
+     "unit": "m",
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+    },
+    {
+     "id": "rc.davison_passage.width",
+     "value": 0.668,
+     "unit": "m",
+     "source": "Petrie 1883 s.62; research/01-geometry.md table C"
+    },
+    {
+     "id": "rc.davison_passage.height",
+     "value": 0.7468,
+     "unit": "m",
+     "source": "Petrie 1883 s.62; research/01-geometry.md table C"
+    },
+    {
+     "id": "rc.volume",
+     "value": 330.0,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F; research/09-recomputation.md row 14"
+    }
+   ],
+   "claims": []
+  },
+  "big_void": {
+   "label": "Big Void",
+   "quantities": [
+    {
+     "id": "bv.length",
+     "value": 30.0,
+     "unit": "m",
+     "source": "Morishima et al. 2017; research/01-geometry.md table D and check 12"
+    },
+    {
+     "id": "bv.centre.z",
+     "value": 66.19,
+     "unit": "m",
+     "source": "Morishima et al. 2017; research/01-geometry.md table D and check 12"
+    },
+    {
+     "id": "bv.south_end.y",
+     "value": 0.0,
+     "unit": "m",
+     "source": "Morishima et al. 2017; research/01-geometry.md table D and check 12"
+    },
+    {
+     "id": "bv.section_area",
+     "value": 13.6,
+     "unit": "m2",
+     "source": "Morishima et al. 2017; research/01-geometry.md table D and check 12"
+    },
+    {
+     "id": "bv.incline_angle",
+     "value": 26.3,
+     "unit": "deg",
+     "source": "research/01-geometry.md, variant switch 8"
+    },
+    {
+     "id": "bv.volume",
+     "value": 408.0,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F; research/09-recomputation.md row 14"
+    }
+   ],
+   "claims": [
+    "S24",
+    "E32"
+   ]
+  },
+  "north_face_corridor": {
+   "label": "North Face Corridor",
+   "quantities": [
+    {
+     "id": "nfc.length",
+     "value": 9.06,
+     "unit": "m",
+     "source": "Procureur et al. 2023; research/01-geometry.md table D and check 13"
+    },
+    {
+     "id": "nfc.width",
+     "value": 2.02,
+     "unit": "m",
+     "source": "Procureur et al. 2023; research/01-geometry.md table D and check 13"
+    },
+    {
+     "id": "nfc.height",
+     "value": 2.18,
+     "unit": "m",
+     "source": "Procureur et al. 2023; research/01-geometry.md table D and check 13"
+    },
+    {
+     "id": "nfc.start_offset",
+     "value": 0.84,
+     "unit": "m",
+     "source": "Procureur et al. 2023; research/01-geometry.md table D and check 13"
+    },
+    {
+     "id": "nfc.slope",
+     "value": -0.3,
+     "unit": "deg",
+     "source": "Procureur et al. 2023; research/01-geometry.md table D and check 13"
+    },
+    {
+     "id": "nfc.volume",
+     "value": 39.9,
+     "unit": "m3",
+     "source": "research/01-geometry.md table F; research/09-recomputation.md row 14"
+    },
+    {
+     "id": "nfc.floor.z",
+     "value": 18.31,
+     "unit": "m",
+     "source": "research/01-geometry.md table D"
+    }
+   ],
+   "claims": []
+  },
+  "paper_kings_chamber": {
+   "label": "King's Chamber (2018 study's model)",
+   "quantities": [
+    {
+     "id": "paper.kc.length",
+     "value": 11.0,
+     "unit": "m",
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+    },
+    {
+     "id": "paper.kc.width",
+     "value": 5.0,
+     "unit": "m",
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+    },
+    {
+     "id": "paper.kc.height",
+     "value": 11.0,
+     "unit": "m",
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+    },
+    {
+     "id": "paper.kc.axis_offset",
+     "value": 5.0,
+     "unit": "m",
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+    },
+    {
+     "id": "paper.kc.centre.z",
+     "value": 40.5,
+     "unit": "m",
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+    }
+   ],
+   "claims": [
+    "E19"
+   ]
+  },
+  "paper_queens_chamber": {
+   "label": "Queen's Chamber (2018 study's model)",
+   "quantities": [
+    {
+     "id": "paper.qc.length",
+     "value": 5.0,
+     "unit": "m",
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+    },
+    {
+     "id": "paper.qc.width",
+     "value": 5.0,
+     "unit": "m",
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+    },
+    {
+     "id": "paper.qc.height",
+     "value": 6.0,
+     "unit": "m",
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+    },
+    {
+     "id": "paper.qc.axis_offset",
+     "value": 2.5,
+     "unit": "m",
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+    },
+    {
+     "id": "paper.qc.centre.z",
+     "value": 20.8,
+     "unit": "m",
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+    }
+   ],
+   "claims": [
+    "E19"
+   ]
+  },
+  "paper_lower_chamber": {
+   "label": "Lower chamber (2018 study's model)",
+   "quantities": [
+    {
+     "id": "paper.lower.length",
+     "value": 5.2,
+     "unit": "m",
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+    },
+    {
+     "id": "paper.lower.width",
+     "value": 5.6,
+     "unit": "m",
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+    },
+    {
+     "id": "paper.lower.height",
+     "value": 4.6,
+     "unit": "m",
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+    },
+    {
+     "id": "paper.lower.axis_offset",
+     "value": 2.4,
+     "unit": "m",
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+    },
+    {
+     "id": "paper.lower.centre.z",
+     "value": -29.8,
+     "unit": "m",
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+    }
+   ],
+   "claims": [
+    "E19"
+   ]
+  }
+ }
+}
