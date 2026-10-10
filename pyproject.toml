@@ -1,0 +1,18 @@
+[project]
+name = "pyramid"
+version = "0.1.0"
+description = "Neutral test of the Land of Chem hypothesis: ledger, screening, geometry and viewer"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy",
+    "scipy",
+    "pyyaml",
+    "gmsh",
+    "trimesh",
+    "matplotlib",
+    "pytest",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

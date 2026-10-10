@@ -4,3 +4,10 @@
 # Third-party content: re-fetchable, not ours to redistribute
 youtube-transcript/
 .claude/skills/baoyu-youtube-transcript/
+
+# Python
+.venv/
+__pycache__/
+
+# Generated geometry (STEP and mesh files); rebuilt from the ledger
+results/geometry/
