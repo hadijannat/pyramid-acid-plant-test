@@ -258,6 +258,8 @@ def queens_passage(led: Ledger) -> int:
     north, south = q("gg.north_end.y"), q("qc.north_wall.y")
     step = north - q("qp.step_distance")
     high, low = q("qp.floor_north.z"), q("qp.floor_south.z")
+    # The first 2.5 m from the north end run under the floor of the Grand Gallery, so about 1.6 m3 is
+    # counted in both spaces, by design (the masonry check of Task 12 allows for it).
     return _join([
         _box(x - half, step, high, x + half, north, high + q("qp.height_north")),
         _box(x - half, south, low, x + half, step, low + q("qp.height_south")),
@@ -299,6 +301,8 @@ def _qc_shaft(led: Ledger, side: str) -> int:
     half, apex = faces(led)
     exit_z = q(f"qcs.{side}.projected_exit.z")
     z = exit_z - (half * (1 - exit_z / apex) - way * knee) * math.tan(slope)
+    # ponytail: the north shaft is drawn straight, in the plane of the passage. It turns west, but the
+    # bend is unsurveyed (see the note on qcs.north.length_to_slab).
     rest = q(f"qcs.{side}.length_to_slab") - q(f"qcs.{side}.horizontal_length")
     end = (x, knee + way * rest * math.cos(slope), z + rest * math.sin(slope))
     width, height = q("qcs.width"), q(f"qcs.{side}.height")
@@ -332,6 +336,8 @@ def grand_gallery(led: Ledger) -> int:
     q = led.q
     x, north, low = _point(led, "gg.north_end")
     south, high = q("gg.south_end.y"), q("gg.south_end.z")
+    # ponytail: the Gallery is swept at the east coordinate of the north end for its whole length. That drops
+    # the surveyed 6.6 cm drift to the west, towards gg.south_end.x; the x used is inside that entry's range.
     # ponytail: the end walls are vertical; their own corbelling (about 1.2 percent of the volume) is dropped.
     outline = [(x + u, north, low + v) for u, v in _stepped(_gallery_tiers(led))]
     gallery = _prism(outline, (0, south - north, high - low))
@@ -399,8 +405,9 @@ def _kc_shaft(led: Ledger, side: str, to_casing: bool, level_end: bool) -> int:
     slope = math.radians(q(f"kcs.{side}.angle"))
     level = q("kcs.horizontal_length")
     flat = q("kcs.level_end_length") if level_end else 0.0
-    # Length of the incline, so that the axis ends on the face: its distance from the centre
-    # there is half * (1 - height / apex).
+    # Length of the incline, so that the axis ends on the face: at the end, at the level z + rest * sin(slope),
+    # its distance from the centre is half * (1 - that level / apex). z here is the level of the axis at the
+    # mouth, and the level run adds no height, so solving for rest gives the line below.
     half, apex = faces(led, to_casing)
     rest = (half * (1 - z / apex) - way * wall - level - flat) / (math.cos(slope) + half / apex * math.sin(slope))
     axis = [(x, wall, z), (x, wall + way * level, z)]
@@ -424,6 +431,8 @@ def relieving_chambers(led: Ledger) -> int:
     ponytail: Davison's plan, the sum of the five mean heights, the top at the surveyed apex.
     The granite floors between the compartments are left out, because no source read gives a
     level for the four lower ones. Split it when Maragioglio and Rinaldi's plates are read.
+    The block's plan is centred on the King's Chamber. Its underside stands above the chamber
+    ceiling, where the lowest real compartment rests on the beams.
     """
     q = led.q
     x = (q("kc.east_wall.x") + q("kc.west_wall.x")) / 2
@@ -435,7 +444,10 @@ def relieving_chambers(led: Ledger) -> int:
 
 
 def big_void(led: Ledger, inclined: bool = False) -> int:
-    """The Big Void: a plain box of the Gallery's width and section area, level or parallel to the Gallery."""
+    """The Big Void: a plain box of the Gallery's width and section area, level or parallel to the Gallery.
+
+    ponytail: it stands in the plane of the Gallery (the same east coordinate as the Gallery).
+    """
     q = led.q
     x, width, length = q("pyr.passage_plane_x"), q("gg.width"), q("bv.length")
     y, z = q("bv.south_end.y") + length / 2, q("bv.centre.z")
