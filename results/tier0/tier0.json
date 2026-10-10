@@ -1,0 +1,883 @@
+{
+  "results": [
+    {
+      "id": "t0.kc_volume",
+      "label": "King's Chamber volume, floor to ceiling",
+      "value": 320.416169419015,
+      "low": 317.002503781392,
+      "high": 324.003095458416,
+      "unit": "m3",
+      "formula": "V = length x width x height",
+      "inputs": [
+        "kc.length",
+        "kc.width",
+        "kc.height"
+      ]
+    },
+    {
+      "id": "t0.gg_volume",
+      "label": "Grand Gallery volume from its surveyed section",
+      "value": 574.974737197118,
+      "low": 565.2844288365587,
+      "high": 585.517015326651,
+      "unit": "m3",
+      "formula": "V = S (l_floor cos(a) + l_roof) / 2 - V_step; S = slot + lower wall + seven laps; V_step = (h_step - l_step tan(a) / 2) l_step w",
+      "inputs": [
+        "gg.slot_width",
+        "gg.ramp_height",
+        "gg.width",
+        "gg.first_lap_height",
+        "gg.height",
+        "gg.overhang",
+        "gg.laps",
+        "gg.floor_length",
+        "gg.angle",
+        "gg.roof_length_horizontal",
+        "gg.step_height",
+        "gg.step_length"
+      ]
+    },
+    {
+      "id": "t0.gallery_fill_pressure",
+      "label": "Water pressure at the foot of the Descending Passage with the Gallery full",
+      "value": 797777.8880501221,
+      "low": 796060.8977956601,
+      "high": 799955.89912,
+      "unit": "Pa",
+      "formula": "p = rho g (z_gallery_roof - z_passage_end)",
+      "inputs": [
+        "hydro.water_density",
+        "gg.roof_top.z",
+        "dp.south_end.z"
+      ]
+    },
+    {
+      "id": "t0.piston_force_passage_end",
+      "label": "Force on a piston at the foot of the Descending Passage, Gallery full",
+      "value": 1009806.915335478,
+      "low": 1000800.421027226,
+      "high": 1015294.3636958427,
+      "unit": "N",
+      "formula": "F = rho g (z_gallery_roof - z_passage_end) w h",
+      "inputs": [
+        "hydro.water_density",
+        "gg.roof_top.z",
+        "dp.width",
+        "dp.height",
+        "dp.south_end.z"
+      ]
+    },
+    {
+      "id": "t0.piston_force_entrance",
+      "label": "Force on a piston at the entrance of the Descending Passage, Gallery full",
+      "value": 427821.13577400974,
+      "low": 423043.1449410382,
+      "high": 430403.0716723141,
+      "unit": "N",
+      "formula": "F = rho g (z_gallery_roof - z_entrance) w h",
+      "inputs": [
+        "hydro.water_density",
+        "gg.roof_top.z",
+        "dp.width",
+        "dp.height",
+        "dp.entrance.z"
+      ]
+    },
+    {
+      "id": "t0.lifting_work",
+      "label": "Ideal work to lift one fill from pavement level",
+      "value": 260775579.2598698,
+      "low": 243221164.87263143,
+      "high": 278937802.871,
+      "unit": "J",
+      "formula": "W = rho g sum(V z_centroid) over the Gallery, the Queen's Chamber with its niche, the Queen's passage, the Ascending Passage and the well shaft above the pavement",
+      "inputs": [
+        "hydro.water_density",
+        "gg.volume",
+        "gg.centroid.z",
+        "qc.volume",
+        "qc.niche.volume",
+        "qc.centroid.z",
+        "qp.volume",
+        "qp.centroid.z",
+        "ap.volume",
+        "ap.centroid.z",
+        "ws.volume_above_base",
+        "ws.centroid_above_base.z"
+      ]
+    },
+    {
+      "id": "t0.strokes_full_passage",
+      "label": "Strokes to fill the Gallery if a stroke sweeps the whole Descending Passage",
+      "value": 4.305157053537449,
+      "low": 3.9473887705416244,
+      "high": 4.683239862180389,
+      "unit": "1",
+      "formula": "N = V_gallery / (l_passage w h)",
+      "inputs": [
+        "gg.volume",
+        "dp.width",
+        "dp.height",
+        "dp.length"
+      ]
+    },
+    {
+      "id": "t0.strokes_below_junction",
+      "label": "Strokes to fill the Gallery if a stroke sweeps the passage below the Ascending Passage junction",
+      "value": 5.883662974764169,
+      "low": 5.393031892375262,
+      "high": 6.401696374886313,
+      "unit": "1",
+      "formula": "N = V_gallery / ((l_passage - l_to_junction) w h)",
+      "inputs": [
+        "gg.volume",
+        "dp.width",
+        "dp.height",
+        "dp.length",
+        "dp.junction_distance"
+      ]
+    },
+    {
+      "id": "t0.strokes_below_pavement",
+      "label": "Strokes to fill the Gallery if a stroke sweeps the passage below pavement level",
+      "value": 6.738963567167098,
+      "low": 6.161529783035644,
+      "high": 7.3338425755295145,
+      "unit": "1",
+      "formula": "N = V_gallery / ((-z_passage_end / sin(a)) w h)",
+      "inputs": [
+        "gg.volume",
+        "dp.width",
+        "dp.height",
+        "dp.south_end.z",
+        "dp.angle"
+      ]
+    },
+    {
+      "id": "t0.suction_margin",
+      "label": "Suction-lift margin for a pump at the foot of the Descending Passage at the Old Kingdom flood peak",
+      "value": -5.890737713722681,
+      "low": -8.434339065837976,
+      "high": -0.3653377137226794,
+      "unit": "m",
+      "formula": "margin = (p_atm - p_vapour) / (rho g) - (z_base_asl + z_passage_end - z_flood_asl); negative means no draw",
+      "inputs": [
+        "site.atm_pressure",
+        "hydro.vapour_pressure",
+        "hydro.water_density",
+        "site.base_elevation_asl",
+        "dp.south_end.z",
+        "hydro.ok_flood_peak_asl"
+      ]
+    },
+    {
+      "id": "t0.shaft_draw_pressure",
+      "label": "Pressure drop that draws replacement air down both King's Chamber shafts while the Gallery drains",
+      "value": 25.690054175544628,
+      "low": 0.5743028749083946,
+      "high": 1130.5033976205514,
+      "unit": "Pa",
+      "formula": "dp = K_n rho_air v_n^2 / 2; v_n = (V_gallery / t_drain) / (A_n + A_s sqrt(K_n / K_s))",
+      "inputs": [
+        "gg.volume",
+        "hydro.drain_time",
+        "kcs.north.width",
+        "kcs.north.height",
+        "kcs.south.width",
+        "kcs.south.height",
+        "hydro.kcs_north_loss_coefficient",
+        "hydro.kcs_south_loss_coefficient",
+        "hydro.air_density"
+      ]
+    },
+    {
+      "id": "t0.joint_leak_rate",
+      "label": "Leak-off through the Gallery's masonry joints if they stand open",
+      "value": 2.1655746523820327,
+      "low": 0.0020648667719531254,
+      "high": 2.1694797158705996,
+      "unit": "m3/s",
+      "formula": "Q = l_joints rho g b^3 i / (12 mu)",
+      "inputs": [
+        "hydro.joint_length",
+        "hydro.water_density",
+        "hydro.joint_aperture",
+        "hydro.leak_gradient",
+        "hydro.water_viscosity"
+      ]
+    },
+    {
+      "id": "t0.so2_inventory",
+      "label": "Sulfur dioxide the King's Chamber holds if filled with the pure gas",
+      "value": 13319.411490797183,
+      "low": 12815.724639047694,
+      "high": 13618.198968339688,
+      "unit": "mol",
+      "formula": "n = p V / (R T)",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature"
+      ]
+    },
+    {
+      "id": "t0.acid_ceiling_sulfur",
+      "label": "Acid strength ceiling set by the sulfur in one King's Chamber of gas",
+      "value": 23.245046231757737,
+      "low": 20.710608660387354,
+      "high": 25.831181654665567,
+      "unit": "mol/m3",
+      "formula": "c = n_SO2 / V_gallery",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "gg.volume"
+      ]
+    },
+    {
+      "id": "t0.acid_ceiling_oxygen",
+      "label": "Acid strength ceiling if the oxygen must arrive in the same Gallery-volume of drawn gas",
+      "value": 12.275075057349957,
+      "low": 11.87015752288352,
+      "high": 12.488073062856635,
+      "unit": "mol/m3",
+      "formula": "c = x p / (R T); x = 1 / (1 + 0.5 / x_O2), the sulfur dioxide share of a stoichiometric mixture with air",
+      "inputs": [
+        "site.atm_pressure",
+        "chem.temperature",
+        "chem.o2_fraction"
+      ]
+    },
+    {
+      "id": "t0.temperature_rise",
+      "label": "Adiabatic temperature rise of the Gallery water for the largest batch",
+      "value": 1.820059984506862,
+      "low": 1.5077124917119311,
+      "high": 2.0287422212216213,
+      "unit": "K",
+      "formula": "dT = -dH c / (rho cp); c = n_SO2 / V_gallery",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "gg.volume",
+        "chem.dh_so2_to_sulfate",
+        "hydro.water_density",
+        "chem.water_cp"
+      ]
+    },
+    {
+      "id": "t0.oxygen_supply_time",
+      "label": "Time for the oxygen of one full batch to cross the still water surface in the Gallery",
+      "value": 85501639.42708224,
+      "low": 80556008.54091254,
+      "high": 891242783.8344532,
+      "unit": "s",
+      "formula": "t = (0.5 n_SO2 - c_O2 V_gallery) / (k_L c_O2 A); c_O2 = H x_O2 p; A = S / tan(a)",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "gg.slot_width",
+        "gg.ramp_height",
+        "gg.width",
+        "gg.first_lap_height",
+        "gg.height",
+        "gg.overhang",
+        "gg.laps",
+        "gg.angle",
+        "gg.volume",
+        "chem.henry_o2",
+        "chem.o2_fraction",
+        "chem.kl_surface"
+      ]
+    },
+    {
+      "id": "t0.gas_phase_lifetime",
+      "label": "Shortest possible lifetime of sulfur dioxide against uncatalysed oxidation in air",
+      "value": 2.788807984668792e+17,
+      "low": 2.472777230608715e+17,
+      "high": 3.145228724642502e+17,
+      "unit": "s",
+      "formula": "t = 1 / (k n_O2); k = Z exp(-E / (R T)); E = dfH(SO3) + dfH(O) - dfH(SO2); n_O2 = x_O2 p / (k_B T)",
+      "inputs": [
+        "chem.collision_prefactor",
+        "chem.dfh_so3",
+        "chem.dfh_o_atom",
+        "chem.dfh_so2",
+        "chem.kinetics_temperature",
+        "chem.o2_fraction",
+        "site.atm_pressure",
+        "chem.boltzmann"
+      ]
+    },
+    {
+      "id": "t0.lightning_strikes",
+      "label": "Direct lightning strikes on the pyramid per year, at most",
+      "value": 0.12171502150680269,
+      "low": 0.0303550461598388,
+      "high": 0.244020431814095,
+      "unit": "1/yr",
+      "formula": "N = N_g pi (3 H)^2 C_d, the collection area of a pointed structure; N_g counts all lightning",
+      "inputs": [
+        "em.flash_density",
+        "em.collection_slope",
+        "pyr.height_original",
+        "em.location_factor"
+      ]
+    },
+    {
+      "id": "t0.relaxation_limestone",
+      "label": "Charge relaxation time of the limestone masonry",
+      "value": 3.0989e-08,
+      "low": 1.3280999999999998e-08,
+      "high": 1.1952899999999998e-07,
+      "unit": "s",
+      "formula": "tau = eps0 eps_r rho",
+      "inputs": [
+        "em.eps0",
+        "em.limestone_eps",
+        "em.limestone_resistivity"
+      ]
+    },
+    {
+      "id": "t0.relaxation_granite",
+      "label": "Charge relaxation time of the granite, driest measured case",
+      "value": 0.005312399999999999,
+      "low": 3.0989e-07,
+      "high": 0.021249599999999997,
+      "unit": "s",
+      "formula": "tau = eps0 eps_r / sigma",
+      "inputs": [
+        "em.eps0",
+        "em.granite_eps",
+        "em.granite_conductivity"
+      ]
+    },
+    {
+      "id": "t0.skin_depth_resonance",
+      "label": "Skin depth in the masonry at the 2018 study's first resonance",
+      "value": 12.941685034021956,
+      "low": 9.53875851490892,
+      "high": 28.19265505367793,
+      "unit": "m",
+      "formula": "1/delta = w sqrt(mu0 eps0 eps_r / 2) sqrt(sqrt(1 + t^2) - 1); t = 1 / (rho w eps0 eps_r); w = 2 pi c0 / wavelength",
+      "inputs": [
+        "em.mu0",
+        "em.eps0",
+        "em.limestone_eps",
+        "em.limestone_resistivity",
+        "em.c0",
+        "paper.peak1.wavelength"
+      ]
+    },
+    {
+      "id": "t0.skin_depth_lightning",
+      "label": "Skin depth in the masonry at a lightning return-stroke frequency",
+      "value": 35.93679455960648,
+      "low": 9.088380087956361,
+      "high": 195.6604173579737,
+      "unit": "m",
+      "formula": "1/delta = w sqrt(mu0 eps0 eps_r / 2) sqrt(sqrt(1 + t^2) - 1); t = 1 / (rho w eps0 eps_r); w = 2 pi f",
+      "inputs": [
+        "em.mu0",
+        "em.eps0",
+        "em.limestone_eps",
+        "em.limestone_resistivity",
+        "em.lightning_frequency"
+      ]
+    },
+    {
+      "id": "t0.piezo_displacement",
+      "label": "Surface displacement of the granite in a lightning-level field",
+      "value": 1.4e-12,
+      "low": 9.8e-14,
+      "high": 7.910000000000001e-09,
+      "unit": "m",
+      "formula": "u = d E L",
+      "inputs": [
+        "em.granite_piezo_d",
+        "em.piezo_field_lightning",
+        "em.piezo_thickness"
+      ]
+    },
+    {
+      "id": "t0.piezo_intensity",
+      "label": "Sound intensity that displacement radiates into air during the stroke's rise",
+      "value": 1.6189600000000003e-11,
+      "low": 7.932903999999997e-14,
+      "high": 0.0005355829360000001,
+      "unit": "W/m2",
+      "formula": "I = Z_air v^2 / 2; v = d E L / t_rise",
+      "inputs": [
+        "em.granite_piezo_d",
+        "em.piezo_field_lightning",
+        "em.piezo_thickness",
+        "em.pulse_rise_time",
+        "ac.air_impedance"
+      ]
+    },
+    {
+      "id": "t0.leaf_sound_level",
+      "label": "Sound level from the antechamber's granite leaf driven at the air-breakdown field",
+      "value": 75.7620902930747,
+      "low": 69.44875462406314,
+      "high": 158.29335556315047,
+      "unit": "dB",
+      "formula": "L = 20 log10(Z_air v / sqrt(2) / p_ref); v = 2 pi f d E L_leaf",
+      "inputs": [
+        "em.granite_piezo_d",
+        "em.air_breakdown_field",
+        "ac.air_impedance",
+        "ac.reference_pressure",
+        "ante.leaf_thickness",
+        "ac.drive_frequency"
+      ]
+    },
+    {
+      "id": "t0.required_sound_level",
+      "label": "Sound level in air needed to cavitate a wet film from the gas side",
+      "value": 189.66384082197962,
+      "low": 189.66384082197962,
+      "high": 194.4934033315235,
+      "unit": "dB",
+      "formula": "L = 10 log10(I_cav Z_air / p_ref^2) - 10 log10(4 Z_air Z_water / (Z_air + Z_water)^2)",
+      "inputs": [
+        "ac.cavitation_intensity",
+        "ac.air_impedance",
+        "ac.water_impedance",
+        "ac.reference_pressure"
+      ]
+    },
+    {
+      "id": "t0.slab_source_level",
+      "label": "Sound level from the Queen's Chamber shaft slab driven at the air-breakdown field",
+      "value": 49.558576392138505,
+      "low": 47.974951471186,
+      "high": 107.36967600710793,
+      "unit": "dB",
+      "formula": "L = 20 log10(Z_air v / sqrt(2) / p_ref); v = 2 pi f d E L_slab, with the granite coefficient lent to limestone",
+      "inputs": [
+        "em.granite_piezo_d",
+        "em.air_breakdown_field",
+        "ac.air_impedance",
+        "ac.reference_pressure",
+        "qcs.slab_thickness",
+        "ac.link_frequency"
+      ]
+    },
+    {
+      "id": "t0.shaft_link_loss",
+      "label": "Path loss from the south slab to the north slab of the Queen's Chamber shafts at 13 kHz",
+      "value": 101.1534943536241,
+      "low": 83.92844290698613,
+      "high": 103.26400657527503,
+      "unit": "dB",
+      "formula": "loss = alpha (l_south + l_north) + 2 (T(air, stone) + T(stone, water)); T(a, b) = -10 log10(4 Z_a Z_b / (Z_a + Z_b)^2); soft limestone, liquid at both shaft mouths",
+      "inputs": [
+        "ac.absorption_13khz",
+        "qcs.south.length_to_slab",
+        "qcs.north.length_to_slab",
+        "ac.air_impedance",
+        "ac.soft_limestone_impedance",
+        "ac.water_impedance"
+      ]
+    },
+    {
+      "id": "t0.vein_contrast",
+      "label": "Vein-to-rock conductivity contrast a vein needs to carry current over the link length",
+      "value": 274712.19114066666,
+      "low": 502.24295096399356,
+      "high": 5670704.42776228,
+      "unit": "1",
+      "formula": "K = 2 pi l^2 / (A ln(2 l / a)); a = sqrt(A / pi)",
+      "inputs": [
+        "plateau.vein_leakage_length",
+        "plateau.vein_area"
+      ]
+    },
+    {
+      "id": "t0.ram_delivered_fraction",
+      "label": "Share of its drive water that a hydraulic ram delivers to the Gallery roof",
+      "value": 0.22084680002061413,
+      "low": 0.2205932141017149,
+      "high": 0.29516300287073816,
+      "unit": "1",
+      "formula": "q/Q = efficiency x fall / lift; fall = -z_passage_end, from a supply at pavement level; lift = z_gallery_roof - z_passage_end",
+      "inputs": [
+        "hydro.ram_efficiency",
+        "dp.south_end.z",
+        "gg.roof_top.z"
+      ]
+    },
+    {
+      "id": "t0.pit_clearance",
+      "label": "Height of the pit bottom, as it stood before 1837, above the Old Kingdom flood peak",
+      "value": 11.43,
+      "low": 5.43,
+      "high": 14.43,
+      "unit": "m",
+      "formula": "h = z_base_asl + z_pit_bottom - z_flood_asl; positive means the pit ends above the water",
+      "inputs": [
+        "site.base_elevation_asl",
+        "pit.original_bottom.z",
+        "hydro.ok_flood_peak_asl"
+      ]
+    },
+    {
+      "id": "t0.boiling_margin",
+      "label": "Margin to boiling if the first of the claimed fills takes the whole heat of the largest batch",
+      "value": 72.71976006197255,
+      "low": 62.28656346963536,
+      "high": 78.65520677615864,
+      "unit": "K",
+      "formula": "margin = T_boil - T_water - N dT; dT = -dH c / (rho cp); c = n_SO2 / V_gallery; N = number of claimed fills",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "gg.volume",
+        "chem.dh_so2_to_sulfate",
+        "hydro.water_density",
+        "chem.water_cp",
+        "hydro.claimed_strokes",
+        "chem.water_boiling_point"
+      ]
+    },
+    {
+      "id": "t0.gypsum_saturation_loss",
+      "label": "Share of the strongest batch that bare limestone neutralises before gypsum can coat it",
+      "value": 0.41491278820027744,
+      "low": 0.32268683950713095,
+      "high": 0.7722484601556031,
+      "unit": "1",
+      "formula": "x = min(1, (s rho / c)^2); c = n_SO2 / V_gallery; gypsum saturates at [Ca] = (s rho)^2 / c, and each calcium ion dissolved has neutralised one molecule of acid",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "gg.volume",
+        "chem.gypsum_solubility",
+        "hydro.water_density"
+      ]
+    },
+    {
+      "id": "t0.hcl_partial_pressure",
+      "label": "Hydrogen chloride pressure over the dilute acid and salt mixture",
+      "value": 0.0125,
+      "low": 0.00375,
+      "high": 0.01525,
+      "unit": "Pa",
+      "formula": "p = [H+] [Cl-] / H_effective",
+      "inputs": [
+        "chem.khafre_h",
+        "chem.khafre_chloride",
+        "chem.henry_hcl_effective"
+      ]
+    },
+    {
+      "id": "t0.arrhenius_gain",
+      "label": "Speed-up of a dry-gas reaction by the temperature swing of the strongest airborne ultrasound",
+      "value": 2.212359170578301,
+      "low": 1.4378371160747938,
+      "high": 2.265069424195323,
+      "unit": "1",
+      "formula": "gain = I0(E dT / (R T^2)); dT = T (gamma - 1) / gamma x p_peak / p_atm; p_peak = sqrt(2) p_ref 10^(L / 20)",
+      "inputs": [
+        "ac.best_airborne_level",
+        "ac.reference_pressure",
+        "ac.heat_capacity_ratio",
+        "chem.temperature",
+        "site.atm_pressure",
+        "ac.arrhenius_barrier"
+      ]
+    }
+  ],
+  "verdicts": {
+    "S01": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 5."
+    },
+    "S02": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 4."
+    },
+    "S03": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 4."
+    },
+    "S04": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 2."
+    },
+    "S05": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 6."
+    },
+    "S06": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 2."
+    },
+    "S07": {
+      "status": "fail",
+      "basis": "The granite leaf driven at the air-breakdown field radiates 76 dB, and 158 dB with every input at its generous end, against the 190 dB needed to cavitate a wet film."
+    },
+    "S08": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 3."
+    },
+    "S09": {
+      "status": "conditional",
+      "basis": "Water standing at the level of an assumed pavement-level reservoir stops 21.7 m below the top of the well shaft and 51.5 m below the Gallery roof, so the step holds only with that reservoir and a pump."
+    },
+    "S10": {
+      "status": "undefined",
+      "basis": "The hypothesis names no actuator or seal for the pump, which must push with 0.43 to 1.01 MN depending on its position and hold 0.80 MPa with the Gallery full."
+    },
+    "S11": {
+      "status": "fail",
+      "basis": "A pump at the foot of the Descending Passage would have to lift water 5.9 m beyond the suction limit at the Old Kingdom flood peak, and 0.4 m beyond it at the most favourable documented levels."
+    },
+    "S12": {
+      "status": "conditional",
+      "basis": "Filling the Gallery alone takes 4.3 strokes if a stroke sweeps the whole Descending Passage, 5.9 if it sweeps the part below the Ascending Passage junction and 6.7 if it sweeps the part below the pavement, against the 4 claimed, and the hypothesis fixes no stroke."
+    },
+    "S13": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 3."
+    },
+    "S14": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 3."
+    },
+    "S15": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 3."
+    },
+    "S16": {
+      "status": "fail",
+      "basis": "Even at the collision limit, sulfur dioxide lasts 2.8e+17 s (8.8e+09 years) against oxygen with no catalyst, so a 6 h pass converts a fraction of 9e-14 at most."
+    },
+    "S17": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 3."
+    },
+    "S18": {
+      "status": "conditional",
+      "basis": "Filling the Gallery alone takes 4.3 strokes if a stroke sweeps the whole Descending Passage, 5.9 if it sweeps the part below the Ascending Passage junction and 6.7 if it sweeps the part below the pavement, against the 4 claimed, and the hypothesis fixes no stroke."
+    },
+    "S19": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 4."
+    },
+    "S20": {
+      "status": "conditional",
+      "basis": "The oxygen for a full batch needs 2.7 to 28 years to cross the still water surface in the Gallery, so quick oxidation holds only if something aerates the water, which the hypothesis does not describe."
+    },
+    "S21": {
+      "status": "pass",
+      "basis": "Even if the first of the 4 claimed fills took the whole heat of the largest batch, it would warm by 7.3 K and stay 72.7 K below boiling (62.3 K at the least), so nothing boils over with or without the dilute-acid step."
+    },
+    "S22": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 4."
+    },
+    "S23": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 4."
+    },
+    "S24": {
+      "status": "fail",
+      "basis": "The largest possible batch warms the Gallery water by 1.8 K (2.0 K at most), below the 5 K at which a heat exchanger would start to matter."
+    },
+    "S25": {
+      "status": "fail",
+      "basis": "A slab driven at the air-breakdown field emits 50 dB and the path to the north slab loses 101 dB at 13 kHz, so the signal arrives at -52 dB, 62 dB short of 10 dB above a 0 dB noise floor."
+    },
+    "S26": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 3."
+    },
+    "S27": {
+      "status": "fail",
+      "basis": "Hydrogen chloride stands at 1.2e-07 atm over the dilute acid and salt mixture, and at 1.5e-07 atm over saturated brine, against the 1e-05 atm below which the criterion fails the claim."
+    },
+    "S28": {
+      "status": "conditional",
+      "basis": "A vein must conduct 2.7e+05 times better than the rock to carry current 100 m; the best measured specular hematite reaches 3.3e+04 times in 100 ohm m rock and 1.0e+06 times in the most resistive 3000 ohm m rock, earthy red hematite conducts worse than the rock, and no Giza vein has been measured."
+    },
+    "S29": {
+      "status": "conditional",
+      "basis": "A vein must conduct 2.7e+05 times better than the rock to carry current 100 m; the best measured specular hematite reaches 3.3e+04 times in 100 ohm m rock and 1.0e+06 times in the most resistive 3000 ohm m rock, earthy red hematite conducts worse than the rock, and no Giza vein has been measured."
+    },
+    "S30": {
+      "status": "undefined",
+      "basis": "The hypothesis gives no gas fraction or target strength, and pure sulfur dioxide at one atmosphere caps the product at 23 mol/m3, or 12 mol/m3 if its oxygen comes with the same draw of air."
+    },
+    "S31": {
+      "status": "undefined",
+      "basis": "Direct strikes come at most 0.12 times per year, one every 8 years, and the hypothesis states no cycle rate to compare this with."
+    },
+    "E01": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 5."
+    },
+    "E02": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 5."
+    },
+    "E03": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 5."
+    },
+    "E04": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 5."
+    },
+    "E05": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 6."
+    },
+    "E06": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 6."
+    },
+    "E07": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 4."
+    },
+    "E08": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 6."
+    },
+    "E09": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 6."
+    },
+    "E10": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 6."
+    },
+    "E11": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 1."
+    },
+    "E12": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 1."
+    },
+    "E13": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 2."
+    },
+    "E14": {
+      "status": "fail",
+      "basis": "A ram at the foot of the Descending Passage delivers 22 percent of its drive water to the Gallery roof, so one Gallery fill spills 2022 m3 (1259 m3 at the least) into a chamber of 300 m3 (450 m3 at most) that has no outfall."
+    },
+    "E15": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 1."
+    },
+    "E16": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 3."
+    },
+    "E17": {
+      "status": "fail",
+      "basis": "The pit as it stood before 1837 ended 11.4 m above the Old Kingdom flood peak (5.4 m at the least) and so reached no documented water table, while the shaft sunk in 1837 and 1838 ends 2.9 m above today's water table, near enough that modern groundwater cannot be excluded as the cause of wet fill."
+    },
+    "E18": {
+      "status": "conditional",
+      "basis": "The strongest airborne ultrasound engineered, 172 dB, speeds a dry-gas reaction 2.2 times if its barrier is the 150 kJ/mol of the direct gas reaction and 1.5 times if it is 100 kJ/mol, so the doubling the criterion asks for is met only at the higher barrier."
+    },
+    "E19": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 1."
+    },
+    "E20": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 1."
+    },
+    "E21": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 2."
+    },
+    "E22": {
+      "status": "fail",
+      "basis": "Charge in the granite relaxes in 5.3 ms in the driest measured case (21 ms at most) and in the limestone in 31 ns, against a storm field that changes over seconds."
+    },
+    "E23": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 6."
+    },
+    "E24": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 6."
+    },
+    "E25": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 1."
+    },
+    "E26": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 4."
+    },
+    "E27": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 4."
+    },
+    "E28": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 4."
+    },
+    "E29": {
+      "status": "conditional",
+      "basis": "Bare limestone neutralises 41 percent of the strongest possible batch (32 to 77 percent over the input ranges) before gypsum saturates and can coat it, so 59 percent of the acid survives one cycle, and more only where a coat is already in place."
+    },
+    "E30": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 4."
+    },
+    "E31": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 2."
+    },
+    "E32": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 1."
+    },
+    "E33": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 5."
+    },
+    "E34": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 6."
+    },
+    "E35": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 5."
+    },
+    "E36": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 5."
+    },
+    "E37": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 5."
+    },
+    "E38": {
+      "status": "conditional",
+      "basis": "A vein must conduct 2.7e+05 times better than the rock to carry current 100 m; the best measured specular hematite reaches 3.3e+04 times in 100 ohm m rock and 1.0e+06 times in the most resistive 3000 ohm m rock, earthy red hematite conducts worse than the rock, and no Giza vein has been measured."
+    },
+    "E39": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 5."
+    },
+    "E40": {
+      "status": "pending",
+      "basis": "No Tier 0 rule; tested in piece 6."
+    }
+  }
+}
