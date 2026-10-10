@@ -43,7 +43,7 @@ There is no verdict for a figure that could not be read. The gate stays shut unt
 | dp.width | s.30 | 41.53 in | 1.0549 m | yes | text |
 | dp.height | s.30 | 47.24 in | 1.1999 m | yes | text |
 | dp.junction_distance | s.38 | 1110.64 in +/- 0.1 | 28.2103 m | yes | 101 |
-| dp.rock_entry_distance | s.35 | midpoint of Petrie's floor and roof stations 1164 and 1351 in from the original entrance (single extraction) | 31.94 m | yes | 95 |
+| dp.rock_entry_distance | s.35 | 1163.6 in; 1350.7 in (stations; midpoint) | 31.94 m | yes | 95 |
 | dp.horizontal.length | s.37 | 346 in | 8.7884 m | yes | 98 |
 | dp.horizontal.width | s.37 | 32.45 in | 0.8242 m | yes | 98 |
 | dp.horizontal.height | s.37 | about 38 in by Petrie's floor and roof levels, table alignment uncertain | 0.9652 m | yes | 98 |
@@ -87,7 +87,7 @@ There is no verdict for a figure that could not be read. The gate stays shut unt
 | ap.height | s.38 | 47.3 in | 1.2014 m | yes | text |
 | ap.plug_start | s.38 | 74.2 in | 1.8847 m | yes | text |
 | ap.plug_length | s.38 | 178.5 in | 4.5339 m | yes | text |
-| ap.plug_width | s.38 | 39.05 in | 0.9919 m | yes | 102 |
+| ap.plug_width | s.38 | 38.2 in lower end, 41.6 in upper end | 0.9919 m | corrected | 102 |
 | qp.length | s.40 | 1523.9 in | 38.7071 m | yes | 105 |
 | qp.step_distance | s.40 | 1307 in | 33.1978 m | yes | 105 |
 | qp.floor_north.z | s.40 | 854.6 in | 21.7068 m | yes | 105 |
@@ -129,7 +129,7 @@ There is no verdict for a figure that could not be read. The gate stays shut unt
 | gg.roof_length_sloping | s.46 | 1838.6 in | 46.7004 m | yes | text |
 | gg.angle | s.45 | 26 deg 16 min 40 s | 26.2778 deg | yes | text |
 | gg.width | s.30 | 82.42 in | 2.0935 m | yes | text |
-| gg.slot_width | s.30, s.46 | 41.2 in | 1.0465 m | yes | 113 |
+| gg.slot_width | s.30, s.46 | 41.2 in = 2 cubits of 20.6 in (not printed) | 1.0465 m | yes | 113 |
 | gg.roof_width | s.46 | 41.1 in | 1.0439 m | yes | 112 |
 | gg.ramp_height | s.30 | 23.86 in | 0.606 m | yes | text |
 | gg.overhang | s.46 | 20.55 in | 0.522 m | yes | text |
@@ -152,9 +152,9 @@ There is no verdict for a figure that could not be read. The gate stays shut unt
 | ante.passage_from_gg.length | s.47 | 52.02 in | 1.3213 m | yes | 114 |
 | ante.passage_to_kc.length | s.47 | 100.8 in | 2.5603 m | yes | 115 |
 | kc.north_wall.y | s.64 | -330.9 in +/- 0.9 | -8.4049 m | yes | 134 |
-| kc.south_wall.y | s.64 | -537 in +/- 0.8 | -13.6398 m | yes | 122 |
+| kc.south_wall.y | s.55 | -537 in +/- 0.8 | -13.6398 m | yes | 122 |
 | kc.east_wall.x | s.64 | 305 in +/- 3 | 7.747 m | yes | 134 |
-| kc.west_wall.x | s.64 | -107.7 in +/- 3 | -2.7356 m | yes | 122 |
+| kc.west_wall.x | s.55 | -107.7 in +/- 3 | -2.7356 m | yes | 122 |
 | kc.floor.z | s.55, s.64 | 1692.8 in | 42.9971 m | yes | 134 |
 | kc.wall_base.z | s.55, s.64 | 1688.5 in | 42.8879 m | yes | text |
 | kc.ceiling.z | s.55 | 1922.65 in | 48.8353 m | yes | text |
@@ -187,17 +187,17 @@ There is no verdict for a figure that could not be read. The gate stays shut unt
 None of these changed a verdict; every row below is `yes`. They are the places where the ledger and the book are not word for word the same thing, kept here so that nobody has to rediscover them.
 
 - `ap.start.z`: the table of section 64 (PDF page 134) prints +179.9 +/- .2 for the beginning of the Ascending Passage. Section 39 (PDF page 104) prints "(172.9 + 679.7) = 852.6 +/- .3 level above pavement", which closes with the level of the Gallery end (852.6), so the ledger keeps 172.9. The row is read on page 104.
-- `kc.south_wall.y`, `kc.west_wall.x`: the ledger cites section 64, but the table has no S-wall or W-wall row. The figures (S wall 537.0 +/- .8 from the centre, W wall 107.7 +/- 3.0 W of the centre) are printed in section 55 (PDF page 122); the rows are read there.
+- `kc.south_wall.y`, `kc.west_wall.x`: the ledger cited section 64, but the table has no S-wall or W-wall row. The figures (S wall 537.0 +/- .8 from the centre, W wall 107.7 +/- 3.0 W of the centre) are printed in section 55 (PDF page 122); the rows are read there, and after the gate the ledger `source` of both was changed from `s.64` to `s.55` (values and notes unchanged).
 - `kc.east_wall.x`: the table prints 305.0 +/- 3 (the ledger value); section 55 prints 305.1 +/- 3.0.
 - `kc.north_wall.y`: the ledger value 330.9 is the table's "King's Chamber, floor" row; the table's "N.E. wall base" row and section 55 print 330.6.
 - `kc.wall_base.z`: settled in the text of section 55 (1686.3 to 1688.5); the table of section 64 (PDF page 134) also prints +1688.5 +/- .6.
 - `ante.x`: the table prints "same?" in the column for the distance east of the centre; 284.4 is the figure of the Gallery row above it.
 - `ante.roof.z`: the table prints +1841.5 +/- .6 (the ledger value); the text of section 49 (PDF page 116) prints 1841.8 +/- .6 for the ceiling over the virtual end of the Gallery floor.
 - `kcs.north.width`: the ledger value 9.05 is the midpoint of the printed 8.9 to 9.2; Petrie prints "(mean 9.0)" (PDF page 123).
-- `ap.plug_width`: the page (PDF page 102) prints 38.2 at the lower end of the plug and 41.6 at the upper end. 39.9 is their midpoint and 39.05 is (3 x 38.2 + 41.6) / 4: both are the ledger's own means, not printed figures.
-- `gg.slot_width`: Petrie writes "2 cubits" for the space between the ramps (PDF page 113) and gives the cubit as 20.6 in (PDF page 109); 41.2 is 2 x 20.6, not a printed figure.
+- `ap.plug_width` (`corrected`): the page (PDF page 102) prints 38.2 at the lower end of the plug and 41.6 at the upper end. The ledger's `high` was 39.9 in = 1.0135 m, a midpoint of those two and not a printed figure; it is now 41.6 in = 1.0566 m, so the range is the printed pair. `value` 0.9919 m (39.05 in, research/01's weighted mean (3 x 38.2 + 41.6) / 4, not a printed figure) and `low` 0.9703 m (38.2 in) are unchanged; the note was rewritten to say so. Old high: 1.0135, new high: 1.0566. (The ledger note does not carry a "was:" figure; the old high is recorded here and in the task report.)
+- `gg.slot_width`: Petrie writes "2 cubits" for the space between the ramps (PDF page 113) and gives the cubit as 20.6 in (PDF page 109); 41.2 is 2 x 20.6, not a printed figure. The ledger note now says so; the value is unchanged.
 - `pyr.height_present`: the ledger 5408.5 is the mean of the printed 5407.9 and 5409.2 (5408.55, rounded down); `kc.length`: 412.25 is the mean of the printed 412.40 and 412.11 (412.255, rounded down).
-- `dp.rock_entry_distance`: the ledger's stations 1164 and 1351 are the rounded forms of the printed 1163.6 (table of section 35, PDF page 95) and 1350.7 (the beginning of the rock on the E side of the roof, section 35, PDF page 96).
+- `dp.rock_entry_distance`: the ledger's stations 1164 and 1351 were the rounded forms of the printed 1163.6 (table of section 35, column "E. Wall Top", PDF page 95) and 1350.7 (column "E. Roof", beginning of the rock on the E side of the roof; also in the text of section 35, PDF page 96). The ledger note now quotes the printed figures and `verified` is now true; the value is unchanged (31.94 m; the exact midpoint is 31.93 m).
 - `dp.horizontal.height`: the ledger's 38 in is the printed floor level -1181 less the printed roof level -1143; the same table also prints "Top + 38.3" and "Top + 38.9" for the roof above the floor end.
 - `gg.floor_length_to_step`: Petrie's row is "Ramp End 1815.5"; the ramps stop 0.30 (E) and 0.44 (W) in short of the step face.
 - `qc.length_ew`, `qc.width_ns`, `qc.niche.*`: the figures are printed; the "+/-" values in the ledger are not printed errors (the book gives these figures without one).
@@ -207,7 +207,7 @@ None of these changed a verdict; every row below is `yes`. They are the places w
 
 Checked on 2026-10-10 by Claude (implementer of Task 8, for the project owner). The PDF has 315 pages.
 
-- yes: 156, of which 60 were read in the OCR text and 96 on a page image
-- corrected: 0 (none)
+- yes: 155, of which 60 were read in the OCR text and 95 on a page image
+- corrected: 1 (ap.plug_width: `high` 1.0135 m to 1.0566 m, the printed 41.6 in; `value` and `low` unchanged)
 
 Every ledger entry that cites Petrie was read in the scan of the 1883 book. No figure was left unread.
