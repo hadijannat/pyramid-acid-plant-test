@@ -353,3 +353,29 @@ def test_tier_0_claims_name_their_inputs_and_the_field_claims_wait_for_a_solver(
         assert (led.claims[key].tier, led.claims[key].piece) == (1, 1)
     assert "paper_kings_chamber" in led.claims["E19"].spaces
     assert "pyr.height_present" in led.claims["E20"].depends_on
+
+
+def test_petrie_check_complete():
+    """Gate G0: every ledger entry that cites Petrie has a verified row in research/petrie-check.md."""
+    path = REPO_ROOT / "research" / "petrie-check.md"
+    assert path.is_file(), "research/petrie-check.md is missing: gate G0 has not been run"
+    rows = {}
+    for line in path.read_text().splitlines():
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if len(cells) == 6 and re.fullmatch(r"[a-z][a-z0-9_.]*\.[a-z0-9_]+", cells[0]):
+            rows[cells[0]] = cells
+    cited = [quantity for quantity in real().quantities.values() if "Petrie" in quantity.source]
+    assert len(cited) > 100, "the ledger no longer names Petrie in its sources"
+    missing = [quantity.id for quantity in cited if quantity.id not in rows]
+    assert not missing, f"no row in research/petrie-check.md for: {missing}"
+    for quantity in cited:
+        _, section, printed, metres, verdict, read_on = rows[quantity.id]
+        # there is no verdict for a figure that could not be read: the gate stays shut until it is read
+        assert verdict in {"yes", "corrected"}, f"{quantity.id}: verdict is {verdict!r}"
+        assert section and printed, f"{quantity.id}: section or printed value is empty"
+        # "text", or the number of the PDF page whose image was read
+        assert read_on == "text" or read_on.isdigit(), f"{quantity.id}: read on {read_on!r}"
+        # the OCR can misread a digit, so the ledger changes only for a figure read on a page image
+        assert verdict == "yes" or read_on.isdigit(), f"{quantity.id}: corrected without a page image"
+        # the row quotes the ledger's value, so a corrected entry and its row cannot drift apart
+        assert float(metres.split()[0]) == pytest.approx(quantity.value), f"{quantity.id}: row and ledger disagree"
