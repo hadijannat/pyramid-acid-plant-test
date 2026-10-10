@@ -82,3 +82,16 @@ button:focus-visible, summary:focus-visible, input:focus-visible {
   }
   #panel { overflow-y: visible; border-left: 0; border-top: 1px solid var(--line); }
 }
+
+/* timeline bar */
+#timeline { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+#timeline input[type="range"] { flex: 1 1 220px; min-width: 0; accent-color: var(--accent); }
+#tl-label { font-weight: 600; }
+#tl-time { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* labels drawn in the scene by CSS2DRenderer */
+.placeholder-label, .pending-label {
+  padding: 2px 6px; border-radius: 4px; font-size: 12px; white-space: nowrap;
+  background: rgba(21, 23, 26, 0.85); color: var(--text); border: 1px dashed var(--undefined);
+}
+.pending-label { color: var(--pending); border-color: var(--pending); }
