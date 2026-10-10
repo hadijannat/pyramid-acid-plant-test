@@ -4,7 +4,7 @@ Piece 1 of 6. Date: 2026-10-10. Status: draft for review.
 
 ## 1. Context
 
-The project tests Geoffrey Drumm's "Land of Chem" hypothesis, which holds that the Great Pyramid operated as a sulfuric-acid plant. The hypothesis is extracted step by step in `research/00-hypothesis.md` (steps S01 to S31, evidence claims E01 to E40). Sourced inputs and a first assessment of each claim are in `research/01` to `research/09`, verified in commit `c4e3c89`.
+The project tests Geoffrey Drumm's "Land of Chem" hypothesis, which holds that the Great Pyramid operated as a sulfuric-acid plant. The hypothesis is extracted step by step in `research/00-hypothesis.md` (steps S01 to S31, evidence claims E01 to E40; E41 and E42 in that file concern the Red Pyramid and the radar-scan discussion and are outside this project). Sourced inputs and a first assessment of each claim are in `research/01` to `research/09`, verified in commit `c4e3c89`.
 
 Decisions already made by the project owner:
 
@@ -81,7 +81,7 @@ ledger -> geometry -> meshes -> EM cases -> metrics -> verdicts -> viewer data
 
 ### 5.2 Screening (Tier 0)
 
-`pyramid/screening.py` implements the 30 derived quantities of `research/09-recomputation.md` (chamber volumes, pressures, piston force, stroke counts, suction margin, gas inventory, acid ceiling, temperature rise, oxygen supply, strike rate, relaxation times, skin depths, piezoelectric displacement and sound level, shaft path loss, vein conductivity contrast). Each is a pure function of ledger values and returns a value with its range. A command writes the Tier 0 table and sets a first verdict on each claim it bears on.
+`pyramid/screening.py` implements the derived quantities of `research/09-recomputation.md` that decide a Tier 0 claim: 36 of that file's 51 rows (chamber volumes, pressures, piston force, stroke counts, suction margin, gas inventory, acid ceiling, temperature rise, oxygen supply, strike rate, relaxation times, skin depths, piezoelectric displacement and sound level, shaft path loss, vein conductivity contrast). Each is a pure function of ledger values and returns a value with its range. A command writes the Tier 0 table and sets a first verdict on each claim it bears on.
 
 ### 5.3 Geometry
 
@@ -94,7 +94,15 @@ Built with gmsh's OpenCASCADE kernel through its Python API, so one tool does CA
 - **Exports:** STEP for CAD, gmsh meshes for the solvers, and glTF for the viewer with one named node per space.
 - **Self-checks:** control points within Petrie's stated error (worst case 0.076 m); each volume within the ledger's range; every solid closed; every space inside the pyramid or bedrock; a switch changes only the solids it names.
 
-**Gate G0, before any CAD:** Petrie's figures reached the research files through a text-extraction tool. Two copies agree, but each control point and dimension used by the model is checked against the raw scanned text of the 1883 edition, and the page reference is added to the ledger.
+Simplifications in this piece, each flagged in the code and refined when a later piece needs it:
+
+- The five relieving chambers are one block, because no source read gives the levels of the four lower compartments.
+- The King's Chamber coffer and the antechamber's fittings (wainscots, slots, granite leaf, the two northern slabs) are not modelled, because no surveyed position was found. The `portcullis` switch closes the antechamber's south end by one slab thickness, and `grooves_connected` opens one duct of the grooves' total area through it.
+- Bedrock is a flat-topped block below the pavement. The rock knoll rising inside the pyramid is not modelled.
+- The Big Void uses the ledger's central position and a 30 m length; its published ranges are not swept here.
+- The grotto's plan size and the North Face Corridor's level have no sourced value. Both are assumed entries marked unverified in the ledger.
+
+**Gate G0, before any CAD:** Petrie's figures reached the research files through a text-extraction tool. Two copies agree, but each ledger entry that cites Petrie is checked against the raw scanned text of the 1883 edition, and the result is recorded entry by entry in `research/petrie-check.md`.
 
 ### 5.4 Viewer
 
@@ -159,7 +167,7 @@ Criteria, fixed now:
 ## 8. Testing
 
 - **Ledger:** every entry has a value, an SI unit and a source; every claim references known ids.
-- **Screening:** each of the 30 quantities reproduces the value in `research/09-recomputation.md` within its stated tolerance.
+- **Screening:** each quantity reproduces the value in `research/09-recomputation.md` within 2%.
 - **Geometry:** the self-checks of section 5.3, run for the default model and for each variant switch.
 - **Electromagnetics:** the benchmark and convergence criteria of section 6, with a coarse version of B0 as a fast regression test.
 - **Viewer:** the four data files are validated against their expected structure by a test; the page is loaded in a browser and each step of the cycle is checked by eye and by screenshot.
