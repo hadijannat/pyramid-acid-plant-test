@@ -73,62 +73,119 @@ class Ledger:
         return quantity.low, quantity.high
 
 
-def load(root: Path | None = None) -> Ledger:
-    root = root or REPO_ROOT / "ledger"
-    parameter_bytes = (root / "parameters.yaml").read_bytes()
-    claim_bytes = (root / "claims.yaml").read_bytes()
+_ABSENT = object()
 
+
+def _is_text(value) -> bool:
+    return isinstance(value, str)
+
+
+def _is_number(value) -> bool:
+    return isinstance(value, (int, float)) and not isinstance(value, bool)
+
+
+def _is_integer(value) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
+def _is_boolean(value) -> bool:
+    return isinstance(value, bool)
+
+
+def _is_text_list(value) -> bool:
+    return isinstance(value, list) and all(isinstance(item, str) for item in value)
+
+
+def _get(entry: dict, key: str, where: str, check, what: str, default=_ABSENT):
+    """entry[key], or default if the key is absent; LedgerError if required and absent, or of the wrong type."""
+    if key not in entry:
+        if default is _ABSENT:
+            raise LedgerError(f"{where}: missing {key}")
+        return default
+    if not check(entry[key]):
+        raise LedgerError(f"{where}: {key} must be {what}")
+    return entry[key]
+
+
+def _entries(raw: bytes, name: str) -> list[dict]:
+    """The items of one ledger file, which must be a YAML list of mappings."""
+    try:
+        entries = yaml.safe_load(raw)
+    except yaml.YAMLError as error:
+        raise LedgerError(f"{name}: not valid YAML: {error}") from error
+    if not isinstance(entries, list) or not all(isinstance(entry, dict) for entry in entries):
+        raise LedgerError(f"{name}: must be a YAML list of mappings")
+    return entries
+
+
+def _load_quantities(raw: bytes) -> dict[str, Quantity]:
     quantities: dict[str, Quantity] = {}
-    for entry in yaml.safe_load(parameter_bytes):
-        key = entry["id"]
+    for number, entry in enumerate(_entries(raw, "parameters.yaml"), start=1):
+        key = _get(entry, "id", f"parameters.yaml entry {number}", _is_text, "text")
         if key in quantities:
             raise LedgerError(f"duplicate id: {key}")
-        source = str(entry.get("source") or "").strip()
+        source = _get(entry, "source", key, _is_text, "text").strip()
         if not source:
             raise LedgerError(f"{key}: missing source")
-        if entry["unit"] not in UNITS:
-            raise LedgerError(f"{key}: unknown unit {entry['unit']!r}")
-        value = float(entry["value"])
-        low = float(entry.get("low", value))
-        high = float(entry.get("high", value))
+        unit = _get(entry, "unit", key, _is_text, "text")
+        if unit not in UNITS:
+            raise LedgerError(f"{key}: unknown unit {unit!r}")
+        value = float(_get(entry, "value", key, _is_number, "a number"))
+        low = float(_get(entry, "low", key, _is_number, "a number", value))
+        high = float(_get(entry, "high", key, _is_number, "a number", value))
         if not low <= value <= high:
             raise LedgerError(f"{key}: value {value} outside its range {low} to {high}")
         quantities[key] = Quantity(
             id=key,
             value=value,
-            unit=entry["unit"],
+            unit=unit,
             low=low,
             high=high,
             source=source,
-            verified=bool(entry["verified"]),
-            note=entry.get("note", ""),
+            verified=_get(entry, "verified", key, _is_boolean, "true or false"),
+            note=_get(entry, "note", key, _is_text, "text", ""),
         )
+    return quantities
 
+
+def _load_claims(raw: bytes, quantities: dict[str, Quantity]) -> dict[str, Claim]:
     claims: dict[str, Claim] = {}
-    for entry in yaml.safe_load(claim_bytes):
-        key = entry["id"]
+    for number, entry in enumerate(_entries(raw, "claims.yaml"), start=1):
+        key = _get(entry, "id", f"claims.yaml entry {number}", _is_text, "text")
         if key in claims:
             raise LedgerError(f"duplicate id: {key}")
-        if entry["status"] not in STATUSES:
-            raise LedgerError(f"{key}: unknown status {entry['status']!r}")
-        if entry["tier"] not in (0, 1, 2):
+        status = _get(entry, "status", key, _is_text, "text")
+        if status not in STATUSES:
+            raise LedgerError(f"{key}: unknown status {status!r}")
+        tier = _get(entry, "tier", key, _is_integer, "an integer")
+        if tier not in (0, 1, 2):
             raise LedgerError(f"{key}: tier must be 0, 1 or 2")
-        if entry["piece"] not in (1, 2, 3, 4, 5, 6):
+        piece = _get(entry, "piece", key, _is_integer, "an integer")
+        if piece not in (1, 2, 3, 4, 5, 6):
             raise LedgerError(f"{key}: piece must be 1 to 6")
-        for dependency in entry["depends_on"]:
+        depends_on = _get(entry, "depends_on", key, _is_text_list, "a list of quantity ids")
+        for dependency in depends_on:
             if dependency not in quantities:
                 raise LedgerError(f"{key}: depends on unknown quantity: {dependency}")
         claims[key] = Claim(
             id=key,
-            statement=entry["statement"],
-            subsystem=entry["subsystem"],
-            timestamp=entry["timestamp"],
-            tier=entry["tier"],
-            piece=entry["piece"],
-            criterion=entry["criterion"],
-            status=entry["status"],
-            depends_on=tuple(entry["depends_on"]),
-            spaces=tuple(entry.get("spaces", ())),
+            statement=_get(entry, "statement", key, _is_text, "text"),
+            subsystem=_get(entry, "subsystem", key, _is_text, "text"),
+            timestamp=_get(entry, "timestamp", key, _is_text, "text"),
+            tier=tier,
+            piece=piece,
+            criterion=_get(entry, "criterion", key, _is_text, "text"),
+            status=status,
+            depends_on=tuple(depends_on),
+            spaces=tuple(_get(entry, "spaces", key, _is_text_list, "a list of space names", [])),
         )
+    return claims
 
+
+def load(root: Path | None = None) -> Ledger:
+    root = root or REPO_ROOT / "ledger"
+    parameter_bytes = (root / "parameters.yaml").read_bytes()
+    claim_bytes = (root / "claims.yaml").read_bytes()
+    quantities = _load_quantities(parameter_bytes)
+    claims = _load_claims(claim_bytes, quantities)
     return Ledger(quantities, claims, sha256(parameter_bytes + claim_bytes).hexdigest())
