@@ -243,3 +243,226 @@ def test_grotto_wraps_the_lined_stretch_of_the_well_shaft(gm):
     assert (z0, z1) == pytest.approx((3.530, 5.530), abs=1e-3)  # standing on the 2.15 m rock-cut stretch
     assert z1 < q("site.bedrock_z_at_well_shaft")  # under the rock surface Haase gives, 5.70 m
     assert volume(tag) == pytest.approx(1.04 * 1.04 * 2.0)
+
+
+def test_ledger_holds_the_upper_system_additions():
+    floor = led().quantities["nfc.floor.z"]
+    assert (floor.value, floor.unit, floor.verified) == (18.31, "m", False)
+    assert floor.note.startswith("assumed for the model")
+    assert led().rng("ap.volume_above_plugs") == (40.5, 43.0)
+    assert led().rng("qc.volume_with_niche") == (166.6, 171.8)
+    assert led().rng("kc.volume_with_passage") == (321.5, 325.3)
+    # two of them are sums of figures the ledger already holds
+    assert led().q("qc.volume_with_niche") == pytest.approx(led().q("qc.volume") + led().q("qc.niche.volume"))
+    assert led().q("kc.volume_with_passage") == pytest.approx(led().q("kc.volume") + 3.0)
+
+
+def test_faces_give_the_casing_and_the_core():
+    half, apex = spaces.faces(led())
+    assert (half, apex) == pytest.approx((115.17375, 146.7104))
+    core_half, core_apex = spaces.faces(led(), casing=False)
+    assert (core_half, core_apex) == pytest.approx((114.31905, 144.3618), abs=1e-3)
+    # the core face passes through the edge of the present top platform, 5.532 m from the centre
+    top = led().q("pyr.height_present")
+    assert core_half * (1 - top / core_apex) == pytest.approx(led().q("pyr.top_platform_half_width"))
+    # at the level of the entrance the casing face stands where Petrie puts the entrance, 101.85 m north
+    entrance = half * (1 - led().q("dp.entrance.z") / apex)
+    assert entrance == pytest.approx(led().q("dp.entrance.y"), abs=0.01)
+
+
+def test_stepped_outline_goes_up_the_left_side_and_down_the_right():
+    assert spaces._stepped([(1.0, 0.5), (2.0, 1.5)]) == [
+        (-0.5, 0.0), (-0.5, 0.5), (-1.0, 0.5), (-1.0, 1.5), (1.0, 1.5), (1.0, 0.5), (0.5, 0.5), (0.5, 0.0)]
+
+
+def test_ascending_passage_stops_at_the_gallery_wall_and_above_the_plugs(gm):
+    q = led().q
+    open_part, whole = spaces.ascending_passage(led()), spaces.ascending_passage(led(), plugs=False)
+    for tag in (open_part, whole):
+        x0, y0, z0, x1, y1, z1 = box(tag)
+        assert y0 == pytest.approx(q("ap.end.y"), abs=1e-3)  # cut off at the Gallery's north wall, 41.321
+        assert z1 == pytest.approx(22.9934, abs=1e-3)  # the roof where it meets that wall
+        assert (x0, x1) == pytest.approx((6.7615, 7.8181), abs=1e-3)
+    # without plugs the floor starts where it meets the floor of the Descending Passage
+    assert box(whole)[2] == pytest.approx(q("ap.start.z"), abs=1e-3)  # 4.392
+    # with plugs it starts 6.42 m up the slope, at the top of the plugs
+    assert box(open_part)[2] == pytest.approx(7.2121, abs=1e-3)
+    assert volume(whole) == pytest.approx(50.25, abs=0.05)  # 39.29 m x 1.2694 m2 + 0.37 under the roof at the wall
+    assert volume(open_part) == pytest.approx(42.10, abs=0.05)  # 32.87 m x 1.2694 m2 + 0.37
+    for key, value in (("ap.volume_gross", volume(whole)), ("ap.volume_above_plugs", volume(open_part))):
+        low, high = led().rng(key)
+        assert low <= value <= high
+
+
+def test_queens_passage_steps_down_before_the_chamber(gm):
+    tag = spaces.queens_passage(led())
+    # from the Gallery's north wall (41.321) to the chamber's (2.591); floor 21.707 dropping to 21.207
+    assert box(tag) == pytest.approx((6.7648, 2.5908, 21.2065, 7.8148, 41.3207, 22.8865), abs=1e-3)
+    assert volume(tag) == pytest.approx(50.54, abs=0.02)  # 33.20 x 1.05 x 1.17 + 5.53 x 1.05 x 1.68
+    low, high = led().rng("qp.volume")
+    assert low <= volume(tag) <= high
+
+
+def test_queens_chamber_is_gabled_and_has_its_niche(gm):
+    q = led().q
+    tag = spaces.queens_chamber(led())
+    # west wall, south wall, floor; back of the niche (east wall 7.823 + 1.041), north wall, ridge
+    assert box(tag) == pytest.approx((2.0709, -2.6378, 21.1938, 8.8646, 2.5908, 27.4193), abs=1e-3)
+    assert box(tag)[5] == pytest.approx(q("qc.ridge.z"), abs=0.076)  # Petrie's ridge level, 27.399
+    assert volume(tag) == pytest.approx(169.31, abs=0.05)  # 140.92 box + 23.16 gable + 5.22 niche
+    low, high = led().rng("qc.volume_with_niche")
+    assert low <= volume(tag) <= high
+
+
+@pytest.mark.parametrize("side, way, start, far, top, expected_volume", [
+    ("north", 1.0, 2.7178, 53.3765, 60.1278, 2.81),
+    ("south", -1.0, -2.7648, -52.9452, 61.0842, 2.88),
+])
+def test_queens_chamber_shaft_starts_behind_the_wall_and_aims_at_petries_exit_level(
+        gm, side, way, start, far, top, expected_volume):
+    q = led().q
+    tag = getattr(spaces, f"qc_shaft_{side}")(led())
+    x0, y0, z0, x1, y1, z1 = box(tag)
+    near_y, far_y = (y0, y1) if way > 0 else (y1, y0)
+    assert near_y == pytest.approx(start, abs=1e-3)  # 0.127 m of stone left between it and the chamber
+    assert (far_y, z1) == pytest.approx((far, top), abs=0.01)
+    assert (x0 + x1) / 2 == pytest.approx(4.947, abs=1e-3)  # centred on its wall
+    # carried on from its upper end, the axis meets the casing at Petrie's projected level
+    slope, height = math.radians(q(f"qcs.{side}.angle")), q(f"qcs.{side}.height")
+    end_y, end_z = way * far_y - height / 2 * math.sin(slope), z1 - height / 2 * math.cos(slope)
+    half, apex = spaces.faces(led())
+    more = (half * (1 - end_z / apex) - end_y) / (math.cos(slope) + half / apex * math.sin(slope))
+    assert end_z + more * math.sin(slope) == pytest.approx(q(f"qcs.{side}.projected_exit.z"), abs=0.01)
+    assert volume(tag) == pytest.approx(expected_volume, abs=0.02)
+    low, high = led().rng("qcs.volume")
+    assert low <= volume(tag) <= high
+
+
+def test_grand_gallery_is_the_corbelled_section_swept_up_the_slope(gm):
+    q = led().q
+    # the section: slot 1.0465 x 0.606, walls 2.0935 apart up to the first lap at 2.29 m, seven laps up to 8.6 m
+    tiers = spaces._gallery_tiers(led())
+    assert len(tiers) == 9
+    assert tiers[-1] == pytest.approx((q("gg.roof_width"), q("gg.height")), abs=0.01)  # 1.05 m wide under the roof
+    area = sum(width * (top - bottom) for (width, top), bottom in zip(tiers, [0.0] + [top for _, top in tiers]))
+    assert area == pytest.approx(13.605, abs=0.005)
+    tag = spaces.grand_gallery(led())
+    # west and east walls; south wall; floor at the north wall; north wall; top of the roof at the south wall
+    assert box(tag) == pytest.approx((6.2430, -1.5672, 21.6560, 8.3366, 41.3207, 51.5006), abs=1e-3)
+    assert box(tag)[5] == pytest.approx(q("gg.roof_top.z"), abs=0.076)
+    assert volume(tag) == pytest.approx(582.57, abs=0.3)  # 13.605 m2 x 42.888 m = 583.50, less 0.93 for the Great Step
+    low, high = led().rng("gg.volume")
+    assert low <= volume(tag) <= high
+
+
+def test_antechamber_stops_at_the_last_slab_unless_the_portcullis_is_absent(gm):
+    q = led().q
+    closed = spaces.antechamber(led())
+    opened = spaces.antechamber(led(), portcullis=False)
+    grooved = spaces.antechamber(led(), grooves_connected=True)
+    # from the Gallery's south wall to one slab thickness (0.535 m) short of the antechamber's south wall
+    assert box(closed) == pytest.approx((6.3983, -5.3019, 42.9920, 8.0493, -1.5672, 46.7741), abs=1e-3)
+    assert box(opened)[1] == pytest.approx(q("ante.south_end.y"), abs=1e-3)  # -5.837, the south wall itself
+    assert box(grooved)[1] == pytest.approx(q("ante.south_end.y"), abs=1e-3)  # the groove duct reaches it
+    assert volume(closed) == pytest.approx(16.615, abs=0.01)  # 15.07 box + 1.54 passage from the Gallery
+    assert volume(opened) == pytest.approx(19.955, abs=0.01)  # 18.41 box + 1.54
+    # the groove duct adds its section, 0.002 m2, times the slab thickness
+    assert volume(grooved) - volume(closed) == pytest.approx(0.002 * 0.535, abs=1e-4)
+    low, high = led().rng("ante.volume")
+    assert all(low <= volume(tag) <= high for tag in (closed, opened, grooved))
+
+
+def test_kings_chamber_fills_its_surveyed_planes_and_keeps_its_entrance_passage(gm):
+    q = led().q
+    tag = spaces.kings_chamber(led())
+    planes = (q("kc.west_wall.x"), q("kc.south_wall.y"), q("kc.floor.z"),
+              q("kc.east_wall.x"), q("ante.south_end.y"), q("kc.ceiling.z"))
+    assert planes == pytest.approx((-2.7356, -13.6398, 42.9971, 7.7470, -5.8369, 48.8353))
+    assert box(tag) == pytest.approx(planes, abs=1e-3)
+    assert volume(tag) == pytest.approx(323.37, abs=0.05)  # 320.37 chamber + 3.00 passage
+    low, high = led().rng("kc.volume_with_passage")
+    assert low <= volume(tag) <= high
+
+
+@pytest.mark.parametrize("side, way, expected_volume", [("north", 1.0, 3.61), ("south", -1.0, 2.58)])
+def test_kings_chamber_shaft_ends_on_the_face(gm, side, way, expected_volume):
+    q = led().q
+    build_shaft = getattr(spaces, f"kc_shaft_{side}")
+    slope, height = math.radians(q(f"kcs.{side}.angle")), q(f"kcs.{side}.height")
+
+    def far_end(tag, level_end=False):
+        """Distance from the centre, and level, of the axis at the outer end, read off the bounding box."""
+        x0, y0, z0, x1, y1, z1 = box(tag)
+        reach = y1 if way > 0 else -y0
+        if level_end:
+            return reach, z1 - height / 2
+        return reach - height / 2 * math.sin(slope), z1 - height / 2 * math.cos(slope)
+
+    # default: to the casing face, at about 80 m
+    tag = build_shaft(led())
+    half, apex = spaces.faces(led())
+    reach, level = far_end(tag)
+    assert reach == pytest.approx(half * (1 - level / apex), abs=1e-3)
+    low, high = led().rng("kcs.exit.z")
+    assert low <= level <= high  # the axis leaves the casing at 80.27 m (north) and 80.85 m (south); range 79.0 to 81.1
+    assert (box(tag)[0] + box(tag)[3]) / 2 == pytest.approx(5.247, abs=1e-3)  # 2.5 m west of the east wall
+    assert volume(tag) == pytest.approx(expected_volume, abs=0.02)
+    low, high = led().rng(f"kcs.{side}.volume")
+    assert low <= volume(tag) <= high
+
+    # closed by the casing, or casing absent: it stops on the core face, about a metre short
+    short = build_shaft(led(), to_casing=False)
+    core_half, core_apex = spaces.faces(led(), casing=False)
+    reach_short, level_short = far_end(short)
+    assert reach_short == pytest.approx(core_half * (1 - level_short / core_apex), abs=1e-3)
+    assert 0.5 < reach - reach_short < 1.5
+
+    # level outer end: the last 3.05 m run level and still end on the casing face
+    flat = build_shaft(led(), level_end=True)
+    reach_flat, level_flat = far_end(flat, level_end=True)
+    assert reach_flat == pytest.approx(half * (1 - level_flat / apex), abs=1e-3)
+    assert level - level_flat > 1.0
+
+
+def test_relieving_chambers_are_one_block_hung_from_the_surveyed_apex(gm):
+    q = led().q
+    tag = spaces.relieving_chambers(led())
+    x0, y0, z0, x1, y1, z1 = box(tag)
+    assert z1 == pytest.approx(q("kc.floor.z") + q("rc.apex_above_kc_floor"), abs=1e-3)  # 64.105
+    assert z1 - z0 == pytest.approx(5.918, abs=1e-3)  # the five mean heights added up
+    assert z0 > q("kc.ceiling.z")  # clear of the King's Chamber ceiling, 48.835
+    assert ((x0 + x1) / 2, (y0 + y1) / 2) == pytest.approx((2.5057, -11.0224), abs=1e-3)  # over the chamber's centre
+    assert volume(tag) == pytest.approx(360.05, abs=0.05)  # 11.684 x 5.207 x 5.918
+    low, high = led().rng("rc.volume")
+    assert low <= volume(tag) <= high
+
+
+def test_big_void_is_level_or_parallel_to_the_gallery(gm):
+    q = led().q
+    level = spaces.big_void(led())
+    # 30 m from the centre northwards, 2.09 m wide and 6.50 m high about z = 66.19
+    assert box(level) == pytest.approx((6.2430, 0.0, 62.9419, 8.3366, 30.0, 69.4381), abs=1e-3)
+    tilted = spaces.big_void(led(), inclined=True)
+    assert box(tilted) == pytest.approx((6.2430, 0.1135, 56.6320, 8.3366, 29.8865, 75.7480), abs=1e-3)
+    low, high = led().rng("bv.volume")
+    for tag in (level, tilted):
+        assert volume(tag) == pytest.approx(408.0, abs=0.01)  # 30 m x 13.6 m2
+        assert low <= volume(tag) <= high
+    # inclined, it rises to the south as the Gallery does: its southern half is the higher one
+    south_half = spaces._box(0.0, -5.0, 0.0, 20.0, 15.0, 100.0)
+    out, _ = occ.intersect([(3, tilted)], [(3, south_half)])
+    assert occ.getCenterOfMass(3, out[0][1])[2] > q("bv.centre.z") + 2.0
+
+
+def test_north_face_corridor_sits_behind_the_core_face_over_the_entrance(gm):
+    q = led().q
+    tag = spaces.north_face_corridor(led())
+    # 2.02 m wide about the passage plane, 9.06 m long, floor at the assumed level 18.31
+    assert box(tag) == pytest.approx((6.2798, 88.1932, 18.31, 8.2998, 97.2532, 20.49), abs=1e-3)
+    # its upper north edge, the corner nearest the face, is 0.84 m behind the core face
+    core_half, core_apex = spaces.faces(led(), casing=False)
+    behind = core_half * (1 - box(tag)[5] / core_apex) - box(tag)[4]
+    assert behind == pytest.approx(q("nfc.start_offset"), abs=1e-3)
+    assert volume(tag) == pytest.approx(39.897, abs=0.01)  # 9.06 x 2.02 x 2.18
+    low, high = led().rng("nfc.volume")
+    assert low <= volume(tag) <= high
