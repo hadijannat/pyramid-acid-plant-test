@@ -672,10 +672,11 @@ def _four_strokes(ledger, r):
     always_near = [near <= count.low and count.high <= upper for count in counts]  # near over the whole range
     sometimes_near = [count.low <= upper and near <= count.high for count in counts]  # near somewhere in it
     return _three_way(all(always_near), any(sometimes_near)), (
-        f"Filling the Gallery alone takes {counts[0].value:.1f} strokes if a stroke sweeps the whole Descending "
-        f"Passage, {counts[1].value:.1f} if it sweeps the part below the Ascending Passage junction and "
-        f"{counts[2].value:.1f} if it sweeps the part below the pavement, against the {claimed:.0f} claimed, and "
-        "the hypothesis fixes no stroke."
+        f"Filling the Gallery alone takes {counts[0].value:.1f} strokes ({counts[0].low:.1f} to {counts[0].high:.1f} "
+        "over the ranges of the inputs) if a stroke sweeps the whole Descending Passage, "
+        f"{counts[1].value:.1f} ({counts[1].low:.1f} to {counts[1].high:.1f}) if it sweeps the part below the "
+        f"Ascending Passage junction and {counts[2].value:.1f} ({counts[2].low:.1f} to {counts[2].high:.1f}) if it "
+        f"sweeps the part below the pavement, against the {claimed:.0f} claimed, and the hypothesis fixes no stroke."
     )
 
 
@@ -705,15 +706,23 @@ def _s16(ledger, r):
 def _s20(ledger, r):
     time = r["t0.oxygen_supply_time"]
     status = "pass" if time.high <= 86400 else "conditional"  # 86400 s: within a day counts as quickly
+    if time.value >= YEAR:
+        needs = f"{time.value / YEAR:.1f} to {time.high / YEAR:.0f} years"
+    else:
+        needs = f"{time.value / 3600:.1f} to {time.high / 3600:.1f} h"
     if status == "pass":
-        return status, (
-            f"The oxygen for a full batch needs {time.value / 3600:.1f} to {time.high / 3600:.1f} h to cross the "
-            "still water surface in the Gallery, within the day that counts as quick."
+        outcome = "within the day that counts as quick"
+    elif time.low > 86400:
+        outcome = (
+            "so quick oxidation holds only if something aerates the water, which the hypothesis does not describe"
+        )
+    else:
+        outcome = (
+            "so quick oxidation holds over only part of the ranges of the inputs, and the hypothesis describes no "
+            "aeration that would make up the rest"
         )
     return status, (
-        f"The oxygen for a full batch needs {time.value / YEAR:.1f} to {time.high / YEAR:.0f} years to cross the "
-        "still water surface in the Gallery, so quick oxidation holds only if something aerates the water, which "
-        "the hypothesis does not describe."
+        f"The oxygen for a full batch needs {needs} to cross the still water surface in the Gallery, {outcome}."
     )
 
 
@@ -780,14 +789,14 @@ def _veins(ledger, r):
     needed = r["t0.vein_contrast"].value
     host, (host_low, host_high) = ledger.q("plateau.host_resistivity"), ledger.rng("plateau.host_resistivity")
     specular = ledger.rng("plateau.hematite_resistivity_specular")[0]  # the most conductive hematite measured
-    earthy = ledger.rng("plateau.hematite_resistivity_earthy")[1]  # the least conductive
+    earthy_best, earthy = ledger.rng("plateau.hematite_resistivity_earthy")  # the most and the least conductive
     status = _three_way(host_low / earthy >= needed, host_high / specular >= needed)
     return status, (
         f"A vein must conduct {needed:.1e} times better than the rock to carry current "
         f"{ledger.q('plateau.vein_leakage_length'):.0f} m; the best measured specular hematite reaches "
         f"{host / specular:.1e} times in {host:.0f} ohm m rock and {host_high / specular:.1e} times in the most "
-        f"resistive {host_high:.0f} ohm m rock, earthy red hematite conducts worse than the rock, and no Giza vein "
-        "has been measured."
+        f"resistive {host_high:.0f} ohm m rock, earthy red hematite reaches {host_high / earthy_best:.1e} times at "
+        "most, and no Giza vein has been measured."
     )
 
 
@@ -868,7 +877,8 @@ def _e18(ledger, r):
         f"The strongest airborne ultrasound engineered, {ledger.q('ac.best_airborne_level'):.0f} dB, speeds a "
         f"dry-gas reaction {gain.value:.1f} times if its barrier is the {barrier / 1000:.0f} kJ/mol of the direct "
         f"gas reaction and {at_low:.1f} times if it is {barrier_low / 1000:.0f} kJ/mol, so the doubling the "
-        f"criterion asks for is met {met} barrier."
+        f"criterion asks for is met {met} barrier, and over the ranges of the inputs the gain runs from "
+        f"{gain.low:.1f} to {gain.high:.1f} times."
     )
 
 

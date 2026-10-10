@@ -277,6 +277,15 @@ def with_results(led, results, **replaced):
     return screening.verdicts(led, changed)
 
 
+def with_quantities(led, changes: dict[str, tuple[float, float, float]]):
+    """Verdicts after replacing (value, low, high) of some ledger quantities and recomputing every result."""
+    quantities = dict(led.quantities)
+    for id, (value, low, high) in changes.items():
+        quantities[id] = dataclasses.replace(quantities[id], value=value, low=low, high=high)
+    altered = dataclasses.replace(led, quantities=quantities)
+    return screening.verdicts(altered, screening.all_results(altered))
+
+
 def check(led, results, claim, status, present=(), absent=(), **replaced):
     """The status after replacing some results, and the basis: it names these numbers and never says that."""
     got, basis = with_results(led, results, **replaced)[claim]
@@ -323,7 +332,7 @@ def test_hydraulic_rules_can_go_either_way(led, results):
           suction_margin=(-1.0, -2.0, 0.5))
     # Near four strokes under every stroke definition passes; under none of them fails.
     near_four = {"strokes_below_junction": (4.5, 4.4, 4.6), "strokes_below_pavement": (4.8, 4.7, 4.9)}
-    check(led, results, "S12", "pass", ["4.5 if", "4.8 if"], **near_four)
+    check(led, results, "S12", "pass", ["4.5 (4.4 to 4.6)", "4.8 (4.7 to 4.9)"], **near_four)
     check(led, results, "S18", "fail", ["6.0 strokes"], strokes_full_passage=(6.0, 5.9, 6.1))
 
 
@@ -363,6 +372,11 @@ def test_remaining_rules_can_go_either_way(led, results):
     go("S16", "conditional", ["1.0e+07 s", "2e-03 at most"], ["Even at the collision limit"],
        gas_phase_lifetime=(1e7, 1e7, 1e7))
     go("S20", "pass", ["1.0 to 2.0 h"], ["years", "aerates"], oxygen_supply_time=(3600.0, 1800.0, 7200.0))
+    # the whole range is beyond a day: only an aerated surface would do
+    go("S20", "conditional", ["2.7 to 28 years", "holds only if something aerates the water"], ["part of the ranges"])
+    # the centre is within a day but the high end is not: the ranges decide, and no year figure rounds to 0
+    go("S20", "conditional", ["1.0 to 48.0 h", "over only part of the ranges of the inputs"],
+       ["0.0 to 0 years", "years", "holds only if something aerates"], oxygen_supply_time=(3600.0, 1800.0, 172800.0))
     go("S24", "pass", ["25.0 K", "at least the 20 K"], ["below the 5 K"], temperature_rise=(25.0, 22.0, 30.0))
     go("S24", "conditional", ["4.0 K", "leaves open"], ["below the 5 K", "at least the 20 K"],
        temperature_rise=(4.0, 3.0, 6.0))
@@ -421,8 +435,8 @@ def test_last_six_rules_can_go_either_way(led, results):
        pit_clearance=(-1.0, -2.0, -0.5))
     go("E17", "conditional", ["1.0 m", "it may have reached a documented water table"], ["reached no documented"],
        pit_clearance=(1.0, -1.0, 3.0))
-    go("E18", "pass", arrhenius_gain=(2.5, 2.2, 3.0))
-    go("E18", "fail", arrhenius_gain=(1.5, 1.4, 1.9))
+    go("E18", "pass", ["2.5 times", "the gain runs from 2.2 to 3.0 times"], arrhenius_gain=(2.5, 2.2, 3.0))
+    go("E18", "fail", ["1.5 times", "the gain runs from 1.4 to 1.9 times"], arrhenius_gain=(1.5, 1.4, 1.9))
     go("E29", "pass", ["neutralises 5 percent", "95 percent of the acid survives"],
        gypsum_saturation_loss=(0.05, 0.02, 0.1))
     go("E29", "fail", ["neutralises 95 percent", "5 percent of the acid survives"],
@@ -432,17 +446,43 @@ def test_last_six_rules_can_go_either_way(led, results):
 def test_e18_basis_follows_the_gain_it_is_computed_from(led):
     # The gain is recomputed from the ledger, so that the gains printed in the basis agree with the status.
     def at_level(level):
-        quantity = led.quantities["ac.best_airborne_level"]
-        changed = dataclasses.replace(quantity, value=level, low=level, high=level)
-        altered = dataclasses.replace(led, quantities={**led.quantities, quantity.id: changed})
-        return screening.verdicts(altered, screening.all_results(altered))["E18"]
+        return with_quantities(led, {"ac.best_airborne_level": (level, level, level)})["E18"]
 
     status, basis = at_level(185.0)
     assert (status, "is met at either barrier" in basis) == ("pass", True)
     status, basis = at_level(150.0)
     assert (status, "is met at neither barrier" in basis) == ("fail", True)
     status, basis = at_level(led.q("ac.best_airborne_level"))
-    assert (status, "is met only at the higher barrier" in basis) == ("conditional", True)
+    assert status == "conditional"
+    assert "met only at the higher barrier" in basis
+    assert "over the ranges of the inputs the gain runs from 1.4 to 2.3 times" in basis
+
+
+@pytest.mark.parametrize("claim", ["S28", "S29", "E38"])
+def test_vein_basis_follows_the_earthy_hematite_it_is_computed_from(led, claim):
+    earthy, specular = "plateau.hematite_resistivity_earthy", "plateau.hematite_resistivity_specular"
+    host_high = led.rng("plateau.host_resistivity")[1]
+    ledger_case = f"earthy red hematite reaches {host_high / led.rng(earthy)[0]:.1e} times at most"
+
+    status, basis = with_quantities(led, {})[claim]
+    assert status == "conditional" and ledger_case in basis
+
+    # Earthy hematite more conductive than any metal would carry the current in any rock: the step passes,
+    # and the basis must not say that earthy hematite conducts worse than the rock.
+    status, basis = with_quantities(led, {earthy: (1e-6, 1e-6, 1e-6)})[claim]
+    assert status == "pass"
+    assert "earthy red hematite reaches 3.0e+09 times at most" in basis
+    assert "conducts worse than the rock" not in basis
+
+    # Earthy hematite that reaches the needed contrast only in its best case leaves the step conditional.
+    status, basis = with_quantities(led, {earthy: (1e5, 1e-3, 1e7)})[claim]
+    assert status == "conditional"
+    assert "earthy red hematite reaches 3.0e+06 times at most" in basis
+    assert "conducts worse than the rock" not in basis
+
+    # Specular hematite no better than the rock fails, and the earthy figure stays the ledger's.
+    status, basis = with_quantities(led, {specular: (1e4, 1e4, 1e4)})[claim]
+    assert status == "fail" and ledger_case in basis
 
 
 def test_pass_needs_the_unfavourable_end_and_fail_the_favourable_end_of_every_range(led, results):
@@ -457,8 +497,9 @@ def test_pass_needs_the_unfavourable_end_and_fail_the_favourable_end_of_every_ra
     go("S25", "conditional", ["12 dB (3 dB at the least)"], shaft_link_loss=(38.0, 28.0, 45.0))
     near_four = {"strokes_below_junction": (4.5, 4.4, 4.6), "strokes_below_pavement": (4.8, 4.7, 4.9)}
     # Every centre is near four, but one range runs out of the band of 3 to 5 strokes.
-    go("S12", "conditional", **near_four | {"strokes_below_junction": (4.5, 4.4, 5.6)})
-    go("S18", "conditional", **near_four | {"strokes_full_passage": (4.9, 4.5, 5.4)})
+    go("S12", "conditional", ["4.5 (4.4 to 5.6)"], **near_four | {"strokes_below_junction": (4.5, 4.4, 5.6)})
+    go("S18", "conditional", ["4.9 strokes (4.5 to 5.4 over the ranges of the inputs)"],
+       **near_four | {"strokes_full_passage": (4.9, 4.5, 5.4)})
     # No centre is near four, but the range of one of them reaches the band.
     go("S12", "conditional", strokes_full_passage=(5.2, 4.8, 5.6))
     go("S18", "conditional", strokes_full_passage=(5.2, 4.8, 5.6))
