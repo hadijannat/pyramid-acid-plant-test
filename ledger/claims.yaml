@@ -1,1 +1,717 @@
-[]
+# Claims ledger. One entry per step of the claimed cycle and per evidence claim.
+# status stays "pending" here: verdicts are computed, not authored.
+# depends_on holds ids from parameters.yaml only.
+
+# Steps of the claimed cycle, S01 to S31 (research/00-hypothesis.md section 1b)
+- id: S01
+  statement: "Hydrogen sulfide rises from natural caves, tunnels and old vent features under the plateau."
+  subsystem: gas
+  timestamp: "F 00:09:08-00:09:42"
+  tier: 2
+  piece: 5
+  criterion: "Pass if a geologically defensible hydrogen sulfide flux can supply the chemistry model's minimum feed; fail if the required flux exceeds active-seep analogues by orders of magnitude (07 section 4.4)."
+  status: pending
+  depends_on: [chem.molar_mass_h2s, chem.molar_mass_h2so4]
+  spaces: []
+- id: S02
+  statement: "Hydrogen sulfide is turned into sulfur dioxide in three unnamed steps inside the satellite pyramids."
+  subsystem: gas
+  timestamp: "F 00:14:18-00:14:39"
+  tier: 2
+  piece: 4
+  criterion: "Undefined until the hypothesis names the three steps; then pass if a mass balance for a plausible hydrogen sulfide flux gives a stated mass of acid per cycle and per year (00 section 7 item 12)."
+  status: pending
+  depends_on: [chem.dfh_h2s, chem.dfh_so2, chem.dfh_h2o_gas]
+  spaces: []
+- id: S03
+  statement: "Sulfur dioxide travels up a shaft from below, enters by a floor opening beside the granite box and fills the King's Chamber."
+  subsystem: gas
+  timestamp: "F 00:15:36-00:16:25"
+  tier: 2
+  piece: 4
+  criterion: "Pass if sulfur dioxide remains in the King's Chamber between delivery and draw with the air shafts open (00 section 7 item 5)."
+  status: pending
+  depends_on: [kc.volume, kcs.north.width, kcs.south.width, kcs.mouth_height]
+  spaces: [kings_chamber, kc_shaft_north, kc_shaft_south]
+- id: S04
+  statement: "Ground currents, concentrated by ore deposits and iron veins, enter from below and build a positive electric field at the flat top."
+  subsystem: electrical
+  timestamp: "F 01:03:33-01:07:11"
+  tier: 1
+  piece: 2
+  criterion: "Pass only if a direct-current conduction model with a far field of 1e-7 to 2e-2 V/m gives a non-negligible field or charge at the summit or in the granite (04 section 5.3)."
+  status: pending
+  depends_on: [em.telluric_field_storm, em.telluric_field_extreme, em.limestone_resistivity, pyr.base_side]
+  spaces: []
+- id: S05
+  statement: "Operators wait for a storm, warned by wind-driven whistle formations in the western field."
+  subsystem: electrical
+  timestamp: "F 01:09:08-01:10:54"
+  tier: 2
+  piece: 6
+  criterion: "Cannot be simulated; held as a documented constraint with no computed verdict (06, evidence that cannot be simulated)."
+  status: pending
+  depends_on: []
+  spaces: []
+- id: S06
+  statement: "Negative cloud-to-ground lightning strikes the top, the field passes through the structure, and the granite round the King's Chamber and antechamber stores it."
+  subsystem: electrical
+  timestamp: "F 01:07:11-01:07:59"
+  tier: 1
+  piece: 2
+  criterion: "Pass if the peak field in the granite exceeds what the piezoelectric model needs to reach the acoustic threshold; fail if the interior field is screened to the conduction value of order kV/m or less (04 section 5.2)."
+  status: pending
+  depends_on: [em.stroke_current_median, em.stroke_current_max, em.limestone_resistivity, em.granite_eps, em.granite_conductivity, em.lightning_frequency, em.storm_field]
+  spaces: [kings_chamber, antechamber]
+- id: S07
+  statement: "The field drives the inverse piezoelectric effect in the granite's quartz, giving ultrasound that the antechamber's upper cavity focuses and amplifies."
+  subsystem: electrical
+  timestamp: "F 00:58:48-01:00:47"
+  tier: 0
+  piece: 2
+  criterion: "Pass if the sound level in the antechamber gas reaches 189 dB, or the intensity sent into a liquid film reaches 1 W/cm2, for granite coefficients up to ten times the measured value and fields up to air breakdown (05 section 5.5 item 1)."
+  status: pending
+  depends_on: [em.granite_piezo_d, em.air_breakdown_field, em.piezo_field_lightning, ante.leaf_thickness, ac.drive_frequency, ac.air_impedance, ac.water_impedance, ac.reference_pressure, ac.cavitation_intensity, ac.absorption_40khz, ante.volume, ante.surface_area]
+  spaces: [antechamber, kings_chamber]
+- id: S08
+  statement: "Water from the external reservoir is let into the Subterranean Chamber; the inlet is not described."
+  subsystem: hydraulic
+  timestamp: "F 00:37:26-00:37:42"
+  tier: 2
+  piece: 3
+  criterion: "Pass requires an explicitly assumed reservoir, because the evidence-based boundary has no water at base level; report the level and volume it must have (02 section 5.5 item 1)."
+  status: pending
+  depends_on: [site.base_elevation_asl, hydro.ok_flood_peak_asl, hydro.modern_water_table_asl, dp.entrance.z]
+  spaces: [subterranean_chamber, descending_passage]
+- id: S09
+  statement: "Blocked by the dead-end south passage and the lower valve, the water rises in the well shaft until it stands at the reservoir's level."
+  subsystem: hydraulic
+  timestamp: "F 00:40:47-00:41:15"
+  tier: 0
+  piece: 3
+  criterion: "Fails unless the hypothesis specifies an inlet below pavement level or a pump able to deliver at least 51.5 m of head, because a reservoir at pavement level gives no static head for the Queen's Chamber or the Gallery (01 premise P1)."
+  status: pending
+  depends_on: [ws.top.z, qc.floor.z, gg.north_end.z, gg.roof_top.z, dp.south_end.z, hydro.water_density]
+  spaces: [subterranean_chamber, south_passage, well_shaft]
+- id: S10
+  statement: "Push stroke: a pump driven down the descending passage forces water up to fill the Queen's Chamber and the Grand Gallery."
+  subsystem: hydraulic
+  timestamp: "F 00:41:15-00:41:55"
+  tier: 0
+  piece: 3
+  criterion: "Pass only if a named actuator and seal can supply the peak piston force of 0.6 to 1 MN and hold 0.5 to 0.8 MPa (02 section 5.5 item 4)."
+  status: pending
+  depends_on: [dp.width, dp.height, dp.south_end.z, dp.entrance.z, ap.start.z, gg.roof_top.z, gg.north_end.z, hydro.water_density, hydro.piston_park.z]
+  spaces: [descending_passage, well_shaft, queens_passage, queens_chamber, grand_gallery]
+- id: S11
+  statement: "Return stroke: the pump is drawn back up, the lower valve opens, and water is sucked from the aquifer into the chamber and passage."
+  subsystem: hydraulic
+  timestamp: "F 00:41:26-00:42:55"
+  tier: 0
+  piece: 3
+  criterion: "Fail if the suction lift from the water table to the pump exceeds about 10 m (02 section 5.5 item 2)."
+  status: pending
+  depends_on: [site.atm_pressure, hydro.vapour_pressure, hydro.water_density, site.base_elevation_asl, hydro.ok_low_water_asl, hydro.ok_flood_peak_asl, hydro.modern_water_table_asl, sub.roof_centre.z, sub.floor_depth_east, sub.floor_depth_pit, pit.original_bottom.z, dp.south_end.z]
+  spaces: [pit, subterranean_chamber, descending_passage]
+- id: S12
+  statement: "The two strokes repeat; four activations fill the Grand Gallery."
+  subsystem: hydraulic
+  timestamp: "F 00:42:41-00:43:10"
+  tier: 0
+  piece: 3
+  criterion: "Pass if the stroke count, filled volume divided by swept volume, is within 25 percent of 4 for a stroke definition the hypothesis commits to in advance (01 premise P2)."
+  status: pending
+  depends_on: [hydro.claimed_strokes, gg.volume, dp.volume, dp.length, dp.junction_distance, dp.width, dp.height, dp.angle, dp.south_end.z, qc.volume, qc.niche.volume, qp.volume, ap.volume, ws.volume]
+  spaces: [descending_passage, grand_gallery, queens_chamber, queens_passage, ascending_passage, well_shaft]
+- id: S13
+  statement: "With the gallery full of water and the King's Chamber full of sulfur dioxide, the gallery level is lowered slowly; the outlet is not stated."
+  subsystem: hydraulic
+  timestamp: "F 00:44:16-00:45:35"
+  tier: 1
+  piece: 3
+  criterion: "Pass if, with the gallery filled, water stays out of the King's Chamber while gas can still pass the antechamber, and a drain route is stated (02 section 5.5 item 6)."
+  status: pending
+  depends_on: [gg.volume, gg.roof_top.z, gg.south_end.z, ante.floor.z, kc.floor.z]
+  spaces: [grand_gallery, antechamber, kings_chamber]
+- id: S14
+  statement: "The falling water draws outside air down the King's Chamber shafts into the chamber."
+  subsystem: gas
+  timestamp: "F 00:44:38-00:46:06"
+  tier: 2
+  piece: 3
+  criterion: "Pass if, for a stated drain rate and realistic leak areas, most of the replacement gas comes down the shafts; report the pressure difference (02 section 5.5 item 7)."
+  status: pending
+  depends_on: [kcs.north.width, kcs.north.height, kcs.south.width, kcs.south.height, kcs.north.length, kcs.south.length, hydro.kcs_north_loss_coefficient, hydro.kcs_south_loss_coefficient, hydro.air_density, hydro.drain_time, gg.volume]
+  spaces: [kc_shaft_north, kc_shaft_south, kings_chamber, grand_gallery]
+- id: S15
+  statement: "The same suction pulls sulfur dioxide and air from the King's Chamber through the four grooves, past the three slabs, into the antechamber."
+  subsystem: gas
+  timestamp: "F 00:49:11-00:50:48"
+  tier: 2
+  piece: 3
+  criterion: "Pass only if a connected duct from the King's Chamber to the Gallery exists in the as-surveyed geometry with the slabs down; the blind-groove case fails and the connected case allows at most about 0.002 m2 (01 premise P3)."
+  status: pending
+  depends_on: [ante.groove_count, ante.groove_width, ante.groove_depth, ante.groove_connected_area, ante.slab_clearance, ante.slot_count]
+  spaces: [kings_chamber, antechamber]
+- id: S16
+  statement: "In the antechamber, ultrasound from the granite makes sulfur dioxide react with oxygen from the air to give sulfur trioxide."
+  subsystem: reaction
+  timestamp: "F 00:46:59-00:47:10"
+  tier: 0
+  piece: 4
+  criterion: "Pass if gas-phase conversion of sulfur dioxide to trioxide per pass through the antechamber, with no added catalyst, heat or nitrogen oxides, is at least 10 percent; fail below 0.1 percent (03 section 4.4)."
+  status: pending
+  depends_on: [chem.collision_prefactor, chem.dfh_so2, chem.dfh_so3, chem.dfh_o_atom, chem.kinetics_temperature, chem.o2_fraction, chem.boltzmann, site.atm_pressure, ac.arrhenius_barrier, ac.heat_capacity_ratio, ac.best_airborne_level, ac.reference_pressure, hydro.drain_time]
+  spaces: [antechamber]
+- id: S17
+  statement: "Sulfur trioxide, leftover sulfur dioxide and air pass on into the gas space of the Grand Gallery above the falling water."
+  subsystem: gas
+  timestamp: "F 00:52:13-00:52:37"
+  tier: 2
+  piece: 3
+  criterion: "Pass if, with the openings as surveyed, more than 90 percent of the displaced volume is drawn through the antechamber path rather than through other openings (01 premise P4)."
+  status: pending
+  depends_on: [gg.volume, ante.groove_connected_area, ws.upper_side, rc.davison_passage.width, rc.davison_passage.height, ap.width, ap.height]
+  spaces: [antechamber, grand_gallery]
+- id: S18
+  statement: "The pump is worked again and the gallery level is raised slowly, again in four activations, bringing the gases into contact with water."
+  subsystem: hydraulic
+  timestamp: "F 00:52:34-00:53:13"
+  tier: 0
+  piece: 3
+  criterion: "Pass if four strokes raise the water surface to the gallery roof given the real swept volume; report the number of strokes actually needed (02 section 5.5 item 3)."
+  status: pending
+  depends_on: [hydro.claimed_strokes, gg.volume, dp.volume, dp.length, dp.junction_distance, dp.width, dp.height, dp.angle, dp.south_end.z]
+  spaces: [descending_passage, grand_gallery]
+- id: S19
+  statement: "Leftover sulfur dioxide dissolves in the water to give sulfurous acid."
+  subsystem: reaction
+  timestamp: "F 00:53:11-00:53:46"
+  tier: 2
+  piece: 4
+  criterion: "Pass if at least 90 percent of the sulfur is captured into the liquid in any oxidation state within the cycle; fail below 50 percent (03 section 4.4)."
+  status: pending
+  depends_on: [chem.henry_so2, chem.pka1_so2, chem.pka2_so2]
+  spaces: [grand_gallery]
+- id: S20
+  statement: "Sulfurous acid is oxidised quickly by air to dilute sulfuric acid."
+  subsystem: reaction
+  timestamp: "F 00:53:30-00:53:46"
+  tier: 0
+  piece: 4
+  criterion: "Pass if the overall yield of sulfate from dissolved sulfur dioxide within one stated cycle is at least 50 percent; fail below 5 percent (03 section 4.4)."
+  status: pending
+  depends_on: [chem.henry_o2, chem.o2_fraction, site.atm_pressure, chem.kl_surface, chem.temperature, gg.volume, gg.angle, gg.slot_width, gg.ramp_height, gg.width, gg.first_lap_height, gg.height, gg.overhang, gg.laps, kc.volume, chem.fe_rate_constant, chem.fe_concentration]
+  spaces: [grand_gallery]
+- id: S21
+  statement: "Sulfur trioxide then dissolves into that dilute acid, not plain water, which is said to avoid a violent reaction and boil-over."
+  subsystem: reaction
+  timestamp: "F 00:43:10-00:43:57"
+  tier: 0
+  piece: 4
+  criterion: "Pass if four-stage filling keeps the batch below boiling for the stated chemistry; report the adiabatic temperature rise against the boiling margin (00 section 7 item 10)."
+  status: pending
+  depends_on: [chem.dh_so2_to_sulfate, chem.dfh_so3, chem.dfh_h2so4_liquid, chem.water_cp, hydro.water_density, kc.volume, gg.volume, chem.temperature, site.atm_pressure, hydro.claimed_strokes]
+  spaces: [grand_gallery]
+- id: S22
+  statement: "No gas is pushed back into the King's Chamber, because both gases dissolve as fast as the water rises."
+  subsystem: reaction
+  timestamp: "F 00:58:25-00:58:55"
+  tier: 2
+  piece: 4
+  criterion: "Pass if gas uptake keeps pace with the rising water so that no gas is forced back through the grooves (00 section 7 item 9)."
+  status: pending
+  depends_on: [chem.henry_so2, ante.groove_connected_area, gg.volume]
+  spaces: [grand_gallery, antechamber, kings_chamber]
+- id: S23
+  statement: "Acid attacks the limestone walls of the gallery and Queen's Chamber, forming a calcium sulfate layer that stops further attack and re-forms where it chips off."
+  subsystem: reaction
+  timestamp: "F 01:18:47-01:21:00"
+  tier: 2
+  piece: 4
+  criterion: "Pass if a calcium sulfate layer forms and persists over ten fill and drain cycles with fresh water and limits wall loss to a rate compatible with the surviving surfaces; fail if it is stripped each cycle (03 section 4.4; 00 section 7 item 11)."
+  status: pending
+  depends_on: [chem.gypsum_h_diffusivity, chem.gypsum_solubility, chem.gypsum_log_k, gg.wall_area]
+  spaces: [grand_gallery, queens_chamber]
+- id: S24
+  statement: "Offered as speculation: heat from the gallery reaction is removed by a water-filled chamber in the Big Void above the gallery."
+  subsystem: auxiliary
+  timestamp: "F 00:34:03-00:34:30"
+  tier: 0
+  piece: 4
+  criterion: "Pass if the bulk temperature rise of the batch is at least 20 K, which would justify a heat exchanger; fail below 5 K (03 section 4.4)."
+  status: pending
+  depends_on: [chem.dh_so2_to_sulfate, chem.water_cp, hydro.water_density, kc.volume, gg.volume, chem.temperature, site.atm_pressure, bv.centre.z, gg.roof_top.z]
+  spaces: [big_void, grand_gallery]
+- id: S25
+  statement: "Offered as speculation: the slab with copper pins in the Queen's Chamber south shaft is an ultrasonic emitter, with a receiver in the north shaft, used to monitor the liquid level."
+  subsystem: auxiliary
+  timestamp: "F 01:21:08-01:24:12"
+  tier: 0
+  piece: 2
+  criterion: "Pass if the through-path signal-to-noise ratio at the north slab is at least 10 dB with the bounded source and the received signal varies monotonically with liquid level over a useful range (05 section 5.5 item 5)."
+  status: pending
+  depends_on: [qcs.south.length_to_slab, qcs.north.length_to_slab, qcs.slab_thickness, qcs.stone_left, qc.width_ns, ac.absorption_13khz, ac.absorption_20khz, ac.absorption_40khz, ac.soft_limestone_impedance, ac.dense_stone_impedance, ac.air_impedance, ac.water_impedance, ac.reference_pressure, em.granite_piezo_d, em.air_breakdown_field]
+  spaces: [qc_shaft_south, qc_shaft_north, queens_chamber]
+- id: S26
+  statement: "All the liquid, water and product, is withdrawn through the Queen's Chamber; route, driver and destination are not stated."
+  subsystem: output
+  timestamp: "F 00:54:28-00:54:42"
+  tier: 2
+  piece: 3
+  criterion: "Undefined until the hypothesis names the outlet, driver and destination; the Queen's Chamber shafts are dead-end ducts and no other outlet is surveyed (06, geometry facts handed to other domains)."
+  status: pending
+  depends_on: [qcs.stone_left, qcs.south.length_to_slab, qc.floor.z]
+  spaces: [queens_chamber, queens_passage]
+- id: S27
+  statement: "Dilute sulfuric acid goes to the central (Khafre) pyramid and reacts with sodium chloride to give hydrogen chloride gas, collected as hydrochloric acid."
+  subsystem: output
+  timestamp: "F 00:27:55-00:28:12"
+  tier: 0
+  piece: 4
+  criterion: "Pass if the partial pressure of hydrogen chloride over the dilute acid and salt mixture is at least 1e-3 atm; fail below 1e-5 atm (03 section 4.4)."
+  status: pending
+  depends_on: [chem.henry_hcl_effective, chem.khafre_chloride, chem.khafre_h, site.atm_pressure]
+  spaces: []
+- id: S28
+  statement: "Dilute acid is run through cut channels into the boat pits, where the electrolyte bridges gaps the pits cut in the iron-vein network (circuit breakers)."
+  subsystem: output
+  timestamp: "F 01:33:34-01:36:29"
+  tier: 0
+  piece: 5
+  criterion: "Pass only if the pit's resistance ratio between empty and acid-filled exceeds about 10 and the veins on either side can carry current over the link length; fail if the vein-to-host conductivity contrast is below 1e3 (07 section 4.2)."
+  status: pending
+  depends_on: [plateau.acid_conductivity, plateau.acid_conductivity_0p5pct, plateau.host_resistivity, plateau.vein_area, plateau.vein_leakage_length, plateau.hematite_resistivity_specular, plateau.hematite_resistivity_earthy]
+  spaces: []
+- id: S29
+  statement: "Closed breakers route voltage along the iron veins to the Osiris Shaft, the satellite pyramids, mastabas, temples, the third pyramid and the Khentkawes structures."
+  subsystem: output
+  timestamp: "F 01:31:41-01:32:25"
+  tier: 0
+  piece: 5
+  criterion: "Pass only if a vein's leakage length is at least the claimed link length and the power delivered at the load is non-trivial for a realistic driving field (07 section 4.2)."
+  status: pending
+  depends_on: [plateau.vein_area, plateau.vein_leakage_length, plateau.host_resistivity, plateau.hematite_resistivity_specular, plateau.hematite_resistivity_earthy, em.telluric_field_storm]
+  spaces: []
+- id: S30
+  statement: "The acids are used on the plateau for leach mining, metal separation and metallurgy."
+  subsystem: output
+  timestamp: "F 00:09:38-00:10:10"
+  tier: 0
+  piece: 4
+  criterion: "Pass if the product strength at draw-off is at least 0.05 mol/L; fail below 0.005 mol/L (03 section 4.4)."
+  status: pending
+  depends_on: [kc.volume, gg.volume, chem.temperature, site.atm_pressure, chem.o2_fraction, chem.molar_mass_h2so4, chem.ka2_sulfuric]
+  spaces: [kings_chamber, grand_gallery]
+- id: S31
+  statement: "The whole sequence then repeats, not continuously but paced by storms."
+  subsystem: all
+  timestamp: "F 01:09:08-01:09:55"
+  tier: 0
+  piece: 2
+  criterion: "Report the cycles per year allowed by the expected direct-strike rate; the hypothesis states no required rate, so the number has no pass threshold until one is given (04 section 4.4; 00 section 5 item 26)."
+  status: pending
+  depends_on: [em.flash_density, em.cg_fraction, em.collection_slope, em.location_factor, pyr.height_original, pyr.height_present, pyr.base_side, pyr.face_slope]
+  spaces: []
+
+# Evidence claims, E01 to E40 (research/00-hypothesis.md section 4)
+- id: E01
+  statement: "Cited paper: hydrogen sulfide rises under the Giza plateau, tied to hydrocarbon seepage and sulfuric-acid cave formation."
+  subsystem: gas
+  timestamp: "F 00:24:18-00:28:49"
+  tier: 2
+  piece: 5
+  criterion: "Pass if an opened source gives a measured hydrogen sulfide flux, composition or source pressure under the plateau that meets the chemistry model's minimum feed; fail if the required flux exceeds active-seep analogues by orders of magnitude (07 section 4.4)."
+  status: pending
+  depends_on: [chem.molar_mass_h2s, chem.molar_mass_h2so4]
+  spaces: []
+- id: E02
+  statement: "That paper's X-ray fluorescence analyses found metal compounds matching samples from the plateau's iron deposits."
+  subsystem: output
+  timestamp: "F 00:28:12-00:29:32"
+  tier: 2
+  piece: 5
+  criterion: "Documentary check, not simulated: pass if the elements and levels reported in the cited paper match those reported for the iron-oxide vein samples."
+  status: pending
+  depends_on: []
+  spaces: []
+- id: E03
+  statement: "Cited paper: caves can form in iron-ore bodies, as at the Tomb of the Birds."
+  subsystem: gas
+  timestamp: "F 00:22:10-00:24:03"
+  tier: 2
+  piece: 5
+  criterion: "Documentary check, not simulated: pass if a survey of the Giza caves shows cave forms cut in iron ore; cases at other sites do not decide it."
+  status: pending
+  depends_on: []
+  spaces: []
+- id: E04
+  statement: "Rock forms near the trial passages and the Tomb of the Birds look like Austrian sulfuric-acid caves."
+  subsystem: gas
+  timestamp: "F 00:20:49-00:22:32"
+  tier: 2
+  piece: 5
+  criterion: "Documentary check, not simulated: pass only if mineral evidence of sulfuric-acid cave formation is published for those sites; visual likeness does not decide it."
+  status: pending
+  depends_on: []
+  spaces: []
+- id: E05
+  statement: "Cited paper: a planned off-world sulfuric-acid process for metal extraction mirrors the pyramid's purpose."
+  subsystem: output
+  timestamp: "F 00:06:10-00:08:25"
+  tier: 2
+  piece: 6
+  criterion: "Analogy only, no test: recorded so that the reply can state what the cited paper does and does not say about the pyramid."
+  status: pending
+  depends_on: []
+  spaces: []
+- id: E06
+  statement: "Ancient Egyptians mined native sulfur at sites near the Suez Canal."
+  subsystem: gas
+  timestamp: "F 00:11:20-00:12:22"
+  tier: 2
+  piece: 6
+  criterion: "Documentary check, not simulated: pass if a dated archaeological source records Old Kingdom sulfur mining; the claim belongs to the superseded sulfur-burning version of the hypothesis."
+  status: pending
+  depends_on: []
+  spaces: []
+- id: E07
+  statement: "Cited patent: sulfuric acid can be made from hydrogen sulfide in three steps with a heat exchanger."
+  subsystem: reaction
+  timestamp: "F 00:33:49-00:35:14"
+  tier: 2
+  piece: 4
+  criterion: "Pass only if every step of the cited patent can run at ambient temperature without a catalyst, since the hypothesis supplies neither heat nor catalyst (03 section 2c and check V14)."
+  status: pending
+  depends_on: [chem.dfh_h2s, chem.dfh_so2]
+  spaces: []
+- id: E08
+  statement: "A hole in the King's Chamber floor beside the box existed before excavators dug it further, found debris and gave up."
+  subsystem: gas
+  timestamp: "F 00:13:30-00:17:47"
+  tier: 2
+  piece: 6
+  criterion: "Documentary check, not simulated: pass if a survey older than the excavations records an original lined shaft in the King's Chamber floor."
+  status: pending
+  depends_on: []
+  spaces: [kings_chamber]
+- id: E09
+  statement: "That hole connected to the satellite pyramids; the speaker concedes this is not known."
+  subsystem: gas
+  timestamp: "F 00:17:46-00:17:56"
+  tier: 2
+  piece: 6
+  criterion: "Pass only if a surveyed conduit from below the structure to the King's Chamber floor exists; the chamber floor is about 43 m above the pavement."
+  status: pending
+  depends_on: [kc.floor.z]
+  spaces: [kings_chamber]
+- id: E10
+  statement: "The King's Chamber air shafts were blocked, and air flowed once they were cleared."
+  subsystem: gas
+  timestamp: "F 00:16:50-00:17:18"
+  tier: 2
+  piece: 6
+  criterion: "Documentary check, not simulated: pass if the excavation record reports air flow resuming when a shaft was cleared."
+  status: pending
+  depends_on: []
+  spaces: [kc_shaft_north, kc_shaft_south, kings_chamber]
+- id: E11
+  statement: "The King's Chamber air shafts ended horizontally at the casing and aim at no stars."
+  subsystem: gas
+  timestamp: "F 00:46:59-00:49:12"
+  tier: 2
+  piece: 1
+  criterion: "Geometric premise: pass for a shaft only if a survey shows its outer end running level through the casing; carried as the kc_shaft_ends_level variant, and the shaft exits must fall on the casing plane at Z = 80 +/- 1 m in either case (01 fidelity criterion)."
+  status: pending
+  depends_on: [kcs.level_end_length, kcs.north.angle, kcs.south.angle, kcs.exit.z]
+  spaces: [kc_shaft_north, kc_shaft_south]
+- id: E12
+  statement: "The antechamber held three granite slabs and has four grooves on its south wall."
+  subsystem: gas
+  timestamp: "F 00:36:36-00:36:52"
+  tier: 2
+  piece: 1
+  criterion: "Geometric premise: pass for the grooves as a gas path only if a connected duct exists in the as-surveyed geometry; the blind-groove case fails (01 premise P3)."
+  status: pending
+  depends_on: [ante.slot_count, ante.slot_width, ante.slab_width, ante.groove_count, ante.groove_depth, ante.groove_connected_area]
+  spaces: [antechamber]
+- id: E13
+  statement: "The antechamber's upper cavity has the most striking acoustics in the pyramid."
+  subsystem: electrical
+  timestamp: "F 00:59:54-01:00:47"
+  tier: 1
+  piece: 2
+  criterion: "Rank the modal quality factor and decay time of the antechamber, King's Chamber and Grand Gallery in an audio-band model; pass if the antechamber ranks first (05 section 5.5 item 4)."
+  status: pending
+  depends_on: [ante.length, ante.width, ante.height, kc.length, kc.width, kc.height, ac.sound_speed_air]
+  spaces: [antechamber, kings_chamber, grand_gallery]
+- id: E14
+  statement: "An external reservoir fed the Subterranean Chamber and check valves existed there, after Cadman's ram-pump model."
+  subsystem: hydraulic
+  timestamp: "F 00:37:42-00:39:44"
+  tier: 0
+  piece: 3
+  criterion: "Pass if a ram cycle sustains itself with the chamber as it exists, which has no outfall; report the delivered fraction and the water that must be spilled (02 section 5.5 item 8)."
+  status: pending
+  depends_on: [hydro.ram_efficiency, sub.volume, gg.roof_top.z, dp.south_end.z, gg.volume]
+  spaces: [subterranean_chamber, well_shaft]
+- id: E15
+  statement: "The south passage of the Subterranean Chamber is a dead end."
+  subsystem: hydraulic
+  timestamp: "F 00:38:16-00:39:09"
+  tier: 2
+  piece: 1
+  criterion: "Geometric premise: pass if the surveyed passage ends blind in rock with no outlet (01 claim 6)."
+  status: pending
+  depends_on: [sp.length, sp.south_end.y]
+  spaces: [south_passage]
+- id: E16
+  statement: "One-way valves sat at the base of the shaft, after a drawing by an unnamed German engineering team."
+  subsystem: hydraulic
+  timestamp: "F 00:39:19-00:39:44"
+  tier: 2
+  piece: 3
+  criterion: "Documentary check, not simulated: pass if valve seats or valve parts are recorded in the Subterranean Chamber or its pit."
+  status: pending
+  depends_on: []
+  spaces: [subterranean_chamber, pit]
+- id: E17
+  statement: "The debris-filled shaft under the pyramid holds wet sand and a fluctuating water level."
+  subsystem: hydraulic
+  timestamp: "F 00:42:10-00:42:43"
+  tier: 0
+  piece: 3
+  criterion: "Counts as evidence of an ancient aquifer link only if the pit as it stood before 1837 reaches a documented water table; the suction test then decides the draw (02 section 5.5 item 2)."
+  status: pending
+  depends_on: [pit.original_bottom.z, pit.excavated_bottom.z, site.base_elevation_asl, hydro.modern_water_table_asl, hydro.ok_flood_peak_asl, hydro.ok_low_water_asl]
+  spaces: [pit]
+- id: E18
+  statement: "Two cited papers: ultrasound can enhance or alter chemical reactions."
+  subsystem: reaction
+  timestamp: "F 01:00:45-01:01:47"
+  tier: 0
+  piece: 4
+  criterion: "Pass for a dry gas if the time-averaged Arrhenius enhancement reaches 2 for the sulfur dioxide oxidation barrier, which needs a temperature swing of about 12 K or about 174 dB (05 section 5.5 item 2)."
+  status: pending
+  depends_on: [ac.arrhenius_barrier, ac.heat_capacity_ratio, ac.best_airborne_level, ac.reference_pressure, ac.cavitation_intensity, ac.gas_solid_intensity, chem.temperature, site.atm_pressure]
+  spaces: [antechamber]
+- id: E19
+  statement: "Cited 2018 study: the pyramid's shape concentrates electric field near the King's Chamber for waves from above and at the top for waves from below."
+  subsystem: electrical
+  timestamp: "F 01:01:45-01:07:43"
+  tier: 1
+  piece: 1
+  criterion: "As modelled, pass if the band-maximum volume-mean field-intensity ratio in the King's Chamber in case R1 is at least twice that of its control; under realism, pass if in case V4 the ratio is at least 2 and at least twice its control across 6.7e-4 to 3.3e-3 S/m, fail if it is below 2 at 6.7e-4 S/m, otherwise conditional (spec section 6)."
+  status: pending
+  depends_on: [paper.height, paper.base_side, paper.eps_real, paper.eps_imag, paper.wavelength_min, paper.wavelength_max, paper.kc.centre.z, paper.peak1.wavelength, paper.peak2.wavelength, paper.ground_peak.wavelength, em.limestone_resistivity]
+  spaces: [paper_kings_chamber, paper_queens_chamber, paper_lower_chamber, kings_chamber]
+- id: E20
+  statement: "The speaker's reading of that study: the field excludes the tip, so the flat top is functional and there never was a capstone."
+  subsystem: electrical
+  timestamp: "F 01:03:46-01:04:44"
+  tier: 1
+  piece: 1
+  criterion: "Pass only if the band-maximum summit metric, the volume mean of the field-intensity ratio in the masonry between Z 132.4 m and 137.4 m, for the apex truncated at 137.4 m is at least twice that for the apex pointed at 146.71 m in the on-ground case (spec section 6)."
+  status: pending
+  depends_on: [pyr.height_present, pyr.height_original, paper.height, pyr.base_side, pyr.face_slope]
+  spaces: []
+- id: E21
+  statement: "Telluric currents concentrate over ore deposits, and the pyramids were sited for that."
+  subsystem: electrical
+  timestamp: "F 01:04:02-01:06:17"
+  tier: 1
+  piece: 2
+  criterion: "Pass only if a direct-current conduction model with conductive sheets for the ore bodies gives a non-negligible field or charge at the summit or in the granite (04 section 5.3)."
+  status: pending
+  depends_on: [em.telluric_field_storm, em.telluric_field_extreme, plateau.host_resistivity, plateau.hematite_resistivity_specular]
+  spaces: []
+- id: E22
+  statement: "Red granite has a dielectric constant of 9 and stores electric field better than limestone."
+  subsystem: electrical
+  timestamp: "F 01:07:20-01:07:59"
+  tier: 0
+  piece: 2
+  criterion: "Pass if the charge relaxation time of the granite is at least as long as the time over which the source field changes, which is seconds for a storm; fail if it is shorter by orders of magnitude (04 sections 4.3 and 5.2)."
+  status: pending
+  depends_on: [em.eps0, em.granite_eps, em.granite_conductivity, em.limestone_eps, em.limestone_resistivity, em.dense_limestone_resistivity, em.claimed_eps_granite, em.claimed_eps_limestone]
+  spaces: [kings_chamber, antechamber]
+- id: E23
+  statement: "The speaker's earlier hypothesis: the Serapeum boxes worked as field-driven ultrasound transducers."
+  subsystem: electrical
+  timestamp: "F 00:50:48-00:51:13"
+  tier: 2
+  piece: 6
+  criterion: "Analogy only, no test in this project."
+  status: pending
+  depends_on: []
+  spaces: []
+- id: E24
+  statement: "Whistle-like rock formations in the western field signalled wind changes."
+  subsystem: electrical
+  timestamp: "F 01:09:52-01:10:54"
+  tier: 2
+  piece: 6
+  criterion: "Cannot be simulated; held as a documented constraint with no computed verdict (06, evidence that cannot be simulated)."
+  status: pending
+  depends_on: []
+  spaces: []
+- id: E25
+  statement: "The Queen's Chamber shafts were closed by 3 to 5 in of limestone and had to be broken into."
+  subsystem: auxiliary
+  timestamp: "F 01:14:28-01:14:57"
+  tier: 2
+  piece: 1
+  criterion: "Geometric premise: pass if the survey record shows the shaft mouths closed by uncut wall stone of about that thickness until they were opened (01 claim 3)."
+  status: pending
+  depends_on: [qcs.stone_left]
+  spaces: [qc_shaft_north, qc_shaft_south, queens_chamber]
+- id: E26
+  statement: "Salt from the Queen's Chamber was analysed in 1978 and held calcium carbonate, sodium chloride and calcium sulfate."
+  subsystem: reaction
+  timestamp: "F 01:17:14-01:18:01"
+  tier: 2
+  piece: 4
+  criterion: "Documentary check, not simulated: pass if the 1978 analysis letter lists those three phases."
+  status: pending
+  depends_on: []
+  spaces: [queens_chamber]
+- id: E27
+  statement: "No calcium chloride was found, so no hydrochloric acid was present there."
+  subsystem: reaction
+  timestamp: "F 01:17:28-01:18:01"
+  tier: 2
+  piece: 4
+  criterion: "Counts for the hypothesis only if the acid-wall model predicts something the no-acid salt model cannot, such as no sodium chloride in the wetted zone, and that is then found (06, pass/fail item 4)."
+  status: pending
+  depends_on: []
+  spaces: [queens_chamber]
+- id: E28
+  statement: "Calcium sulfate covers the Grand Gallery walls."
+  subsystem: reaction
+  timestamp: "F 00:54:39-00:55:10"
+  tier: 2
+  piece: 4
+  criterion: "Pass if a crust is found whose upper limit follows a level surface at the modelled fill height in both the Queen's Chamber and the Grand Gallery (06, pass/fail item 1)."
+  status: pending
+  depends_on: [gg.roof_top.z, qc.ridge.z]
+  spaces: [grand_gallery, queens_chamber]
+- id: E29
+  statement: "Calcium sulfate is insoluble in dilute sulfuric acid and forms a protective coat on carbonate."
+  subsystem: reaction
+  timestamp: "F 01:19:17-01:20:15"
+  tier: 0
+  piece: 4
+  criterion: "Pass if at least 80 percent of the acid survives wall contact for one cycle; fail below 20 percent (03 section 4.4)."
+  status: pending
+  depends_on: [chem.gypsum_solubility, chem.gypsum_h_diffusivity, chem.gypsum_layer_thickness, chem.gypsum_molar_volume, chem.calcite_molar_volume, chem.gypsum_log_k, gg.wall_area, gg.volume, kc.volume, site.atm_pressure, chem.temperature, hydro.water_density]
+  spaces: [grand_gallery, queens_chamber]
+- id: E30
+  statement: "Small pits all over the Queen's Chamber walls record repeated loss and re-forming of that coat."
+  subsystem: reaction
+  timestamp: "F 01:20:15-01:21:11"
+  tier: 2
+  piece: 4
+  criterion: "Pass if gypsum is found as a replacement rind on etched calcite with dissolution textures beneath it, not as efflorescence on an intact tooled surface (06, pass/fail item 2)."
+  status: pending
+  depends_on: []
+  spaces: [queens_chamber]
+- id: E31
+  statement: "The slab at the end of the Queen's Chamber south shaft is Tura limestone with copper pins, and Tura limestone has much more quartz than the local bedrock."
+  subsystem: auxiliary
+  timestamp: "F 01:21:08-01:22:28"
+  tier: 2
+  piece: 2
+  criterion: "Documentary check, not simulated: pass if quantitative mineralogy shows Tura limestone to be quartz-rich compared with Mokattam bedrock."
+  status: pending
+  depends_on: [qcs.slab_thickness, qcs.south.length_to_slab]
+  spaces: [qc_shaft_south]
+- id: E32
+  statement: "A large void lies above the Grand Gallery, found by muon imaging."
+  subsystem: auxiliary
+  timestamp: "F 00:35:48-00:36:32"
+  tier: 2
+  piece: 1
+  criterion: "Geometric premise: pass if a published void of comparable size lies above the Gallery; its use as a heat exchanger is judged separately by the thermal criterion for the masonry between them (01 premise P5)."
+  status: pending
+  depends_on: [bv.length, bv.centre.z, bv.section_area, gg.roof_top.z]
+  spaces: [big_void, grand_gallery]
+- id: E33
+  statement: "Sodium chloride deposits cover the inside of the central pyramid's main chamber."
+  subsystem: output
+  timestamp: "F 01:27:56-01:28:55"
+  tier: 2
+  piece: 5
+  criterion: "Documentary check, not simulated: pass if a published analysis identifies sodium chloride on the walls of Khafre's burial chamber."
+  status: pending
+  depends_on: []
+  spaces: []
+- id: E34
+  statement: "Chemical analysis shows catalyst material inside the Red Pyramid."
+  subsystem: output
+  timestamp: "F 01:28:17-01:28:36"
+  tier: 2
+  piece: 6
+  criterion: "Documentary check, not simulated: pass if a published analysis is produced; none is attributed in the transcripts."
+  status: pending
+  depends_on: []
+  spaces: []
+- id: E35
+  statement: "Cited article: the iron veins may be lightning vitrification or hydrothermal mineralisation, and the Sphinx stela records lightning striking the plateau."
+  subsystem: output
+  timestamp: "F 01:29:03-01:30:14"
+  tier: 2
+  piece: 5
+  criterion: "Documentary check, not simulated: pass if laboratory data show vitrified vein material and if the stela's lightning passage stands in a primary edition of the text."
+  status: pending
+  depends_on: []
+  spaces: []
+- id: E36
+  statement: "Vein samples show a hydrothermal origin, fulgurites and silica microspheres show high-voltage current, and many metals including rare earths are present."
+  subsystem: output
+  timestamp: "F 01:30:14-01:31:43"
+  tier: 2
+  piece: 5
+  criterion: "Documentary check, not simulated: pass if the sample analyses report fulgurite, glass or spherules, and metal levels above those of the local control sample."
+  status: pending
+  depends_on: []
+  spaces: []
+- id: E37
+  statement: "Iron veins occur in the Osiris Shaft second level, in the Great Pyramid's subterranean shaft and in the central pyramid's bedrock chamber."
+  subsystem: output
+  timestamp: "F 01:31:41-01:33:00"
+  tier: 2
+  piece: 5
+  criterion: "Counts as wiring only if a four-point measurement along a vein against the adjacent rock gives a conductivity contrast high enough for the claimed link lengths; fail below 1e3 (07 section 4.2)."
+  status: pending
+  depends_on: [plateau.hematite_resistivity_specular, plateau.hematite_resistivity_earthy, plateau.host_resistivity]
+  spaces: [pit, subterranean_chamber]
+- id: E38
+  statement: "The veins start under the two large pyramids and link features across the plateau."
+  subsystem: output
+  timestamp: "F 01:32:42-01:33:35"
+  tier: 0
+  piece: 5
+  criterion: "Pass only if the vein-to-host conductivity contrast reaches the value that a leakage length equal to the link length needs, about 2.7e5 for 100 m with a 0.03 m2 section; fail if it is below 1e3 (07 section 4.2)."
+  status: pending
+  depends_on: [plateau.vein_area, plateau.vein_leakage_length, plateau.host_resistivity, plateau.hematite_resistivity_specular, plateau.hematite_resistivity_earthy]
+  spaces: []
+- id: E39
+  statement: "Boat pits by the Great Pyramid hold only sulfate compounds and those by the central pyramid only chloride compounds; channels lead into the pits."
+  subsystem: output
+  timestamp: "F 01:33:34-01:36:29"
+  tier: 2
+  piece: 5
+  criterion: "Pass if the pit walls show metres of retreat or thick gypsum crusts in the Khufu pits and none in the Khafre pits; tool-marked, uncorroded walls count against it (07 section 4.3)."
+  status: pending
+  depends_on: [plateau.acid_conductivity]
+  spaces: []
+- id: E40
+  statement: "An underground shaft joins the Great Pyramid to the Sphinx enclosure, on the word of an unnamed ministry contact."
+  subsystem: output
+  timestamp: "F 00:56:39-00:57:36"
+  tier: 2
+  piece: 6
+  criterion: "Cannot be simulated; held as a documented constraint with no computed verdict (06, evidence that cannot be simulated)."
+  status: pending
+  depends_on: []
+  spaces: []

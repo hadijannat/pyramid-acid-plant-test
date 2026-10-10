@@ -304,3 +304,52 @@ def test_real_ledger_is_complete_and_annotated():
         assert "research/" in quantity.source, quantity.id
         if not quantity.verified:
             assert quantity.note.strip(), f"{quantity.id}: an unverified figure must say why in its note"
+
+
+STEP_IDS = [f"S{i:02d}" for i in range(1, 32)]
+EVIDENCE_IDS = [f"E{i:02d}" for i in range(1, 41)]
+
+
+def test_claims_hold_the_steps_s01_to_s31_in_order():
+    led = real()
+    assert [key for key in led.claims if key.startswith("S")] == STEP_IDS
+    pump = led.claims["S10"]
+    assert (pump.subsystem, pump.tier, pump.piece) == ("hydraulic", 0, 3)
+    assert "descending_passage" in pump.spaces and "grand_gallery" in pump.spaces
+    assert "gg.roof_top.z" in pump.depends_on
+
+
+SPACES = {
+    "descending_passage", "subterranean_chamber", "pit", "south_passage", "well_shaft", "grotto",
+    "ascending_passage", "queens_passage", "queens_chamber", "qc_shaft_north", "qc_shaft_south",
+    "grand_gallery", "antechamber", "kings_chamber", "kc_shaft_north", "kc_shaft_south",
+    "relieving_chambers", "big_void", "north_face_corridor",
+    "paper_kings_chamber", "paper_queens_chamber", "paper_lower_chamber",
+}
+
+
+def test_claims_hold_all_71_ids_once_and_in_order():
+    assert list(real().claims) == STEP_IDS + EVIDENCE_IDS
+
+
+def test_every_claim_is_pending_complete_and_names_known_spaces():
+    led = real()
+    assert len(led.claims) == 71
+    for claim in led.claims.values():
+        assert claim.status == "pending", claim.id
+        assert claim.statement.strip() and claim.criterion.strip(), claim.id
+        assert re.fullmatch(r"F \d\d:\d\d:\d\d-\d\d:\d\d:\d\d", claim.timestamp), claim.id
+        assert claim.subsystem in {"gas", "electrical", "hydraulic", "reaction", "auxiliary", "output", "all"}, claim.id
+        assert set(claim.spaces) <= SPACES, claim.id
+
+
+def test_tier_0_claims_name_their_inputs_and_the_field_claims_wait_for_a_solver():
+    led = real()
+    tier_0 = [claim for claim in led.claims.values() if claim.tier == 0]
+    assert tier_0
+    for claim in tier_0:
+        assert claim.depends_on, f"{claim.id}: a tier 0 claim must name the quantities its calculation reads"
+    for key in ("E19", "E20"):
+        assert (led.claims[key].tier, led.claims[key].piece) == (1, 1)
+    assert "paper_kings_chamber" in led.claims["E19"].spaces
+    assert "pyr.height_present" in led.claims["E20"].depends_on
