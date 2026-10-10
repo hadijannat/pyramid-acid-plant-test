@@ -1,9 +1,9 @@
 {
  "manifest": {
   "case": "viewer",
-  "timestamp": "2026-10-10T10:46:41+00:00",
-  "commit": "660fb22deee4b15ccf73ca79a3204dc808fabe88",
-  "ledger": "69618950b42a32ec7d1ea7d3c9e600e40bfa2f34439d5c11e3833573938c3315",
+  "timestamp": "2026-10-10T12:25:52+00:00",
+  "commit": "e3c3afa3c55cd7cc35ed755754e47e56f4c563d8",
+  "ledger": "b5b35856040bd5f70825dbcafd7052954d4898de5ff7c8165d87c5c3159affdd",
   "python": "3.12.12",
   "versions": {
    "numpy": "2.5.3",
@@ -156,9 +156,9 @@
    "timestamp": "F 00:40:47-00:41:15",
    "tier": 0,
    "piece": 3,
-   "criterion": "Fails unless the hypothesis specifies an inlet below pavement level or a pump able to deliver at least 51.5 m of head, because a reservoir at pavement level gives no static head for the Queen's Chamber or the Gallery (01 premise P1).",
+   "criterion": "Conditional on the external reservoir of S08 existing at or above the level the water is to reach; passes only if such a reservoir or inlet is evidenced. A reservoir at pavement level leaves the water 51.5 m below the Gallery roof, which the pump of S10 must supply (01 premise P1). [Reworded 2026-10-10, before any solver run: the first wording, 'Fails unless the hypothesis specifies an inlet below pavement level or a pump able to deliver at least 51.5 m of head', tested S10's pump rather than this step.]",
    "status": "conditional",
-   "basis": "Water standing at the level of an assumed pavement-level reservoir stops 21.7 m below the top of the well shaft and 51.5 m below the Gallery roof, so the step holds only with that reservoir and a pump.",
+   "basis": "No reservoir or inlet is evidenced on site, so the step is conditional on the reservoir of S08; water standing at the level of a pavement-level reservoir stops 21.7 m below the top of the well shaft and 51.5 m below the Gallery roof, a head that the pump of S10 must supply.",
    "numbers": [
     {
      "label": "Water pressure at the foot of the Descending Passage with the Gallery full",
@@ -448,8 +448,8 @@
    "tier": 0,
    "piece": 4,
    "criterion": "Pass if the overall yield of sulfate from dissolved sulfur dioxide within one stated cycle is at least 50 percent; fail below 5 percent (03 section 4.4).",
-   "status": "conditional",
-   "basis": "The oxygen for a full batch needs 2.7 to 28 years to cross the still water surface in the Gallery, so quick oxidation holds only if something aerates the water, which the hypothesis does not describe.",
+   "status": "fail",
+   "basis": "In one day, taken as the cycle because the hypothesis states none, the oxygen dissolved in the Gallery water and the oxygen crossing its still surface can oxidise 2.5 percent of a full batch (2.1 to 2.8 percent over the ranges of the inputs), below the 5 percent under which the criterion fails the claim and the 50 percent from which it passes it; a still surface would need 27 days (22 to 302 days over the ranges of the inputs) to bring the yield to 5 percent, and the hypothesis describes no aeration.",
    "numbers": [
     {
      "label": "Sulfur dioxide the King's Chamber holds if filled with the pure gas",
@@ -478,6 +478,13 @@
      "low": 80556008.54091254,
      "high": 891242783.8344532,
      "unit": "s"
+    },
+    {
+     "label": "Share of a full batch that the oxygen in the Gallery water and across its still surface can oxidise in one day",
+     "value": 0.024729950354316545,
+     "low": 0.021461191255279902,
+     "high": 0.027692976195211844,
+     "unit": "1"
     }
    ],
    "spaces": [
@@ -608,7 +615,7 @@
    "piece": 2,
    "criterion": "Pass if the through-path signal-to-noise ratio at the north slab is at least 10 dB with the bounded source and the received signal varies monotonically with liquid level over a useful range (05 section 5.5 item 5).",
    "status": "fail",
-   "basis": "A slab driven at the air-breakdown field emits 50 dB and the path to the north slab loses 101 dB at 13 kHz, so the signal arrives at -52 dB (-55 dB at the least), against the 10 dB needed above a 0 dB noise floor.",
+   "basis": "A slab driven at the air-breakdown field emits 50 dB and the path to the north slab loses 101 dB at 13 kHz, so the signal arrives at -51 dB (-55 dB at the least), against the 10 dB needed above a 0 dB noise floor.",
    "numbers": [
     {
      "label": "Sound level from the Queen's Chamber shaft slab driven at the air-breakdown field",
@@ -718,8 +725,8 @@
    "tier": 0,
    "piece": 4,
    "criterion": "Pass if the product strength at draw-off is at least 0.05 mol/L; fail below 0.005 mol/L (03 section 4.4).",
-   "status": "undefined",
-   "basis": "The hypothesis gives no gas fraction or target strength, and pure sulfur dioxide at one atmosphere caps the product at 23 mol/m3, or 12 mol/m3 if its oxygen comes with the same draw of air.",
+   "status": "conditional",
+   "basis": "Pure sulfur dioxide at one atmosphere caps the product at 0.023 mol/L (0.026 mol/L at most), or 0.012 mol/L if its oxygen comes with the same draw of air, below the 0.05 mol/L pass line at any gas fraction; the ceiling scales with the sulfur dioxide fraction of the chamber gas, so the product stays above the 0.005 mol/L fail line only if that fraction is at least 22 percent (19 percent with every input at its favourable end), and the hypothesis states no gas fraction.",
    "numbers": [
     {
      "label": "Sulfur dioxide the King's Chamber holds if filled with the pure gas",
@@ -1027,7 +1034,7 @@
    "piece": 3,
    "criterion": "Counts as evidence of an ancient aquifer link only if the pit as it stood before 1837 reaches a documented water table; the suction test then decides the draw (02 section 5.5 item 2).",
    "status": "fail",
-   "basis": "The pit as it stood before 1837 had a clearance of 11.4 m over the Old Kingdom flood peak (5.4 m at the least), so it reached no documented water table, while the shaft sunk in 1837 and 1838 ends 2.9 m above today's water table, near enough that modern groundwater cannot be excluded as the cause of wet fill.",
+   "basis": "The pit as it stood before 1837 had a clearance of 11.4 m over the Old Kingdom flood peak (5.4 m at the least), so it reached no documented water table, while the shaft sunk in 1837 and 1838 has a clearance of 2.9 m over today's water table (-2.4 to 6.5 m over the ranges of the inputs), so modern groundwater cannot be excluded as the cause of wet fill.",
    "numbers": [
     {
      "label": "Height of the pit bottom, as it stood before 1837, above the Old Kingdom flood peak",
@@ -1436,115 +1443,153 @@
      "id": "dp.entrance.x",
      "value": 7.2898,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "287 in +/- 0.8; original entrance, floor at casing face"
     },
     {
      "id": "dp.entrance.y",
      "value": 101.854,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "4010 in +/- 0.3; original entrance, floor at casing face"
     },
     {
      "id": "dp.entrance.z",
      "value": 16.9723,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "668.2 in +/- 0.1; original entrance, floor at casing face"
     },
     {
      "id": "dp.south_end.x",
      "value": 7.2746,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "286.4 in +/- 1; S end of the Descending Passage floor"
     },
     {
      "id": "dp.south_end.y",
      "value": 7.7724,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "306 in +/- 2; S end of the Descending Passage floor"
     },
     {
      "id": "dp.south_end.z",
      "value": -29.9974,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "-1181 in +/- 1; S end of the Descending Passage floor"
     },
     {
      "id": "dp.angle",
      "value": 26.5231,
      "unit": "deg",
-     "source": "Petrie 1883 s.36; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.36; research/01-geometry.md table C",
+     "verified": true,
+     "note": "26 deg 31 min 23 s +/- 5 s over the whole length; built part alone 26 deg 26 min 42 s (queried by Petrie)"
     },
     {
      "id": "dp.width",
      "value": 1.0549,
      "unit": "m",
-     "source": "Petrie 1883 s.30; research/01-geometry.md table C; research/09-recomputation.md K5"
+     "source": "Petrie 1883 s.30; research/01-geometry.md table C; research/09-recomputation.md K5",
+     "verified": true,
+     "note": "41.53 in; mean difference 0.07 in; Perring gives 41.5 in"
     },
     {
      "id": "dp.height",
      "value": 1.1999,
      "unit": "m",
-     "source": "Petrie 1883 s.30; research/01-geometry.md table C; research/09-recomputation.md K5"
+     "source": "Petrie 1883 s.30; research/01-geometry.md table C; research/09-recomputation.md K5",
+     "verified": true,
+     "note": "47.24 in; perpendicular to the slope; mean difference 0.05 in; Perring gives 47 in"
     },
     {
      "id": "dp.length",
      "value": 105.15,
      "unit": "m",
-     "source": "research/01-geometry.md table C; research/09-recomputation.md row 1 and K5"
+     "source": "research/01-geometry.md table C; research/09-recomputation.md row 1 and K5",
+     "verified": false,
+     "note": "computed from the s.64 end coordinates: sqrt(3703.9^2 + 1849.2^2) = 4139.9 in; Petrie's pole figure is about 4143 in"
     },
     {
      "id": "dp.junction_distance",
      "value": 28.2103,
      "unit": "m",
-     "source": "Petrie 1883 s.38; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.38; research/01-geometry.md table C",
+     "verified": true,
+     "note": "1110.64 in +/- 0.1; floor distance from the original entrance to the Ascending Passage junction; Haase puts the ceiling opening at about 27.40 m"
     },
     {
      "id": "dp.rock_entry_distance",
      "value": 31.94,
      "unit": "m",
-     "source": "Petrie 1883 s.35; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.35; research/01-geometry.md table C",
+     "verified": false,
+     "note": "research/01's midpoint of 1163.6 in and 1350.7 in (31.94 m); 1163.6 in (E wall top, PDF page 95) is the station from which Petrie measured by rods to the rock, not a rock station; the book marks Rock first at 1318.5 in and up to 1350.7 in (E roof, PDF pages 95 and 96), so the value stands pending the owner's decision on placing the rock entry at the printed rock stations (33.5 to 34.3 m); about 30 to 34 m in masonry and 71 to 75 m in bedrock"
     },
     {
      "id": "dp.horizontal.length",
      "value": 8.7884,
      "unit": "m",
-     "source": "Petrie 1883 s.37; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.37; research/01-geometry.md table C",
+     "verified": true,
+     "note": "346 in; horizontal passage from the foot of the slope to the Subterranean Chamber"
     },
     {
      "id": "dp.horizontal.width",
      "value": 0.8242,
      "unit": "m",
-     "source": "Petrie 1883 s.37; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.37; research/01-geometry.md table C",
+     "verified": true,
+     "note": "32.45 in; 31.6 to 33.3 in; value is the mean"
     },
     {
      "id": "dp.horizontal.height",
      "value": 0.9652,
      "unit": "m",
-     "source": "Petrie 1883 s.37; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.37; research/01-geometry.md table C",
+     "verified": false,
+     "note": "about 38 in by Petrie's floor and roof levels, table alignment uncertain; 0.91 to 0.95 m per Wikipedia"
     },
     {
      "id": "dp.horizontal_end.x",
      "value": 7.272,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "286.3 in +/- 1; S end of the horizontal passage"
     },
     {
      "id": "dp.horizontal_end.y",
      "value": -1.016,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "-40 in +/- 2; S end of the horizontal passage"
     },
     {
      "id": "dp.horizontal_end.z",
      "value": -29.9212,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "-1178 in +/- 1; S end of the horizontal passage"
     },
     {
      "id": "dp.volume",
      "value": 133.1,
      "unit": "m3",
-     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1",
+     "verified": false,
+     "note": "computed, row 1: 105.15 m x 1.2657 m2, +/- 3 percent; 35.7 m3 above and 97.4 m3 below the Ascending junction; 85.0 m3 below pavement level (K6); the 6.9 m3 horizontal passage is not included"
     }
    ],
    "claims": [
@@ -1562,61 +1607,81 @@
      "id": "sub.roof_centre.x",
      "value": 0.6579,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "25.9 in +/- 2; Subterranean Chamber centre, roof"
     },
     {
      "id": "sub.roof_centre.y",
      "value": -5.1562,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "-203 in +/- 2; Subterranean Chamber centre, roof"
     },
     {
      "id": "sub.roof_centre.z",
      "value": -26.8224,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "-1056 in +/- 2; Subterranean Chamber centre, roof; roof flat to +/- 3 in"
     },
     {
      "id": "sub.length_ew",
      "value": 14.0665,
      "unit": "m",
-     "source": "Petrie 1883 s.37; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.37; research/01-geometry.md table C",
+     "verified": true,
+     "note": "553.8 in; 553.5 in on the N wall, 554.1 in on the S wall; value is the mean"
     },
     {
      "id": "sub.width_ns",
      "value": 8.2779,
      "unit": "m",
-     "source": "Petrie 1883 s.37; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.37; research/01-geometry.md table C",
+     "verified": true,
+     "note": "325.9 in; the W end may be 329.6 in"
     },
     {
      "id": "sub.floor_depth_east",
      "value": 3.556,
      "unit": "m",
-     "source": "Petrie 1883 s.37; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.37; research/01-geometry.md table C",
+     "verified": true,
+     "note": "140 in; floor below the roof in the east part, Z about -30.38 m; very irregular"
     },
     {
      "id": "sub.floor_depth_knob",
      "value": 3.937,
      "unit": "m",
-     "source": "Petrie 1883 s.37; research/09-recomputation.md section 1 item 2"
+     "source": "Petrie 1883 s.37; research/09-recomputation.md section 1 item 2",
+     "verified": true,
+     "note": "155 in; a knob of rock beside the pit, not a floor"
     },
     {
      "id": "sub.floor_depth_pit",
      "value": 5.0292,
      "unit": "m",
-     "source": "Petrie 1883 s.37; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.37; research/01-geometry.md table C",
+     "verified": true,
+     "note": "198 in; best-worked floor round the pit, the deepest floor, Z about -31.85 m"
     },
     {
      "id": "sub.west_rock_clearance",
      "value": 0.254,
      "unit": "m",
-     "source": "Petrie 1883 s.37; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.37; research/01-geometry.md table C",
+     "verified": true,
+     "note": "10 in; the W half is uncut rock rising to within this distance of the roof; descriptive, single extraction"
     },
     {
      "id": "sub.volume",
      "value": 300.0,
      "unit": "m3",
-     "source": "research/09-recomputation.md row 3 and K3"
+     "source": "research/09-recomputation.md row 3 and K3",
+     "verified": false,
+     "note": "baseline 300 m3, sweep 200 to 450; the geometric ceiling is the 586 m3 bounding box to the 198 in floor; no scan exists; K3: 01 has likely 250 to 350, 02 about 300 with 250 to 470"
     }
    ],
    "claims": [
@@ -1635,61 +1700,81 @@
      "id": "pit.side",
      "value": 1.9,
      "unit": "m",
-     "source": "Petrie 1883 s.37; research/01-geometry.md tables C and F"
+     "source": "Petrie 1883 s.37; research/01-geometry.md tables C and F",
+     "verified": false,
+     "note": "01 table F uses about 1.9 m; Petrie's sides are 68 to 82.5 in and the SE side reads 82.5 or 72.5 in in the two copies; square, set diagonally"
     },
     {
      "id": "pit.ledge.z",
      "value": -33.5534,
      "unit": "m",
-     "source": "Petrie 1883 s.37; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.37; research/01-geometry.md table C",
+     "verified": true,
+     "note": "-1321 in; ledge below the pavement"
     },
     {
      "id": "pit.ledge_depth",
      "value": 1.7018,
      "unit": "m",
-     "source": "Petrie 1883 s.37; research/01-geometry.md check 2"
+     "source": "Petrie 1883 s.37; research/01-geometry.md check 2",
+     "verified": true,
+     "note": "67 in; ledge below the floor round the pit: 265 in below the roof less 198 in"
     },
     {
      "id": "pit.lower_side",
      "value": 1.4,
      "unit": "m",
-     "source": "Petrie 1883 s.37; research/01-geometry.md tables C and F"
+     "source": "Petrie 1883 s.37; research/01-geometry.md tables C and F",
+     "verified": false,
+     "note": "01 table F uses 1.4 m; Petrie's sides for the smaller shaft are 53 to 60 in"
     },
     {
      "id": "pit.lower_depth_original",
      "value": 1.016,
      "unit": "m",
-     "source": "Petrie 1883 s.37; research/01-geometry.md check 2"
+     "source": "Petrie 1883 s.37; research/01-geometry.md check 2",
+     "verified": true,
+     "note": "40 in; original depth of the smaller shaft below the ledge; Petrie gives it on Vyse's authority and could not see it himself"
     },
     {
      "id": "pit.original_bottom.z",
      "value": -34.57,
      "unit": "m",
-     "source": "research/09-recomputation.md K4; research/02-hydraulics.md working W1"
+     "source": "research/09-recomputation.md K4; research/02-hydraulics.md working W1",
+     "verified": false,
+     "note": "computed: ledge -33.55 m less about 1.02 m; +/- 0.5 m; part of this may be Caviglia's 1817 digging"
     },
     {
      "id": "pit.excavated_bottom.z",
      "value": -42.1,
      "unit": "m",
-     "source": "research/02-hydraulics.md working W1; research/01-geometry.md check 2"
+     "source": "research/02-hydraulics.md working W1; research/01-geometry.md check 2",
+     "verified": false,
+     "note": "derived: -41.0 from Petrie's 30 ft, -42.1 from Perring's own sum (138 ft 2 in below base), -42.8 to -43.4 from 36 to 38 ft below the pit-mouth floor; 50 ft was Vyse's order, not the depth reached"
     },
     {
      "id": "pit.excavated_depth",
      "value": 10.9728,
      "unit": "m",
-     "source": "Vyse 1840 vol. 1 p. 224 and vol. 2 appendix; research/01-geometry.md check 2"
+     "source": "Vyse 1840 vol. 1 p. 224 and vol. 2 appendix; research/01-geometry.md check 2",
+     "verified": true,
+     "note": "36 ft (Perring) to 38 ft (Vyse, by September 1838) through solid rock, no chamber found; datum not stated; read in OCR"
     },
     {
      "id": "pit.volume",
      "value": 8.1,
      "unit": "m3",
-     "source": "research/01-geometry.md table F"
+     "source": "research/01-geometry.md table F",
+     "verified": false,
+     "note": "computed for the pit as it stood before 1837: 1.9 x 1.9 x 1.70 + 1.4 x 1.4 x 1.0; range from the ranges of the two sides"
     },
     {
      "id": "pit.volume_excavated",
      "value": 35.0,
      "unit": "m3",
-     "source": "research/01-geometry.md table F"
+     "source": "research/01-geometry.md table F",
+     "verified": false,
+     "note": "01 table F: up to about 35 m3, large uncertainty; range runs from a 1.35 m shaft below the ledge down to -41.0 m, up to the full 2.1 m square section down to -43.4 m"
     }
    ],
    "claims": [
@@ -1706,61 +1791,81 @@
      "id": "sp.north_end.x",
      "value": 7.2365,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "284.9 in +/- 1; N end of the S blind passage"
     },
     {
      "id": "sp.north_end.y",
      "value": -9.2964,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "-366 in +/- 2; N end of the S blind passage"
     },
     {
      "id": "sp.north_end.z",
      "value": -30.9626,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "-1219 in +/- 1.5; N end of the S blind passage"
     },
     {
      "id": "sp.south_end.x",
      "value": 7.0383,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "277.1 in; S (dead) end of the S blind passage; Petrie gives no error for X"
     },
     {
      "id": "sp.south_end.y",
      "value": -25.7048,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "-1012 in +/- 3; S (dead) end of the S blind passage"
     },
     {
      "id": "sp.south_end.z",
      "value": -30.8102,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "-1213 in +/- 2; S (dead) end of the S blind passage"
     },
     {
      "id": "sp.length",
      "value": 16.4084,
      "unit": "m",
-     "source": "Petrie 1883 s.37; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.37; research/01-geometry.md table C",
+     "verified": true,
+     "note": "646 in; stations 672 to 1318; Haase 16.41 m: straight for 11 m, a slight bend W, then S; ends blind in rock"
     },
     {
      "id": "sp.width",
      "value": 0.72,
      "unit": "m",
-     "source": "Petrie 1883 s.37; research/01-geometry.md tables C and F"
+     "source": "Petrie 1883 s.37; research/01-geometry.md tables C and F",
+     "verified": false,
+     "note": "01 table F uses 0.72 m; Petrie's width is 26.0 to 30.1 in and the sides wander 6 to 8 in"
     },
     {
      "id": "sp.height",
      "value": 0.75,
      "unit": "m",
-     "source": "research/01-geometry.md table C"
+     "source": "research/01-geometry.md table C",
+     "verified": false,
+     "note": "about 0.75 m square per Wikipedia citing Vyse; secondary"
     },
     {
      "id": "sp.volume",
      "value": 8.9,
      "unit": "m3",
-     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1",
+     "verified": false,
+     "note": "computed, row 4: 16.41 x 0.72 x 0.75, +/- 25 percent; 09 gives 8.1 to 9.4"
     }
    ],
    "claims": [
@@ -1775,163 +1880,217 @@
      "id": "ws.top.z",
      "value": 21.7,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "the upper mouth starts about 21.70 m above base"
     },
     {
      "id": "ws.mouth_near_edge",
      "value": 0.5537,
      "unit": "m",
-     "source": "Petrie 1883 s.46; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.46; research/01-geometry.md table C",
+     "verified": true,
+     "note": "21.8 in; near edge of the mouth in the W ramp, measured from the Gallery N wall; Haase 55 cm"
     },
     {
      "id": "ws.mouth_far_edge",
      "value": 1.2446,
      "unit": "m",
-     "source": "Petrie 1883 s.46; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.46; research/01-geometry.md table C",
+     "verified": true,
+     "note": "49 in; far edge of the mouth in the W ramp, measured from the Gallery N wall"
     },
     {
      "id": "ws.offset_west",
      "value": 1.4,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "the shaft runs parallel to and about 1.40 m west of the passage"
     },
     {
      "id": "ws.seg0.length",
      "value": 1.4,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "segment 0: level run west from the mouth"
     },
     {
      "id": "ws.seg1.length",
      "value": 7.96,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "segment 1: vertical, in masonry"
     },
     {
      "id": "ws.seg2.length",
      "value": 7.9,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "segment 2: inclined to the south, in masonry"
     },
     {
      "id": "ws.seg2.angle",
      "value": 65.0,
      "unit": "deg",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "about 65 deg; taken from the horizontal, with which the segment sum ends 1.38 m above base, matching Haase's 'a good metre above base' for the start of segment 4"
     },
     {
      "id": "ws.seg3.length",
      "value": 5.2,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "segment 3: vertical, about 5.20 m, of which over 2 m is lined through the Grotto and 2.15 m is rock-cut"
     },
     {
      "id": "ws.seg3.rock_cut_length",
      "value": 2.15,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "rock-cut lower part of segment 3"
     },
     {
      "id": "ws.seg4.length",
      "value": 26.5,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "segment 4: 45 deg to the south, starting a good metre above base"
     },
     {
      "id": "ws.seg4.angle",
      "value": 45.0,
      "unit": "deg",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "segment 4, from the horizontal"
     },
     {
      "id": "ws.seg5.length",
      "value": 9.5,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "segment 5: about 9.50 m at 75 deg"
     },
     {
      "id": "ws.seg5.angle",
      "value": 75.0,
      "unit": "deg",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "segment 5, from the horizontal"
     },
     {
      "id": "ws.seg6.length",
      "value": 1.85,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "segment 6: level link, about 1.85 m, into the W wall of the Descending Passage"
     },
     {
      "id": "ws.upper_side",
      "value": 0.71,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "segment 1 is 71 x 71 cm; 01 table F applies this section to segments 0 to 2"
     },
     {
      "id": "ws.seg3.side_a",
      "value": 0.66,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "segment 3 is 66 x 68 cm"
     },
     {
      "id": "ws.seg3.side_b",
      "value": 0.68,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "segment 3 is 66 x 68 cm"
     },
     {
      "id": "ws.seg4.height",
      "value": 0.76,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "segment 4 is 76 cm high"
     },
     {
      "id": "ws.seg4.width",
      "value": 0.6,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "segment 4 is 56 to 64 cm wide; value is the mean"
     },
     {
      "id": "ws.lower_area",
      "value": 0.5,
      "unit": "m2",
-     "source": "research/01-geometry.md table F"
+     "source": "research/01-geometry.md table F",
+     "verified": false,
+     "note": "section assumed in 01 table F for segments 5 and 6; no measurement"
     },
     {
      "id": "ws.lower_mouth_side",
      "value": 0.79,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "lower mouth in the W wall of the Descending Passage, original section about 79 x 79 cm"
     },
     {
      "id": "ws.lower_mouth_distance",
      "value": 98.0,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "just under 98 m down the Descending Passage from the original entrance, Z about -26.8 m (computed)"
     },
     {
      "id": "ws.length",
      "value": 60.31,
      "unit": "m",
-     "source": "research/01-geometry.md table C; research/09-recomputation.md K2"
+     "source": "research/01-geometry.md table C; research/09-recomputation.md K2",
+     "verified": false,
+     "note": "sum of Haase's seven segments; Perring: 191 ft 6 in = 58.4 m; 02's 50 m came from a secondary summary"
     },
     {
      "id": "ws.volume",
      "value": 28.8,
      "unit": "m3",
-     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1",
+     "verified": false,
+     "note": "computed, row 5, +/- 20 percent, Grotto excluded; K2: 02 has about 25 m3 for a shaft of about 50 m"
     },
     {
      "id": "ws.volume_above_base",
      "value": 12.0,
      "unit": "m3",
-     "source": "research/02-hydraulics.md working W3"
+     "source": "research/02-hydraulics.md working W3",
+     "verified": false,
+     "note": "part of the well shaft above pavement level used in the lifting-work sum; the text also says about 13"
     },
     {
      "id": "ws.centroid_above_base.z",
      "value": 10.8,
      "unit": "m",
-     "source": "research/02-hydraulics.md working W3"
+     "source": "research/02-hydraulics.md working W3",
+     "verified": false,
+     "note": "centroid height of the part above pavement level, as used in the lifting-work sum"
     }
    ],
    "claims": [
@@ -1948,13 +2107,17 @@
      "id": "grotto.height",
      "value": 2.0,
      "unit": "m",
-     "source": "Haase 2004; Petrie 1883 s.46; research/01-geometry.md table C; research/02-hydraulics.md section 2.1"
+     "source": "Haase 2004; Petrie 1883 s.46; research/01-geometry.md table C; research/02-hydraulics.md section 2.1",
+     "verified": false,
+     "note": "height of the lined stretch of well-shaft segment 3 through the Grotto: Haase 'over 2 m' in ten courses, Petrie ten courses of 7.25 to 8 in; the cavity's plan size is not given in any source read"
     },
     {
      "id": "grotto.plan_side",
      "value": 1.04,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": false,
+     "note": "assumed for the model, a lower bound only: the Grotto holds a drilled granite block 1.04 m long (Haase); no source read gives the cavity's plan size, so the geometry draws it as a square of this side round the well shaft"
     }
    ],
    "claims": []
@@ -1966,103 +2129,137 @@
      "id": "ap.start.x",
      "value": 7.2796,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "286.6 in +/- 0.8; floor meets the Descending Passage floor"
     },
     {
      "id": "ap.start.y",
      "value": 76.614,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "3016.3 in +/- 0.3; floor meets the Descending Passage floor"
     },
     {
      "id": "ap.start.z",
      "value": 4.3917,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "172.9 in +/- 0.2; floor meets the Descending Passage floor; adopted by closure, the first extraction read 179.9"
     },
     {
      "id": "ap.end.x",
      "value": 7.2898,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "287 in +/- 1.5; end of the Ascending Passage at the N wall of the Grand Gallery, floor"
     },
     {
      "id": "ap.end.y",
      "value": 41.3207,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "1626.8 in +/- 0.8; end of the Ascending Passage at the N wall of the Grand Gallery, floor"
     },
     {
      "id": "ap.end.z",
      "value": 21.656,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "852.6 in +/- 0.3; end of the Ascending Passage at the N wall of the Grand Gallery, floor"
     },
     {
      "id": "ap.angle",
      "value": 26.0417,
      "unit": "deg",
-     "source": "Petrie 1883 s.38-39; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.38-39; research/01-geometry.md table C",
+     "verified": true,
+     "note": "mean 26 deg 2 min 30 s; lower 300 in at 26 deg 12.5 min"
     },
     {
      "id": "ap.length",
      "value": 39.2887,
      "unit": "m",
-     "source": "Petrie 1883 s.38-39; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.38-39; research/01-geometry.md table C",
+     "verified": true,
+     "note": "1546.8 in; floor length to the Gallery N wall; horizontal 1389.5, vertical 679.7 in"
     },
     {
      "id": "ap.width",
      "value": 1.0566,
      "unit": "m",
-     "source": "Petrie 1883 s.38; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.38; research/01-geometry.md table C",
+     "verified": true,
+     "note": "41.6 in; at the top; narrows to 38.2 in at the plugs"
     },
     {
      "id": "ap.height",
      "value": 1.2014,
      "unit": "m",
-     "source": "Petrie 1883 s.38; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.38; research/01-geometry.md table C",
+     "verified": true,
+     "note": "47.3 in; perpendicular to the slope"
     },
     {
      "id": "ap.plug_start",
      "value": 1.8847,
      "unit": "m",
-     "source": "Petrie 1883 s.38; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.38; research/01-geometry.md table C",
+     "verified": true,
+     "note": "74.2 in; floor station of the lower end of the granite plugs, from the junction"
     },
     {
      "id": "ap.plug_length",
      "value": 4.5339,
      "unit": "m",
-     "source": "Petrie 1883 s.38; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.38; research/01-geometry.md table C",
+     "verified": true,
+     "note": "178.5 in; three granite blocks, floor stations 74.2 to 252.7; originally about 24 in longer"
     },
     {
      "id": "ap.plug_width",
      "value": 0.9919,
      "unit": "m",
-     "source": "Petrie 1883 s.38; research/01-geometry.md table C; research/09-recomputation.md row 6"
+     "source": "Petrie 1883 s.38; research/01-geometry.md table C; research/09-recomputation.md row 6",
+     "verified": true,
+     "note": "39.05 in, research/01's weighted mean (3 x 38.2 + 41.6)/4 of the printed 38.2 in (lower end) and 41.6 in (upper end), PDF page 102; range is the printed pair"
     },
     {
      "id": "ap.volume",
      "value": 44.3,
      "unit": "m3",
-     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1",
+     "verified": false,
+     "note": "free volume with the plugs in place, row 6: gross 49.9 less plugs 5.5, +/- 3 percent"
     },
     {
      "id": "ap.volume_gross",
      "value": 49.9,
      "unit": "m3",
-     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1",
+     "verified": false,
+     "note": "computed, row 6: 39.29 m x 1.269 m2, +/- 3 percent; the plugs-absent variant"
     },
     {
      "id": "ap.centroid.z",
      "value": 13.6,
      "unit": "m",
-     "source": "research/02-hydraulics.md section 4.3"
+     "source": "research/02-hydraulics.md section 4.3",
+     "verified": false,
+     "note": "centroid height used in the lifting-work sum"
     },
     {
      "id": "ap.volume_above_plugs",
      "value": 41.7,
      "unit": "m3",
-     "source": "research/01-geometry.md tables C and F"
+     "source": "research/01-geometry.md tables C and F",
+     "verified": false,
+     "note": "computed for the geometry model: floor length above the plugs (1546.8 - 252.7 in = 32.87 m) x 1.2694 m2, +/- 3 percent; ap.volume also counts the 2.4 m3 stub below the plugs, which the model leaves out when the plugs are present"
     }
    ],
    "claims": [
@@ -2076,55 +2273,73 @@
      "id": "qp.length",
      "value": 38.7071,
      "unit": "m",
-     "source": "Petrie 1883 s.40; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.40; research/01-geometry.md table C",
+     "verified": true,
+     "note": "1523.9 in; Gallery N-wall doorway to the chamber N wall"
     },
     {
      "id": "qp.step_distance",
      "value": 33.1978,
      "unit": "m",
-     "source": "Petrie 1883 s.40; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.40; research/01-geometry.md table C",
+     "verified": true,
+     "note": "1307 in; floor step, from the doorway"
     },
     {
      "id": "qp.floor_north.z",
      "value": 21.7068,
      "unit": "m",
-     "source": "Petrie 1883 s.40; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.40; research/01-geometry.md table C",
+     "verified": true,
+     "note": "854.6 in; floor level north of the step"
     },
     {
      "id": "qp.floor_south.z",
      "value": 21.2065,
      "unit": "m",
-     "source": "Petrie 1883 s.40; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.40; research/01-geometry.md table C",
+     "verified": true,
+     "note": "834.9 in; floor level south of the step, a drop of about 19.7 in"
     },
     {
      "id": "qp.width",
      "value": 1.05,
      "unit": "m",
-     "source": "research/01-geometry.md table C"
+     "source": "research/01-geometry.md table C",
+     "verified": false,
+     "note": "2 cubits; Wikipedia citing Maragioglio and Rinaldi; secondary"
     },
     {
      "id": "qp.height_north",
      "value": 1.17,
      "unit": "m",
-     "source": "research/01-geometry.md table C"
+     "source": "research/01-geometry.md table C",
+     "verified": false,
+     "note": "before the step; Wikipedia citing Maragioglio and Rinaldi; secondary"
     },
     {
      "id": "qp.height_south",
      "value": 1.68,
      "unit": "m",
-     "source": "research/01-geometry.md table C"
+     "source": "research/01-geometry.md table C",
+     "verified": false,
+     "note": "after the step; Wikipedia citing Maragioglio and Rinaldi; secondary"
     },
     {
      "id": "qp.volume",
      "value": 50.5,
      "unit": "m3",
-     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1",
+     "verified": false,
+     "note": "computed, row 7: 33.20 x 1.05 x 1.17 + 5.51 x 1.05 x 1.68, +/- 5 percent"
     },
     {
      "id": "qp.centroid.z",
      "value": 22.2,
      "unit": "m",
-     "source": "research/02-hydraulics.md section 4.3"
+     "source": "research/02-hydraulics.md section 4.3",
+     "verified": false,
+     "note": "centroid height used in the lifting-work sum"
     }
    ],
    "claims": [
@@ -2140,115 +2355,153 @@
      "id": "qc.north_wall.y",
      "value": 2.5908,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "102 in +/- 0.8; NE corner, floor"
     },
     {
      "id": "qc.east_wall.x",
      "value": 7.8232,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "308 in +/- 3; NE corner, floor"
     },
     {
      "id": "qc.floor.z",
      "value": 21.1938,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "834.4 in +/- 0.4; NE corner, floor"
     },
     {
      "id": "qc.west_wall.x",
      "value": 2.0709,
      "unit": "m",
-     "source": "research/01-geometry.md table B note"
+     "source": "research/01-geometry.md table B note",
+     "verified": false,
+     "note": "computed: E wall 308 in less the chamber length 226.47 in; Petrie's W roof point reads 72 +/- 3 in; +/- 0.25 m"
     },
     {
      "id": "qc.length_ew",
      "value": 5.7523,
      "unit": "m",
-     "source": "Petrie 1883 s.41; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.41; research/01-geometry.md table C",
+     "verified": true,
+     "note": "226.47 in +/- 0.2; wall lengths vary about 0.2 in"
     },
     {
      "id": "qc.width_ns",
      "value": 5.2286,
      "unit": "m",
-     "source": "Petrie 1883 s.41; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.41; research/01-geometry.md table C",
+     "verified": true,
+     "note": "205.85 in +/- 0.2; wall lengths vary about 0.2 in"
     },
     {
      "id": "qc.wall_height",
      "value": 4.6855,
      "unit": "m",
-     "source": "Petrie 1883 s.41; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.41; research/01-geometry.md table C",
+     "verified": true,
+     "note": "184.47 in; side-wall height on the N and S walls"
     },
     {
      "id": "qc.ridge_height",
      "value": 6.2255,
      "unit": "m",
-     "source": "Petrie 1883 s.41; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.41; research/01-geometry.md table C",
+     "verified": true,
+     "note": "245.1 in; ridge above the floor; the gable ends are the E and W walls"
     },
     {
      "id": "qc.ridge.z",
      "value": 27.399,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "1078.7 in; roof ridge, W end; low is 0.6 in below it (Petrie's stated error), high is the 1080.1 in of 01 table C"
     },
     {
      "id": "qc.niche.depth",
      "value": 1.0414,
      "unit": "m",
-     "source": "Petrie 1883 s.43; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.43; research/01-geometry.md table C",
+     "verified": true,
+     "note": "41 in +/- 0.3; niche in the E wall, 2 cubits deep"
     },
     {
      "id": "qc.niche.width_base",
      "value": 1.5748,
      "unit": "m",
-     "source": "Petrie 1883 s.43; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.43; research/01-geometry.md table C",
+     "verified": true,
+     "note": "62 in +/- 0.3; niche width at the base"
     },
     {
      "id": "qc.niche.width_top",
      "value": 0.508,
      "unit": "m",
-     "source": "Petrie 1883 s.43; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.43; research/01-geometry.md table C",
+     "verified": true,
+     "note": "20 in +/- 0.3; niche width after four quarter-cubit overlaps"
     },
     {
      "id": "qc.niche.overlaps",
      "value": 4.0,
      "unit": "1",
-     "source": "Petrie 1883 s.43; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.43; research/01-geometry.md table C",
+     "verified": true,
+     "note": "number of quarter-cubit overlaps"
     },
     {
      "id": "qc.niche.top_width_level",
      "value": 3.9624,
      "unit": "m",
-     "source": "Petrie 1883 s.43; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.43; research/01-geometry.md table C",
+     "verified": true,
+     "note": "156 in +/- 0.3; height above the floor at which the niche reaches its top width"
     },
     {
      "id": "qc.niche.height",
      "value": 4.6736,
      "unit": "m",
-     "source": "Petrie 1883 s.43; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.43; research/01-geometry.md table C",
+     "verified": true,
+     "note": "184 in +/- 0.3; the niche is roofed at this height above the floor"
     },
     {
      "id": "qc.volume",
      "value": 164.1,
      "unit": "m3",
-     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1",
+     "verified": false,
+     "note": "computed, row 8: box 140.9 plus gable 23.2, +/- 1 percent; the niche is separate; K7: 02 has 167 including a niche of about 3"
     },
     {
      "id": "qc.niche.volume",
      "value": 5.1,
      "unit": "m3",
-     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1",
+     "verified": false,
+     "note": "computed: about 1.04 x 1.04 (mean width) x 4.67, +/- 20 percent"
     },
     {
      "id": "qc.centroid.z",
      "value": 23.9,
      "unit": "m",
-     "source": "research/02-hydraulics.md section 4.3"
+     "source": "research/02-hydraulics.md section 4.3",
+     "verified": false,
+     "note": "centroid height used in the lifting-work sum"
     },
     {
      "id": "qc.volume_with_niche",
      "value": 169.2,
      "unit": "m3",
-     "source": "research/01-geometry.md table F; research/09-recomputation.md K7"
+     "source": "research/01-geometry.md table F; research/09-recomputation.md K7",
+     "verified": false,
+     "note": "computed: 164.1 (chamber) + 5.1 (niche); the range is the sum of the two ranges; the geometry model builds the chamber and its niche as one solid"
     }
    ],
    "claims": [
@@ -2272,61 +2525,81 @@
      "id": "qcs.width",
      "value": 0.2032,
      "unit": "m",
-     "source": "Petrie 1883 s.44; research/01-geometry.md table C; research/05-sonochemistry-acoustics.md section 2.1"
+     "source": "Petrie 1883 s.44; research/01-geometry.md table C; research/05-sonochemistry-acoustics.md section 2.1",
+     "verified": true,
+     "note": "about 8 in wide; the literature gives 200 to 240 mm and Djedi 230 +/- 10 mm at the slab"
     },
     {
      "id": "qcs.north.height",
      "value": 0.2184,
      "unit": "m",
-     "source": "Petrie 1883 s.44; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.44; research/01-geometry.md table C",
+     "verified": true,
+     "note": "8.6 in; N shaft height"
     },
     {
      "id": "qcs.north.horizontal_length",
      "value": 1.9304,
      "unit": "m",
-     "source": "Petrie 1883 s.44; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.44; research/01-geometry.md table C",
+     "verified": true,
+     "note": "76 in; level run from the chamber before rising"
     },
     {
      "id": "qcs.north.angle",
      "value": 37.4667,
      "unit": "deg",
-     "source": "Petrie 1883 s.44; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.44; research/01-geometry.md table C",
+     "verified": true,
+     "note": "mean 37 deg 28 min, lower sections only, goniometer"
     },
     {
      "id": "qcs.stone_left",
      "value": 0.127,
      "unit": "m",
-     "source": "Smyth 1877 as quoted by Sakovich and by Edgar; research/01-geometry.md check 11"
+     "source": "Smyth 1877 as quoted by Sakovich and by Edgar; research/01-geometry.md check 11",
+     "verified": true,
+     "note": "5 in; stone left uncut at the chamber wall, two secondary quotations of one witness; Petrie gives no thickness; the hypothesis says 3 to 5 in"
     },
     {
      "id": "qcs.north.length_to_slab",
      "value": 63.4,
      "unit": "m",
-     "source": "Hawass, The Secret Doors Inside the Great Pyramid (web article); research/05-sonochemistry-acoustics.md section 2.1"
+     "source": "Hawass, The Secret Doors Inside the Great Pyramid (web article); research/05-sonochemistry-acoustics.md section 2.1",
+     "verified": false,
+     "note": "door at about 208 ft, not in peer-reviewed form; 09 row 9 takes both shafts as 63.6 m; the shaft turns west at about 19 m (Upuaut 2) or 8 m (Hawass); bends not surveyed; range 59 to 65 m as in K21"
     },
     {
      "id": "qcs.slab_thickness",
      "value": 0.06,
      "unit": "m",
-     "source": "Richardson et al. 2013, J. Field Robotics 30 (Djedi), p. 344; research/05-sonochemistry-acoustics.md check 14"
+     "source": "Richardson et al. 2013, J. Field Robotics 30 (Djedi), p. 344; research/05-sonochemistry-acoustics.md check 14",
+     "verified": true,
+     "note": "about 60 mm; impact-echo range 5 to 9 cm"
     },
     {
      "id": "qcs.cavity_depth",
      "value": 0.19,
      "unit": "m",
-     "source": "Richardson et al. 2013, J. Field Robotics 30 (Djedi), Fig. 24; research/05-sonochemistry-acoustics.md check 14"
+     "source": "Richardson et al. 2013, J. Field Robotics 30 (Djedi), Fig. 24; research/05-sonochemistry-acoustics.md check 14",
+     "verified": true,
+     "note": "cavity behind the S slab, 0.19 +/- 0.015 m deep and 0.23 m square"
     },
     {
      "id": "qcs.north.projected_exit.z",
      "value": 67.089,
      "unit": "m",
-     "source": "Petrie 1883 s.44; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.44; research/01-geometry.md table C",
+     "verified": true,
+     "note": "2641.3 in; where the N shaft would meet the face if continued; no outlet found"
     },
     {
      "id": "qcs.volume",
      "value": 2.8,
      "unit": "m3",
-     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1",
+     "verified": false,
+     "note": "computed, row 9, each shaft: 63.6 m x 0.218 x 0.205, +/- 15 percent"
     }
    ],
    "claims": [
@@ -2341,61 +2614,81 @@
      "id": "qcs.width",
      "value": 0.2032,
      "unit": "m",
-     "source": "Petrie 1883 s.44; research/01-geometry.md table C; research/05-sonochemistry-acoustics.md section 2.1"
+     "source": "Petrie 1883 s.44; research/01-geometry.md table C; research/05-sonochemistry-acoustics.md section 2.1",
+     "verified": true,
+     "note": "about 8 in wide; the literature gives 200 to 240 mm and Djedi 230 +/- 10 mm at the slab"
     },
     {
      "id": "qcs.south.height",
      "value": 0.2235,
      "unit": "m",
-     "source": "Petrie 1883 s.44; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.44; research/01-geometry.md table C",
+     "verified": true,
+     "note": "8.8 in; S shaft height"
     },
     {
      "id": "qcs.south.horizontal_length",
      "value": 2.032,
      "unit": "m",
-     "source": "Petrie 1883 s.44; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.44; research/01-geometry.md table C",
+     "verified": true,
+     "note": "80 in; level run from the chamber before rising"
     },
     {
      "id": "qcs.south.angle",
      "value": 38.4667,
      "unit": "deg",
-     "source": "Petrie 1883 s.44; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.44; research/01-geometry.md table C",
+     "verified": true,
+     "note": "mean 38 deg 28 min, lower sections only; Gantenbrink 39.6 deg over 28 m (secondary)"
     },
     {
      "id": "qcs.stone_left",
      "value": 0.127,
      "unit": "m",
-     "source": "Smyth 1877 as quoted by Sakovich and by Edgar; research/01-geometry.md check 11"
+     "source": "Smyth 1877 as quoted by Sakovich and by Edgar; research/01-geometry.md check 11",
+     "verified": true,
+     "note": "5 in; stone left uncut at the chamber wall, two secondary quotations of one witness; Petrie gives no thickness; the hypothesis says 3 to 5 in"
     },
     {
      "id": "qcs.south.length_to_slab",
      "value": 63.6,
      "unit": "m",
-     "source": "Richardson et al. 2013, J. Field Robotics 30 (Djedi), p. 344; research/05-sonochemistry-acoustics.md check 14; research/09-recomputation.md K21"
+     "source": "Richardson et al. 2013, J. Field Robotics 30 (Djedi), p. 344; research/05-sonochemistry-acoustics.md check 14; research/09-recomputation.md K21",
+     "verified": true,
+     "note": "63.6 +/- 0.4 m from the chamber mouth to the first blocking slab; K21: 05 also quotes 65 m, 06 lists 59 to 65 m and 01 has 60 to 65 m, from press and secondary pages"
     },
     {
      "id": "qcs.slab_thickness",
      "value": 0.06,
      "unit": "m",
-     "source": "Richardson et al. 2013, J. Field Robotics 30 (Djedi), p. 344; research/05-sonochemistry-acoustics.md check 14"
+     "source": "Richardson et al. 2013, J. Field Robotics 30 (Djedi), p. 344; research/05-sonochemistry-acoustics.md check 14",
+     "verified": true,
+     "note": "about 60 mm; impact-echo range 5 to 9 cm"
     },
     {
      "id": "qcs.cavity_depth",
      "value": 0.19,
      "unit": "m",
-     "source": "Richardson et al. 2013, J. Field Robotics 30 (Djedi), Fig. 24; research/05-sonochemistry-acoustics.md check 14"
+     "source": "Richardson et al. 2013, J. Field Robotics 30 (Djedi), Fig. 24; research/05-sonochemistry-acoustics.md check 14",
+     "verified": true,
+     "note": "cavity behind the S slab, 0.19 +/- 0.015 m deep and 0.23 m square"
     },
     {
      "id": "qcs.south.projected_exit.z",
      "value": 68.0491,
      "unit": "m",
-     "source": "Petrie 1883 s.44; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.44; research/01-geometry.md table C",
+     "verified": true,
+     "note": "2679.1 in; where the S shaft would meet the face if continued; no outlet found"
     },
     {
      "id": "qcs.volume",
      "value": 2.8,
      "unit": "m3",
-     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1",
+     "verified": false,
+     "note": "computed, row 9, each shaft: 63.6 m x 0.218 x 0.205, +/- 15 percent"
     }
    ],
    "claims": [
@@ -2411,163 +2704,217 @@
      "id": "gg.north_end.x",
      "value": 7.2898,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "287 in +/- 1.5; floor at the N wall, the end of the Ascending Passage"
     },
     {
      "id": "gg.north_end.y",
      "value": 41.3207,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "1626.8 in +/- 0.8; floor at the N wall, the end of the Ascending Passage"
     },
     {
      "id": "gg.north_end.z",
      "value": 21.656,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "852.6 in +/- 0.3; floor at the N wall, the end of the Ascending Passage"
     },
     {
      "id": "gg.south_end.x",
      "value": 7.2238,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "284.4 in +/- 3; virtual S end of the floor at the S wall"
     },
     {
      "id": "gg.south_end.y",
      "value": -1.5672,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "-61.7 in +/- 0.9; virtual S end of the floor at the S wall"
     },
     {
      "id": "gg.south_end.z",
      "value": 42.9006,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "1689 in +/- 0.5; virtual S end of the floor at the S wall"
     },
     {
      "id": "gg.step_face.y",
      "value": -0.0102,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "-0.4 in +/- 0.9; face of the Great Step"
     },
     {
      "id": "gg.step_top.z",
      "value": 43.0301,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "1694.1 in +/- 0.7; top of the Great Step"
     },
     {
      "id": "gg.floor_length",
      "value": 47.8434,
      "unit": "m",
-     "source": "Petrie 1883 s.45; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.45; research/01-geometry.md table C",
+     "verified": true,
+     "note": "1883.6 in; sloping floor length to the S wall"
     },
     {
      "id": "gg.floor_length_to_step",
      "value": 46.1137,
      "unit": "m",
-     "source": "Petrie 1883 s.45; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.45; research/01-geometry.md table C",
+     "verified": true,
+     "note": "1815.5 in; sloping floor length to the step face"
     },
     {
      "id": "gg.roof_length_horizontal",
      "value": 41.8694,
      "unit": "m",
-     "source": "Petrie 1883 s.46; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.46; research/01-geometry.md table C",
+     "verified": true,
+     "note": "1648.4 in; roof length, horizontal"
     },
     {
      "id": "gg.roof_length_sloping",
      "value": 46.7004,
      "unit": "m",
-     "source": "Petrie 1883 s.46; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.46; research/01-geometry.md table C",
+     "verified": true,
+     "note": "1838.6 in; roof length on the slope"
     },
     {
      "id": "gg.angle",
      "value": 26.2778,
      "unit": "deg",
-     "source": "Petrie 1883 s.45; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.45; research/01-geometry.md table C",
+     "verified": true,
+     "note": "26 deg 16 min 40 s"
     },
     {
      "id": "gg.width",
      "value": 2.0935,
      "unit": "m",
-     "source": "Petrie 1883 s.30; research/01-geometry.md table C and check 8"
+     "source": "Petrie 1883 s.30; research/01-geometry.md table C and check 8",
+     "verified": true,
+     "note": "82.42 in; between the walls above the ramps"
     },
     {
      "id": "gg.slot_width",
      "value": 1.0465,
      "unit": "m",
-     "source": "Petrie 1883 s.30, s.46; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.30, s.46; research/01-geometry.md table C",
+     "verified": true,
+     "note": "41.2 in = 2 cubits at Petrie's 20.6 in cubit (PDF pages 113 and 109); the figure itself is not printed"
     },
     {
      "id": "gg.roof_width",
      "value": 1.0439,
      "unit": "m",
-     "source": "Petrie 1883 s.46; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.46; research/01-geometry.md table C",
+     "verified": true,
+     "note": "41.1 in; 40.9 in at the N end, 41.3 in at the S end; value is the mean"
     },
     {
      "id": "gg.ramp_height",
      "value": 0.606,
      "unit": "m",
-     "source": "Petrie 1883 s.30; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.30; research/01-geometry.md table C",
+     "verified": true,
+     "note": "23.86 in; Haase gives the ramps as 52 cm wide and high"
     },
     {
      "id": "gg.overhang",
      "value": 0.522,
      "unit": "m",
-     "source": "Petrie 1883 s.46; research/01-geometry.md check 8"
+     "source": "Petrie 1883 s.46; research/01-geometry.md check 8",
+     "verified": true,
+     "note": "20.55 in; total overhang of the seven laps per side; E 20.50, W 20.40, S end 20.9, N end 20.4"
     },
     {
      "id": "gg.laps",
      "value": 7.0,
      "unit": "1",
-     "source": "Petrie 1883 s.46; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.46; research/01-geometry.md table C",
+     "verified": true,
+     "note": "number of corbel laps per side; assumed of equal height"
     },
     {
      "id": "gg.first_lap_height",
      "value": 2.29,
      "unit": "m",
-     "source": "research/01-geometry.md table C"
+     "source": "research/01-geometry.md table C",
+     "verified": false,
+     "note": "height of the first lap above the floor, from Wikipedia; a provisional reading of Petrie's garbled lap table gives 2.51 m; the section area is the same either way"
     },
     {
      "id": "gg.height",
      "value": 8.6,
      "unit": "m",
-     "source": "Morishima et al. 2017; research/01-geometry.md table C and check 7"
+     "source": "Morishima et al. 2017; research/01-geometry.md table C and check 7",
+     "verified": true,
+     "note": "vertical height; Petrie s.46 gives no total; 334 in = 8.49 m from the provisional lap reading, Vyse 28 ft = 8.53 m"
     },
     {
      "id": "gg.roof_top.z",
      "value": 51.5,
      "unit": "m",
-     "source": "research/02-hydraulics.md section 2.1; research/09-recomputation.md row 17; research/01-geometry.md check 7"
+     "source": "research/02-hydraulics.md section 2.1; research/09-recomputation.md row 17; research/01-geometry.md check 7",
+     "verified": false,
+     "note": "derived: S end of floor 42.90 m plus 8.6 m, as used by 02 and 09 row 17; 01 check 7 gives 51.45 +/- 0.1 m from total heights of 8.49 to 8.6 m"
     },
     {
      "id": "gg.step_height",
      "value": 0.8981,
      "unit": "m",
-     "source": "Petrie 1883 s.46; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.46; research/01-geometry.md table C",
+     "verified": true,
+     "note": "35.36 in; Great Step, 34.92 in (E) to 35.80 in (W); value is the mean"
     },
     {
      "id": "gg.step_length",
      "value": 1.5557,
      "unit": "m",
-     "source": "Petrie 1883 s.46; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.46; research/01-geometry.md table C",
+     "verified": true,
+     "note": "61.25 in; Great Step N-S length, 61.0 to 61.5 in; value is the mean"
     },
     {
      "id": "gg.volume",
      "value": 573.0,
      "unit": "m3",
-     "source": "research/01-geometry.md table F; research/09-recomputation.md row 10 and K1"
+     "source": "research/01-geometry.md table F; research/09-recomputation.md row 10 and K1",
+     "verified": false,
+     "note": "computed: vertical section 13.59 m2 x mean horizontal length 42.3 m less the Great Step wedge 1.7, +/- 8 percent; 09 recomputes 575; lap heights assumed equal; K1: 02 has 570 +/- 40 and 03 about 550 +/- 15 percent"
     },
     {
      "id": "gg.wall_area",
      "value": 1000.0,
      "unit": "m2",
-     "source": "research/09-recomputation.md row 24 and K9"
+     "source": "research/09-recomputation.md row 24 and K9",
+     "verified": false,
+     "note": "wetted wall area from the section perimeter; 02 and 03 used 800 to 900; take it from the CAD when available"
     },
     {
      "id": "gg.centroid.z",
      "value": 36.2,
      "unit": "m",
-     "source": "research/02-hydraulics.md section 4.3; research/09-recomputation.md row 21"
+     "source": "research/02-hydraulics.md section 4.3; research/09-recomputation.md row 21",
+     "verified": false,
+     "note": "mid-floor 32.28 m plus section centroid 3.92 m"
     }
    ],
    "claims": [
@@ -2597,169 +2944,225 @@
      "id": "ante.north_end.y",
      "value": -2.888,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "-113.7 in +/- 0.9; N end, floor"
     },
     {
      "id": "ante.south_end.y",
      "value": -5.8369,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "-229.8 in +/- 0.9; S end, roof"
     },
     {
      "id": "ante.floor.z",
      "value": 42.992,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "1692.6 in +/- 0.6; N end, floor"
     },
     {
      "id": "ante.roof.z",
      "value": 46.7741,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "1841.5 in +/- 0.6; S end, roof"
     },
     {
      "id": "ante.x",
      "value": 7.2238,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "284.4 in; same plane as the Gallery's S end; table B prints +7.2 m with no error"
     },
     {
      "id": "ante.length",
      "value": 2.954,
      "unit": "m",
-     "source": "Petrie 1883 s.48; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.48; research/01-geometry.md table C",
+     "verified": true,
+     "note": "116.3 in; N-S"
     },
     {
      "id": "ante.width",
      "value": 1.651,
      "unit": "m",
-     "source": "Petrie 1883 s.48; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.48; research/01-geometry.md table C",
+     "verified": true,
+     "note": "65 in; E-W, above the wainscots"
     },
     {
      "id": "ante.height",
      "value": 3.7935,
      "unit": "m",
-     "source": "Petrie 1883 s.48; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.48; research/01-geometry.md table C",
+     "verified": true,
+     "note": "149.35 in; floor to roof"
     },
     {
      "id": "ante.wainscot_height_east",
      "value": 2.6213,
      "unit": "m",
-     "source": "research/01-geometry.md table C"
+     "source": "research/01-geometry.md table C",
+     "verified": false,
+     "note": "103.2 in; E wainscot top above the floor, from a secondary page"
     },
     {
      "id": "ante.slot_count",
      "value": 3.0,
      "unit": "1",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "portcullis slots per side"
     },
     {
      "id": "ante.slot_width",
      "value": 0.55,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "about 55 cm; depth into the wall and floor termination not found"
     },
     {
      "id": "ante.slab_width",
      "value": 1.21,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "maximum width of the blocking slabs; a fragment reconstructs to about 1.19 m"
     },
     {
      "id": "ante.slab_thickness",
      "value": 0.535,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "fragment at the pyramid entrance is 53.5 cm thick; slab height unknown"
     },
     {
      "id": "ante.slab_clearance",
      "value": 0.015,
      "unit": "m",
-     "source": "research/01-geometry.md claim 2, verification"
+     "source": "research/01-geometry.md claim 2, verification",
+     "verified": false,
+     "note": "computed: 55 cm slot less the 53.5 cm fragment; one fragment only"
     },
     {
      "id": "ante.leaf_thickness",
      "value": 0.3983,
      "unit": "m",
-     "source": "Petrie 1883 s.50; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.50; research/01-geometry.md table C",
+     "verified": true,
+     "note": "15.68 in; granite leaf, 15.16 to 16.20 in; value is the mean; 05 uses 0.40 m"
     },
     {
      "id": "ante.leaf_width",
      "value": 1.0389,
      "unit": "m",
-     "source": "Petrie 1883 s.50; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.50; research/01-geometry.md table C",
+     "verified": true,
+     "note": "40.9 in; between the ledges, 40.6 to 41.2 in; value is the mean"
     },
     {
      "id": "ante.leaf_top_below_ceiling",
      "value": 1.4,
      "unit": "m",
-     "source": "Petrie 1883 s.50; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.50; research/01-geometry.md table C",
+     "verified": true,
+     "note": "55.12 in; top of the leaf below the ceiling, 51.24 to 59.0 in; value is the mean; the height of its underside above the floor was not found"
     },
     {
      "id": "ante.groove_count",
      "value": 4.0,
      "unit": "1",
-     "source": "Petrie 1883 s.49; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.49; research/01-geometry.md table C",
+     "verified": true,
+     "note": "vertical grooves in the S wall"
     },
     {
      "id": "ante.groove_width",
      "value": 0.105,
      "unit": "m",
-     "source": "Haase 2004; research/01-geometry.md table C"
+     "source": "Haase 2004; research/01-geometry.md table C",
+     "verified": true,
+     "note": "half-round rope grooves about 10.5 cm wide"
     },
     {
      "id": "ante.groove_depth",
      "value": 0.0711,
      "unit": "m",
-     "source": "Petrie 1883 s.49; research/01-geometry.md check 1"
+     "source": "Petrie 1883 s.49; research/01-geometry.md check 1",
+     "verified": true,
+     "note": "2.8 in; depth 8 to 10 in above the door top, falling to 1.75 to 2.0 in at 5 in above it"
     },
     {
      "id": "ante.groove_residual_depth",
      "value": 0.0051,
      "unit": "m",
-     "source": "research/01-geometry.md check 1"
+     "source": "research/01-geometry.md check 1",
+     "verified": false,
+     "note": "computed: linear run-out of Petrie's last two depths leaves -0.1 to +0.2 in at the door top; 0.2 in is the upper bound"
     },
     {
      "id": "ante.groove_connected_area",
      "value": 0.002,
      "unit": "m2",
-     "source": "research/01-geometry.md check 1 and P3 note"
+     "source": "research/01-geometry.md check 1 and P3 note",
+     "verified": false,
+     "note": "computed upper bound for the connected-groove variant: four grooves 0.105 m wide at 0.2 in residual depth; the full-depth 0.024 to 0.030 m2 is not compatible with Petrie's depths"
     },
     {
      "id": "ante.passage_from_gg.length",
      "value": 1.3213,
      "unit": "m",
-     "source": "Petrie 1883 s.47; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.47; research/01-geometry.md table C",
+     "verified": true,
+     "note": "52.02 in; passage from the Gallery to the antechamber"
     },
     {
      "id": "ante.passage_to_kc.length",
      "value": 2.5603,
      "unit": "m",
-     "source": "Petrie 1883 s.47; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.47; research/01-geometry.md table C",
+     "verified": true,
+     "note": "100.8 in; passage from the antechamber to the King's Chamber, stations 168.10 to 268.9"
     },
     {
      "id": "ante.low_passage.width",
      "value": 1.0516,
      "unit": "m",
-     "source": "research/01-geometry.md table C and check 18"
+     "source": "research/01-geometry.md table C and check 18",
+     "verified": false,
+     "note": "41.4 in, recalled; Petrie s.47 gives no breadth or height"
     },
     {
      "id": "ante.low_passage.height",
      "value": 1.11,
      "unit": "m",
-     "source": "research/01-geometry.md table C and check 18"
+     "source": "research/01-geometry.md table C and check 18",
+     "verified": false,
+     "note": "43.7 in, recalled; Petrie s.47 gives no breadth or height"
     },
     {
      "id": "ante.volume",
      "value": 18.5,
      "unit": "m3",
-     "source": "research/01-geometry.md table F; research/09-recomputation.md row 11"
+     "source": "research/01-geometry.md table F; research/09-recomputation.md row 11",
+     "verified": false,
+     "note": "gross box 2.954 x 1.651 x 3.793; wainscots, slots and leaf give about 15 net; +/- 15 percent"
     },
     {
      "id": "ante.surface_area",
      "value": 44.7,
      "unit": "m2",
-     "source": "research/05-sonochemistry-acoustics.md section 2.1; research/09-recomputation.md row 11"
+     "source": "research/05-sonochemistry-acoustics.md section 2.1; research/09-recomputation.md row 11",
+     "verified": false,
+     "note": "gross surface of the same box, +/- 15 percent"
     }
    ],
    "claims": [
@@ -2783,121 +3186,161 @@
      "id": "kc.north_wall.y",
      "value": -8.4049,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "-330.9 in +/- 0.9; floor at the N wall"
     },
     {
      "id": "kc.south_wall.y",
      "value": -13.6398,
      "unit": "m",
-     "source": "Petrie 1883 s.55; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.55; research/01-geometry.md table B",
+     "verified": true,
+     "note": "-537 in +/- 0.8; S wall"
     },
     {
      "id": "kc.east_wall.x",
      "value": 7.747,
      "unit": "m",
-     "source": "Petrie 1883 s.64; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.64; research/01-geometry.md table B",
+     "verified": true,
+     "note": "305 in +/- 3; wall base, NE corner"
     },
     {
      "id": "kc.west_wall.x",
      "value": -2.7356,
      "unit": "m",
-     "source": "Petrie 1883 s.55; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.55; research/01-geometry.md table B",
+     "verified": true,
+     "note": "-107.7 in +/- 3; W wall"
     },
     {
      "id": "kc.floor.z",
      "value": 42.9971,
      "unit": "m",
-     "source": "Petrie 1883 s.55, s.64; research/01-geometry.md tables B and C"
+     "source": "Petrie 1883 s.55, s.64; research/01-geometry.md tables B and C",
+     "verified": true,
+     "note": "1692.8 in; floor 1691.4 to 1693.7 in"
     },
     {
      "id": "kc.wall_base.z",
      "value": 42.8879,
      "unit": "m",
-     "source": "Petrie 1883 s.55, s.64; research/01-geometry.md table B; research/09-recomputation.md K11"
+     "source": "Petrie 1883 s.55, s.64; research/01-geometry.md table B; research/09-recomputation.md K11",
+     "verified": true,
+     "note": "1688.5 in; wall base 1686.3 to 1688.5 in, about 5 in below the floor"
     },
     {
      "id": "kc.ceiling.z",
      "value": 48.8353,
      "unit": "m",
-     "source": "Petrie 1883 s.55; research/01-geometry.md table B"
+     "source": "Petrie 1883 s.55; research/01-geometry.md table B",
+     "verified": true,
+     "note": "1922.65 in; ceiling 1921.6 to 1923.7 in; value is the mean"
     },
     {
      "id": "kc.length",
      "value": 10.4711,
      "unit": "m",
-     "source": "Petrie 1883 s.52; research/01-geometry.md table C; research/09-recomputation.md K10"
+     "source": "Petrie 1883 s.52; research/01-geometry.md table C; research/09-recomputation.md K10",
+     "verified": true,
+     "note": "412.25 in; E-W; corrected means 412.40 (N wall) and 412.11 (S wall); 412.59 is the raw s.51 average"
     },
     {
      "id": "kc.width",
      "value": 5.2357,
      "unit": "m",
-     "source": "Petrie 1883 s.52; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.52; research/01-geometry.md table C",
+     "verified": true,
+     "note": "206.13 in; N-S; 206.29 (E) and 205.97 (W)"
     },
     {
      "id": "kc.height",
      "value": 5.8445,
      "unit": "m",
-     "source": "Petrie 1883 s.55; research/01-geometry.md table C; research/09-recomputation.md K11"
+     "source": "Petrie 1883 s.55; research/01-geometry.md table C; research/09-recomputation.md K11",
+     "verified": true,
+     "note": "230.1 in; floor to ceiling, from levels (227.9 to 232.3 in from the floor and ceiling ranges); use for gas volume and room modes; 04 and 05 quote about 5.8 m from memory or a secondary page"
     },
     {
      "id": "kc.wall_height",
      "value": 5.969,
      "unit": "m",
-     "source": "research/09-recomputation.md K11; research/03-chemistry.md section 2f"
+     "source": "research/09-recomputation.md K11; research/03-chemistry.md section 2f",
+     "verified": false,
+     "note": "derived from levels: about 235 in from the wall base to the ceiling; the granite wall height"
     },
     {
      "id": "kc.volume",
      "value": 320.4,
      "unit": "m3",
-     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1",
+     "verified": false,
+     "note": "computed, row 12: 10.471 x 5.236 x 5.844, +/- 0.5 percent; 319.3 net of the coffer stone"
     },
     {
      "id": "kc.coffer.length",
      "value": 2.2763,
      "unit": "m",
-     "source": "Petrie 1883 s.59; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.59; research/01-geometry.md table C",
+     "verified": true,
+     "note": "89.62 in; coffer outside"
     },
     {
      "id": "kc.coffer.width",
      "value": 0.9779,
      "unit": "m",
-     "source": "Petrie 1883 s.59; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.59; research/01-geometry.md table C",
+     "verified": true,
+     "note": "38.5 in; coffer outside"
     },
     {
      "id": "kc.coffer.height",
      "value": 1.0493,
      "unit": "m",
-     "source": "Petrie 1883 s.59; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.59; research/01-geometry.md table C",
+     "verified": true,
+     "note": "41.31 in; coffer outside"
     },
     {
      "id": "kc.coffer.inner_length",
      "value": 1.9827,
      "unit": "m",
-     "source": "Petrie 1883 s.59; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.59; research/01-geometry.md table C",
+     "verified": true,
+     "note": "78.06 in; coffer inside"
     },
     {
      "id": "kc.coffer.inner_width",
      "value": 0.681,
      "unit": "m",
-     "source": "Petrie 1883 s.59; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.59; research/01-geometry.md table C",
+     "verified": true,
+     "note": "26.81 in; coffer inside"
     },
     {
      "id": "kc.coffer.inner_depth",
      "value": 0.8743,
      "unit": "m",
-     "source": "Petrie 1883 s.59; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.59; research/01-geometry.md table C",
+     "verified": true,
+     "note": "34.42 in; coffer inside"
     },
     {
      "id": "kc.coffer.solid_volume",
      "value": 1.155,
      "unit": "m3",
-     "source": "Petrie 1883 s.61; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.61; research/01-geometry.md table C",
+     "verified": true,
+     "note": "70,500 in3 of stone; contents 72,030 in3"
     },
     {
      "id": "kc.volume_with_passage",
      "value": 323.4,
      "unit": "m3",
-     "source": "research/01-geometry.md table F"
+     "source": "research/01-geometry.md table F",
+     "verified": false,
+     "note": "computed: 320.4 (chamber) + 3.0 (passage from the antechamber, 2.56 x 1.05 x 1.11, +/- 10 percent); the geometry model builds the chamber and its entrance passage as one solid; the passage section is a recalled figure; use kc.volume for the gas inventory"
     }
    ],
    "claims": [
@@ -2924,61 +3367,81 @@
      "id": "kcs.mouth_height",
      "value": 0.9144,
      "unit": "m",
-     "source": "Thomas 1953 after Perring; research/01-geometry.md table C"
+     "source": "Thomas 1953 after Perring; research/01-geometry.md table C",
+     "verified": true,
+     "note": "mouths about 3 ft above the floor"
     },
     {
      "id": "kcs.horizontal_length",
      "value": 1.524,
      "unit": "m",
-     "source": "Thomas 1953 after Perring; research/01-geometry.md table C"
+     "source": "Thomas 1953 after Perring; research/01-geometry.md table C",
+     "verified": true,
+     "note": "both shafts run level for about 5 ft before turning up; 01 computes 1.5 to 2.6 m"
     },
     {
      "id": "kcs.mouth_from_east_wall",
      "value": 2.5,
      "unit": "m",
-     "source": "research/01-geometry.md table C"
+     "source": "research/01-geometry.md table C",
+     "verified": false,
+     "note": "Wikipedia; secondary"
     },
     {
      "id": "kcs.north.width",
      "value": 0.2299,
      "unit": "m",
-     "source": "Petrie 1883 s.56; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.56; research/01-geometry.md table C",
+     "verified": true,
+     "note": "9.05 in; N shaft in the masonry, 8.9 to 9.2 in"
     },
     {
      "id": "kcs.north.height",
      "value": 0.2217,
      "unit": "m",
-     "source": "Petrie 1883 s.56; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.56; research/01-geometry.md table C",
+     "verified": true,
+     "note": "8.73 in; N shaft, 8.72 to 8.74 in"
     },
     {
      "id": "kcs.north.angle",
      "value": 31.55,
      "unit": "deg",
-     "source": "Petrie 1883 s.56; research/01-geometry.md table C; research/09-recomputation.md K22"
+     "source": "Petrie 1883 s.56; research/01-geometry.md table C; research/09-recomputation.md K22",
+     "verified": true,
+     "note": "mean 31 deg 33 min over the outermost surviving part; K22: +/- 1 deg; Gantenbrink 32.6 (secondary)"
     },
     {
      "id": "kcs.north.length",
      "value": 71.0184,
      "unit": "m",
-     "source": "Vyse 1840 vol. 1 p. 286; research/01-geometry.md check 6"
+     "source": "Vyse 1840 vol. 1 p. 286; research/01-geometry.md check 6",
+     "verified": true,
+     "note": "233 ft, read in OCR; 01 computes 68.3 to 69.3 m sloping plus 1.5 to 2.6 m level; +/- 2 m"
     },
     {
      "id": "kcs.exit.z",
      "value": 80.0,
      "unit": "m",
-     "source": "research/01-geometry.md table C; research/09-recomputation.md row 13"
+     "source": "research/01-geometry.md table C; research/09-recomputation.md row 13",
+     "verified": false,
+     "note": "computed: the shaft lines meet the original casing plane at 80 +/- 1 m; 09 gives 80.2 to 81.1 (N) and 80.8 (S)"
     },
     {
      "id": "kcs.level_end_length",
      "value": 3.048,
      "unit": "m",
-     "source": "Thomas 1953 after Perring pl. 4; research/01-geometry.md check 4"
+     "source": "Thomas 1953 after Perring pl. 4; research/01-geometry.md check 4",
+     "verified": true,
+     "note": "about the last 10 ft of the S channel drawn level by one 1837-39 survey; N only presumed; Petrie's 1881 angles show no level stretch; used by the kc_shaft_ends_level variant"
     },
     {
      "id": "kcs.north.volume",
      "value": 3.6,
      "unit": "m3",
-     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1",
+     "verified": false,
+     "note": "computed, row 13: 71.0 m x 0.229 x 0.222, +/- 15 percent"
     }
    ],
    "claims": [
@@ -2995,61 +3458,81 @@
      "id": "kcs.mouth_height",
      "value": 0.9144,
      "unit": "m",
-     "source": "Thomas 1953 after Perring; research/01-geometry.md table C"
+     "source": "Thomas 1953 after Perring; research/01-geometry.md table C",
+     "verified": true,
+     "note": "mouths about 3 ft above the floor"
     },
     {
      "id": "kcs.horizontal_length",
      "value": 1.524,
      "unit": "m",
-     "source": "Thomas 1953 after Perring; research/01-geometry.md table C"
+     "source": "Thomas 1953 after Perring; research/01-geometry.md table C",
+     "verified": true,
+     "note": "both shafts run level for about 5 ft before turning up; 01 computes 1.5 to 2.6 m"
     },
     {
      "id": "kcs.mouth_from_east_wall",
      "value": 2.5,
      "unit": "m",
-     "source": "research/01-geometry.md table C"
+     "source": "research/01-geometry.md table C",
+     "verified": false,
+     "note": "Wikipedia; secondary"
     },
     {
      "id": "kcs.south.width",
      "value": 0.2159,
      "unit": "m",
-     "source": "Petrie 1883 s.56; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.56; research/01-geometry.md table C",
+     "verified": true,
+     "note": "8.5 in; S shaft, 8.35 to 8.65 in"
     },
     {
      "id": "kcs.south.height",
      "value": 0.2235,
      "unit": "m",
-     "source": "Petrie 1883 s.56; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.56; research/01-geometry.md table C",
+     "verified": true,
+     "note": "8.8 in; S shaft, 8.7 to 8.9 in"
     },
     {
      "id": "kcs.south.angle",
      "value": 45.2278,
      "unit": "deg",
-     "source": "Petrie 1883 s.56; research/01-geometry.md table C; research/09-recomputation.md K22"
+     "source": "Petrie 1883 s.56; research/01-geometry.md table C; research/09-recomputation.md K22",
+     "verified": true,
+     "note": "mean 45 deg 13 min 40 s; K22: +/- 1 deg"
     },
     {
      "id": "kcs.south.length",
      "value": 53.1114,
      "unit": "m",
-     "source": "Vyse 1840 vol. 1 p. 286; research/01-geometry.md check 6"
+     "source": "Vyse 1840 vol. 1 p. 286; research/01-geometry.md check 6",
+     "verified": true,
+     "note": "174 ft 3 in, read in OCR; 01 computes 51.9 m sloping plus about 1.5 m level; +/- 2 m"
     },
     {
      "id": "kcs.exit.z",
      "value": 80.0,
      "unit": "m",
-     "source": "research/01-geometry.md table C; research/09-recomputation.md row 13"
+     "source": "research/01-geometry.md table C; research/09-recomputation.md row 13",
+     "verified": false,
+     "note": "computed: the shaft lines meet the original casing plane at 80 +/- 1 m; 09 gives 80.2 to 81.1 (N) and 80.8 (S)"
     },
     {
      "id": "kcs.level_end_length",
      "value": 3.048,
      "unit": "m",
-     "source": "Thomas 1953 after Perring pl. 4; research/01-geometry.md check 4"
+     "source": "Thomas 1953 after Perring pl. 4; research/01-geometry.md check 4",
+     "verified": true,
+     "note": "about the last 10 ft of the S channel drawn level by one 1837-39 survey; N only presumed; Petrie's 1881 angles show no level stretch; used by the kc_shaft_ends_level variant"
     },
     {
      "id": "kcs.south.volume",
      "value": 2.6,
      "unit": "m3",
-     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1"
+     "source": "research/01-geometry.md table F; research/09-recomputation.md section 2.1",
+     "verified": false,
+     "note": "computed, row 13: 53.1 m x 0.216 x 0.224, +/- 15 percent"
     }
    ],
    "claims": [
@@ -3066,115 +3549,153 @@
      "id": "rc.davison.length",
      "value": 11.684,
      "unit": "m",
-     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17",
+     "verified": true,
+     "note": "38 ft 4 in; single OCR extraction, column pairing partly garbled"
     },
     {
      "id": "rc.davison.width",
      "value": 5.207,
      "unit": "m",
-     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17",
+     "verified": true,
+     "note": "17 ft 1 in; single OCR extraction, column pairing partly garbled"
     },
     {
      "id": "rc.davison.height",
      "value": 0.9144,
      "unit": "m",
-     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17",
+     "verified": true,
+     "note": "2 ft 6 in to 3 ft 6 in; value is the mean; single OCR extraction, column pairing partly garbled"
     },
     {
      "id": "rc.wellington.length",
      "value": 11.7348,
      "unit": "m",
-     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17",
+     "verified": true,
+     "note": "38 ft 6 in; single OCR extraction, column pairing partly garbled"
     },
     {
      "id": "rc.wellington.width",
      "value": 5.1816,
      "unit": "m",
-     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17",
+     "verified": true,
+     "note": "17 ft; single OCR extraction, column pairing partly garbled"
     },
     {
      "id": "rc.wellington.height",
      "value": 0.889,
      "unit": "m",
-     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17",
+     "verified": true,
+     "note": "2 ft 2 in to 3 ft 8 in; value is the mean; single OCR extraction, column pairing partly garbled"
     },
     {
      "id": "rc.nelson.length",
      "value": 11.811,
      "unit": "m",
-     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17",
+     "verified": true,
+     "note": "38 ft 9 in; single OCR extraction, column pairing partly garbled"
     },
     {
      "id": "rc.nelson.width",
      "value": 5.08,
      "unit": "m",
-     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17",
+     "verified": true,
+     "note": "16 ft 8 in; single OCR extraction, column pairing partly garbled"
     },
     {
      "id": "rc.nelson.height",
      "value": 1.0414,
      "unit": "m",
-     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17",
+     "verified": true,
+     "note": "2 ft to 4 ft 10 in; value is the mean; single OCR extraction, column pairing partly garbled"
     },
     {
      "id": "rc.arbuthnot.length",
      "value": 11.3792,
      "unit": "m",
-     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17",
+     "verified": true,
+     "note": "37 ft 4 in; single OCR extraction, column pairing partly garbled"
     },
     {
      "id": "rc.arbuthnot.width",
      "value": 4.9784,
      "unit": "m",
-     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17",
+     "verified": true,
+     "note": "16 ft 4 in; single OCR extraction, column pairing partly garbled"
     },
     {
      "id": "rc.arbuthnot.height",
      "value": 0.8763,
      "unit": "m",
-     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17",
+     "verified": true,
+     "note": "1 ft 4 in to 4 ft 5 in; value is the mean; single OCR extraction, column pairing partly garbled"
     },
     {
      "id": "rc.campbell.length",
      "value": 11.5316,
      "unit": "m",
-     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17",
+     "verified": true,
+     "note": "37 ft 10 in; single OCR extraction, column pairing partly garbled"
     },
     {
      "id": "rc.campbell.width",
      "value": 6.2484,
      "unit": "m",
-     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17",
+     "verified": true,
+     "note": "20 ft 6 in; single OCR extraction, column pairing partly garbled"
     },
     {
      "id": "rc.campbell.height",
      "value": 2.1971,
      "unit": "m",
-     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17",
+     "verified": true,
+     "note": "5 ft 10 in to 8 ft 7 in; value is the mean; gabled limestone roof, the larger figure is at the centre; single OCR extraction, column pairing partly garbled"
     },
     {
      "id": "rc.apex_above_kc_floor",
      "value": 21.1074,
      "unit": "m",
-     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17"
+     "source": "Vyse 1840 vol. 2 appendix table; research/01-geometry.md table C and check 17",
+     "verified": true,
+     "note": "69 ft 3 in from the King's Chamber floor to the roof of Campbell's chamber, so the apex is at about Z = +64 m; levels of the four lower compartments are not given"
     },
     {
      "id": "rc.davison_passage.width",
      "value": 0.668,
      "unit": "m",
-     "source": "Petrie 1883 s.62; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.62; research/01-geometry.md table C",
+     "verified": true,
+     "note": "26.3 in; mouth at the top of the Gallery E wall; single extraction"
     },
     {
      "id": "rc.davison_passage.height",
      "value": 0.7468,
      "unit": "m",
-     "source": "Petrie 1883 s.62; research/01-geometry.md table C"
+     "source": "Petrie 1883 s.62; research/01-geometry.md table C",
+     "verified": true,
+     "note": "29.4 in; mouth at the top of the Gallery E wall; single extraction"
     },
     {
      "id": "rc.volume",
      "value": 330.0,
      "unit": "m3",
-     "source": "research/01-geometry.md table F; research/09-recomputation.md row 14"
+     "source": "research/01-geometry.md table F; research/09-recomputation.md row 14",
+     "verified": false,
+     "note": "computed: about 11.7 x 5.2 x (0.91 + 0.89 + 1.04 + 0.88) plus about 100 for Campbell's, +/- 30 percent; 09 recomputes 326"
     }
    ],
    "claims": []
@@ -3186,37 +3707,49 @@
      "id": "bv.length",
      "value": 30.0,
      "unit": "m",
-     "source": "Morishima et al. 2017; research/01-geometry.md table D and check 12"
+     "source": "Morishima et al. 2017; research/01-geometry.md table D and check 12",
+     "verified": true,
+     "note": "at least 30 m; the spec sweeps 30 to 40 m"
     },
     {
      "id": "bv.centre.z",
      "value": 66.19,
      "unit": "m",
-     "source": "Morishima et al. 2017; research/01-geometry.md table D and check 12"
+     "source": "Morishima et al. 2017; research/01-geometry.md table D and check 12",
+     "verified": false,
+     "note": "computed: Queen's Chamber floor 21.19 m plus 40 to 50 m; value is the midpoint; the paper's wording can also be read as distance from the detectors"
     },
     {
      "id": "bv.south_end.y",
      "value": 0.0,
      "unit": "m",
-     "source": "Morishima et al. 2017; research/01-geometry.md table D and check 12"
+     "source": "Morishima et al. 2017; research/01-geometry.md table D and check 12",
+     "verified": false,
+     "note": "KEK: starts almost at the pyramid centre and extends north to tan = 0.8; zero is a reading of 'almost at the centre', +/- 5 m"
     },
     {
      "id": "bv.section_area",
      "value": 13.6,
      "unit": "m2",
-     "source": "Morishima et al. 2017; research/01-geometry.md table D and check 12"
+     "source": "Morishima et al. 2017; research/01-geometry.md table D and check 12",
+     "verified": false,
+     "note": "assumed equal to the Grand Gallery's vertical section; the paper says only that the muon excess is of the same order"
     },
     {
      "id": "bv.incline_angle",
      "value": 26.3,
      "unit": "deg",
-     "source": "research/01-geometry.md, variant switch 8"
+     "source": "research/01-geometry.md, variant switch 8",
+     "verified": false,
+     "note": "slope assumed for the inclined variant, parallel to the Gallery; horizontal is the default; the paper leaves both open"
     },
     {
      "id": "bv.volume",
      "value": 408.0,
      "unit": "m3",
-     "source": "research/01-geometry.md table F; research/09-recomputation.md row 14"
+     "source": "research/01-geometry.md table F; research/09-recomputation.md row 14",
+     "verified": false,
+     "note": "30 m x 13.61 m2; order of magnitude only; 544 m3 at 40 m"
     }
    ],
    "claims": [
@@ -3231,43 +3764,57 @@
      "id": "nfc.length",
      "value": 9.06,
      "unit": "m",
-     "source": "Procureur et al. 2023; research/01-geometry.md table D and check 13"
+     "source": "Procureur et al. 2023; research/01-geometry.md table D and check 13",
+     "verified": true,
+     "note": "9.06 +/- 0.07 (Nagoya); 9.23 +/- 0.48 (CEA)"
     },
     {
      "id": "nfc.width",
      "value": 2.02,
      "unit": "m",
-     "source": "Procureur et al. 2023; research/01-geometry.md table D and check 13"
+     "source": "Procureur et al. 2023; research/01-geometry.md table D and check 13",
+     "verified": true,
+     "note": "2.02 +/- 0.06 (Nagoya); 1.87 +/- 0.11 (CEA); cuboid assumed; K27: 06 has about 2.0 x 2.0 m from an abstract and about 2.5 x 2.5 m by resistivity"
     },
     {
      "id": "nfc.height",
      "value": 2.18,
      "unit": "m",
-     "source": "Procureur et al. 2023; research/01-geometry.md table D and check 13"
+     "source": "Procureur et al. 2023; research/01-geometry.md table D and check 13",
+     "verified": true,
+     "note": "2.18 +/- 0.17 (Nagoya); 1.85 +/- 0.12 (CEA)"
     },
     {
      "id": "nfc.start_offset",
      "value": 0.84,
      "unit": "m",
-     "source": "Procureur et al. 2023; research/01-geometry.md table D and check 13"
+     "source": "Procureur et al. 2023; research/01-geometry.md table D and check 13",
+     "verified": true,
+     "note": "starts 0.84 +/- 0.05 m (Nagoya) or 0.45 +/- 0.22 m (CEA) behind the chevrons over the original entrance; the height of the chevrons is not given in 01"
     },
     {
      "id": "nfc.slope",
      "value": -0.3,
      "unit": "deg",
-     "source": "Procureur et al. 2023; research/01-geometry.md table D and check 13"
+     "source": "Procureur et al. 2023; research/01-geometry.md table D and check 13",
+     "verified": true,
+     "note": "-0.3 +/- 1.5 deg, that is horizontal"
     },
     {
      "id": "nfc.volume",
      "value": 39.9,
      "unit": "m3",
-     "source": "research/01-geometry.md table F; research/09-recomputation.md row 14"
+     "source": "research/01-geometry.md table F; research/09-recomputation.md row 14",
+     "verified": false,
+     "note": "9.06 x 2.02 x 2.18 as a cuboid, +/- 15 percent; 31.9 with the CEA dimensions"
     },
     {
      "id": "nfc.floor.z",
      "value": 18.31,
      "unit": "m",
-     "source": "research/01-geometry.md table D"
+     "source": "research/01-geometry.md table D",
+     "verified": false,
+     "note": "assumed for the model, a placeholder: no source read gives the corridor's level or the height of the chevrons; set to the top of the original entrance (floor 16.97 m plus the passage height 1.20 m over cos 26.53 deg), so that the corridor lies directly over the Descending Passage as Procureur et al. 2023 describe it; replace when the chevron level is read"
     }
    ],
    "claims": []
@@ -3279,31 +3826,41 @@
      "id": "paper.kc.length",
      "value": 11.0,
      "unit": "m",
-     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1",
+     "verified": true,
+     "note": "first figure of 11 x 5 x 11 m; which figure lies along which axis is not stated in 04; the geometry task records its reading"
     },
     {
      "id": "paper.kc.width",
      "value": 5.0,
      "unit": "m",
-     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1",
+     "verified": true,
+     "note": "second figure of 11 x 5 x 11 m; which figure lies along which axis is not stated in 04; the geometry task records its reading"
     },
     {
      "id": "paper.kc.height",
      "value": 11.0,
      "unit": "m",
-     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1",
+     "verified": true,
+     "note": "third figure of 11 x 5 x 11 m; which figure lies along which axis is not stated in 04; the geometry task records its reading"
     },
     {
      "id": "paper.kc.axis_offset",
      "value": 5.0,
      "unit": "m",
-     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1",
+     "verified": true,
+     "note": "centre 5 m off the axis; magnitude only; the side of the offset is not stated in 04"
     },
     {
      "id": "paper.kc.centre.z",
      "value": 40.5,
      "unit": "m",
-     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1",
+     "verified": true,
+     "note": "40.5 m above base; read here as the height of the chamber centre"
     }
    ],
    "claims": [
@@ -3317,31 +3874,41 @@
      "id": "paper.qc.length",
      "value": 5.0,
      "unit": "m",
-     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1",
+     "verified": true,
+     "note": "first figure of 5 x 5 x 6 m; which figure lies along which axis is not stated in 04; the geometry task records its reading"
     },
     {
      "id": "paper.qc.width",
      "value": 5.0,
      "unit": "m",
-     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1",
+     "verified": true,
+     "note": "second figure of 5 x 5 x 6 m; which figure lies along which axis is not stated in 04; the geometry task records its reading"
     },
     {
      "id": "paper.qc.height",
      "value": 6.0,
      "unit": "m",
-     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1",
+     "verified": true,
+     "note": "third figure of 5 x 5 x 6 m; which figure lies along which axis is not stated in 04; the geometry task records its reading"
     },
     {
      "id": "paper.qc.axis_offset",
      "value": 2.5,
      "unit": "m",
-     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1",
+     "verified": true,
+     "note": "centre 2.5 m off the axis; magnitude only; the side of the offset is not stated in 04"
     },
     {
      "id": "paper.qc.centre.z",
      "value": 20.8,
      "unit": "m",
-     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1",
+     "verified": true,
+     "note": "20.8 m above base; read here as the height of the chamber centre"
     }
    ],
    "claims": [
@@ -3355,31 +3922,41 @@
      "id": "paper.lower.length",
      "value": 5.2,
      "unit": "m",
-     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1",
+     "verified": true,
+     "note": "first figure of 5.2 x 5.6 x 4.6 m; which figure lies along which axis is not stated in 04; the geometry task records its reading"
     },
     {
      "id": "paper.lower.width",
      "value": 5.6,
      "unit": "m",
-     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1",
+     "verified": true,
+     "note": "second figure of 5.2 x 5.6 x 4.6 m; which figure lies along which axis is not stated in 04; the geometry task records its reading"
     },
     {
      "id": "paper.lower.height",
      "value": 4.6,
      "unit": "m",
-     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1",
+     "verified": true,
+     "note": "third figure of 5.2 x 5.6 x 4.6 m; which figure lies along which axis is not stated in 04; the geometry task records its reading"
     },
     {
      "id": "paper.lower.axis_offset",
      "value": 2.4,
      "unit": "m",
-     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1",
+     "verified": true,
+     "note": "centre 2.4 m off the axis; magnitude only; the side of the offset is not stated in 04"
     },
     {
      "id": "paper.lower.centre.z",
      "value": -29.8,
      "unit": "m",
-     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1"
+     "source": "Balezin et al. 2018, J. Appl. Phys. 124, 034903; research/04-electromagnetics-piezo.md section 2 and check V1",
+     "verified": true,
+     "note": "29.8 m below base; read here as the height of the chamber centre"
     }
    ],
    "claims": [

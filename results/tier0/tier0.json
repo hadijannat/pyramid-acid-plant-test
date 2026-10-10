@@ -294,6 +294,32 @@
       ]
     },
     {
+      "id": "t0.sulfate_yield_day",
+      "label": "Share of a full batch that the oxygen in the Gallery water and across its still surface can oxidise in one day",
+      "value": 0.024729950354316545,
+      "low": 0.021461191255279902,
+      "high": 0.027692976195211844,
+      "unit": "1",
+      "formula": "y = min(1, (c_O2 V_gallery + k_L c_O2 A t) / (0.5 n_SO2)); c_O2 = H x_O2 p; A = S / tan(a); t = 86400 s",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "gg.slot_width",
+        "gg.ramp_height",
+        "gg.width",
+        "gg.first_lap_height",
+        "gg.height",
+        "gg.overhang",
+        "gg.laps",
+        "gg.angle",
+        "gg.volume",
+        "chem.henry_o2",
+        "chem.o2_fraction",
+        "chem.kl_surface"
+      ]
+    },
+    {
       "id": "t0.gas_phase_lifetime",
       "label": "Shortest possible lifetime of sulfur dioxide against uncatalysed oxidation in air",
       "value": 2.788807984668792e+17,
@@ -629,7 +655,7 @@
     },
     "S09": {
       "status": "conditional",
-      "basis": "Water standing at the level of an assumed pavement-level reservoir stops 21.7 m below the top of the well shaft and 51.5 m below the Gallery roof, so the step holds only with that reservoir and a pump."
+      "basis": "No reservoir or inlet is evidenced on site, so the step is conditional on the reservoir of S08; water standing at the level of a pavement-level reservoir stops 21.7 m below the top of the well shaft and 51.5 m below the Gallery roof, a head that the pump of S10 must supply."
     },
     "S10": {
       "status": "undefined",
@@ -672,8 +698,8 @@
       "basis": "No Tier 0 rule; tested in piece 4."
     },
     "S20": {
-      "status": "conditional",
-      "basis": "The oxygen for a full batch needs 2.7 to 28 years to cross the still water surface in the Gallery, so quick oxidation holds only if something aerates the water, which the hypothesis does not describe."
+      "status": "fail",
+      "basis": "In one day, taken as the cycle because the hypothesis states none, the oxygen dissolved in the Gallery water and the oxygen crossing its still surface can oxidise 2.5 percent of a full batch (2.1 to 2.8 percent over the ranges of the inputs), below the 5 percent under which the criterion fails the claim and the 50 percent from which it passes it; a still surface would need 27 days (22 to 302 days over the ranges of the inputs) to bring the yield to 5 percent, and the hypothesis describes no aeration."
     },
     "S21": {
       "status": "pass",
@@ -693,7 +719,7 @@
     },
     "S25": {
       "status": "fail",
-      "basis": "A slab driven at the air-breakdown field emits 50 dB and the path to the north slab loses 101 dB at 13 kHz, so the signal arrives at -52 dB (-55 dB at the least), against the 10 dB needed above a 0 dB noise floor."
+      "basis": "A slab driven at the air-breakdown field emits 50 dB and the path to the north slab loses 101 dB at 13 kHz, so the signal arrives at -51 dB (-55 dB at the least), against the 10 dB needed above a 0 dB noise floor."
     },
     "S26": {
       "status": "pending",
@@ -712,8 +738,8 @@
       "basis": "A vein must conduct 2.7e+05 times better than the rock to carry current 100 m; the best measured specular hematite reaches 3.3e+04 times in 100 ohm m rock and 1.0e+06 times in the most resistive 3000 ohm m rock, earthy red hematite reaches 4.2e-02 times at most, and no Giza vein has been measured."
     },
     "S30": {
-      "status": "undefined",
-      "basis": "The hypothesis gives no gas fraction or target strength, and pure sulfur dioxide at one atmosphere caps the product at 23 mol/m3, or 12 mol/m3 if its oxygen comes with the same draw of air."
+      "status": "conditional",
+      "basis": "Pure sulfur dioxide at one atmosphere caps the product at 0.023 mol/L (0.026 mol/L at most), or 0.012 mol/L if its oxygen comes with the same draw of air, below the 0.05 mol/L pass line at any gas fraction; the ceiling scales with the sulfur dioxide fraction of the chamber gas, so the product stays above the 0.005 mol/L fail line only if that fraction is at least 22 percent (19 percent with every input at its favourable end), and the hypothesis states no gas fraction."
     },
     "S31": {
       "status": "undefined",
@@ -785,7 +811,7 @@
     },
     "E17": {
       "status": "fail",
-      "basis": "The pit as it stood before 1837 had a clearance of 11.4 m over the Old Kingdom flood peak (5.4 m at the least), so it reached no documented water table, while the shaft sunk in 1837 and 1838 ends 2.9 m above today's water table, near enough that modern groundwater cannot be excluded as the cause of wet fill."
+      "basis": "The pit as it stood before 1837 had a clearance of 11.4 m over the Old Kingdom flood peak (5.4 m at the least), so it reached no documented water table, while the shaft sunk in 1837 and 1838 has a clearance of 2.9 m over today's water table (-2.4 to 6.5 m over the ranges of the inputs), so modern groundwater cannot be excluded as the cause of wet fill."
     },
     "E18": {
       "status": "conditional",
