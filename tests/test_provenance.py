@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 import numpy
 import yaml
 
-from pyramid import ledger, provenance
+from pyramid import REPO_ROOT, ledger, provenance
 
 
 def test_manifest_records_case_commit_ledger_and_versions():
@@ -49,3 +49,16 @@ def test_write_manifest_writes_manifest_json_into_out_dir(tmp_path):
     assert written["ledger"] == led.digest
     assert written["note"] == "screening table"
     assert written["versions"]["numpy"] == numpy.__version__
+
+
+def test_committed_results_were_generated_from_the_ledger_in_the_repository():
+    """An edit of the ledger leaves the committed results stale until they are regenerated (see README.md)."""
+    digest = ledger.load().digest
+    for folder, command in (
+        ("results/tier0", "uv run python -m pyramid.screening"),
+        ("viewer/data", "uv run python -m pyramid.viewer_data"),
+    ):
+        recorded = json.loads((REPO_ROOT / folder / "manifest.json").read_text())["ledger"]
+        assert recorded == digest, (
+            f"{folder} was generated from another ledger: run `{command}` on a clean tree and commit the result"
+        )
