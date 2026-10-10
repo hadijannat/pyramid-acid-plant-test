@@ -211,7 +211,7 @@
   piece: 4
   criterion: "Pass if four-stage filling keeps the batch below boiling for the stated chemistry; report the adiabatic temperature rise against the boiling margin (00 section 7 item 10)."
   status: pending
-  depends_on: [chem.dh_so2_to_sulfate, chem.dfh_so3, chem.dfh_h2so4_liquid, chem.water_cp, hydro.water_density, kc.volume, gg.volume, chem.temperature, site.atm_pressure, hydro.claimed_strokes]
+  depends_on: [chem.dh_so2_to_sulfate, chem.dfh_so3, chem.dfh_h2so4_liquid, chem.water_cp, hydro.water_density, kc.volume, gg.volume, chem.temperature, site.atm_pressure, hydro.claimed_strokes, chem.water_boiling_point]
   spaces: [grand_gallery]
 - id: S22
   statement: "No gas is pushed back into the King's Chamber, because both gases dissolve as fast as the water rises."
@@ -251,7 +251,7 @@
   piece: 2
   criterion: "Pass if the through-path signal-to-noise ratio at the north slab is at least 10 dB with the bounded source and the received signal varies monotonically with liquid level over a useful range (05 section 5.5 item 5)."
   status: pending
-  depends_on: [qcs.south.length_to_slab, qcs.north.length_to_slab, qcs.slab_thickness, qcs.stone_left, qc.width_ns, ac.absorption_13khz, ac.absorption_20khz, ac.absorption_40khz, ac.soft_limestone_impedance, ac.dense_stone_impedance, ac.air_impedance, ac.water_impedance, ac.reference_pressure, em.granite_piezo_d, em.air_breakdown_field]
+  depends_on: [qcs.south.length_to_slab, qcs.north.length_to_slab, qcs.slab_thickness, qcs.stone_left, qc.width_ns, ac.absorption_13khz, ac.absorption_20khz, ac.absorption_40khz, ac.soft_limestone_impedance, ac.dense_stone_impedance, ac.air_impedance, ac.water_impedance, ac.reference_pressure, em.granite_piezo_d, em.air_breakdown_field, ac.link_frequency]
   spaces: [qc_shaft_south, qc_shaft_north, queens_chamber]
 - id: S26
   statement: "All the liquid, water and product, is withdrawn through the Queen's Chamber; route, driver and destination are not stated."

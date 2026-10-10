@@ -117,3 +117,146 @@ def test_the_twelve_geometric_and_hydraulic_results_come_first_and_in_order(resu
     for r in results.values():
         assert math.isfinite(r.low) and math.isfinite(r.high), r.id
         assert r.low <= r.value <= r.high, r.id
+
+
+YEAR = 3.156e7  # seconds
+
+CHEMISTRY_CASES = [
+    ("t0.so2_inventory", {}, 13320.0),  # row 26
+    ("t0.so2_inventory", {"chem.temperature": 298.0}, 13100.0),  # row 26: at 298 K
+    ("t0.acid_ceiling_sulfur", {}, 23.2),  # row 27: 0.0232 mol/L in 573 m3 of water
+    ("t0.acid_ceiling_sulfur", {"gg.volume": 550.0}, 24.2),  # row 27: 0.0242 mol/L in 550 m3
+    ("t0.acid_ceiling_oxygen", {}, 12.3),  # row 27: 0.0123 mol/L, the stricter ceiling
+    ("t0.temperature_rise", {}, 1.82),  # row 28: in 573 m3
+    ("t0.temperature_rise", {"gg.volume": 550.0}, 1.89),  # row 28: in 550 m3
+    ("t0.oxygen_supply_time", {}, 2.7 * YEAR),  # row 33: full batch, the favourable transfer coefficient
+    ("t0.gas_phase_lifetime", {}, 2.8e17),  # row 30
+]
+
+
+@pytest.mark.parametrize(("result_id", "overrides", "expected"), CHEMISTRY_CASES)
+def test_chemistry_quantities_match_09(led, result_id, overrides, expected):
+    assert at(led, result_id, overrides) == pytest.approx(expected, rel=0.02)
+
+
+ELECTRICITY_CASES = [
+    ("t0.lightning_strikes", {}, 0.12),  # row 41: 0.2 flashes per km2 per year on the apex-governed area
+    ("t0.lightning_strikes", {"em.flash_density": 5e-8}, 0.03),  # row 41: 0.05 per km2 per year
+    ("t0.lightning_strikes", {"em.flash_density": 1.0}, 0.608e6),  # row 41: the collection area itself, in m2
+    ("t0.relaxation_limestone", {"em.limestone_resistivity": 300.0}, 18.6e-9),  # row 40
+    ("t0.relaxation_limestone", {"em.limestone_resistivity": 1500.0}, 93.0e-9),  # row 40
+    ("t0.relaxation_granite", {}, 5.3e-3),  # row 40: 1e-8 S/m
+    ("t0.relaxation_granite", {"em.granite_conductivity": 1e-4}, 0.53e-6),  # row 40: 1e-4 S/m
+    ("t0.relaxation_granite", {"em.granite_eps": 24.0}, 21e-3),  # row 40 note: low-frequency permittivity
+    ("t0.skin_depth_resonance", {}, 12.9),  # 04 section 4.2, verification note: 500 ohm m at 0.90 MHz
+    ("t0.skin_depth_resonance", {"em.limestone_resistivity": 300.0}, 9.7),  # row 39
+    ("t0.skin_depth_resonance", {"em.limestone_resistivity": 1500.0}, 26.4),  # row 39
+    ("t0.skin_depth_lightning", {}, 35.6),  # row 39: 100 kHz in 500 ohm m
+    ("t0.skin_depth_lightning", {"em.lightning_frequency": 1e4}, 112.5),  # row 39: 10 kHz
+]
+
+
+@pytest.mark.parametrize(("result_id", "overrides", "expected"), ELECTRICITY_CASES)
+def test_electrical_quantities_match_09(led, result_id, overrides, expected):
+    assert at(led, result_id, overrides) == pytest.approx(expected, rel=0.02)
+
+
+def test_the_ledger_holds_the_frequency_of_the_shaft_link(led):
+    frequency = led.quantities["ac.link_frequency"]
+    assert (frequency.value, frequency.unit, frequency.verified) == (13000.0, "Hz", False)
+    assert "research/05-sonochemistry-acoustics.md" in frequency.source
+    # S25 is the claim this frequency screens, and a tier 0 claim names the quantities its calculation reads
+    assert "ac.link_frequency" in led.claims["S25"].depends_on
+
+
+ACOUSTICS_CASES = [
+    ("t0.piezo_displacement", {}, 1.40e-12),  # row 43: 1.40 pm
+    ("t0.piezo_intensity", {}, 1.62e-11),  # row 43: 1.62e-15 W/cm2
+    ("t0.leaf_sound_level", {}, 75.8),  # row 46: with 413 Pa s/m
+    ("t0.leaf_sound_level", {"ac.air_impedance": 428.0, "ante.leaf_thickness": 0.40}, 76.1),  # row 46: as 05 has it
+    ("t0.required_sound_level", {}, 189.4),  # row 47
+    ("t0.slab_source_level", {}, 50.0),  # row 50: source level at 13 kHz
+    ("t0.slab_source_level", {"ac.link_frequency": 40000.0}, 60.0),  # row 50: at 40 kHz
+    ("t0.shaft_link_loss", {}, 102.0),  # row 50: wet link at 13 kHz through soft stone
+    ("t0.shaft_link_loss", {"ac.soft_limestone_impedance": 1.3e7}, 118.0),  # row 50: through dense stone
+    ("t0.shaft_link_loss", {"ac.absorption_13khz": 0.127}, 85.0),  # 05 section 4.5 note: warm, humid air
+]
+
+
+@pytest.mark.parametrize(("result_id", "overrides", "expected"), ACOUSTICS_CASES)
+def test_piezoelectric_and_acoustic_quantities_match_09(led, result_id, overrides, expected):
+    assert at(led, result_id, overrides) == pytest.approx(expected, rel=0.02)
+
+
+VEIN_CASES = [
+    ("t0.vein_contrast", {}, 2.75e5),  # row 44: 100 m link, 0.03 m2 section
+    ("t0.vein_contrast", {"plateau.vein_leakage_length": 10.0}, 3.9e3),  # row 44: sensitivity cases
+    ("t0.vein_contrast", {"plateau.vein_area": 0.3}, 3.2e4),
+    ("t0.vein_contrast", {"plateau.vein_leakage_length": 500.0}, 5.7e6),
+]
+
+
+@pytest.mark.parametrize(("result_id", "overrides", "expected"), VEIN_CASES)
+def test_vein_contrast_matches_09(led, result_id, overrides, expected):
+    assert at(led, result_id, overrides) == pytest.approx(expected, rel=0.02)
+
+
+def test_the_ledger_holds_the_boiling_point_of_water(led):
+    boiling = led.quantities["chem.water_boiling_point"]
+    assert (boiling.value, boiling.unit, boiling.verified) == (373.15, "K", False)
+    assert "research/03-chemistry.md" in boiling.source
+    # S21 is the claim this temperature screens, and a tier 0 claim names the quantities its calculation reads
+    assert "chem.water_boiling_point" in led.claims["S21"].depends_on
+
+
+ATM = 101325.0  # pascals in one atmosphere, the unit 09 prints row 36 in
+
+DECIDING_CASES = [
+    ("t0.ram_delivered_fraction", {}, 0.221),  # row 25: efficiency 0.6, fall 30 m, lift 81.5 m
+    # 02 section 2.4: a 2 m fall and a 10 m lift at 70 percent deliver 14 percent
+    (
+        "t0.ram_delivered_fraction",
+        {"hydro.ram_efficiency": 0.7, "dp.south_end.z": -2.0, "gg.roof_top.z": 8.0},
+        0.14,
+    ),
+    ("t0.pit_clearance", {}, 25.4 - 14.0),  # row 22: the original pit bottom at 25.4 m asl, the flood peak at 14
+    ("t0.pit_clearance", {"hydro.ok_flood_peak_asl": 17.0}, 8.4),  # 02 section 2.2: above the 17 m asl flood peak
+    # row 28: 7.6 K if all the heat goes into the first quarter of a 550 m3 fill; 80 K lie between 20 C and boiling
+    ("t0.boiling_margin", {"gg.volume": 550.0}, 80.0 - 7.6),
+    ("t0.boiling_margin", {"hydro.claimed_strokes": 1.0}, 80.0 - 1.82),  # row 28: 1.82 K in the whole 573 m3
+    # row 35: 39 percent at 03's rounded 0.024 mol/L, which is one King's Chamber of gas in 555 m3 of water
+    ("t0.gypsum_saturation_loss", {"gg.volume": 555.0}, 0.39),
+    # 03 C10: a tenth of the gas gives 0.0024 mol/L, and all of that acid is spent before gypsum saturates
+    ("t0.gypsum_saturation_loss", {"gg.volume": 555.0, "kc.volume": 32.04}, 1.0),
+    ("t0.hcl_partial_pressure", {}, 1.25e-7 * ATM),  # row 36: 0.05 mol/L H+ in 5 mol/L chloride
+    # at 172 dB with the ledger's barrier, the 150.22 kJ/mol of the direct gas reaction (not a row of 09)
+    ("t0.arrhenius_gain", {}, 2.21),
+    ("t0.arrhenius_gain", {"ac.arrhenius_barrier": 100000.0}, 1.47),  # row 48: at 172 dB with 09's 100 kJ/mol
+    ("t0.arrhenius_gain", {"ac.best_airborne_level": 76.0}, 1.0),  # row 48: a swing of 1.5e-4 K changes nothing
+]
+
+
+@pytest.mark.parametrize(("result_id", "overrides", "expected"), DECIDING_CASES)
+def test_claim_deciding_quantities_match_09(led, result_id, overrides, expected):
+    assert at(led, result_id, overrides) == pytest.approx(expected, rel=0.02)
+
+
+ALL_IDS = GEOMETRY_AND_HYDRAULICS + [
+    "t0.so2_inventory", "t0.acid_ceiling_sulfur", "t0.acid_ceiling_oxygen", "t0.temperature_rise",
+    "t0.oxygen_supply_time", "t0.gas_phase_lifetime", "t0.lightning_strikes", "t0.relaxation_limestone",
+    "t0.relaxation_granite", "t0.skin_depth_resonance", "t0.skin_depth_lightning", "t0.piezo_displacement",
+    "t0.piezo_intensity", "t0.leaf_sound_level", "t0.required_sound_level", "t0.slab_source_level",
+    "t0.shaft_link_loss", "t0.vein_contrast", "t0.ram_delivered_fraction", "t0.pit_clearance",
+    "t0.boiling_margin", "t0.gypsum_saturation_loss", "t0.hcl_partial_pressure", "t0.arrhenius_gain",
+]
+
+
+def test_all_36_results_are_present_ordered_and_well_formed(led, results):
+    assert list(results) == ALL_IDS
+    assert len(results) == 36
+    for r in results.values():
+        assert math.isfinite(r.low) and math.isfinite(r.high), r.id
+        assert r.low <= r.value <= r.high, r.id
+        assert r.label and r.unit and r.formula, r.id
+        assert "|" not in r.label + r.formula, r.id  # the table writer uses | to separate columns
+        assert set(r.inputs) <= set(led.quantities), r.id
