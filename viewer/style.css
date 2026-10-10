@@ -95,3 +95,44 @@ button:focus-visible, summary:focus-visible, input:focus-visible {
   background: rgba(21, 23, 26, 0.85); color: var(--text); border: 1px dashed var(--undefined);
 }
 .pending-label { color: var(--pending); border-color: var(--pending); }
+
+/* the notice: fixed to the top of the window, so it is on screen wherever the page is scrolled */
+#notice {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+  height: 28px; line-height: 28px; padding: 0 8px; text-align: center;
+  font-size: 13px; white-space: nowrap;
+  background: var(--raised); border-bottom: 1px solid var(--line);
+}
+#app { padding-top: 28px; }
+
+/* panel cards */
+.card { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.card header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.card h2 { margin: 0 0 8px; font-size: 16px; line-height: 1.3; }
+.card h3 {
+  margin: 12px 0 4px; font-size: 12px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+}
+.card p { margin: 0 0 8px; }
+.meta, .criterion, .source { color: var(--muted); font-size: 12px; }
+.basis { padding-left: 10px; border-left: 3px solid var(--line); }
+.numbers { width: 100%; margin-bottom: 8px; border-collapse: collapse; font-size: 13px; }
+.numbers td { padding: 3px 8px 3px 0; vertical-align: top; border-top: 1px solid var(--line); }
+.numbers td:nth-child(n+2) { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.numbers td:last-child { padding-right: 0; color: var(--muted); }
+.quantities, .involved { margin: 0; padding: 0; list-style: none; font-size: 13px; }
+.quantities li, .involved li { padding: 5px 0; border-top: 1px solid var(--line); }
+.quantities code { color: var(--accent); }
+.involved .chip { margin-right: 4px; }
+
+/* verdict badge and step chips: one colour per verdict; "undefined" is an outline with no fill */
+.badge, .chip { border: 1px solid transparent; font-weight: 600; font-size: 12px; color: #14161a; }
+.badge { flex: none; padding: 2px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.05em; }
+.chip { display: inline-block; width: 44px; padding: 3px 0; border-radius: 4px; text-align: center; }
+.status-pass { background: var(--pass); }
+.status-fail { background: var(--fail); }
+.status-conditional { background: var(--conditional); }
+.status-pending { background: var(--pending); }
+.status-undefined { background: transparent; color: var(--undefined); border: 1px dashed var(--undefined); }
+#step-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip[aria-current="step"] { box-shadow: 0 0 0 2px var(--text); }
