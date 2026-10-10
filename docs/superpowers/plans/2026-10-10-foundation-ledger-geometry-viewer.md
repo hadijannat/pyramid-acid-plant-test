@@ -210,7 +210,7 @@ Viewer data contracts:
   ],
   "spaces": {
     "grand_gallery": { "label": "Grand Gallery",
-      "quantities": [ { "id": "gg.volume", "value": 573.0, "unit": "m3", "source": "..." } ],
+      "quantities": [ { "id": "gg.volume", "value": 573.0, "unit": "m3", "source": "...", "verified": true, "note": "..." } ],
       "claims": ["S12", "S13"] }
   }
 }

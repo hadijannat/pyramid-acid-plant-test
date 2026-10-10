@@ -81,7 +81,7 @@ ledger -> geometry -> meshes -> EM cases -> metrics -> verdicts -> viewer data
 
 ### 5.2 Screening (Tier 0)
 
-`pyramid/screening.py` implements the derived quantities of `research/09-recomputation.md` that decide a Tier 0 claim: 36 of that file's 51 rows (chamber volumes, pressures, piston force, stroke counts, suction margin, gas inventory, acid ceiling, temperature rise, oxygen supply, strike rate, relaxation times, skin depths, piezoelectric displacement and sound level, shaft path loss, vein conductivity contrast). Each is a pure function of ledger values and returns a value with its range. A command writes the Tier 0 table and sets a first verdict on each claim it bears on.
+`pyramid/screening.py` implements the derived quantities of `research/09-recomputation.md` that decide a Tier 0 claim: 36 of that file's 51 rows, plus the one-day sulfate yield that claim S20's criterion needs, 37 quantities in all (chamber volumes, pressures, piston force, stroke counts, suction margin, gas inventory, acid ceiling, temperature rise, oxygen supply, strike rate, relaxation times, skin depths, piezoelectric displacement and sound level, shaft path loss, vein conductivity contrast). Each is a pure function of ledger values and returns a value with its range. A command writes the Tier 0 table and sets a first verdict on each claim it bears on.
 
 ### 5.3 Geometry
 
