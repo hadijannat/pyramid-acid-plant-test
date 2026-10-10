@@ -2,6 +2,8 @@
 
 Date: 2026-10-10. Status: draft for review.
 
+Note, 2026-10-10 (later the same day): section 7, Results mode in the viewer, is absorbed by `2026-10-10-cinematic-viewer-design.md` (its section 6.4), and section 6's output files are replaced by that spec's results contract (its section 7.3), which this model writes to through `pyramid/results_contract.py`. The model itself (sections 1 to 5, 8, 9) remains this spec's scope.
+
 ## 1. Context
 
 Plan A delivered a ledger of sourced quantities, a screening table of single-point calculations with verdicts, a parametric geometry, and a viewer that animates the cycle as the source video claims it. The viewer's fixed notice says, correctly, that the animation is not a simulation result. The project owner wants the viewer to show simulation results as well, because the work is meant to be a scientific contribution.

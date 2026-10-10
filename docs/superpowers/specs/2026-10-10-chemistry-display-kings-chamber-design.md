@@ -2,6 +2,8 @@
 
 Follow-on to plan A of piece 1. Date: 2026-10-10. Status: draft for review.
 
+Note, 2026-10-10 (later the same day): Part A, the chemistry display, is absorbed by `2026-10-10-cinematic-viewer-design.md` (its section 6.3), by the owner's decision. This spec now covers Part B, the King's Chamber region, only; Part A below is kept as the record the viewer spec took over.
+
 ## 1. Context
 
 Plan A delivered the ledger, the Tier 0 screening, the parametric geometry and a viewer that animates the claimed cycle. The project owner then raised two gaps in what the viewer shows:
