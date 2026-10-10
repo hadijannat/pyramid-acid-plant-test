@@ -4,6 +4,8 @@ Each quantity is compared, to 2 percent, with the value printed in section 2 of
 research/09-recomputation.md. Where a row of 09 used an input that differs from the ledger's
 value, the case replaces that input, so the comparison is still with a number 09 prints.
 """
+import dataclasses
+import json
 import math
 
 import pytest
@@ -260,3 +262,178 @@ def test_all_36_results_are_present_ordered_and_well_formed(led, results):
         assert r.label and r.unit and r.formula, r.id
         assert "|" not in r.label + r.formula, r.id  # the table writer uses | to separate columns
         assert set(r.inputs) <= set(led.quantities), r.id
+
+
+@pytest.fixture(scope="module")
+def decided(led, results) -> dict[str, tuple[str, str]]:
+    return screening.verdicts(led, results)
+
+
+def with_results(led, results, **replaced):
+    """Verdicts after replacing (value, low, high) of some results, named without their t0. prefix."""
+    changed = dict(results)
+    for name, (value, low, high) in replaced.items():
+        changed[f"t0.{name}"] = dataclasses.replace(results[f"t0.{name}"], value=value, low=low, high=high)
+    return screening.verdicts(led, changed)
+
+
+# Each case: (claim, status, the deciding number with its unit as the basis must print it).
+HYDRAULIC_VERDICTS = [
+    ("S09", "conditional", "21.7 m"),  # 02 C4: true only if a reservoir is connected
+    ("S10", "undefined", "1.01 MN"),  # 02 C5 and its list of undefined items: no actuator, no seal
+    ("S11", "fail", "5.9 m"),  # 02 C7: contradicted, unchanged by the verification pass
+    ("S12", "conditional", "4.3 strokes"),  # 02 C6: one narrow exception, the full-passage stroke
+    ("S18", "conditional", "4.3 strokes"),
+]
+
+
+@pytest.mark.parametrize(("claim", "status", "number"), HYDRAULIC_VERDICTS)
+def test_hydraulic_verdicts_follow_the_research(decided, claim, status, number):
+    got_status, basis = decided[claim]
+    assert got_status == status
+    assert number in basis
+    assert basis.endswith(".") and ". " not in basis  # one sentence
+
+
+def test_every_claim_gets_a_verdict_and_a_claim_without_a_rule_keeps_its_status(led, decided):
+    assert list(decided) == list(led.claims)
+    assert len(decided) == 71
+    for status, basis in decided.values():
+        assert status in ledger.STATUSES
+        assert basis.endswith(".")
+    # E19 is reserved for the field solver (spec section 6), so the screening must not decide it.
+    assert decided["E19"] == ("pending", "No Tier 0 rule; tested in piece 1.")
+
+
+def test_hydraulic_rules_can_go_either_way(led, results):
+    # A perched water table would leave a positive margin, and the suction step must then pass.
+    assert with_results(led, results, suction_margin=(2.0, 1.0, 3.0))["S11"][0] == "pass"
+    assert with_results(led, results, suction_margin=(-1.0, -2.0, 0.5))["S11"][0] == "conditional"
+    # Near four strokes under every stroke definition passes; under none of them fails.
+    near_four = {"strokes_below_junction": (4.5, 4.4, 4.6), "strokes_below_pavement": (4.8, 4.7, 4.9)}
+    assert with_results(led, results, **near_four)["S12"][0] == "pass"
+    assert with_results(led, results, strokes_full_passage=(6.0, 5.9, 6.1))["S18"][0] == "fail"
+
+
+OTHER_VERDICTS = [
+    ("S07", "fail", "76 dB"),  # 04 C6 and 05 C7: short by many orders of magnitude
+    ("S16", "fail", "2.8e+17 s"),  # 03 C3: contradicted on rate and mechanism
+    ("S20", "conditional", "2.7 to 28 years"),  # 03 C5 after verification: oxygen supply, not chemistry, limits
+    ("S24", "fail", "1.8 K"),  # 03 C7: contradicted at the stated geometry
+    ("S25", "fail", "-52 dB"),  # 05 C12: contradicted by the link budget
+    ("S28", "conditional", "2.7e+05 times"),  # 07 C11 after verification: doubtful, not settled
+    ("S29", "conditional", "2.7e+05 times"),  # 07 section 4.2 after verification: measurement needed
+    ("S30", "undefined", "23 mol/m3"),  # 03 C14: no target strength or gas fraction stated
+    ("S31", "undefined", "0.12 times per year"),  # criterion: no required rate stated
+    ("E22", "fail", "5.3 ms"),  # 04 C5: contradicted on the function
+    ("E38", "conditional", "2.7e+05 times"),
+]
+
+
+@pytest.mark.parametrize(("claim", "status", "number"), OTHER_VERDICTS)
+def test_remaining_verdicts_follow_the_research(decided, claim, status, number):
+    got_status, basis = decided[claim]
+    assert got_status == status
+    assert number in basis
+    assert basis.endswith(".") and ". " not in basis  # one sentence
+
+
+def test_remaining_rules_can_go_either_way(led, results):
+    def status(claim, **replaced):
+        return with_results(led, results, **replaced)[claim][0]
+
+    assert status("S07", leaf_sound_level=(195.0, 191.0, 199.0)) == "pass"
+    assert status("S07", leaf_sound_level=(150.0, 100.0, 195.0)) == "conditional"
+    assert status("S16", gas_phase_lifetime=(3600.0, 3600.0, 3600.0)) == "pass"  # a one-hour lifetime
+    assert status("S16", gas_phase_lifetime=(1e7, 1e7, 1e7)) == "conditional"  # 0.2 percent in six hours
+    assert status("S20", oxygen_supply_time=(3600.0, 1800.0, 7200.0)) == "pass"
+    assert status("S24", temperature_rise=(25.0, 22.0, 30.0)) == "pass"
+    assert status("S24", temperature_rise=(4.0, 3.0, 6.0)) == "conditional"
+    assert status("S25", shaft_link_loss=(30.0, 28.0, 32.0)) == "pass"
+    assert status("S25", shaft_link_loss=(50.0, 45.0, 55.0)) == "conditional"
+    assert status("S30", acid_ceiling_sulfur=(2.0, 1.0, 3.0)) == "fail"
+    assert status("E22", relaxation_granite=(5.0, 2.0, 9.0)) == "pass"
+    assert status("E22", relaxation_granite=(0.05, 0.01, 0.5)) == "conditional"
+    assert status("E38", vein_contrast=(1e-6, 1e-6, 1e-6)) == "pass"  # any vein would do
+    assert status("E38", vein_contrast=(5e6, 5e6, 5e6)) == "fail"  # beyond the best measured hematite
+
+
+LAST_VERDICTS = [
+    ("S21", "pass", "72.7 K"),  # 03 C6: nothing to boil over, with or without the step
+    ("S27", "fail", "1.2e-07 atm"),  # 03 C12: contradicted for the gas, unchanged by the verification pass
+    ("E14", "fail", "2022 m3"),  # 02 C13 and section 4.7: the chamber has no outfall
+    ("E17", "fail", "11.4 m"),  # 02 C8 after verification: the wet fill shows no ancient link
+    # the owner's decision of 2026-10-10: both barriers and both gains (05 C2 holds for liquids; 03 section 2b)
+    (
+        "E18",
+        "conditional",
+        "2.2 times if its barrier is the 150 kJ/mol of the direct gas reaction and 1.5 times if it is 100 kJ/mol",
+    ),
+    ("E29", "conditional", "41 percent"),  # 03 C10 after verification: depends on the state of the coat
+]
+
+
+@pytest.mark.parametrize(("claim", "status", "number"), LAST_VERDICTS)
+def test_last_six_verdicts_follow_the_research(decided, claim, status, number):
+    got_status, basis = decided[claim]
+    assert got_status == status
+    assert number in basis
+    assert basis.endswith(".") and ". " not in basis  # one sentence
+
+
+def test_every_tier_0_claim_has_a_rule(led):
+    assert set(screening.RULES) == {claim.id for claim in led.claims.values() if claim.tier == 0}
+
+
+def test_last_six_rules_can_go_either_way(led, results):
+    def status(claim, **replaced):
+        return with_results(led, results, **replaced)[claim][0]
+
+    assert status("S21", boiling_margin=(-5.0, -20.0, 10.0)) == "conditional"
+    assert status("S21", boiling_margin=(-30.0, -40.0, -20.0)) == "fail"
+    assert status("S27", hcl_partial_pressure=(200.0, 150.0, 300.0)) == "pass"  # 1e-3 atm is 101 Pa
+    assert status("S27", hcl_partial_pressure=(10.0, 0.5, 20.0)) == "conditional"  # 1e-5 atm is 1.01 Pa
+    assert status("E14", ram_delivered_fraction=(0.9, 0.85, 0.95)) == "pass"  # one fill spills 109 m3 at most
+    assert status("E14", ram_delivered_fraction=(0.6, 0.55, 0.7)) == "conditional"
+    assert status("E17", pit_clearance=(-1.0, -2.0, -0.5)) == "pass"  # the pit ends below the water
+    assert status("E17", pit_clearance=(1.0, -1.0, 3.0)) == "conditional"
+    assert status("E18", arrhenius_gain=(2.5, 2.2, 3.0)) == "pass"
+    assert status("E18", arrhenius_gain=(1.5, 1.4, 1.9)) == "fail"
+    assert status("E29", gypsum_saturation_loss=(0.05, 0.02, 0.1)) == "pass"
+    assert status("E29", gypsum_saturation_loss=(0.95, 0.9, 1.0)) == "fail"
+
+
+def test_table_has_one_row_per_result(results):
+    lines = screening.table_markdown(results).splitlines()
+    assert lines[0] == "| Id | Quantity | Value | Low | High | Unit | Formula |"
+    assert lines[1] == "|---|---|---|---|---|---|---|"
+    assert len(lines) == 2 + len(results) == 38
+    assert [line.split(" | ")[0] for line in lines[2:]] == [f"| {id}" for id in results]
+    assert all(line.count("|") == 8 for line in lines)
+    assert lines[4] == (
+        "| t0.gallery_fill_pressure | Water pressure at the foot of the Descending Passage with the Gallery full "
+        "| 7.98e+05 | 7.96e+05 | 8e+05 | Pa | p = rho g (z_gallery_roof - z_passage_end) |"
+    )
+
+
+def test_main_writes_the_table_the_json_and_the_manifest(tmp_path, monkeypatch, led):
+    monkeypatch.setattr(screening, "REPO_ROOT", tmp_path)  # write under a temporary folder, not the repository
+    screening.main()
+    out = tmp_path / "results" / "tier0"
+    assert sorted(path.name for path in out.iterdir()) == ["manifest.json", "tier0.json", "tier0.md"]
+
+    text = (out / "tier0.md").read_text()
+    assert "| t0.gallery_fill_pressure |" in text
+    assert "| S11 | fail | A pump at the foot of the Descending Passage" in text
+    assert "| E19 |" not in text  # only claims with a rule are listed
+
+    payload = json.loads((out / "tier0.json").read_text())
+    assert [result["id"] for result in payload["results"]] == ALL_IDS
+    assert payload["results"][2]["value"] == pytest.approx(0.798e6, rel=0.02)
+    assert payload["results"][2]["inputs"] == ["hydro.water_density", "gg.roof_top.z", "dp.south_end.z"]
+    assert len(payload["verdicts"]) == 71
+    assert payload["verdicts"]["S24"]["status"] == "fail"
+    assert payload["verdicts"]["E19"] == {"status": "pending", "basis": "No Tier 0 rule; tested in piece 1."}
+
+    manifest = json.loads((out / "manifest.json").read_text())
+    assert (manifest["case"], manifest["ledger"]) == ("tier0", led.digest)

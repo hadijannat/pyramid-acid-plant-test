@@ -1,13 +1,17 @@
 """Tier 0 screening: sourced hand calculations, a first verdict per claim, and the table."""
+import json
 import math
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from itertools import product
 
-from pyramid.ledger import Ledger
+from pyramid import REPO_ROOT
+from pyramid.ledger import Ledger, load
+from pyramid.provenance import write_manifest
 
 G = 9.80665  # standard gravity, m/s2
 R = 8.314462618  # molar gas constant, J/mol/K
 O2_PER_SO2 = 0.5  # stoichiometry of SO2 + 1/2 O2 -> SO3: a reaction coefficient, not a measurement
+YEAR = 365.25 * 24 * 3600  # seconds in a year, for readable verdict sentences
 
 
 @dataclass(frozen=True)
@@ -621,3 +625,308 @@ def arrhenius_gain(q):
     gamma, temperature = q["ac.heat_capacity_ratio"], q["chem.temperature"]
     swing = temperature * (gamma - 1) / gamma * peak / q["site.atm_pressure"]  # adiabatic, in kelvin
     return _bessel_i0(q["ac.arrhenius_barrier"] * swing / (R * temperature**2))
+
+
+# --- First verdicts -------------------------------------------------------------------------
+# Each rule takes the ledger and the results and returns (status, one-sentence basis).
+
+
+def _three_way(holds_at_worst: bool, holds_at_best: bool) -> str:
+    """pass if the test holds even at the unfavourable end, fail if it fails even at the favourable end."""
+    return "pass" if holds_at_worst else "conditional" if holds_at_best else "fail"
+
+
+def _s09(ledger, r):
+    # 01 premise P1: the only stated source is a reservoir at pavement level (Z = 0), which nothing on site attests.
+    # No number changes that, so the status is fixed; heights in the ledger are already measured from the pavement.
+    return "conditional", (
+        f"Water standing at the level of an assumed pavement-level reservoir stops {ledger.q('ws.top.z'):.1f} m "
+        f"below the top of the well shaft and {ledger.q('gg.roof_top.z'):.1f} m below the Gallery roof, so the "
+        "step holds only with that reservoir and a pump."
+    )
+
+
+def _s10(ledger, r):
+    low, high = r["t0.piston_force_entrance"].value, r["t0.piston_force_passage_end"].value
+    pressure = r["t0.gallery_fill_pressure"].value
+    return "undefined", (
+        f"The hypothesis names no actuator or seal for the pump, which must push with {low / 1e6:.2f} to "
+        f"{high / 1e6:.2f} MN depending on its position and hold {pressure / 1e6:.2f} MPa with the Gallery full."
+    )
+
+
+def _s11(ledger, r):
+    margin = r["t0.suction_margin"]
+    status = _three_way(margin.low >= 0, margin.high >= 0)
+    return status, (
+        f"A pump at the foot of the Descending Passage would have to lift water {-margin.value:.1f} m beyond the "
+        f"suction limit at the Old Kingdom flood peak, and {-margin.high:.1f} m beyond it at the most favourable "
+        "documented levels."
+    )
+
+
+def _four_strokes(ledger, r):
+    claimed = ledger.q("hydro.claimed_strokes")
+    counts = [r[f"t0.strokes_{stroke}"].value for stroke in ("full_passage", "below_junction", "below_pavement")]
+    near = [abs(count - claimed) <= 0.25 * claimed for count in counts]
+    return _three_way(all(near), any(near)), (
+        f"Filling the Gallery alone takes {counts[0]:.1f} strokes if a stroke sweeps the whole Descending Passage, "
+        f"{counts[1]:.1f} if it sweeps the part below the Ascending Passage junction and {counts[2]:.1f} if it sweeps "
+        f"the part below the pavement, against the {claimed:.0f} claimed, and the hypothesis fixes no stroke."
+    )
+
+
+def _s07(ledger, r):
+    supplied, needed = r["t0.leaf_sound_level"], r["t0.required_sound_level"]
+    status = _three_way(supplied.low >= needed.value, supplied.high >= needed.value)
+    return status, (
+        f"The granite leaf driven at the air-breakdown field radiates {supplied.value:.0f} dB, and "
+        f"{supplied.high:.0f} dB with every input at its generous end, against the {needed.value:.0f} dB needed "
+        "to cavitate a wet film."
+    )
+
+
+def _s16(ledger, r):
+    lifetime = r["t0.gas_phase_lifetime"]
+    longest_pass = ledger.rng("hydro.drain_time")[1]
+    converted = -math.expm1(-longest_pass / lifetime.low)  # most favourable: longest pass, shortest lifetime
+    status = "pass" if converted >= 0.10 else "conditional" if converted >= 0.001 else "fail"
+    return status, (
+        f"Even at the collision limit, sulfur dioxide lasts {lifetime.value:.1e} s ({lifetime.value / YEAR:.1e} "
+        f"years) against oxygen with no catalyst, so a {longest_pass / 3600:.0f} h pass converts a fraction of "
+        f"{converted:.0e} at most."
+    )
+
+
+def _s20(ledger, r):
+    time = r["t0.oxygen_supply_time"]
+    status = "pass" if time.high <= 86400 else "conditional"  # 86400 s: within a day counts as quickly
+    return status, (
+        f"The oxygen for a full batch needs {time.value / YEAR:.1f} to {time.high / YEAR:.0f} years to cross the "
+        "still water surface in the Gallery, so quick oxidation holds only if something aerates the water, which "
+        "the hypothesis does not describe."
+    )
+
+
+def _s24(ledger, r):
+    rise = r["t0.temperature_rise"]
+    status = "pass" if rise.low >= 20 else "conditional" if rise.high >= 5 else "fail"
+    return status, (
+        f"The largest possible batch warms the Gallery water by {rise.value:.1f} K ({rise.high:.1f} K at most), "
+        "below the 5 K at which a heat exchanger would start to matter."
+    )
+
+
+def _s25(ledger, r):
+    source, loss = r["t0.slab_source_level"], r["t0.shaft_link_loss"]
+    received = source.value - loss.value
+    # Judgement call: the criterion's source (05 section 5.5) allows ten times the measured coefficient, 20 dB more.
+    # source.high is not used: it lends the slab a microscope-scale granite value 500 times the bulk one.
+    best = source.value + 20 - loss.low
+    status = "pass" if received >= 10 else "conditional" if best >= 10 else "fail"
+    return status, (
+        f"A slab driven at the air-breakdown field emits {source.value:.0f} dB and the path to the north slab "
+        f"loses {loss.value:.0f} dB at {ledger.q('ac.link_frequency') / 1000:.0f} kHz, so the signal arrives at "
+        f"{received:.0f} dB, {10 - received:.0f} dB short of 10 dB above a 0 dB noise floor."
+    )
+
+
+def _s30(ledger, r):
+    sulfur, oxygen = r["t0.acid_ceiling_sulfur"], r["t0.acid_ceiling_oxygen"]
+    status = "fail" if sulfur.high < 5 else "undefined"  # 5 mol/m3 is the fail line, 0.005 mol/L
+    return status, (
+        "The hypothesis gives no gas fraction or target strength, and pure sulfur dioxide at one atmosphere caps "
+        f"the product at {sulfur.value:.0f} mol/m3, or {oxygen.value:.0f} mol/m3 if its oxygen comes with the same "
+        "draw of air."
+    )
+
+
+def _s31(ledger, r):
+    strikes = r["t0.lightning_strikes"]
+    return "undefined", (
+        f"Direct strikes come at most {strikes.value:.2f} times per year, one every {1 / strikes.value:.0f} years, "
+        "and the hypothesis states no cycle rate to compare this with."
+    )
+
+
+def _e22(ledger, r):
+    granite, limestone = r["t0.relaxation_granite"], r["t0.relaxation_limestone"]
+    # a storm field changes over about 1 s; shorter by an order of magnitude or more fails
+    status = "pass" if granite.low >= 1 else "conditional" if granite.high >= 0.1 else "fail"
+    return status, (
+        f"Charge in the granite relaxes in {granite.value * 1e3:.1f} ms in the driest measured case "
+        f"({granite.high * 1e3:.0f} ms at most) and in the limestone in {limestone.value * 1e9:.0f} ns, against a "
+        "storm field that changes over seconds."
+    )
+
+
+def _veins(ledger, r):
+    needed = r["t0.vein_contrast"].value
+    host, (host_low, host_high) = ledger.q("plateau.host_resistivity"), ledger.rng("plateau.host_resistivity")
+    specular = ledger.rng("plateau.hematite_resistivity_specular")[0]  # the most conductive hematite measured
+    earthy = ledger.rng("plateau.hematite_resistivity_earthy")[1]  # the least conductive
+    status = _three_way(host_low / earthy >= needed, host_high / specular >= needed)
+    return status, (
+        f"A vein must conduct {needed:.1e} times better than the rock to carry current "
+        f"{ledger.q('plateau.vein_leakage_length'):.0f} m; the best measured specular hematite reaches "
+        f"{host / specular:.1e} times in {host:.0f} ohm m rock and {host_high / specular:.1e} times in the most "
+        f"resistive {host_high:.0f} ohm m rock, earthy red hematite conducts worse than the rock, and no Giza vein "
+        "has been measured."
+    )
+
+
+def _s21(ledger, r):
+    margin, rise = r["t0.boiling_margin"], r["t0.temperature_rise"]
+    fills = ledger.q("hydro.claimed_strokes")
+    status = _three_way(margin.low > 0, margin.high > 0)
+    return status, (
+        f"Even if the first of the {fills:.0f} claimed fills took the whole heat of the largest batch, it would "
+        f"warm by {fills * rise.value:.1f} K and stay {margin.value:.1f} K below boiling ({margin.low:.1f} K at "
+        "the least), so nothing boils over with or without the dilute-acid step."
+    )
+
+
+def _s27(ledger, r):
+    pressure, atm = r["t0.hcl_partial_pressure"], ledger.q("site.atm_pressure")
+    # the criterion's lines: pass from 1e-3 atm, fail below 1e-5 atm
+    status = "pass" if pressure.low >= 1e-3 * atm else "conditional" if pressure.high >= 1e-5 * atm else "fail"
+    return status, (
+        f"Hydrogen chloride stands at {pressure.value / atm:.1e} atm over the dilute acid and salt mixture, and "
+        f"at {pressure.high / atm:.1e} atm over saturated brine, against the 1e-05 atm below which the criterion "
+        "fails the claim."
+    )
+
+
+def _e14(ledger, r):
+    delivered = r["t0.ram_delivered_fraction"]
+    gallery, (gallery_low, gallery_high) = ledger.q("gg.volume"), ledger.rng("gg.volume")
+    chamber, (chamber_low, chamber_high) = ledger.q("sub.volume"), ledger.rng("sub.volume")
+    spilled = gallery * (1 - delivered.value) / delivered.value
+    least = gallery_low * (1 - delivered.high) / delivered.high  # the smallest Gallery and the most efficient ram
+    most = gallery_high * (1 - delivered.low) / delivered.low
+    # Judgement call: the ram sustains itself if the water that one Gallery fill spills still fits in the chamber.
+    status = _three_way(most <= chamber_low, least <= chamber_high)
+    return status, (
+        f"A ram at the foot of the Descending Passage delivers {100 * delivered.value:.0f} percent of its drive "
+        f"water to the Gallery roof, so one Gallery fill spills {spilled:.0f} m3 ({least:.0f} m3 at the least) into "
+        f"a chamber of {chamber:.0f} m3 ({chamber_high:.0f} m3 at most) that has no outfall."
+    )
+
+
+def _e17(ledger, r):
+    clearance = r["t0.pit_clearance"]
+    # The evidence counts only if the old pit reached the water, so a clearance of zero or less is what passes.
+    status = _three_way(clearance.high <= 0, clearance.low <= 0)
+    today = (
+        ledger.q("site.base_elevation_asl") + ledger.q("pit.excavated_bottom.z")
+        - ledger.q("hydro.modern_water_table_asl")
+    )
+    return status, (
+        f"The pit as it stood before 1837 ended {clearance.value:.1f} m above the Old Kingdom flood peak "
+        f"({clearance.low:.1f} m at the least) and so reached no documented water table, while the shaft sunk in "
+        f"1837 and 1838 ends {today:.1f} m above today's water table, near enough that modern groundwater cannot "
+        "be excluded as the cause of wet fill."
+    )
+
+
+def _e18(ledger, r):
+    gain = r["t0.arrhenius_gain"]
+    barrier, (barrier_low, _) = ledger.q("ac.arrhenius_barrier"), ledger.rng("ac.arrhenius_barrier")
+    # The project owner's decision of 2026-10-10: the ledger's barrier is the endothermicity of the direct gas
+    # reaction, which t0.gas_phase_lifetime also uses; the low end of its range is the illustrative 100 kJ/mol
+    # behind the criterion's 12 K (05 section 5.5); the basis gives the gain at both, for the same temperature.
+    at_low = arrhenius_gain({i: ledger.q(i) for i in gain.inputs} | {"ac.arrhenius_barrier": barrier_low})
+    status = _three_way(gain.low >= 2, gain.high >= 2)  # the criterion asks for a doubling
+    met = "at either" if at_low >= 2 else "only at the higher" if gain.value >= 2 else "at neither"
+    return status, (
+        f"The strongest airborne ultrasound engineered, {ledger.q('ac.best_airborne_level'):.0f} dB, speeds a "
+        f"dry-gas reaction {gain.value:.1f} times if its barrier is the {barrier / 1000:.0f} kJ/mol of the direct "
+        f"gas reaction and {at_low:.1f} times if it is {barrier_low / 1000:.0f} kJ/mol, so the doubling the "
+        f"criterion asks for is met {met} barrier."
+    )
+
+
+def _e29(ledger, r):
+    lost = r["t0.gypsum_saturation_loss"]
+    # the criterion's lines: pass if at least 80 percent of the acid survives, fail below 20 percent
+    status = "pass" if 1 - lost.high >= 0.8 else "conditional" if 1 - lost.low >= 0.2 else "fail"
+    return status, (
+        f"Bare limestone neutralises {100 * lost.value:.0f} percent of the strongest possible batch "
+        f"({100 * lost.low:.0f} to {100 * lost.high:.0f} percent over the input ranges) before gypsum saturates and "
+        f"can coat it, so {100 * (1 - lost.value):.0f} percent of the acid survives one cycle, and more only where "
+        "a coat is already in place."
+    )
+
+
+# The thresholds and the choice of status in these rules are judgement calls, reviewed by the project owner.
+# They restate the pass and fail lines of the criteria in ledger/claims.yaml, which come from research/01 to 07.
+# A claim without a rule keeps the status it has in claims.yaml.
+RULES = {
+    "S07": _s07,
+    "S09": _s09,
+    "S10": _s10,
+    "S11": _s11,
+    "S12": _four_strokes,
+    "S16": _s16,
+    "S18": _four_strokes,
+    "S20": _s20,
+    "S21": _s21,
+    "S24": _s24,
+    "S25": _s25,
+    "S27": _s27,
+    "S28": _veins,
+    "S29": _veins,
+    "S30": _s30,
+    "S31": _s31,
+    "E14": _e14,
+    "E17": _e17,
+    "E18": _e18,
+    "E22": _e22,
+    "E29": _e29,
+    "E38": _veins,
+}
+
+
+def verdicts(ledger: Ledger, results: dict[str, Result]) -> dict[str, tuple[str, str]]:
+    decided = {}
+    for claim in ledger.claims.values():
+        rule = RULES.get(claim.id)
+        decided[claim.id] = (
+            rule(ledger, results) if rule else (claim.status, f"No Tier 0 rule; tested in piece {claim.piece}.")
+        )
+    return decided
+
+
+# --- Table and command ----------------------------------------------------------------------
+
+
+def table_markdown(results: dict[str, Result]) -> str:
+    lines = ["| Id | Quantity | Value | Low | High | Unit | Formula |", "|---|---|---|---|---|---|---|"]
+    for r in results.values():
+        lines.append(f"| {r.id} | {r.label} | {r.value:.3g} | {r.low:.3g} | {r.high:.3g} | {r.unit} | {r.formula} |")
+    return "\n".join(lines) + "\n"
+
+
+def main() -> None:
+    ledger = load()
+    results = all_results(ledger)
+    decided = verdicts(ledger, results)
+    out_dir = REPO_ROOT / "results" / "tier0"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    ruled = "".join(f"| {claim} | {decided[claim][0]} | {decided[claim][1]} |\n" for claim in decided if claim in RULES)
+    (out_dir / "tier0.md").write_text(
+        "# Tier 0 screening\n\n"
+        "Generated by `uv run python -m pyramid.screening`. Do not edit by hand.\n\n"
+        "## Quantities\n\n" + table_markdown(results) + "\n"
+        "## First verdicts\n\n| Claim | Status | Basis |\n|---|---|---|\n" + ruled
+    )
+    payload = {
+        "results": [asdict(result) for result in results.values()],
+        "verdicts": {claim: {"status": status, "basis": basis} for claim, (status, basis) in decided.items()},
+    }
+    (out_dir / "tier0.json").write_text(json.dumps(payload, indent=2) + "\n")
+    write_manifest(out_dir, "tier0", ledger)
+
+
+if __name__ == "__main__":
+    main()
