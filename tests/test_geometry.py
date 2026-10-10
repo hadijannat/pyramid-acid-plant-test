@@ -466,3 +466,103 @@ def test_north_face_corridor_sits_behind_the_core_face_over_the_entrance(gm):
     assert volume(tag) == pytest.approx(39.897, abs=0.01)  # 9.06 x 2.02 x 2.18
     low, high = led().rng("nfc.volume")
     assert low <= volume(tag) <= high
+
+
+SURVEY_ORDER = [
+    "descending_passage", "subterranean_chamber", "pit", "south_passage", "well_shaft", "grotto",
+    "ascending_passage", "queens_passage", "queens_chamber", "qc_shaft_north", "qc_shaft_south",
+    "grand_gallery", "antechamber", "kings_chamber", "kc_shaft_north", "kc_shaft_south",
+    "relieving_chambers", "big_void", "north_face_corridor",
+]
+# the alternative reading of the survey that the viewer can switch to (interior_alt.glb)
+ALT = dict(kc_shaft_ends_level=True, grooves_connected=True, pit_excavated=True,
+           big_void_inclined=True, apex_truncated=False)
+
+
+def test_survey_level_builds_every_space_in_order_with_masonry_and_bedrock(gm):
+    built = model.build(led())
+    assert (built.level, built.variants) == ("survey", model.Variants())
+    assert list(built.spaces) == SURVEY_ORDER
+    gallery = built.spaces["grand_gallery"]
+    assert (gallery.name, gallery.label, gallery.volume_id) == ("grand_gallery", "Grand Gallery", "gg.volume")
+    assert gallery.volume == pytest.approx(volume(gallery.tag))
+    assert built.spaces["grotto"].volume_id is None
+    # bedrock: a block from the pavement down to sea level, less about 450 m3 of spaces cut into it
+    assert box(built.bedrock) == pytest.approx((-115.17375, -115.17375, -60.0, 115.17375, 115.17375, 0.0), abs=1e-3)
+    assert 3183598.2 - volume(built.bedrock) == pytest.approx(450, abs=30)
+    # masonry: the truncated casing pyramid less about 2065 m3 of spaces above the pavement
+    assert 2594148.2 - volume(built.masonry) == pytest.approx(2065, abs=40)
+
+
+# switch -> the spaces it must change, and the only ones it may change
+SWITCHES = {
+    "casing": {"kc_shaft_north", "kc_shaft_south"},
+    "kc_shafts_open": {"kc_shaft_north", "kc_shaft_south"},
+    "kc_shaft_ends_level": {"kc_shaft_north", "kc_shaft_south"},
+    "portcullis": {"antechamber"},
+    "grooves_connected": {"antechamber"},
+    "ascending_plugs": {"ascending_passage"},
+    "pit_excavated": {"pit"},
+    "big_void_inclined": {"big_void"},
+    "apex_truncated": set(),
+}
+
+
+def signature(**switches) -> dict:
+    """Build one variant in a session of its own; return what identifies each solid."""
+    with frame.session():
+        built = model.build(led(), variants=model.Variants(**switches))
+        found = {name: (space.volume, *box(space.tag)) for name, space in built.spaces.items()}
+        found["masonry"] = volume(built.masonry)
+        return found
+
+
+def test_each_switch_changes_only_the_spaces_it_names():
+    assert set(SWITCHES) == {field.name for field in dataclasses.fields(model.Variants)}
+    default = signature()
+    for switch, named in SWITCHES.items():
+        flipped = signature(**{switch: not getattr(model.Variants(), switch)})
+        # A boolean operation may widen the tolerances, and with them the box, of the solids it is
+        # given by about 1e-7 m. A change is anything beyond that; the smallest real one, the groove
+        # duct, adds 1e-3 m3 to the antechamber.
+        changed = {name for name in SURVEY_ORDER if flipped[name] != pytest.approx(default[name], abs=1e-5)}
+        assert changed == named, switch
+        if switch == "casing":  # the core is 78 910 m3 smaller than the casing pyramid
+            assert default["masonry"] - flipped["masonry"] == pytest.approx(78910, abs=20)
+        if switch == "apex_truncated":  # the pointed top puts back 668 m3
+            assert flipped["masonry"] - default["masonry"] == pytest.approx(668.3, abs=1.0)
+
+
+def test_default_alternative_and_each_flipped_switch_pass_every_self_check():
+    flips = [{switch: not getattr(model.Variants(), switch)} for switch in SWITCHES]
+    for switches in [{}, ALT, *flips]:
+        with frame.session():
+            built = model.build(led(), variants=model.Variants(**switches))
+            assert model.check(built, led()) == [], switches
+
+
+def test_paper_model_passes_its_self_checks(gm):
+    assert model.check(model.build(led(), level="paper"), led()) == []
+
+
+def test_check_reports_what_is_wrong(gm):
+    built = model.build(led())
+    # a space whose volume is outside its ledger range
+    gallery = dataclasses.replace(built.spaces["grand_gallery"], volume=400.0)
+    shrunk = dataclasses.replace(built, spaces={**built.spaces, "grand_gallery": gallery})
+    failures = model.check(shrunk, led())
+    assert any(f.startswith("grand_gallery: volume 400.00 m3 is outside gg.volume") for f in failures)
+    # masonry that was never cut: nothing was removed, though the spaces hold about 2065 m3
+    whole = model.pyramid_solid(*model._outline(led(), "survey", built.variants))
+    uncut = dataclasses.replace(built, masonry=whole)
+    assert any(f.startswith("masonry: ") for f in model.check(uncut, led()))
+    # a chamber off its control points: the King's Chamber lifted by one metre
+    occ.translate([(3, built.spaces["kings_chamber"].tag)], 0.0, 0.0, 1.0)
+    failures = model.check(built, led())
+    assert "kc.floor.z: kings_chamber is at 43.997 m, outside the surveyed 42.9616 to 43.02 m" in failures
+    assert any(f.startswith("kc.ceiling.z: ") for f in failures)
+
+
+def test_package_reexports_check():
+    import pyramid.geometry as geometry
+    assert geometry.check is model.check
