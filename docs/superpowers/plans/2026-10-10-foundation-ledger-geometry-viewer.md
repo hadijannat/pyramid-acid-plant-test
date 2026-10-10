@@ -6878,6 +6878,7 @@ git commit -m "Build the survey-level model with variant switches and self-check
 - Modify: `tests/test_geometry.py`
 - Test: `tests/test_export.py`
 - Generated, ignored by git: `results/geometry/survey.step`, `results/geometry/paper.step`, `results/geometry/manifest.json`
+- Modify: `results/tier0/manifest.json` (regenerated in Step 15, because Tasks 10 and 11 appended ledger entries)
 
 **Interfaces:**
 - Consumes:
