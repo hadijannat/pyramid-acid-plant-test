@@ -275,3 +275,11 @@ def check(model: Model, ledger: Ledger) -> list[str]:
         failures.append(f"masonry: {removed:.1f} m3 was cut out of the pyramid, but the spaces above the "
                         f"pavement hold {inside:.1f} m3")
     return failures
+
+
+def level_volume_curve(model: Model, name: str, n: int = 40) -> list[tuple[float, float]]:
+    """(z, volume of the space below z) at n + 1 levels, from the space's lowest point to its highest."""
+    space = model.spaces[name]
+    _, _, z0, _, _, z1 = occ.getBoundingBox(3, space.tag)
+    inner = [z0 + (z1 - z0) * i / n for i in range(1, n)]
+    return [(z0, 0.0)] + [(z, _below(space.tag, z)) for z in inner] + [(z1, space.volume)]

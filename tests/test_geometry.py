@@ -566,3 +566,25 @@ def test_check_reports_what_is_wrong(gm):
 def test_package_reexports_check():
     import pyramid.geometry as geometry
     assert geometry.check is model.check
+
+
+def test_level_volume_curve_of_a_box_is_a_straight_line(gm):
+    built = model.build(led(), level="paper")
+    curve = model.level_volume_curve(built, "paper_kings_chamber", n=4)  # 11 x 5 m in plan, z 35 to 46
+    assert [z for z, _ in curve] == pytest.approx([35.0, 37.75, 40.5, 43.25, 46.0], abs=1e-4)
+    assert [v for _, v in curve] == pytest.approx([0.0, 151.25, 302.5, 453.75, 605.0], abs=1e-2)
+
+
+def test_level_volume_curve_rises_from_zero_to_the_volume_of_the_space(gm):
+    built = model.build(led())
+    for name in ("grand_gallery", "queens_chamber", "descending_passage"):
+        curve = model.level_volume_curve(built, name)
+        levels, volumes = zip(*curve)
+        assert len(curve) == 41
+        assert list(levels) == sorted(levels) and levels[0] < levels[-1]
+        assert volumes[0] == 0.0
+        assert volumes[-1] == pytest.approx(built.spaces[name].volume)
+        assert all(later >= earlier - 1e-6 for earlier, later in zip(volumes, volumes[1:]))
+    # the Gallery's curve starts at its floor at the north wall and ends at the top of its roof
+    curve = model.level_volume_curve(built, "grand_gallery")
+    assert (curve[0][0], curve[-1][0]) == pytest.approx((21.656, 51.5006), abs=1e-3)
