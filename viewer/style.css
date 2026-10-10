@@ -1,0 +1,84 @@
+/* Viewer layout and colours. Plain CSS, no build step. */
+:root {
+  color-scheme: dark;
+  --bg: #15171a;
+  --surface: #1c1f23;
+  --raised: #262a2f;
+  --line: #2f3339;
+  --text: #e7e3da;
+  --muted: #9da3ab;
+  --accent: #c9b891;
+  /* verdict colours, used by the panel */
+  --pass: #56b884;
+  --fail: #e0655f;
+  --conditional: #e3aa45;
+  --undefined: #8f949c;
+  --pending: #7f9db8;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* canvas on the left, a 360 px panel on the right, the timeline along the bottom */
+#app {
+  display: grid;
+  height: 100dvh;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-areas: "stage panel" "timeline timeline";
+}
+#stage { grid-area: stage; position: relative; min-height: 0; overflow: hidden; }
+#stage canvas { display: block; }
+#stage .labels { position: absolute; top: 0; left: 0; pointer-events: none; }
+#panel {
+  grid-area: panel; overflow-y: auto; padding: 16px;
+  background: var(--surface); border-left: 1px solid var(--line);
+}
+#timeline {
+  grid-area: timeline; min-height: 48px; padding: 8px 16px;
+  background: var(--surface); border-top: 1px solid var(--line);
+}
+
+button, summary {
+  font: inherit; color: var(--text); background: var(--raised);
+  border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; cursor: pointer;
+}
+button[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); }
+button:focus-visible, summary:focus-visible, input:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+
+/* the toolbar floats over the canvas; only its controls take the pointer */
+#toolbar {
+  position: absolute; top: 12px; left: 12px; right: 12px; z-index: 2;
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; pointer-events: none;
+}
+#toolbar > * { pointer-events: auto; }
+#spaces-menu { position: relative; }
+#spaces-menu summary { list-style: none; }
+#spaces-menu summary::-webkit-details-marker { display: none; }
+#space-toggles {
+  position: absolute; top: calc(100% + 6px); left: 0;
+  display: grid; gap: 4px; padding: 10px; max-height: 50vh; overflow-y: auto; white-space: nowrap;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+}
+#picked {
+  position: absolute; left: 12px; bottom: 12px; z-index: 2;
+  color: var(--muted); font-size: 13px; pointer-events: none;
+}
+
+/* phone width: the panel goes below the canvas and the page scrolls */
+@media (max-width: 760px) {
+  #app {
+    height: auto; min-height: 100dvh;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 58dvh auto auto;
+    grid-template-areas: "stage" "timeline" "panel";
+  }
+  #panel { overflow-y: visible; border-left: 0; border-top: 1px solid var(--line); }
+}

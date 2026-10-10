@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Great Pyramid: the claimed cycle</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <main id="app">
+    <section id="stage" aria-label="3D view of the interior">
+      <div id="toolbar">
+        <button id="toggle-masonry" type="button" aria-pressed="true">Masonry</button>
+        <button id="toggle-geometry" type="button" aria-pressed="false">Alternative survey reading</button>
+        <details id="spaces-menu">
+          <summary>Spaces</summary>
+          <div id="space-toggles"></div>
+        </details>
+      </div>
+      <div id="picked" role="status"></div>
+    </section>
+    <aside id="panel" aria-label="Step and space details"></aside>
+    <footer id="timeline" aria-label="Cycle timeline"></footer>
+  </main>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
