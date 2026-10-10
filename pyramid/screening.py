@@ -659,20 +659,23 @@ def _s11(ledger, r):
     margin = r["t0.suction_margin"]
     status = _three_way(margin.low >= 0, margin.high >= 0)
     return status, (
-        f"A pump at the foot of the Descending Passage would have to lift water {-margin.value:.1f} m beyond the "
-        f"suction limit at the Old Kingdom flood peak, and {-margin.high:.1f} m beyond it at the most favourable "
-        "documented levels."
+        f"The suction margin of a pump at the foot of the Descending Passage is {margin.value:.1f} m at the Old "
+        f"Kingdom flood peak and {margin.high:.1f} m at the most favourable documented levels, against the 0 m "
+        "it needs to draw."
     )
 
 
 def _four_strokes(ledger, r):
     claimed = ledger.q("hydro.claimed_strokes")
-    counts = [r[f"t0.strokes_{stroke}"].value for stroke in ("full_passage", "below_junction", "below_pavement")]
-    near = [abs(count - claimed) <= 0.25 * claimed for count in counts]
-    return _three_way(all(near), any(near)), (
-        f"Filling the Gallery alone takes {counts[0]:.1f} strokes if a stroke sweeps the whole Descending Passage, "
-        f"{counts[1]:.1f} if it sweeps the part below the Ascending Passage junction and {counts[2]:.1f} if it sweeps "
-        f"the part below the pavement, against the {claimed:.0f} claimed, and the hypothesis fixes no stroke."
+    counts = [r[f"t0.strokes_{stroke}"] for stroke in ("full_passage", "below_junction", "below_pavement")]
+    near, upper = 0.75 * claimed, 1.25 * claimed  # within 25 percent of the claimed number
+    always_near = [near <= count.low and count.high <= upper for count in counts]  # near over the whole range
+    sometimes_near = [count.low <= upper and near <= count.high for count in counts]  # near somewhere in it
+    return _three_way(all(always_near), any(sometimes_near)), (
+        f"Filling the Gallery alone takes {counts[0].value:.1f} strokes if a stroke sweeps the whole Descending "
+        f"Passage, {counts[1].value:.1f} if it sweeps the part below the Ascending Passage junction and "
+        f"{counts[2].value:.1f} if it sweeps the part below the pavement, against the {claimed:.0f} claimed, and "
+        "the hypothesis fixes no stroke."
     )
 
 
@@ -688,19 +691,25 @@ def _s07(ledger, r):
 
 def _s16(ledger, r):
     lifetime = r["t0.gas_phase_lifetime"]
-    longest_pass = ledger.rng("hydro.drain_time")[1]
-    converted = -math.expm1(-longest_pass / lifetime.low)  # most favourable: longest pass, shortest lifetime
-    status = "pass" if converted >= 0.10 else "conditional" if converted >= 0.001 else "fail"
+    shortest_pass, longest_pass = ledger.rng("hydro.drain_time")
+    most = -math.expm1(-longest_pass / lifetime.low)  # most favourable: longest pass, shortest lifetime
+    least = -math.expm1(-shortest_pass / lifetime.high)  # least favourable: shortest pass, longest lifetime
+    status = "pass" if least >= 0.10 else "fail" if most < 0.001 else "conditional"
     return status, (
-        f"Even at the collision limit, sulfur dioxide lasts {lifetime.value:.1e} s ({lifetime.value / YEAR:.1e} "
-        f"years) against oxygen with no catalyst, so a {longest_pass / 3600:.0f} h pass converts a fraction of "
-        f"{converted:.0e} at most."
+        f"At the collision limit, sulfur dioxide lasts {lifetime.value:.1e} s ({lifetime.value / YEAR:.1e} "
+        f"years) against oxygen with no catalyst, so a pass of {shortest_pass / 60:.0f} min to "
+        f"{longest_pass / 3600:.0f} h converts a fraction of {most:.0e} at most and {least:.0e} at the least."
     )
 
 
 def _s20(ledger, r):
     time = r["t0.oxygen_supply_time"]
     status = "pass" if time.high <= 86400 else "conditional"  # 86400 s: within a day counts as quickly
+    if status == "pass":
+        return status, (
+            f"The oxygen for a full batch needs {time.value / 3600:.1f} to {time.high / 3600:.1f} h to cross the "
+            "still water surface in the Gallery, within the day that counts as quick."
+        )
     return status, (
         f"The oxygen for a full batch needs {time.value / YEAR:.1f} to {time.high / YEAR:.0f} years to cross the "
         "still water surface in the Gallery, so quick oxidation holds only if something aerates the water, which "
@@ -711,23 +720,30 @@ def _s20(ledger, r):
 def _s24(ledger, r):
     rise = r["t0.temperature_rise"]
     status = "pass" if rise.low >= 20 else "conditional" if rise.high >= 5 else "fail"
+    against = {
+        "pass": "at least the 20 K that would justify a heat exchanger",
+        "conditional": "which leaves open whether a heat exchanger matters, between the 5 K at which it would start "
+        "to and the 20 K that would justify one",
+        "fail": "below the 5 K at which a heat exchanger would start to matter",
+    }[status]
     return status, (
         f"The largest possible batch warms the Gallery water by {rise.value:.1f} K ({rise.high:.1f} K at most), "
-        "below the 5 K at which a heat exchanger would start to matter."
+        f"{against}."
     )
 
 
 def _s25(ledger, r):
     source, loss = r["t0.slab_source_level"], r["t0.shaft_link_loss"]
     received = source.value - loss.value
+    worst = source.low - loss.high  # least favourable: weakest source, longest loss
     # Judgement call: the criterion's source (05 section 5.5) allows ten times the measured coefficient, 20 dB more.
     # source.high is not used: it lends the slab a microscope-scale granite value 500 times the bulk one.
     best = source.value + 20 - loss.low
-    status = "pass" if received >= 10 else "conditional" if best >= 10 else "fail"
+    status = "pass" if worst >= 10 else "conditional" if best >= 10 else "fail"
     return status, (
         f"A slab driven at the air-breakdown field emits {source.value:.0f} dB and the path to the north slab "
         f"loses {loss.value:.0f} dB at {ledger.q('ac.link_frequency') / 1000:.0f} kHz, so the signal arrives at "
-        f"{received:.0f} dB, {10 - received:.0f} dB short of 10 dB above a 0 dB noise floor."
+        f"{round(received)} dB ({round(worst)} dB at the least), against the 10 dB needed above a 0 dB noise floor."
     )
 
 
@@ -779,10 +795,15 @@ def _s21(ledger, r):
     margin, rise = r["t0.boiling_margin"], r["t0.temperature_rise"]
     fills = ledger.q("hydro.claimed_strokes")
     status = _three_way(margin.low > 0, margin.high > 0)
+    outcome = {
+        "pass": "nothing boils over with or without the dilute-acid step",
+        "conditional": "boiling over cannot be excluded",
+        "fail": "the water boils over",
+    }[status]
     return status, (
-        f"Even if the first of the {fills:.0f} claimed fills took the whole heat of the largest batch, it would "
-        f"warm by {fills * rise.value:.1f} K and stay {margin.value:.1f} K below boiling ({margin.low:.1f} K at "
-        "the least), so nothing boils over with or without the dilute-acid step."
+        f"If the first of the {fills:.0f} claimed fills took the whole heat of the largest batch, it would "
+        f"warm by {fills * rise.value:.1f} K and leave a margin of {margin.value:.1f} K below boiling "
+        f"({margin.low:.1f} K at the least), so {outcome}."
     )
 
 
@@ -821,11 +842,16 @@ def _e17(ledger, r):
         ledger.q("site.base_elevation_asl") + ledger.q("pit.excavated_bottom.z")
         - ledger.q("hydro.modern_water_table_asl")
     )
+    reached = {
+        "pass": "it reached a documented water table",
+        "conditional": "it may have reached a documented water table",
+        "fail": "it reached no documented water table",
+    }[status]
     return status, (
-        f"The pit as it stood before 1837 ended {clearance.value:.1f} m above the Old Kingdom flood peak "
-        f"({clearance.low:.1f} m at the least) and so reached no documented water table, while the shaft sunk in "
-        f"1837 and 1838 ends {today:.1f} m above today's water table, near enough that modern groundwater cannot "
-        "be excluded as the cause of wet fill."
+        f"The pit as it stood before 1837 had a clearance of {clearance.value:.1f} m over the Old Kingdom flood "
+        f"peak ({clearance.low:.1f} m at the least), so {reached}, while the shaft sunk in 1837 and 1838 ends "
+        f"{today:.1f} m above today's water table, near enough that modern groundwater cannot be excluded as the "
+        "cause of wet fill."
     )
 
 

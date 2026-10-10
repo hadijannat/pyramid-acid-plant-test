@@ -277,6 +277,16 @@ def with_results(led, results, **replaced):
     return screening.verdicts(led, changed)
 
 
+def check(led, results, claim, status, present=(), absent=(), **replaced):
+    """The status after replacing some results, and the basis: it names these numbers and never says that."""
+    got, basis = with_results(led, results, **replaced)[claim]
+    assert got == status, basis
+    for text in present:
+        assert text in basis, basis
+    for text in absent:
+        assert text not in basis, basis
+
+
 # Each case: (claim, status, the deciding number with its unit as the basis must print it).
 HYDRAULIC_VERDICTS = [
     ("S09", "conditional", "21.7 m"),  # 02 C4: true only if a reservoir is connected
@@ -307,12 +317,14 @@ def test_every_claim_gets_a_verdict_and_a_claim_without_a_rule_keeps_its_status(
 
 def test_hydraulic_rules_can_go_either_way(led, results):
     # A perched water table would leave a positive margin, and the suction step must then pass.
-    assert with_results(led, results, suction_margin=(2.0, 1.0, 3.0))["S11"][0] == "pass"
-    assert with_results(led, results, suction_margin=(-1.0, -2.0, 0.5))["S11"][0] == "conditional"
+    check(led, results, "S11", "pass", ["2.0 m", "3.0 m"], ["-2.0", "beyond the suction limit"],
+          suction_margin=(2.0, 1.0, 3.0))
+    check(led, results, "S11", "conditional", ["-1.0 m", "0.5 m"], ["beyond the suction limit"],
+          suction_margin=(-1.0, -2.0, 0.5))
     # Near four strokes under every stroke definition passes; under none of them fails.
     near_four = {"strokes_below_junction": (4.5, 4.4, 4.6), "strokes_below_pavement": (4.8, 4.7, 4.9)}
-    assert with_results(led, results, **near_four)["S12"][0] == "pass"
-    assert with_results(led, results, strokes_full_passage=(6.0, 5.9, 6.1))["S18"][0] == "fail"
+    check(led, results, "S12", "pass", ["4.5 if", "4.8 if"], **near_four)
+    check(led, results, "S18", "fail", ["6.0 strokes"], strokes_full_passage=(6.0, 5.9, 6.1))
 
 
 OTHER_VERDICTS = [
@@ -339,23 +351,28 @@ def test_remaining_verdicts_follow_the_research(decided, claim, status, number):
 
 
 def test_remaining_rules_can_go_either_way(led, results):
-    def status(claim, **replaced):
-        return with_results(led, results, **replaced)[claim][0]
+    def go(claim, status, present=(), absent=(), **replaced):
+        check(led, results, claim, status, present, absent, **replaced)
 
-    assert status("S07", leaf_sound_level=(195.0, 191.0, 199.0)) == "pass"
-    assert status("S07", leaf_sound_level=(150.0, 100.0, 195.0)) == "conditional"
-    assert status("S16", gas_phase_lifetime=(3600.0, 3600.0, 3600.0)) == "pass"  # a one-hour lifetime
-    assert status("S16", gas_phase_lifetime=(1e7, 1e7, 1e7)) == "conditional"  # 0.2 percent in six hours
-    assert status("S20", oxygen_supply_time=(3600.0, 1800.0, 7200.0)) == "pass"
-    assert status("S24", temperature_rise=(25.0, 22.0, 30.0)) == "pass"
-    assert status("S24", temperature_rise=(4.0, 3.0, 6.0)) == "conditional"
-    assert status("S25", shaft_link_loss=(30.0, 28.0, 32.0)) == "pass"
-    assert status("S25", shaft_link_loss=(50.0, 45.0, 55.0)) == "conditional"
-    assert status("S30", acid_ceiling_sulfur=(2.0, 1.0, 3.0)) == "fail"
-    assert status("E22", relaxation_granite=(5.0, 2.0, 9.0)) == "pass"
-    assert status("E22", relaxation_granite=(0.05, 0.01, 0.5)) == "conditional"
-    assert status("E38", vein_contrast=(1e-6, 1e-6, 1e-6)) == "pass"  # any vein would do
-    assert status("E38", vein_contrast=(5e6, 5e6, 5e6)) == "fail"  # beyond the best measured hematite
+    go("S07", "pass", ["195 dB", "199 dB"], leaf_sound_level=(195.0, 191.0, 199.0))
+    go("S07", "conditional", ["150 dB", "195 dB"], leaf_sound_level=(150.0, 100.0, 195.0))
+    # a one-hour lifetime: a pass of 10 minutes to 6 hours converts 15 percent to all of it
+    go("S16", "pass", ["3.6e+03 s", "1e+00 at most", "2e-01 at the least"], ["Even at the collision limit"],
+       gas_phase_lifetime=(3600.0, 3600.0, 3600.0))
+    # 0.2 percent in six hours
+    go("S16", "conditional", ["1.0e+07 s", "2e-03 at most"], ["Even at the collision limit"],
+       gas_phase_lifetime=(1e7, 1e7, 1e7))
+    go("S20", "pass", ["1.0 to 2.0 h"], ["years", "aerates"], oxygen_supply_time=(3600.0, 1800.0, 7200.0))
+    go("S24", "pass", ["25.0 K", "at least the 20 K"], ["below the 5 K"], temperature_rise=(25.0, 22.0, 30.0))
+    go("S24", "conditional", ["4.0 K", "leaves open"], ["below the 5 K", "at least the 20 K"],
+       temperature_rise=(4.0, 3.0, 6.0))
+    go("S25", "pass", ["20 dB (16 dB at the least)"], ["short"], shaft_link_loss=(30.0, 28.0, 32.0))
+    go("S25", "conditional", ["0 dB (-7 dB at the least)"], ["short", "-0 dB"], shaft_link_loss=(50.0, 45.0, 55.0))
+    go("S30", "fail", ["2 mol/m3"], acid_ceiling_sulfur=(2.0, 1.0, 3.0))
+    go("E22", "pass", ["5000.0 ms", "9000 ms"], relaxation_granite=(5.0, 2.0, 9.0))
+    go("E22", "conditional", ["50.0 ms", "500 ms"], relaxation_granite=(0.05, 0.01, 0.5))
+    go("E38", "pass", ["1.0e-06 times"], vein_contrast=(1e-6, 1e-6, 1e-6))  # any vein would do
+    go("E38", "fail", ["5.0e+06 times"], vein_contrast=(5e6, 5e6, 5e6))  # beyond the best measured hematite
 
 
 LAST_VERDICTS = [
@@ -386,21 +403,69 @@ def test_every_tier_0_claim_has_a_rule(led):
 
 
 def test_last_six_rules_can_go_either_way(led, results):
-    def status(claim, **replaced):
-        return with_results(led, results, **replaced)[claim][0]
+    def go(claim, status, present=(), absent=(), **replaced):
+        check(led, results, claim, status, present, absent, **replaced)
 
-    assert status("S21", boiling_margin=(-5.0, -20.0, 10.0)) == "conditional"
-    assert status("S21", boiling_margin=(-30.0, -40.0, -20.0)) == "fail"
-    assert status("S27", hcl_partial_pressure=(200.0, 150.0, 300.0)) == "pass"  # 1e-3 atm is 101 Pa
-    assert status("S27", hcl_partial_pressure=(10.0, 0.5, 20.0)) == "conditional"  # 1e-5 atm is 1.01 Pa
-    assert status("E14", ram_delivered_fraction=(0.9, 0.85, 0.95)) == "pass"  # one fill spills 109 m3 at most
-    assert status("E14", ram_delivered_fraction=(0.6, 0.55, 0.7)) == "conditional"
-    assert status("E17", pit_clearance=(-1.0, -2.0, -0.5)) == "pass"  # the pit ends below the water
-    assert status("E17", pit_clearance=(1.0, -1.0, 3.0)) == "conditional"
-    assert status("E18", arrhenius_gain=(2.5, 2.2, 3.0)) == "pass"
-    assert status("E18", arrhenius_gain=(1.5, 1.4, 1.9)) == "fail"
-    assert status("E29", gypsum_saturation_loss=(0.05, 0.02, 0.1)) == "pass"
-    assert status("E29", gypsum_saturation_loss=(0.95, 0.9, 1.0)) == "fail"
+    atm = led.q("site.atm_pressure")
+    go("S21", "conditional", ["-5.0 K", "boiling over cannot be excluded"], ["nothing boils over"],
+       boiling_margin=(-5.0, -20.0, 10.0))
+    go("S21", "fail", ["-30.0 K", "the water boils over"], ["nothing boils over", "boiling over cannot"],
+       boiling_margin=(-30.0, -40.0, -20.0))
+    go("S27", "pass", [f"{200.0 / atm:.1e} atm"], hcl_partial_pressure=(200.0, 150.0, 300.0))  # 1e-3 atm is 101 Pa
+    go("S27", "conditional", [f"{10.0 / atm:.1e} atm"], hcl_partial_pressure=(10.0, 0.5, 20.0))  # 1e-5 atm is 1.01 Pa
+    # one fill spills 109 m3 at most
+    go("E14", "pass", ["delivers 90 percent"], ram_delivered_fraction=(0.9, 0.85, 0.95))
+    go("E14", "conditional", ["delivers 60 percent"], ram_delivered_fraction=(0.6, 0.55, 0.7))
+    # the pit ends below the water
+    go("E17", "pass", ["-1.0 m", "it reached a documented water table"], ["reached no documented", "ended -1.0 m"],
+       pit_clearance=(-1.0, -2.0, -0.5))
+    go("E17", "conditional", ["1.0 m", "it may have reached a documented water table"], ["reached no documented"],
+       pit_clearance=(1.0, -1.0, 3.0))
+    go("E18", "pass", arrhenius_gain=(2.5, 2.2, 3.0))
+    go("E18", "fail", arrhenius_gain=(1.5, 1.4, 1.9))
+    go("E29", "pass", ["neutralises 5 percent", "95 percent of the acid survives"],
+       gypsum_saturation_loss=(0.05, 0.02, 0.1))
+    go("E29", "fail", ["neutralises 95 percent", "5 percent of the acid survives"],
+       gypsum_saturation_loss=(0.95, 0.9, 1.0))
+
+
+def test_e18_basis_follows_the_gain_it_is_computed_from(led):
+    # The gain is recomputed from the ledger, so that the gains printed in the basis agree with the status.
+    def at_level(level):
+        quantity = led.quantities["ac.best_airborne_level"]
+        changed = dataclasses.replace(quantity, value=level, low=level, high=level)
+        altered = dataclasses.replace(led, quantities={**led.quantities, quantity.id: changed})
+        return screening.verdicts(altered, screening.all_results(altered))["E18"]
+
+    status, basis = at_level(185.0)
+    assert (status, "is met at either barrier" in basis) == ("pass", True)
+    status, basis = at_level(150.0)
+    assert (status, "is met at neither barrier" in basis) == ("fail", True)
+    status, basis = at_level(led.q("ac.best_airborne_level"))
+    assert (status, "is met only at the higher barrier" in basis) == ("conditional", True)
+
+
+def test_pass_needs_the_unfavourable_end_and_fail_the_favourable_end_of_every_range(led, results):
+    def go(claim, status, present=(), **replaced):
+        check(led, results, claim, status, present, **replaced)
+
+    # The centre of the lifetime converts 88 percent in the longest pass, but the longest lifetime converts 6e-7 of it
+    # in the shortest pass, so the step cannot pass.
+    go("S16", "conditional", ["1.0e+06 s", "9e-01 at most", "6e-07 at the least"],
+       gas_phase_lifetime=(1e6, 1e4, 1e9))
+    # The centre of the path loss leaves 12 dB at the north slab, but the worst end of the source and loss leaves 3 dB.
+    go("S25", "conditional", ["12 dB (3 dB at the least)"], shaft_link_loss=(38.0, 28.0, 45.0))
+    near_four = {"strokes_below_junction": (4.5, 4.4, 4.6), "strokes_below_pavement": (4.8, 4.7, 4.9)}
+    # Every centre is near four, but one range runs out of the band of 3 to 5 strokes.
+    go("S12", "conditional", **near_four | {"strokes_below_junction": (4.5, 4.4, 5.6)})
+    go("S18", "conditional", **near_four | {"strokes_full_passage": (4.9, 4.5, 5.4)})
+    # No centre is near four, but the range of one of them reaches the band.
+    go("S12", "conditional", strokes_full_passage=(5.2, 4.8, 5.6))
+    go("S18", "conditional", strokes_full_passage=(5.2, 4.8, 5.6))
+    # Ranges wholly inside and wholly outside the band still pass and fail.
+    go("S12", "pass", **near_four | {"strokes_full_passage": (4.0, 3.5, 4.5)})
+    go("S18", "fail", strokes_full_passage=(6.0, 5.9, 6.1), strokes_below_junction=(7.0, 6.5, 7.5),
+       strokes_below_pavement=(8.0, 7.5, 8.5))
 
 
 def test_table_has_one_row_per_result(results):
@@ -424,7 +489,7 @@ def test_main_writes_the_table_the_json_and_the_manifest(tmp_path, monkeypatch, 
 
     text = (out / "tier0.md").read_text()
     assert "| t0.gallery_fill_pressure |" in text
-    assert "| S11 | fail | A pump at the foot of the Descending Passage" in text
+    assert "| S11 | fail | The suction margin of a pump at the foot of the Descending Passage" in text
     assert "| E19 |" not in text  # only claims with a rule are listed
 
     payload = json.loads((out / "tier0.json").read_text())
