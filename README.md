@@ -4,6 +4,7 @@
 [![python](https://img.shields.io/badge/python-3.12-3776ab)](pyproject.toml)
 [![solvers](https://img.shields.io/badge/solvers-open%20source%20only-555)](#roadmap)
 [![claim status](https://img.shields.io/badge/claims%20decided-22%20of%2071-orange)](results/tier0/tier0.md)
+[![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE)
 
 A neutral, reproducible test of Geoffrey Drumm's "Land of Chem" hypothesis: that the Great Pyramid of Giza ran as a chemical plant, pumping water up its passages, drawing sulfur dioxide through an "acoustic catalyst chamber", and making dilute sulfuric acid in the Grand Gallery, as presented on the Danny Jones podcast and two History Drops clips.
 
@@ -118,7 +119,7 @@ Open-source tools only (FEniCSx, MEEP, OpenFOAM, Gmsh): anyone can rerun every r
 
 - Verdicts are screening-level: single-point calculations with corner-evaluated ranges, not solved fields. Where a solver could change a verdict, the roadmap schedules one.
 - Thresholds such as "one day" for a cycle or 0.05 mol/L for a usable acid are judgement calls recorded beside the criterion; the hypothesis sets none. Two verdicts (S09, S20) have an alternative reading recorded in the [handover notes](docs/superpowers/plans/2026-10-10-foundation-ledger-geometry-viewer-handover.md).
-- No licence file has been added yet; until one is, all rights are reserved.
+- Licensed under the [MIT License](LICENSE). The cited sources keep their own rights; transcripts of the source videos are not redistributed.
 
 ## Sources
 
