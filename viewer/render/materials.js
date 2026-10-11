@@ -188,7 +188,8 @@ void main() {
 
   // Screen-space diagonal stripes over a material: every other band of PITCH pixels takes a darker shade
   // of the colour. Works on the standard materials and on the shader materials above, which all have
-  // the tonemapping chunk; the stripes go in just before it, in linear colour.
+  // the tonemapping chunk; the stripes go in just before it, in linear colour. A stripe is drawn opaque: at the
+  // skin's own opacity the self-lit space behind a veil or a liquid washed it out to a few levels of grey.
   function hatch(material, colourHex) {
     const shade = new THREE.Color(colourHex).multiplyScalar(SHADE);
     const previous = material.onBeforeCompile;
@@ -198,7 +199,7 @@ void main() {
       shader.uniforms.uHatch = { value: shade };
       shader.fragmentShader = shader.fragmentShader
         .replace('void main() {', 'uniform vec3 uHatch;\nvoid main() {')
-        .replace('#include <tonemapping_fragment>', `if (fract((gl_FragCoord.x + gl_FragCoord.y) / ${PITCH}) < 0.5) gl_FragColor.rgb = uHatch;
+        .replace('#include <tonemapping_fragment>', `if (fract((gl_FragCoord.x + gl_FragCoord.y) / ${PITCH}) < 0.5) gl_FragColor = vec4(uHatch, 1.0);
 #include <tonemapping_fragment>`);
     };
     // the wrapper's source is the same for every material it wraps; keep their programs apart
