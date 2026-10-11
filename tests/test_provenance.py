@@ -57,6 +57,7 @@ def test_committed_results_were_generated_from_the_ledger_in_the_repository():
     for folder, command in (
         ("results/tier0", "uv run python -m pyramid.screening"),
         ("viewer/data", "uv run python -m pyramid.viewer_data"),
+        ("results/summary", "uv run python -m pyramid.summary"),
     ):
         recorded = json.loads((REPO_ROOT / folder / "manifest.json").read_text())["ledger"]
         assert recorded == digest, (
