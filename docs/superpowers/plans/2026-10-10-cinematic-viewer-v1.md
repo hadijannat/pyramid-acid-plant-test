@@ -4253,7 +4253,7 @@ import { createPlayer } from './tour/player.js';
 
 ```js
   function frame(dt) {
-    environment.update(dt);
+    environment.update(dt, model.bounds.containsPoint(rendererApi.camera.position));
     materials.update(dt);
     model.setInterior(environment.mix.interior);
     player.tick(dt);   // the clock; it updates the actors and the ride
@@ -4937,7 +4937,7 @@ git commit -m "Caption each step with its claim and verdict, and drive the cycle
 
 What this task adds, in the words of the spec (section 6.3) and the header:
 
-1. **Species labels.** After a step's actors are built, one `CSS2DObject` (class `species-label`) per space that has a water or gas actor. Its text is the formulas of the species of every water and gas actor in that space, in build order (water first, as `build` already sorts), each species once, joined by `" · "`; `" (claimed)"` follows a species whose status is `"claimed"` and `" (conditional)"` one whose status is `"conditional"`. The label is a child of the space mesh at the centre of the mesh's geometry bounding box (the mesh's own frame), so it is hidden with the space (Task 6's `update` sets every label's `visible` from its parents, and the CSS2D renderer of three.js 0.170.0 also hides the elements under an invisible parent) and its text drops out of `state().labels` through Task 6's `shown(object.parent)` filter.
+1. **Species labels.** After a step's actors are built, one `CSS2DObject` (class `species-label`) per space that has a water or gas actor. Its text is the formulas of the species of every water and gas actor in that space, in build order (water first, as `build` already sorts), each species once, joined by `" · "`; `" (claimed)"` follows a species whose status is `"claimed"`, and nothing follows any other status (the spec tags `"conditional"` species in the inspector's legend, which is plan V2; the status stays in `cycle.json`). The label is a child of the space mesh at the centre of the mesh's geometry bounding box (the mesh's own frame), so it is hidden with the space (Task 6's `update` sets every label's `visible` from its parents, whatever the CSS2D renderer does with hidden parents) and its text drops out of `state().labels` through Task 6's `shown(object.parent)` filter.
 2. **Liquid and haze colour.** A water skin takes the colour of its actor's first-listed species (`material.color.set(...)`); a gas skin is created with its actor's first species' colour (`materials.gas(plane, colour)`), replacing Task 6's display constant `HAZE_COLOUR`, which is deleted. The particle cloud of a haze (`cloud`, high tier) takes the same colour.
 3. **Hatching.** When an actor's first-listed species has status `"claimed"`, its skin material goes through `materials.hatch(material, colour)` before the skin is created (before the material is first compiled).
 4. **Coat.** The `coat` actor (`{type: coat, space}`, only in S23) draws `EdgesGeometry` of the space mesh's geometry as `LineSegments`, a child of the space mesh, `renderOrder` 2, in the colour of `calcium_sulfate` from the step's `species` list.
@@ -4945,9 +4945,9 @@ What this task adds, in the words of the spec (section 6.3) and the header:
 
 Exact changes to Task 6's file, in order (Step 3 shows the whole file as it must read afterwards; every other line is Task 6's, unchanged):
 
-- the two-line header comment names the chemistry (and no longer names plan A's deleted `timeline.js`, which Task 10's grep looks for);
+- the two-line header comment becomes three lines that name the chemistry (and no longer name plan A's deleted `timeline.js`, which Task 10's grep looks for);
 - delete the line `const HAZE_COLOUR = '#d9dde2'; ...`;
-- after the line `const CHORD = 0.15; ...` add the constants `MARK` and `COAT_SPECIES`;
+- after the line `const CHORD = 0.15; ...` add the comment and the constants `CLAIMED` and `COAT_SPECIES`;
 - after the function `tag` add the helpers `mark(material, species)` and `centreOf(space)`;
 - `cloud(space, haze, plane, count)` gains a last parameter `colour`, used for the `PointsMaterial` colour in place of `HAZE_COLOUR`;
 - in `factories.water`: `const species = actor.species[0];`, `material.color.set(species.colour);` and `skin(actor.space, mark(material, species), -4)`;
@@ -4960,6 +4960,7 @@ Exact changes to Task 6's file, in order (Step 3 shows the whole file as it must
 Start the server with `preview_start` (`name: "viewer"`), set the viewport with `resize_window` (`width: 1280, height: 800`), and navigate to `http://localhost:8765/?quality=low&v=9a`. Take a screenshot (it forces frames while the pane is hidden), then run with the JavaScript tool:
 
 ```js
+for (let i = 0; i < 100 && !window.viewer?.player; i++) await new Promise(r => setTimeout(r, 100));   // the model loads first
 window.check = {
   cycle: await fetch('data/cycle.json').then(r => r.json()),
   claims: await fetch('data/claims.json').then(r => r.json()),
@@ -4968,7 +4969,7 @@ window.check = {
   // The species labels a step must show, computed from cycle.json: one per space with water or gas,
   // that space's species in actor order with water first, each once, with the status suffix.
   expected(id) {
-    const suffix = { claimed: ' (claimed)', conditional: ' (conditional)', plain: '' };
+    const suffix = status => (status === 'claimed' ? ' (claimed)' : '');   // the scene marks claimed species only
     const present = new Map();
     const ordered = [...this.step(id).actors].sort((a, b) => (a.type !== 'water') - (b.type !== 'water'));
     for (const actor of ordered.filter(a => a.type === 'water' || a.type === 'gas')) {
@@ -4978,7 +4979,7 @@ window.check = {
         present.set(space, list);
       }
     }
-    return new Map([...present].map(([space, list]) => [space, list.map(s => s.formula + suffix[s.status]).join(' · ')]));
+    return new Map([...present].map(([space, list]) => [space, list.map(s => s.formula + suffix(s.status)).join(' · ')]));
   },
   coats() {
     return ['grand_gallery', 'queens_chamber']
@@ -5029,7 +5030,7 @@ import { Line2 } from 'three/addons/lines/Line2.js';
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 
-// Display choices, not physical quantities.
+// Display choices, not physical quantities (so are the opacities, dash lengths and label offsets below).
 const FAR = 1e6;   // display choice: a height far above (or, negated, far below) anything in the model
 const PLACEHOLDER_COLOUR = 0xd9dde2;    // display choice
 // display choice: a placeholder is a 4 m dashed cube, a symbol whose size says nothing about what it stands for
@@ -5047,8 +5048,9 @@ const PARTICLES = 4000;      // display choice: the most gas particles in one st
 const PARTICLE_SIZE = 0.15;  // display choice: metres
 const SWAY = 0.25;           // display choice: radians per second of each particle's slow sway
 const CHORD = 0.15;          // display choice: a particle sways over this fraction of a chord of its space
-// The marking rule (spec section 6.3): the text after a species' formula, by the status cycle.json gives it.
-const MARK = { claimed: ' (claimed)', conditional: ' (conditional)', plain: '' };
+// The marking rule in the scene (spec section 6.3): this text follows the formula of a species whose status in
+// cycle.json is "claimed"; the "conditional" tag belongs to the inspector's legend (plan V2), not to the scene.
+const CLAIMED = ' (claimed)';
 const COAT_SPECIES = 'calcium_sulfate';   // the coat of S23 is its calcium sulfate layer (chemistry spec 3.2)
 
 // The height (viewer Y) at which a space holds the fraction f of its volume.
@@ -5263,7 +5265,7 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
   }
 
   // One label per space with water or gas: the species of every such actor there, in build order (water
-  // first), each once, with the marking after its formula; a child of the space mesh at the centre of its bounds.
+  // first), each once, "(claimed)" after a claimed one; a child of the space mesh at the centre of its bounds.
   function labelSpecies(ordered) {
     const present = new Map();   // space -> species payloads
     for (const actor of ordered) {
@@ -5275,7 +5277,7 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
       }
     }
     for (const [space, list] of present) {
-      const text = list.map(species => species.formula + MARK[species.status]).join(' · ');
+      const text = list.map(species => species.formula + (species.status === 'claimed' ? CLAIMED : '')).join(' · ');
       keep(model.spaces.get(space), tag(text, 'species-label')).position.copy(centreOf(space));
     }
   }
@@ -5322,7 +5324,7 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
 
 - [ ] **Step 4: Run the browser checks**
 
-Navigate to `http://localhost:8765/?quality=low&v=9b` (the new query makes the browser refetch every module), take a screenshot, and define `window.check` again with the first block of Step 1 (everything up to and including the closing `};` of `window.check`). Then run each check below with the JavaScript tool, taking the named screenshot where one is asked for. A screenshot forces a frame; run the reading part of a check after it.
+`python3 -m http.server` sends no cache headers and a page query does not change the URLs of the modules the page imports, so first run, in the page Step 1 opened, `await Promise.all(['render/actors.js', 'style.css'].map(url => fetch(url, { cache: 'reload' })));`. Then navigate to `http://localhost:8765/?quality=low&v=9b`, take a screenshot, and define `window.check` again with the first block of Step 1 (everything up to and including the closing `};` of `window.check`). Then run each check below with the JavaScript tool, taking the named screenshot where one is asked for. A screenshot forces a frame; run the reading part of a check after it.
 
 1. S16, the reaction step that fails. Run `viewer.player.gotoId('S16')` (paused, the camera cuts to the step's first keyframe), take a screenshot, wait 2 s (the look cross-fades to the interior), and take screenshot `t9-S16`: the camera at S16's first keyframe looks at the antechamber; the King's Chamber haze is in the sulfur-dioxide colour and the antechamber haze in the sulfur-trioxide colour with diagonal screen-space stripes about 8 px apart; one species label sits in each occupied space. Then:
 
@@ -5425,12 +5427,12 @@ Expected: one commit with the two files.
 **Files:**
 - Modify: `viewer/app.js` (the finished file: WebGL 2 check, quality probe and storage, reduced-motion listener)
 - Delete: `viewer/main.js`, `viewer/scene.js`, `viewer/timeline.js`, `viewer/panel.js`
-- Modify: `README.md` (the Viewer section)
+- Modify: `README.md` (the Viewer bullet of "How it is built" and the Viewer section)
 - Test: browser checks at 1280 × 800 and 375 × 812; `uv run pytest -q -W error`
 
 **Interfaces:**
 - Consumes: the layout Tasks 3 to 8 gave `viewer/app.js` (everything inside `async function boot()`, `const url = readUrl(location)` first, blocks marked `// ---- <name> (Task N)`, `window.viewer` created by Task 3 and extended with `Object.assign`, `stateParts` merged by `state()`, and the last section `// ---- start (Task 4)` with `frame(dt)`, Task 7's ride and player, Task 8's HUD, `rendererApi.start(frame)`, `player.gotoId(url.stepId)` and the `hashchange` listener); `readUrl` (with `quality` and `nowebgl`), `createStore`, `DEFAULT_STATE`, `loadData` (Task 3); `TIERS`, `createRenderer` with `measure(seconds)` (resolves the median frame time in ms, or `NaN` when no frame was drawn), `lastDt`, `camera`, `controls`, `scene`, `start` (Task 4); `createEnvironment` with `mix` and `update` (Task 4); `createMaterials`, `loadModel`, `frameModel` (Task 5); `createActors` (Tasks 6 and 9); `createRide` (Task 7); `createPlayer` with `gotoId`, `goto`, `seek`, `play`, `pause`, `tick`, `state` (Task 7); `mountCinematic` with `.overlay`, `.hud-card`, `.caption` and the `keydown` handler on `window` (Task 8).
-- Produces: the finished `viewer/app.js`; `window.viewer = { store, claims, cycle, manifest, state, rendererApi, environment, model, actors, player, ride, camera }` (the header's six keys, plus what the checks of Tasks 3 to 10 read); the localStorage key `viewer.quality`, written only when a tier is set after boot. V2 builds on these.
+- Produces: the finished `viewer/app.js`; `window.viewer = { store, claims, cycle, manifest, state, rendererApi, environment, model, actors, player, ride, camera }` (the twelve keys the header lists; the extra ones exist for the browser checks); the localStorage key `viewer.quality`, written only when a tier is set after boot. V2 builds on these.
 
 - [ ] **Step 1: Run the failing browser checks**
 
@@ -5457,7 +5459,14 @@ Expected now: `null` (nothing saves a chosen tier yet). Run `viewer.store.set({ 
 
 - [ ] **Step 2: Write the finished `viewer/app.js`**
 
-Replace the file with this content. It is the file as Tasks 3 to 8 left it, with this task's additions: the constants `QUALITY_KEY`, `PROBE_SECONDS`, `FAST_MS`, `SLOW_MS`; in the store block, the `motion` media query and its `change` listener, and the subscriber that saves a chosen tier; the `// ---- WebGL 2 (Task 10)` block between the store block and the `window.viewer` block (so a page without WebGL 2 builds nothing and defines no `window.viewer`); and the `// ---- Task 10: the quality probe` block right after `rendererApi.start(frame);`. `storedQuality` now reads `QUALITY_KEY`, and the comment of the actors block no longer says the console drives them. Read the current file first: if it holds a line that is not here (a reviewer's fix after this plan was written), keep that line in the same place and name it in the report.
+Replace the file with this content. It is the file as Tasks 3 to 8 left it (every one of their lines unchanged, `frame(dt)` included), with exactly these additions of this task and nothing else changed:
+
+- after the imports, the comment and the three constants `PROBE_SECONDS`, `FAST_MS`, `SLOW_MS`;
+- directly below the store block, the block `// ---- reduced motion and a chosen tier (Task 10)`: the `change` listener of the reduced-motion media query, and the store subscriber that saves a tier set after boot to localStorage `viewer.quality` in a try block (the key `storedQuality` already reads);
+- directly below that, the block `// ---- WebGL 2 (Task 10, Review Focus 1)`, above the `window.viewer` block, so a page without WebGL 2 builds nothing and defines no `window.viewer`;
+- directly below the line `rendererApi.start(frame);`, the block `// ---- Task 10: the quality probe`, above Task 7's `player.gotoId(url.stepId);`.
+
+Read the current file first: if it holds a line that is not here (a reviewer's fix after this plan was written), keep that line in the same place and name it in the report.
 
 ```js
 // Boot: read the URL, load the data, create the store and the scene, start the loop.
@@ -5473,8 +5482,7 @@ import { createRide } from './tour/camera.js';
 import { createPlayer } from './tour/player.js';
 import { mountCinematic } from './hud/cinematic.js';
 
-const QUALITY_KEY = 'viewer.quality';   // localStorage: the tier a visitor chose, a per-viewer convenience
-// The quality probe of spec section 4.5: the median frame time over two seconds at the starting tier.
+// The quality probe of spec section 4.5 (Task 10): the median frame time over two seconds at the starting tier.
 const PROBE_SECONDS = 2;   // display choice
 const FAST_MS = 10;        // display choice: a median under this moves to high
 const SLOW_MS = 25;        // display choice: a median over this moves to low
@@ -5490,7 +5498,7 @@ function fail(text) {
 // The tier an earlier visit saved, or null (localStorage is a per-viewer convenience and may be blocked).
 function storedQuality() {
   try {
-    const value = localStorage.getItem(QUALITY_KEY);
+    const value = localStorage.getItem('viewer.quality');
     return ['low', 'medium', 'high'].includes(value) ? value : null;
   } catch {
     return null;
@@ -5511,17 +5519,19 @@ async function boot() {
   const { claims, cycle, manifest } = data;
   document.getElementById('notice').textContent = cycle.notice;
 
-  // ---- store (Task 3; the reduced-motion listener and the saved tier, Task 10)
+  // ---- store (Task 3)
   const fixedQuality = url.quality ?? storedQuality();   // null: nothing asked for a tier, so the probe may choose
-  const motion = matchMedia('(prefers-reduced-motion: reduce)');
   const store = createStore({
     ...DEFAULT_STATE,
     mode: url.mode,
     quality: fixedQuality ?? DEFAULT_STATE.quality,
-    reducedMotion: motion.matches,
+    reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
   });
-  motion.addEventListener('change', event => store.set({ reducedMotion: event.matches }));
 
+  // ---- reduced motion and a chosen tier (Task 10)
+  // The system setting can change while the page is open; the ride and the environment read the store key.
+  matchMedia('(prefers-reduced-motion: reduce)')
+    .addEventListener('change', event => store.set({ reducedMotion: event.matches }));
   // A tier set after boot (store.set({quality}) from the console now, the inspector's control in V2) is
   // remembered. The probe's choice is not, so a machine is measured afresh on its next visit.
   let probing = false;
@@ -5530,7 +5540,7 @@ async function boot() {
     if (!changed.has('quality') || probing) return;
     chosen = true;
     try {
-      localStorage.setItem(QUALITY_KEY, next.quality);
+      localStorage.setItem('viewer.quality', next.quality);
     } catch {
       // storage blocked: the choice lasts until the page is closed
     }
@@ -5562,19 +5572,18 @@ async function boot() {
   frameModel(model, rendererApi.camera, rendererApi.controls);
   Object.assign(window.viewer, { model });
 
-  // ---- actors (Task 6): the player builds and updates them
+  // ---- actors (Task 6): Task 7's player builds and updates them; until then the console drives them
   const actors = createActors({ scene: rendererApi.scene, model, materials, store, cycle, tiers: TIERS });
   stateParts.push(actors.state);
   Object.assign(window.viewer, { actors });
 
   // ---- start (Task 4): stays the last block, so everything frame() reads exists before the first frame
   function frame(dt) {
-    environment.update(dt);
+    environment.update(dt, model.bounds.containsPoint(rendererApi.camera.position));
     materials.update(dt);
     model.setInterior(environment.mix.interior);
     player.tick(dt);   // the clock; it updates the actors and the ride
   }
-
   // ---- Task 7: the camera ride and the cycle clock
   const ride = createRide(rendererApi.camera, rendererApi.controls, store);
   const player = createPlayer({ store, cycle, actors, ride, claims });   // enters the prologue and sets the hash to '#'
@@ -5585,18 +5594,16 @@ async function boot() {
   mountCinematic(document.getElementById('hud'), { store, cycle, claims, player, ride });
 
   rendererApi.start(frame);
-
-  // ---- Task 10: the quality probe. Not awaited: a deep link opens at once, and a hidden page, which draws
-  // no frames, never holds the boot (measure then resolves NaN, which leaves the tier as it is).
+  // ---- Task 10: the quality probe. Not awaited: a deep link opens at once. A hidden page draws no frames, so
+  // measure() then resolves NaN, and the tier stays as it is (as it does when the visitor chose one meanwhile).
   if (fixedQuality === null) {
     rendererApi.measure(PROBE_SECONDS).then(median => {
-      if (chosen) return;   // the visitor set a tier while the probe ran
+      if (chosen || !Number.isFinite(median)) return;
       probing = true;
       store.set({ quality: median < FAST_MS ? 'high' : median > SLOW_MS ? 'low' : 'medium' });
       probing = false;
     });
   }
-
   player.gotoId(url.stepId);   // url was read first at boot, before the player rewrote the hash
   window.addEventListener('hashchange', () => player.gotoId(readUrl(location).stepId));
 }
@@ -5609,7 +5616,7 @@ boot().catch(error => {
 
 - [ ] **Step 3: Run the browser checks of the three additions**
 
-Each check starts from a fresh navigation with a new `v` value so every module is refetched. Take a screenshot before any wait: the pane draws frames only while it is visible.
+`python3 -m http.server` sends no cache headers and a page query does not change the URLs of the modules a page imports, so first run, in the page Step 1 opened, `await fetch('app.js', { cache: 'reload' });`. Each check then starts from a fresh navigation (the new `v` value marks the load; it does not refetch modules). Take a screenshot before any wait: the pane draws frames only while it is visible.
 
 1. WebGL 2 missing (Review Focus 1). Navigate to `http://localhost:8765/?nowebgl=1&v=10c`, take a screenshot, wait 2 s, and run:
 
@@ -5638,40 +5645,59 @@ Expected: `{ message: 'This page needs WebGL 2.', hidden: false, canvas: false, 
 viewer.store.get().reducedMotion === matchMedia('(prefers-reduced-motion: reduce)').matches;
 ```
 
-Expected: `true` (the store follows the media query). Then:
-
-```js
-viewer.player.gotoId('S08');
-```
-
-Take a screenshot, wait 2 s (the look settles on S08's), and run:
+Expected: `true` (the store follows the media query). Then find the first step change from an exterior step to an interior one, and open the exterior step:
 
 ```js
 window.check = { cycle: await fetch('data/cycle.json').then(r => r.json()) };
-viewer.store.set({ reducedMotion: true });
-viewer.player.gotoId('S09');
-viewer.player.play();
-check.a = viewer.camera.position.toArray();
-await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));   // two frames of the loop
-({ s08: check.cycle.steps[7].scene.interior, s09: check.cycle.steps[8].scene.interior, mix: viewer.environment.mix.interior });
+check.steps = check.cycle.steps;
+check.i = check.steps.findIndex((s, i) => i > 0 && s.scene.interior && !check.steps[i - 1].scene.interior);
+viewer.player.goto(check.i - 1);
+({ exterior: check.steps[check.i - 1].id, interior: check.steps[check.i].id, id: viewer.state().id });
 ```
 
-Expected: `{ s08: false, s09: true, mix: 1 }`: S09 is an interior step entered from an exterior one, and two frames after the step change the look is already the interior one (without the flag two frames move it by at most 2 × 0.1 / `FADE_SECONDS`, about 0.13). Take a screenshot, wait 1 s, take another, and run:
+Expected: `{ exterior: 'S02', interior: 'S03', id: 'S02' }` with the data as committed (the check reads the pair from `cycle.json`). Take a screenshot, wait 2 s (the look settles on the exterior one), and run, with reduced motion on, a played step change into the interior step:
 
 ```js
-const first = check.cycle.steps[8].path[0].position;
+await (async () => {
+  const nextFrame = () => new Promise(r => { requestAnimationFrame(r); setTimeout(r, 200); });   // a frame, or 200 ms if the pane is hidden
+  viewer.player.goto(check.i - 1);
+  viewer.store.set({ reducedMotion: true });
+  viewer.player.seek(viewer.state().t + 0.9 * check.steps[check.i - 1].duration);   // near the end of the exterior step
+  viewer.player.play();   // the clock runs on into the interior step
+  for (let k = 0; k < 120 && viewer.state().id !== check.steps[check.i].id; k++) await nextFrame();
+  check.a = viewer.camera.position.toArray();
+  await nextFrame();
+  await nextFrame();   // two more frames of the loop
+  viewer.player.pause();
+  const first = check.steps[check.i].path[0].position;
+  return {
+    id: viewer.state().id,
+    mix: viewer.environment.mix.interior,
+    atFirst: check.a.every((v, i) => Math.abs(v - first[i]) < 1e-3),   // a millimetre: the orbit damping may still settle
+  };
+})()
+```
+
+Expected: `{ id: 'S03', mix: 1, atFirst: true }` (the interior step of the pair): while playing, the step change cut the camera to the step's first keyframe instead of flying from the exterior pose, and two frames after it the look is already the interior one (without the flag two frames move `mix.interior` by at most 2 × 0.1 / `FADE_SECONDS`, about 0.13). If `id` is still the exterior step, the pane was hidden: bring it to the front and run the block again (it reopens the exterior step first). Then, still paused, move later into the same step:
+
+```js
+viewer.player.seek(viewer.state().t + 0.8 * check.steps[check.i].duration);
+```
+
+Take a screenshot, wait 1 s, take another, and run:
+
+```js
 const b = viewer.camera.position.toArray();
-viewer.player.pause();
 const result = {
   id: viewer.state().id,
-  atFirst: check.a.every((v, i) => Math.abs(v - first[i]) < 1e-6),
-  still: check.a.every((v, i) => Math.abs(v - b[i]) < 1e-6),
+  u: viewer.state().u,
+  still: check.a.every((v, i) => Math.abs(v - b[i]) < 1e-3),   // a flown camera would be metres away
 };
 viewer.store.set({ reducedMotion: false });
 result;
 ```
 
-Expected: `id: 'S09'`, `atFirst: true` (the step cut to its first keyframe), `still: true` (a second of play did not move the camera; without the flag the ride carries it along S09's path, so the positions would differ).
+Expected: `id: 'S03'`, `u` above `0.8`, `still: true` (the ride left the camera on the first keyframe; without the flag the seek puts it on the step's path at that `u`, so the positions would differ).
 
 6. `read_console_messages` (`onlyErrors: true`): no error from the page.
 
@@ -5691,9 +5717,23 @@ grep -rnE "\b(main|scene|timeline|panel)\.js\b" viewer ledger pyramid tests READ
 
 Expected: no output. Plan A's header comment of `ledger/cycle.yaml` named `viewer/scene.js`; Task 2's script wrote a new header that says "the viewer" instead, and Task 9 dropped the one mention of `timeline.js` in a new module's comment. If a line is printed anyway, it is a comment naming a deleted file: reword it to say what the code or the viewer does, without the file name, run the grep again (expected: no output), and add that file to Step 11's `git add`. A comment edit in `ledger/cycle.yaml` needs no regeneration: the ledger digest covers `parameters.yaml` and `claims.yaml` only (`pyramid/ledger.py`, `load`), and `cycle.json` does not carry comments.
 
-- [ ] **Step 6: Rewrite the Viewer section of `README.md`**
+- [ ] **Step 6: Rewrite the viewer's descriptions in `README.md`**
 
-Replace this paragraph of the Viewer section (the heading and the server command above it stay):
+Two replacements: the Viewer bullet of "How it is built" and the paragraph of the Viewer section. Both describe plan A's click-a-space viewer today.
+
+First, in the section "How it is built", replace this line (the Viewer bullet):
+
+```markdown
+- **Viewer** ([`viewer/`](viewer/)): a browser scene that animates the cycle exactly as claimed, step by step, with the verdict and the deciding numbers beside each step. Mechanisms the hypothesis leaves unspecified are drawn as dashed, labelled placeholders. A fixed notice reads: *Animation of the claim. Not a simulation result.*
+```
+
+with:
+
+```markdown
+- **Viewer** ([`viewer/`](viewer/)): a full-screen three.js scene that tours the 31 steps of the cycle exactly as claimed, with each step's claim, verdict and deciding sentence in a caption, and the compounds the hypothesis names labelled in the spaces it puts them in; products of steps that fail or are undefined are marked *claimed*. Mechanisms the hypothesis leaves unspecified are drawn as dashed, labelled placeholders. The inspector, with the deciding numbers of each step and space, comes with the next plan. A fixed notice reads: *Animation of the claim. Not a simulation result.*
+```
+
+Then replace this paragraph of the Viewer section (the heading and the server command above it stay):
 
 ```markdown
 Then open http://localhost:8765/. Step through the 31 claimed steps, switch between the survey reading and an alternative, click any space for the ledger values that define it (unverified values are marked), and read the verdict for the step. It is an animation of the claim, not a simulation result.
@@ -5704,7 +5744,7 @@ with:
 ```markdown
 Then open http://localhost:8765/. three.js 0.170.0 loads from the jsDelivr CDN, so the page needs a network connection and a browser with WebGL 2; nothing is installed.
 
-The page is one full-screen scene. From outside, the pyramid stands on a plain sand plateau under a sky; once the camera is inside the masonry, the stone turns to dark glass and the passages and chambers become a lit schematic. *Play the claimed cycle* flies in from far outside, then rides a camera path through each of the 31 claimed steps: water rises and falls in the spaces the claim names, gases light up the chambers they pass through, and a storm sky appears only on the two steps whose claim states a storm (S05 and S06), with the lightning strike on the top in S06. Every compound the hypothesis names carries its formula in the space it occupies; a product of a step whose verdict is fail or undefined is drawn hatched and labelled *(claimed)*. Mechanisms the hypothesis leaves unspecified (the pump, the valves, the reservoir, the drains) are dashed, labelled boxes. A caption gives each step's claim as stated, its verdict and the sentence that decides it, above a strip of 31 ticks coloured by verdict. A fixed notice reads: *Animation of the claim. Not a simulation result.*
+The page is one full-screen scene. From outside, the pyramid stands on a plain sand plateau under a sky. On the steps that act inside the stone, the masonry turns to dark glass and the passages and chambers show through it as a lit schematic; the plateau fades only while the camera is inside the masonry. *Play the claimed cycle* flies in from far outside, then rides a camera path through each of the 31 claimed steps: water rises and falls in the spaces the claim names, gases light up the chambers they pass through, and a storm sky appears only on the two steps whose claim states a storm (S05 and S06), with the lightning strike on the top in S06. The water and gases in each space carry the formulas of the compounds the hypothesis names for them and take those compounds' colours; a product of a step whose verdict is fail or undefined is drawn hatched and labelled *(claimed)*, and the calcium sulfate coat of S23 is outlined. Mechanisms the hypothesis leaves unspecified (the pump, the valves, the reservoir, the drains) are dashed, labelled boxes. A caption gives each step's claim as stated, its verdict and the sentence that decides it, above a strip of 31 ticks coloured by verdict. A fixed notice reads: *Animation of the claim. Not a simulation result.*
 
 | Input | Action |
 |---|---|
@@ -5728,13 +5768,14 @@ The inspector (step and space cards with the deciding numbers, layers, a cutaway
 find viewer -name '*.js' -print0 | xargs -0 cat | wc -c
 ```
 
-Expected: one number below `150000` (every JavaScript file under `viewer/`, `viewer/data/load.js` included). Record it in the report.
+Expected: one number below `150000`: the bytes of every JavaScript file left under `viewer/` after Step 4's deletions, `viewer/data/load.js` and the subfolders included. Record it in the report.
 
 - [ ] **Step 8: Full browser check list at 1280 × 800**
 
 `resize_window` with `width: 1280, height: 800`; navigate to `http://localhost:8765/?quality=low&v=10h`; take a screenshot; define the check helper:
 
 ```js
+for (let i = 0; i < 100 && !window.viewer?.player; i++) await new Promise(r => setTimeout(r, 100));   // the model loads first
 window.check = {
   cycle: await fetch('data/cycle.json').then(r => r.json()),
   step(id) { return this.cycle.steps.find(s => s.id === id); },
@@ -5761,7 +5802,19 @@ Then, in order, each check as a JavaScript call, a screenshot with the given nam
 
 1. Prologue, no autoplay. Run `({ id: viewer.state().id, playing: viewer.state().playing, overlay: check.shown('.overlay button'), text: document.querySelector('.overlay button')?.textContent, hash: location.hash })`. Expected: `{ id: 'prologue', playing: false, overlay: true, text: 'Play the claimed cycle', hash: '' }`. Screenshot `t10-1280-01-prologue`: the pyramid far off on the plateau under a clear sky, the notice on top, the button.
 
-2. Play. Run `document.querySelector('.overlay button').click()`. Screenshot `t10-1280-02-play`, wait 1 s, and run `({ playing: viewer.state().playing, overlay: check.shown('.overlay button') })`: expected `{ playing: true, overlay: false }`. Take a screenshot, wait `check.cycle.prologue.duration` seconds plus 2 (8 s for 6.0), take another, and run `viewer.state().id`: expected `'S01'`. Run `viewer.player.pause()`.
+2. Play. Run `document.querySelector('.overlay button').click()`. Screenshot `t10-1280-02-play`, wait 1 s, and run `({ playing: viewer.state().playing, overlay: check.shown('.overlay button') })`: expected `{ playing: true, overlay: false }`. Take a screenshot, wait `check.cycle.prologue.duration` seconds plus 2 (8 s for 6.0), take another, and run:
+
+```js
+(() => {
+  const s = viewer.state();
+  let k = 0;
+  let end = check.cycle.prologue.duration + check.cycle.steps[0].duration;
+  while (s.t >= end) end += check.cycle.steps[++k].duration;   // the step the clock is in, from cycle.json
+  return { id: s.id, atT: check.cycle.steps[k].id, past: s.t > check.cycle.prologue.duration, playing: s.playing };
+})()
+```
+
+Expected: `past: true`, `playing: true`, `id` equal to `atT`: `'S01'` when the read comes within S01's 5 s, `'S02'` if the tool calls took longer (the clock ran on through the prologue into the steps). Run `viewer.player.pause()`.
 
 3. Cross-fade on the first interior step. Run:
 
@@ -5792,7 +5845,7 @@ await new Promise(resolve => {
 
 Expected: `id` the first interior step, `first` below `0.2`, `last: 1`, `between: true` (a fade, not a cut), `rising: true`. Screenshot `t10-1280-03-crossfade`: the masonry as dark glass with the spaces lit inside, the ground gone.
 
-4. Water, S12. Run `check.at('S12', 0.5)`; screenshot `t10-1280-04-S12`; then:
+4. Water, S12. Run `check.at('S12', 0.5)`, take a screenshot, wait 2 s (S12 is an interior step, so the look stays the glass one check 3 brought), and take screenshot `t10-1280-04-S12`; then:
 
 ```js
 const s = viewer.state();
@@ -5801,25 +5854,25 @@ const actor = check.step('S12').actors.find(a => a.type === 'water' && a.space =
    level: s.levels.grand_gallery, interior: s.interior, flag: check.step('S12').scene.interior });
 ```
 
-Expected: `id: 'S12'`, `water` within `0.01` of `expected` (0.625 at u 0.5), `level` a finite number, `interior` equal to `flag`. S12's camera stands outside the masonry (`flag: false`), so the stone is opaque and `t10-1280-04-S12` shows the exterior with the dashed placeholders and their labels drawn over it. For the water on screen, run `check.at(check.cycle.steps.find((s, i) => i > 11 && s.scene.interior && s.actors.some(a => a.type === 'water' && a.space === 'grand_gallery')).id, 0.5)` (the next interior step with water in the Gallery; `'S13'` with the data as committed), take a screenshot, wait 2 s (the look cross-fades to the interior), and take screenshot `t10-1280-05-water`: blue water in the Gallery behind the glass.
+Expected: `id: 'S12'`, `water` within `0.01` of `expected` (0.625 at u 0.5), `level` a finite number, `interior: true` and `flag: true`. `t10-1280-04-S12`: the masonry is dark glass and the Grand Gallery holds blue water to the level of `level`, with a brighter line at its waterline; S12's dashed placeholder cubes stand with their labels. While the camera stands outside `model.bounds` the sand plain stays and hides the spaces below the pavement; the Gallery stands above it.
 
-5. Gas, S16. Run `check.at('S16', 0.5)`; screenshot `t10-1280-06-S16` (the King's Chamber and antechamber hazes, the antechamber's striped); then run `({ id: viewer.state().id, claimed: viewer.state().labels.some(t => t.endsWith('SO₃ (claimed)')), drain: viewer.state().labels.includes('Gallery drain: not specified by the hypothesis') })`: expected `{ id: 'S16', claimed: true, drain: true }`.
+5. Gas, S16. Run `check.at('S16', 0.5)`; screenshot `t10-1280-05-S16` (the King's Chamber and antechamber hazes, the antechamber's striped); then run `({ id: viewer.state().id, claimed: viewer.state().labels.some(t => t.endsWith('SO₃ (claimed)')), drain: viewer.state().labels.includes('Gallery drain: not specified by the hypothesis') })`: expected `{ id: 'S16', claimed: true, drain: true }`.
 
-6. Storm and bolt, S06. Run `check.at('S06', 0.2)`, take a screenshot, wait 2 s (the storm and the exterior look fade in), and take screenshot `t10-1280-07-S06-u020`; run `({ weather: viewer.state().weather, u: viewer.state().u, bolt: check.bolt() })`: expected `{ weather: 'storm', u: 0.2, bolt: false }`. Run `check.at('S06', 0.35)`; screenshot `t10-1280-08-S06-u035` (the dark storm sky and the bolt from the apex); run `({ u: viewer.state().u, bolt: check.bolt() })`: expected `{ u: 0.35, bolt: true }`. Then `check.at('S07', 0)` and `viewer.state().weather`: expected `'clear'` (only S05 and S06 carry the storm).
+6. Storm and bolt, S06. Run `check.at('S06', 0.2)`, take a screenshot, wait 2 s (the storm fades in; S06 is an interior step filmed from outside, so the masonry turns to glass and the plateau stays), and take screenshot `t10-1280-06-S06-u020`; run `({ weather: viewer.state().weather, u: viewer.state().u, bolt: check.bolt() })`: expected `{ weather: 'storm', u: 0.2, bolt: false }`. Run `check.at('S06', 0.35)`; screenshot `t10-1280-07-S06-u035` (the dark storm sky and the bolt from the apex); run `({ u: viewer.state().u, bolt: check.bolt() })`: expected `{ u: 0.35, bolt: true }`. Then `check.at('S07', 0)` and `viewer.state().weather`: expected `'clear'` (only S05 and S06 carry the storm).
 
-7. Hatching, S20. Run `check.at('S20', 0.5)`; screenshot `t10-1280-09-S20` (the Gallery liquid in the acid colour with diagonal stripes); run `viewer.state().labels.some(t => t.includes('H₂SO₄ (claimed)'))`: expected `true`.
+7. Hatching, S20. Run `check.at('S20', 0.5)`; screenshot `t10-1280-08-S20` (the Gallery liquid in the acid colour with diagonal stripes); run `viewer.state().labels.some(t => t.includes('H₂SO₄ (claimed)'))`: expected `true`.
 
 8. The low tier. Run `viewer.state().quality`: expected `'low'`.
 
 9. `read_console_messages` (`onlyErrors: true`): no error from the page during the whole list.
 
-10. WebGL 2 missing: navigate to `http://localhost:8765/?nowebgl=1&v=10i`, take a screenshot, wait 2 s, and run `[document.getElementById('message').hidden, document.getElementById('message').textContent]`: expected `[false, 'This page needs WebGL 2.']`. Screenshot `t10-1280-10-nowebgl`.
+10. WebGL 2 missing: navigate to `http://localhost:8765/?nowebgl=1&v=10i`, take a screenshot, wait 2 s, and run `[document.getElementById('message').hidden, document.getElementById('message').textContent]`: expected `[false, 'This page needs WebGL 2.']`. Screenshot `t10-1280-09-nowebgl`.
 
 - [ ] **Step 9: Full browser check list at 375 × 812**
 
-`resize_window` with `preset: "mobile"` (375 × 812, a touch phone), then navigate to `http://localhost:8765/?quality=low&v=10j` (a fresh load, so the page sees the phone width from the start). Take a screenshot, define `window.check` with the block of Step 8, and run checks 1 to 10 of Step 8 exactly as written, naming the screenshots `t10-375-01-prologue` to `t10-375-10-nowebgl`. Before check 10 (which navigates away), run these phone checks (Review Focus 5):
+`resize_window` with `preset: "mobile"` (375 × 812, a touch phone), then navigate to `http://localhost:8765/?quality=low&v=10j` (a fresh load, so the page sees the phone width from the start). Take a screenshot, define `window.check` with the block of Step 8, and run checks 1 to 10 of Step 8 exactly as written, naming the screenshots `t10-375-01-prologue` to `t10-375-09-nowebgl`. Before check 10 (which navigates away), run these phone checks (Review Focus 5):
 
-1. During the ride. Run `check.at('S16', 0.1); viewer.player.play()`, take a screenshot, wait 2 s, take screenshot `t10-375-11-ride`, and run:
+1. During the ride. Run `check.at('S16', 0.1); viewer.player.play()`, take a screenshot, wait 2 s, take screenshot `t10-375-10-ride`, and run:
 
 ```js
 const card = document.querySelector('#hud .hud-card').getBoundingClientRect();
@@ -5838,9 +5891,9 @@ viewer.player.pause();
 });
 ```
 
-Expected: `innerWidth: 375`, `scrollWidth` at most `375` (no horizontal scroll), `card[0]` at least `0` and `card[1]` at most `375` (the caption card lies inside the width), `captionFits: true` (the caption wraps instead of overflowing), `notice: [0, 28]`, `onTop: true` (the notice is the topmost element at the top of the page), `canvas: 375`. In `t10-375-11-ride` the caption text is readable, wraps, and nothing is cut at the right edge.
+Expected: `innerWidth: 375`, `scrollWidth` at most `375` (no horizontal scroll), `card[0]` at least `0` and `card[1]` at most `375` (the caption card lies inside the width), `captionFits: true` (the caption wraps instead of overflowing), `notice: [0, 28]`, `onTop: true` (the notice is the topmost element at the top of the page), `canvas: 375`. In `t10-375-10-ride` the caption text is readable, wraps, and nothing is cut at the right edge.
 
-2. The HUD hidden. Run `window.dispatchEvent(new KeyboardEvent('keydown', { key: 'h' }))` (Task 8's keyboard handler listens on `window`), then run `({ hud: document.getElementById('hud').classList.contains('hidden'), notice: document.getElementById('notice').getBoundingClientRect().height })`: expected `{ hud: true, notice: 28 }`. Screenshot `t10-375-12-hud-hidden`: the scene and the notice only. Run `window.dispatchEvent(new KeyboardEvent('keydown', { key: 'h' }))` again to show the HUD.
+2. The HUD hidden. Run `window.dispatchEvent(new KeyboardEvent('keydown', { key: 'h' }))` (Task 8's keyboard handler listens on `window`), then run `({ hud: document.getElementById('hud').classList.contains('hidden'), notice: document.getElementById('notice').getBoundingClientRect().height })`: expected `{ hud: true, notice: 28 }`. Screenshot `t10-375-11-hud-hidden`: the scene and the notice only. Run `window.dispatchEvent(new KeyboardEvent('keydown', { key: 'h' }))` again to show the HUD.
 
 Afterwards run `resize_window` with `preset: "desktop"` to leave the pane at its own size.
 
@@ -5850,7 +5903,7 @@ Afterwards run `resize_window` with `preset: "desktop"` to leave the pane at its
 uv run pytest -q -W error
 ```
 
-Expected: exit status 0; the summary line counts only passed and xfailed tests (no failed, no error).
+Expected: `293 passed, 1 xfailed`, no warnings: the count Task 2 left (Tasks 3 to 10 change no Python and no data).
 
 - [ ] **Step 11: Commit**
 
@@ -5863,7 +5916,7 @@ Expected status: `D  viewer/main.js`, `D  viewer/panel.js`, `D  viewer/scene.js`
 
 ```bash
 git commit -F - <<'EOF'
-Finish the cinematic viewer: WebGL 2 check, quality probe, reduced motion; remove plan A's viewer modules; README viewer section
+Finish the cinematic viewer: WebGL 2 check, quality probe, reduced motion; remove plan A's viewer modules; README viewer descriptions
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 EOF
