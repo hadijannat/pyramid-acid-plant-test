@@ -117,32 +117,51 @@ def shaft_share(q):
     return draw(q)[1]
 
 
+_PASSAGE = ("ante.low_passage.width", "ante.low_passage.height")
+
+
+def passage_area(q) -> float:
+    """The antechamber passage as surveyed, with no slab in it: m2."""
+    return q["ante.low_passage.width"] * q["ante.low_passage.height"]
+
+
 @quantity(
     "antechamber_share",
-    "Share of the displaced volume drawn through the antechamber path with the surveyed openings alone",
+    "Share of the displaced volume drawn through the antechamber passage as surveyed, the masonry gas-tight",
     "1",
-    "share = 1 - V_davison dp / (p_atm V_gallery) if the antechamber path is open, else 0; the three openings at "
-    "the Gallery's foot are under water",
-    _DRAW,
+    "share = 1 - V_davison dp / (p_atm V_gallery); a = w_passage h_passage; the three openings at the Gallery's "
+    "foot are under water",
+    _DRAW + _PASSAGE,
 )
 def antechamber_share(q):
-    return draw(q, joints=False)[1]
+    return draw(q, area=passage_area(q), joints=False)[1]
 
 
 @quantity(
     "slabs_absent_share",
-    "Share that comes down the shafts with no slab in the antechamber passage, joints leaking",
+    "Share drawn through the antechamber passage as surveyed, joints leaking",
     "1",
     "as flow.shaft_share with a = w_passage h_passage",
-    _DRAW + ("ante.low_passage.width", "ante.low_passage.height"),
+    _DRAW + _PASSAGE,
 )
 def slabs_absent_share(q):
-    return draw(q, area=q["ante.low_passage.width"] * q["ante.low_passage.height"])[1]
+    return draw(q, area=passage_area(q))[1]
 
 
-def flip_aperture(q, share: float) -> float:
+@quantity(
+    "slabs_down_share",
+    "Share drawn through the antechamber path with the slabs down, the masonry gas-tight",
+    "1",
+    "share = 1 - V_davison dp / (p_atm V_gallery) if the path is open, else 0; a = a_grooves + a_slab_leak",
+    _DRAW,
+)
+def slabs_down_share(q):
+    return draw(q, joints=False)[1]
+
+
+def flip_aperture(q, share: float, area: float | None = None) -> float:
     """Joint aperture at which the antechamber path's share falls to `share`: m (storage and the cap left out)."""
-    conductance = antechamber_conductance(q, opening_area(q))
+    conductance = antechamber_conductance(q, opening_area(q) if area is None else area)
     if conductance == 0:
         return 0.0
     total = q["gg.volume"] / q["hydro.drain_time"]
@@ -158,7 +177,7 @@ _FLIP = tuple(id for id in _DRAW if id not in ("hydro.joint_aperture", "site.atm
 
 @quantity(
     "joint_aperture_half",
-    "Joint aperture at which half the displaced volume still comes down the shafts",
+    "Joint aperture at which half the displaced volume still comes down the shafts, the slabs down",
     "m",
     "b = (12 mu l_path (Q / 2) / (l_joints dp))^(1/3); dp = (rho / 2) (Q / (2 C))^2; Q = V_gallery / t_drain",
     _FLIP,
@@ -169,13 +188,25 @@ def joint_aperture_half(q):
 
 @quantity(
     "joint_aperture_nine_tenths",
-    "Joint aperture at which nine tenths of the displaced volume still passes the antechamber",
+    "Joint aperture at which nine tenths of the displaced volume still passes the antechamber passage as surveyed",
     "m",
-    "b = (12 mu l_path (Q / 10) / (l_joints dp))^(1/3); dp = (rho / 2) (0.9 Q / C)^2; Q = V_gallery / t_drain",
-    _FLIP,
+    "b = (12 mu l_path (Q / 10) / (l_joints dp))^(1/3); dp = (rho / 2) (0.9 Q / C)^2; Q = V_gallery / t_drain; "
+    "a = w_passage h_passage",
+    _FLIP + _PASSAGE,
 )
 def joint_aperture_nine_tenths(q):
-    return flip_aperture(q, 0.9)
+    return flip_aperture(q, 0.9, passage_area(q))
+
+
+def flip_drain_time(q) -> float:
+    """Drain time above which more than half the gas comes down the shafts, the slabs down: s.
+
+    Equal flows through the path, C sqrt(2 dp / rho), and the joints, c dp, meet at Q = 4 C^2 / (rho c).
+    """
+    conductance = antechamber_conductance(q, opening_area(q))
+    viscosity = q["hydro.air_density"] * q["hydro.air_kinematic_viscosity"]
+    slope = q["hydro.joint_length"] * q["hydro.joint_aperture"] ** 3 / (12 * viscosity * q["flow.joint_path_length"])
+    return q["gg.volume"] * q["hydro.air_density"] * slope / (4 * conductance**2)
 
 
 @quantity(

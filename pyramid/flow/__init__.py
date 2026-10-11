@@ -14,7 +14,7 @@ from pyramid.flow import gas, hydraulics, retention  # noqa: F401  (importing th
 from pyramid.flow.network import all_results  # noqa: F401
 from pyramid.ledger import Ledger
 from pyramid.screening import DAY, YEAR, Result
-from pyramid.simkit import three_way
+from pyramid.simkit import corners, three_way
 
 ASSUMPTIONS = [line[2:] for line in __doc__.splitlines() if line.startswith("- ")]
 
@@ -124,38 +124,52 @@ def _s14(ledger, r):
     grooves = gas.draw(q, area=q["ante.groove_connected_area"])[1]
     fastest, slowest = ledger.rng("hydro.drain_time")
     tight, wide = ledger.rng("hydro.joint_aperture")
-    status = three_way(share.low > 0.5, share.high > 0.5)  # "most" is more than half
+    # The same share with the path held open at its ledger area: what the leaks and the drain rate do by
+    # themselves, apart from whether a path exists at all, which is S15's question.
+    area = gas.opening_area(q)
+    _, open_low, open_high = corners(ledger, share.inputs, lambda v: gas.draw(v, area=area)[1])
+    turn = f", or the drain slower than {gas.flip_drain_time(q) / 60:.0f} minutes" if area > 0 else ""
+    # "Most" is more than half. The hypothesis states no drain rate, so the rule sweeps the three rates 02
+    # evaluates, as Tier 0 does for S16, and the sentence names the rate at which the share crosses one half.
+    status = three_way(share.low > 0.5, share.high > 0.5)
     return status, (
-        f"Draining the Gallery in {q['hydro.drain_time'] / 3600:.0f} h through {gas.opening_area(q) * 1e4:.0f} cm2 "
+        f"Draining the Gallery in {q['hydro.drain_time'] / 3600:.0f} h through {area * 1e4:.0f} cm2 "
         f"of grooves and slab clearance, with masonry joints of {q['hydro.joint_aperture'] * 1e3:.2f} mm leaking, "
         f"{100 * share.value:.0f} percent of the replacement gas comes down the King's Chamber shafts, at a "
         f"pressure difference of {dp.value:.0f} Pa. Over drain times of {fastest / 60:.0f} minutes to "
-        f"{slowest / 3600:.0f} h, a path from shut to that area and joints of {tight * 1e3:.2f} to "
-        f"{wide * 1e3:.2f} mm, the share runs from {100 * share.low:.0f} to {100 * share.high:.0f} percent and the "
-        f"pressure difference from {dp.low:.0f} Pa to {dp.high / 1e3:.0f} kPa, the most a water column can pull. "
-        f"Through the grooves alone the share is {100 * grooves:.0f} percent and with no slab in the passage "
-        f"{100 * absent.value:.0f} percent; more than half comes down the shafts while the joints are tighter than "
-        f"{flip.value * 1e3:.2f} mm. The hypothesis states neither a drain rate nor how the Gallery is made gas-tight."
+        f"{slowest / 3600:.0f} h and joints of {tight * 1e3:.2f} to {wide * 1e3:.2f} mm the share runs from "
+        f"{100 * open_low:.0f} to {100 * open_high:.0f} percent with that path open, and from "
+        f"{100 * share.low:.0f} percent if the path is shut, as blind grooves and seated slabs would leave it; the "
+        f"pressure difference runs from {dp.low:.0f} Pa to {dp.high / 1e3:.0f} kPa, the most a water column can "
+        f"pull. Through the grooves alone the share is {100 * grooves:.0f} percent and with no slab in the passage "
+        f"{100 * absent.value:.0f} percent. More than half comes down the shafts with the joints tighter than "
+        f"{flip.value * 1e3:.2f} mm{turn}; the hypothesis states neither a drain rate nor how the Gallery is made "
+        "gas-tight."
     )
 
 
 def _s17(ledger, r):
-    share, leaky = r["flow.antechamber_share"], r["flow.shaft_share"]
-    wedge, flip, seal = r["flow.foot_wedge_share"], r["flow.joint_aperture_nine_tenths"], r["flow.foot_seal_depth"]
-    area = gas.opening_area(_at(ledger, share.inputs))
-    # The criterion's openings are the surveyed ones, so the status follows the share among those alone; gas
-    # leaking through joints, which no survey lists as an opening, is reported beside it.
-    status = three_way(share.low > 0.9, share.high > 0.9)
+    tight, leaky = r["flow.antechamber_share"], r["flow.slabs_absent_share"]
+    down, down_leaky = r["flow.slabs_down_share"], r["flow.shaft_share"]
+    wedge, flip = r["flow.foot_wedge_share"], r["flow.joint_aperture_nine_tenths"]
+    narrow, wide = ledger.rng("hydro.joint_aperture")
+    area = gas.opening_area(_at(ledger, down.inputs))
+    # Judgement calls. "The openings as surveyed" have no slab in the antechamber passage (02 section 5.3), so the
+    # status follows the share through that passage; whether a path exists with the slabs down is S15's question
+    # and is reported, not judged. And 01 calls the syringe "a leakage question" (summary and claim 4), so gas
+    # leaking through the joints counts against the passage at the unfavourable end, though no survey lists a
+    # joint as an opening: worst is the leaking Gallery, best the gas-tight one.
+    status = three_way(leaky.low > 0.9, tight.high > 0.9)
     return status, (
         "Of the Gallery's five surveyed openings the Ascending Passage, the Queen's passage and the well shaft meet "
-        f"it at its foot and stay under water until {100 * wedge.high:.1f} percent of it or less is left (the draw "
-        f"holds up {seal.value * 1e3:.0f} mm of water), and Davison's passage ends in a closed chamber. So "
-        f"{100 * share.value:.1f} percent of the displaced volume is drawn through the antechamber path with "
-        f"{area * 1e4:.0f} cm2 of grooves and slab clearance open; over the range of that path, from grooves that "
-        f"are blind and slabs that are seated to that area, the share runs from {100 * share.low:.0f} to "
-        f"{100 * share.high:.0f} percent. Counting gas that leaks in through masonry joints, which are not surveyed "
-        f"openings, the share is {100 * leaky.value:.0f} percent ({100 * leaky.low:.0f} to {100 * leaky.high:.0f}) "
-        f"and passes 90 percent only with joints tighter than {flip.value * 1e3:.2f} mm."
+        f"it at its foot and stay under water until {100 * wedge.high:.1f} percent of it or less is left, and "
+        f"Davison's passage ends in a closed chamber. So with gas-tight masonry {_span(tight, 100, 1)} percent of "
+        "the displaced volume is drawn through the antechamber passage as surveyed, with no slab in it. Counting "
+        f"gas that leaks in through masonry joints of {narrow * 1e3:.2f} to {wide * 1e3:.2f} mm, the leakage that "
+        f"01 leaves open for the syringe, the share is {_span(leaky, 100)} percent and passes 90 percent with joints "
+        f"tighter than {_span(flip, 1e3, 2)} mm. With the slabs of the hypothesis down the two shares are "
+        f"{100 * down.value:.1f} and {100 * down_leaky.value:.0f} percent through {area * 1e4:.0f} cm2 of grooves "
+        "and slab clearance, and nothing if that path is shut, which is the question of S15."
     )
 
 

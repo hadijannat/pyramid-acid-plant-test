@@ -134,9 +134,15 @@ def test_an_open_antechamber_with_tight_masonry_gives_tier0s_shaft_pressure(led,
 
 
 def test_the_flip_apertures_are_where_the_share_crosses(q):
-    for share, aperture in ((0.5, gas.joint_aperture_half(q)), (0.9, gas.joint_aperture_nine_tenths(q))):
-        # the closed form leaves out the gas Davison's chamber gives up, a few parts in a million here
-        assert gas.draw(q | {"hydro.joint_aperture": aperture})[1] == pytest.approx(share, rel=1e-4)
+    # the closed forms leave out the gas Davison's chamber gives up, a few parts in a hundred thousand here
+    half = q | {"hydro.joint_aperture": gas.joint_aperture_half(q)}  # with the slabs down
+    assert gas.draw(half)[1] == pytest.approx(0.5, rel=1e-4)
+    nine_tenths = q | {"hydro.joint_aperture": gas.joint_aperture_nine_tenths(q)}  # with no slab in the passage
+    assert gas.draw(nine_tenths, area=gas.passage_area(q))[1] == pytest.approx(0.9, rel=1e-4)
+    # and the drain time at which path and joints carry the same, at the ledger's joints
+    # (the faster drain pulls harder, so the chamber's share is three parts in ten thousand)
+    assert gas.draw(q | {"hydro.drain_time": gas.flip_drain_time(q)})[1] == pytest.approx(0.5, rel=1e-3)
+    assert gas.flip_drain_time(q) / 60 == pytest.approx(19.5, rel=0.01)
 
 
 def test_three_gallery_openings_lie_at_its_foot(q):

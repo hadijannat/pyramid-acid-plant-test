@@ -42,7 +42,7 @@ def test_the_package_decides_its_five_claims_and_no_other(led):
 
 def test_every_result_is_a_finite_number_built_from_ledger_quantities(led):
     results = flow.all_results(led)
-    assert len(results) == len(flow.network.QUANTITIES) == 24
+    assert len(results) == len(flow.network.QUANTITIES) == 25
     for result in results.values():
         assert result.id.startswith("flow.") and result.unit in ledger.UNITS
         assert result.low <= result.value <= result.high < float("inf"), result.id
@@ -123,46 +123,55 @@ def test_s14_asks_for_more_than_half_down_the_shafts(led):
     status, basis = judge(led)["S14"]
     assert status == "conditional"
     has(basis, "in 1 h through 202 cm2", "joints of 0.51 mm leaking, 69 percent", "pressure difference of 60 Pa",
-        "10 minutes to 6 h", "from 0 to 100 percent", "from 1 Pa to 99 kPa", "grooves alone the share is 13 percent",
-        "no slab in the passage 89 percent", "tighter than 0.74 mm", "neither a drain rate")
+        "10 minutes to 6 h", "from 23 to 100 percent with that path open", "from 0 percent if the path is shut",
+        "from 1 Pa to 99 kPa", "grooves alone the share is 13 percent", "no slab in the passage 89 percent",
+        "tighter than 0.74 mm, or the drain slower than 19 minutes", "neither a drain rate")
 
     open_path = {"ante.groove_connected_area": (0.002, 0.002, 0.002), "flow.slab_leak_area": (0.018, 0.018, 0.018)}
     tight = {"hydro.joint_aperture": (5e-5, 5e-5, 5e-5)}
     status, basis = judge(led, open_path | tight)["S14"]
     assert status == "pass"
-    has(basis, "the share runs from 98 to 100 percent")
-    assert judge(led, open_path)["S14"][0] == "conditional"  # wide joints still take most of it in a fast drain
+    has(basis, "the share runs from 98 to 100 percent with that path open, and from 98 percent")
+    # the path alone does not settle it: wide joints take most of the gas in a fast drain
+    assert judge(led, open_path)["S14"][0] == "conditional"
 
     shut = {"ante.groove_connected_area": (0.0, 0.0, 0.0), "flow.slab_leak_area": (0.0, 0.0, 0.0)}
     status, basis = judge(led, shut)["S14"]
     assert status == "fail"
-    has(basis, "the share runs from 0 to 0 percent")
+    has(basis, "0 percent of the replacement gas comes down", "tighter than 0.00 mm; the hypothesis")
 
 
-def test_s17_asks_for_nine_tenths_through_the_antechamber_among_the_surveyed_openings(led):
+def test_s17_asks_for_nine_tenths_through_the_antechamber_passage_as_surveyed(led):
     status, basis = judge(led)["S17"]
     assert status == "conditional"
-    has(basis, "stay under water until 0.7 percent of it or less is left", "holds up 6 mm of water",
-        "closed chamber", "So 100.0 percent of the displaced volume", "202 cm2", "from 0 to 100 percent",
-        "the share is 69 percent (0 to 100)", "tighter than 0.29 mm")
+    has(basis, "stay under water until 0.7 percent of it or less is left", "closed chamber",
+        "with gas-tight masonry 100.0 (99.9 to 100.0) percent", "as surveyed, with no slab in it",
+        "joints of 0.05 to 0.51 mm", "the share is 89 (43 to 100) percent",
+        "tighter than 0.50 (0.18 to 1.36) mm", "the two shares are 100.0 and 69 percent through 202 cm2",
+        "nothing if that path is shut, which is the question of S15")
 
-    open_path = {"ante.groove_connected_area": (0.002, 0.002, 0.002), "flow.slab_leak_area": (0.018, 0.018, 0.018)}
-    status, basis = judge(led, open_path)["S17"]
-    assert status == "pass"  # the leaking joints are not surveyed openings: they are reported, not judged
-    has(basis, "the share runs from 99 to 100 percent", "the share is 69 percent")
-
-    # grooves alone, in the fastest drain, need more suction than water can apply, and Davison's chamber
-    # then gives up over a tenth of the volume
-    grooves = {"ante.groove_connected_area": (0.002, 0.002, 0.002), "flow.slab_leak_area": (0.0, 0.0, 0.0)}
-    assert judge(led, grooves)["S17"][0] == "conditional"
-
+    # whether the slabs' path is open or shut does not move the verdict: that is S15's question
     shut = {"ante.groove_connected_area": (0.0, 0.0, 0.0), "flow.slab_leak_area": (0.0, 0.0, 0.0)}
-    assert judge(led, shut)["S17"][0] == "fail"
+    status, basis = judge(led, shut)["S17"]
+    assert status == "conditional"
+    has(basis, "the two shares are 0.0 and 0 percent through 0 cm2")
+
+    # joints as tight as the tight end of the range leave the passage over nine tenths at every corner
+    status, basis = judge(led, {"hydro.joint_aperture": (5e-5, 5e-5, 5e-5)})["S17"]
+    assert status == "pass"
+    has(basis, "the share is 100 (100 to 100) percent")
+
+    # joints ten times wider than the widest in the ledger still leave it conditional on gas-tight masonry
+    assert judge(led, {"hydro.joint_aperture": (5e-3, 5e-3, 5e-3)})["S17"][0] == "conditional"
+
+    # it fails only if less than nine tenths passed the antechamber even with gas-tight masonry
+    lost = {"value": 0.6, "low": 0.5, "high": 0.7}
+    assert judge(led, antechamber_share=lost, slabs_absent_share=lost)["S17"][0] == "fail"
 
 
 def test_production_writes_results_that_merge_with_tier0(led, tmp_path, capsys):
     out = production.main(tmp_path)
-    assert "24 results, 5 verdicts" in capsys.readouterr().out
+    assert "25 results, 5 verdicts" in capsys.readouterr().out
     for name in ("summary.json", "manifest.json", "ingress.json", "shares.json", "retention.json", "openings.json",
                  "figures/s13_ingress.png", "figures/s14_s17_shares.png", "figures/s03_retention.png"):
         assert (out / name).stat().st_size > 0, name
