@@ -70,7 +70,7 @@ async function boot() {
 
   // ---- start (Task 4): stays the last block, so everything frame() reads exists before the first frame
   function frame(dt) {
-    environment.update(dt, model.bounds.containsPoint(rendererApi.camera.position));
+    environment.update(dt, model.contains(rendererApi.camera.position));
     materials.update(dt);
     model.setInterior(environment.mix.interior);
   }

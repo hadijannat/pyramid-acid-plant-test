@@ -11,7 +11,7 @@ export const FADE_SECONDS = 1.5;   // display choice: look and weather cross-fad
 // Sky's forward scattering: the clear value is the addon's default; the storm's lower value spreads the glare of the
 // low sun into an overcast sky instead of a blinding halo. The storm fog colour is the storm sky's linear colour
 // near the horizon away from the sun, so the far plain fades into the sky as haze, not into a dark band.
-const CLEAR = { elevation: 40, intensity: 3, turbidity: 2, mieG: 0.8, exposure: 0.5, fog: 0.00025, fogColour: 0xc9d3dc };
+const CLEAR = { elevation: 40, intensity: 4, turbidity: 2, mieG: 0.8, exposure: 0.5, fog: 0.00025, fogColour: 0xc9d3dc };
 const STORM = { elevation: 6, intensity: 0.4, turbidity: 18, mieG: 0.4, exposure: 0.3, fog: 0.0009, fogColour: 0xb0b2ac };
 const AZIMUTH = -35;         // display choice: degrees from south towards east; the sun stands in the south-south-west
 const SKY_SCALE = 50000;     // display choice: the sky box only has to enclose the camera; its shader draws it at the far plane
@@ -29,14 +29,14 @@ export function createEnvironment(scene, rendererApi, store) {
   sky.scale.setScalar(SKY_SCALE);
   scene.add(sky);
 
-  const sun = new THREE.DirectionalLight(0xffffff, CLEAR.intensity);
+  const sun = new THREE.DirectionalLight(0xfff0dc, CLEAR.intensity);   // display choice: a warm sun
   Object.assign(sun.shadow.camera, {
     left: -SHADOW_HALF, right: SHADOW_HALF, top: SHADOW_HALF, bottom: -SHADOW_HALF, near: 1, far: 2 * SUN_DISTANCE,
   });
   sun.shadow.camera.updateProjectionMatrix();
   sun.shadow.bias = -0.0005;   // display choice: no shadow acne on the faces
   scene.add(sun, sun.target);   // the target stays at the origin: the pyramid's axis at pavement level
-  scene.add(new THREE.HemisphereLight(0xdfe8f0, 0x8a7a5a, 0.6));   // display choice: sky light and sand bounce
+  scene.add(new THREE.HemisphereLight(0xf4ead8, 0xb8935a, 0.6));   // display choice: sky light and sand bounce
 
   const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(GROUND_SIZE, GROUND_SIZE).rotateX(-Math.PI / 2),
@@ -64,6 +64,7 @@ export function createEnvironment(scene, rendererApi, store) {
     envTarget = pmrem.fromScene(envScene);
     scene.add(sky);
     scene.environment = envTarget.texture;
+    scene.environmentIntensity = 0.3;   // display choice: the sky map carried most of the light and all of its blue cast
     envStorm = mix.storm;
   }
 

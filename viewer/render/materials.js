@@ -7,13 +7,12 @@ import * as THREE from 'three';
 const STONE = 0xcdb894;        // display choice: limestone
 const BEDROCK = 0x6f675b;      // display choice: darker stone
 const SPACE = 0xece5d3;        // display choice: plan A's space colour
-const SPACE_GLOW = 0x2e2b24;   // display choice: a faint self-light, so the schematic reads inside the dark glass
 const WATER = 0x2f86d6;        // display choice: plan A's water colour
 const GLASS_BODY = 0x0e141a;   // display choice: the glass seen face on
 const GLASS_EDGE = 0x8fb8dc;   // display choice: the cool glow where the glass is seen edge on
 const SHADE = 0.4;             // display choice: a hatching stripe is the actor's colour at 40 percent
 // GLSL float literals (written with a decimal point: GLSL does not convert integers).
-const GRAIN = '0.06';          // display choice: the stone's brightness varies by 6 percent either way
+const GRAIN = '0.2';           // display choice: the stone's brightness varies by 20 percent either way
 const BAND = '0.3';            // display choice: metres of brighter water under the free surface
 const PITCH = '8.0';           // display choice: hatching stripes repeat every 8 device pixels along a row
 // ponytail: device pixels, so the stripes are finer on a high-density screen; divide by the pixel ratio if they read too fine.
@@ -81,8 +80,8 @@ float triplanar(vec3 p, vec3 n) {
         .replace('#include <map_fragment>', `#include <map_fragment>
 {
   vec3 faceNormal = normalize(cross(dFdx(vObject), dFdy(vObject)));
-  // display choice: a coarse octave for weathering, a fine one for grain
-  float grain = 0.65 * triplanar(vObject * 0.35, faceNormal) + 0.35 * triplanar(vObject * 2.3, faceNormal);
+  // display choice: a coarse octave for weathering, a finer one for grain, both above a pixel at the framing distance
+  float grain = 0.65 * triplanar(vObject * 0.05, faceNormal) + 0.35 * triplanar(vObject * 0.5, faceNormal);
   diffuseColor.rgb *= 1.0 + ${GRAIN} * (2.0 * grain - 1.0);
 }`);
     };
@@ -94,7 +93,7 @@ float triplanar(vec3 p, vec3 n) {
     return new THREE.ShaderMaterial({
       uniforms: {
         uBody: { value: new THREE.Color(GLASS_BODY) },
-        uEdge: { value: new THREE.Color(GLASS_EDGE) },
+        uEdge: { value: new THREE.Color(GLASS_EDGE).multiplyScalar(2.5) },   // display choice: bright, under the bloom threshold of 3
         uOpacity: { value: 0 },
       },
       vertexShader: VERTEX,
@@ -107,8 +106,8 @@ varying vec3 vView;
 ${FRESNEL}
 void main() {
   #include <clipping_planes_fragment>
-  float edge = fresnel(vView);
-  gl_FragColor = vec4(mix(uBody, uEdge, edge), uOpacity * (0.3 + 0.7 * edge));
+  float edge = pow(fresnel(vView), 0.6667);   // display choice: flat faces seen at 30 to 60 degrees still show some edge
+  gl_FragColor = vec4(mix(uBody, uEdge, edge), uOpacity * (0.75 + 0.5 * edge));   // display choice: a body dark enough to read as glass
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
 }`,
@@ -123,10 +122,11 @@ void main() {
     });
   }
 
-  // The schematic interior: pale surfaces with a faint self-light.
+  // The schematic interior: pale surfaces that light themselves, so they read through the dark glass.
   function space() {
     return new THREE.MeshStandardMaterial({
-      color: SPACE, emissive: SPACE_GLOW, roughness: 0.9, metalness: 0, flatShading: true, side: THREE.DoubleSide,
+      color: SPACE, emissive: SPACE, emissiveIntensity: 2.5, roughness: 0.9,   // display choice: emissive under the bloom threshold
+      metalness: 0, flatShading: true, side: THREE.DoubleSide,
     });
   }
 

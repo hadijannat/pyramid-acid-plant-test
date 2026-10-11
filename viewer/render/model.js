@@ -21,11 +21,13 @@ export async function loadModel(url, scene, materials, store) {
   let k = 0;            // the interior mix last applied
   let planes = null;    // the cutaway planes, or null
   let loads = 0;        // when two loads overlap, the later one wins
+  const bedrockBounds = new THREE.Box3();
+  let widths = { base: 0, top: 0 };   // the masonry's half-width at the pavement and at its top, from its vertices
 
   const model = {
     root: null, spaces: new Map(), shell: { stone: null, glass: null, bedrock: null },
     bounds: new THREE.Box3(), masonryBounds: new THREE.Box3(), apexY: 0,
-    pickAt, setHidden, setShell, setInterior, setClipping, dispose,
+    contains, pickAt, setHidden, setShell, setInterior, setClipping, dispose,
   };
 
   async function load(file) {
@@ -44,6 +46,7 @@ export async function loadModel(url, scene, materials, store) {
       }
     });
     const glass = found.masonry.clone();   // the masonry drawn a second time; clone() shares the geometry
+    glass.name = 'masonry_glass';
     glass.material = look.glass;
     found.masonry.material = look.stone;
     found.masonry.castShadow = true;
@@ -56,8 +59,10 @@ export async function loadModel(url, scene, materials, store) {
     scene.add(model.root);
     model.root.updateMatrixWorld(true);
     model.masonryBounds.setFromObject(model.shell.stone);
-    model.bounds.setFromObject(model.shell.bedrock).union(model.masonryBounds);
+    bedrockBounds.setFromObject(model.shell.bedrock);
+    model.bounds.copy(bedrockBounds).union(model.masonryBounds);
     model.apexY = model.masonryBounds.max.y;
+    widths = { base: halfWidthAt(model.masonryBounds.min.y), top: halfWidthAt(model.apexY) };
     setHidden(hidden);
     setClipping(planes);
     setInterior(k);
@@ -75,6 +80,26 @@ export async function loadModel(url, scene, materials, store) {
     model.shell.stone.geometry.dispose();   // the glass shares it
     model.shell.bedrock.geometry.dispose();
     model.spaces.clear();
+  }
+
+  // The largest |x| among the masonry's vertices at height y (the bounds come from the same vertices, so they match exactly).
+  function halfWidthAt(y) {
+    const position = model.shell.stone.geometry.attributes.position;
+    let half = 0;
+    for (let i = 0; i < position.count; i++) if (position.getY(i) === y) half = Math.max(half, Math.abs(position.getX(i)));
+    return half;
+  }
+
+  // True when the point lies inside the stone itself: under the pavement, inside the bedrock's box; above it, within
+  // the square section of the masonry at that height, narrowing linearly from the base to the top platform.
+  // The bounding box alone would put a camera east of a face "inside" and take the plateau away.
+  // ponytail: the section is a square on the pyramid's axis; test against the faces' planes if the masonry ever is not.
+  function contains(point) {
+    const { min } = model.masonryBounds;
+    if (point.y < min.y) return bedrockBounds.containsPoint(point);
+    if (point.y > model.apexY) return false;
+    const half = THREE.MathUtils.lerp(widths.base, widths.top, (point.y - min.y) / (model.apexY - min.y));
+    return Math.abs(point.x) <= half && Math.abs(point.z) <= half;
   }
 
   // The name of the nearest visible space under a point of the view (normalised device coordinates), or null.
@@ -103,7 +128,7 @@ export async function loadModel(url, scene, materials, store) {
     const { stone, glass, bedrock } = model.shell;
     look.stone.opacity = (1 - k) * shellLayers.masonry;
     look.glass.uniforms.uOpacity.value = k * GLASS_OPACITY * shellLayers.masonry;
-    look.bedrock.opacity = (1 - k) * shellLayers.bedrock + k * BEDROCK_GHOST;
+    look.bedrock.opacity = ((1 - k) + k * BEDROCK_GHOST) * shellLayers.bedrock;   // a bedrock switched off stays off
     // An opaque shell writes depth, so its near faces hide its far ones; a fading one draws both of its
     // sides (three.js draws a transparent double-sided mesh back faces first) and hides nothing.
     look.stone.depthWrite = look.stone.opacity >= 1;
