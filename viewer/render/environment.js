@@ -7,9 +7,12 @@ import { Sky } from 'three/addons/objects/Sky.js';
 
 export const FADE_SECONDS = 1.5;   // display choice: look and weather cross-fade time
 
-// display choice: the two weathers the mix moves between (sun elevation in degrees above the horizon)
-const CLEAR = { elevation: 40, intensity: 3, turbidity: 2, exposure: 0.5, fog: 0.00025, fogColour: 0xc9d3dc };
-const STORM = { elevation: 6, intensity: 0.4, turbidity: 18, exposure: 0.3, fog: 0.0009, fogColour: 0x50565e };
+// display choice: the two weathers the mix moves between (sun elevation in degrees above the horizon). mieG is the
+// Sky's forward scattering: the clear value is the addon's default; the storm's lower value spreads the glare of the
+// low sun into an overcast sky instead of a blinding halo. The storm fog colour is the storm sky's linear colour
+// near the horizon away from the sun, so the far plain fades into the sky as haze, not into a dark band.
+const CLEAR = { elevation: 40, intensity: 3, turbidity: 2, mieG: 0.8, exposure: 0.5, fog: 0.00025, fogColour: 0xc9d3dc };
+const STORM = { elevation: 6, intensity: 0.4, turbidity: 18, mieG: 0.4, exposure: 0.3, fog: 0.0009, fogColour: 0xb0b2ac };
 const AZIMUTH = -35;         // display choice: degrees from south towards east; the sun stands in the south-south-west
 const SKY_SCALE = 50000;     // display choice: the sky box only has to enclose the camera; its shader draws it at the far plane
 const SUN_DISTANCE = 400;    // display choice: metres from the pyramid's axis to the shadow camera
@@ -84,6 +87,7 @@ export function createEnvironment(scene, rendererApi, store) {
     sunDirection.setFromSphericalCoords(1, THREE.MathUtils.degToRad(90 - elevation), THREE.MathUtils.degToRad(AZIMUTH));
     sky.material.uniforms.sunPosition.value.copy(sunDirection);
     sky.material.uniforms.turbidity.value = lerp(CLEAR.turbidity, STORM.turbidity, k);
+    sky.material.uniforms.mieDirectionalG.value = lerp(CLEAR.mieG, STORM.mieG, k);
     sun.position.copy(sunDirection).multiplyScalar(SUN_DISTANCE);
     sun.intensity = lerp(CLEAR.intensity, STORM.intensity, k);
     renderer.toneMappingExposure = lerp(CLEAR.exposure, STORM.exposure, k);
