@@ -1,5 +1,6 @@
-// Actors of a step: water, gas, lightning, placeholders and the pending-field label, ported from plan A's
-// timeline.js. build(step) makes the step's objects; update() sets them to the moment u of the step.
+// Actors of a step: water, gas, lightning, placeholders, the pending-field label, and the chemistry (species
+// labels, liquids and hazes in their species' colours, hatched claimed products, the coat of S23).
+// build(step) makes the step's objects; update() sets them to the moment u of the step.
 import * as THREE from 'three';
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { Line2 } from 'three/addons/lines/Line2.js';
@@ -8,7 +9,6 @@ import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 
 // Display choices, not physical quantities (so are the opacities, dash lengths and label offsets below).
 const FAR = 1e6;   // display choice: a height far above (or, negated, far below) anything in the model
-const HAZE_COLOUR = '#d9dde2';          // display choice: one neutral haze for every gas (Task 9 colours it by species)
 const PLACEHOLDER_COLOUR = 0xd9dde2;    // display choice
 // display choice: a placeholder is a 4 m dashed cube, a symbol whose size says nothing about what it stands for
 const DASHED_BOX = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(4, 4, 4)))
@@ -26,6 +26,10 @@ const CANDIDATES = 20;       // display choice: random points tried per particle
 const PARTICLE_SIZE = 0.15;  // display choice: metres
 const SWAY = 0.25;           // display choice: radians per second of each particle's slow sway
 const CHORD = 0.15;          // display choice: a particle sways over this fraction of a chord of its space
+// The marking rule in the scene (spec section 6.3): this text follows the formula of a species whose status in
+// cycle.json is "claimed"; the "conditional" tag belongs to the inspector's legend (plan V2), not to the scene.
+const CLAIMED = ' (claimed)';
+const COAT_SPECIES = 'calcium_sulfate';   // the coat of S23 is its calcium sulfate layer (chemistry spec 3.2)
 
 // The height (viewer Y) at which a space holds the fraction f of its volume.
 // curve: [[y, volume below y], ...] with y ascending, as written by level_volume_curve.
@@ -127,12 +131,23 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
     return new CSS2DObject(element);
   }
 
+  // A product of a step that failed or is undefined (status "claimed") is drawn hatched.
+  function mark(material, species) {
+    return species.status === 'claimed' ? materials.hatch(material, species.colour) : material;
+  }
+
+  function centreOf(space) {   // the centre of a space's bounds, in its mesh's own frame, which its children share
+    const geometry = model.spaces.get(space).geometry;
+    if (!geometry.boundingBox) geometry.computeBoundingBox();
+    return geometry.boundingBox.getCenter(new THREE.Vector3());
+  }
+
   // A sparse cloud of gas particles in a space, a child of its haze (same visibility, same clipping plane).
   // Each particle sways along a short chord from a point inside the mesh, and only where no wall crosses the
   // chord, so it stays inside. Drawn without the depth test: the opaque walls of its space never hide it.
   // ponytail: candidates are drawn in the bounding box, at most CANDIDATES per particle asked for; a thin slanted
   // shaft fills about one percent of its box and gets fewer particles than asked. Sample along the shaft if that shows.
-  function cloud(space, haze, plane, count) {
+  function cloud(space, haze, plane, count, colour) {
     const solid = solidOf(model.spaces.get(space).geometry);
     const found = [];   // points inside the mesh
     const trial = new THREE.Vector3();
@@ -154,7 +169,7 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute('position', new THREE.BufferAttribute(from.slice(), 3));
     const material = new THREE.PointsMaterial({
-      color: HAZE_COLOUR, size: PARTICLE_SIZE, transparent: true, opacity: 0.9, depthWrite: false,   // display choice
+      color: colour, size: PARTICLE_SIZE, transparent: true, opacity: 0.9, depthWrite: false,   // display choice
       depthTest: false, blending: THREE.NormalBlending, clippingPlanes: [plane],                     // display choice
     });
     const points = keep(haze, new THREE.Points(geometry, material), geometry, material);
@@ -176,9 +191,11 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
 
   const factories = {
     water(actor) {
+      const species = actor.species[0];   // a mixture is drawn in the colour of its first-listed species
       const plane = new THREE.Plane(new THREE.Vector3(0, -1, 0), 0);   // keeps what lies below y = plane.constant
       const material = materials.water(plane);
-      const mesh = skin(actor.space, material, -4);
+      material.color.set(species.colour);
+      const mesh = skin(actor.space, mark(material, species), -4);
       const curve = cycle.curves[actor.space];
       updaters.push((u, source) => {
         const fraction = source.fraction(actor.space);
@@ -191,10 +208,11 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
     },
 
     gas(actor) {
+      const species = actor.species[0];   // a mixture is drawn in the colour of its first-listed species
       actor.path.forEach((space, k) => {
         const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), FAR);   // keeps what lies above y = -plane.constant
-        const haze = skin(space, materials.gas(plane, HAZE_COLOUR), -2);
-        if (perSpace) cloud(space, haze, plane, perSpace);
+        const haze = skin(space, mark(materials.gas(plane, species.colour), species), -2);
+        if (perSpace) cloud(space, haze, plane, perSpace, species.colour);
         updaters.push(u => {
           haze.visible = u >= k / actor.path.length;               // the path lights up one space after another
           plane.constant = -(water.get(space)?.level ?? -FAR);     // only above any water in the same space
@@ -235,8 +253,17 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
       keep(scene, tag('Solver result pending', 'pending-label')).position.copy(model.masonryBounds.getCenter(new THREE.Vector3()));
     },
 
-    // Extension point (Task 9, chemistry): the calcium sulfate outline of S23. Until then a coat draws nothing.
-    coat() {},
+    // The calcium sulfate layer of S23: the edges of the coated space, in that species' colour.
+    coat(actor) {
+      const species = current.species.find(s => s.id === COAT_SPECIES);
+      if (!species) throw new Error(`cycle.json: ${current.id}: a coat needs ${COAT_SPECIES} in the step's species`);
+      const source = model.spaces.get(actor.space);
+      const geometry = new THREE.EdgesGeometry(source.geometry);
+      // transparent so it is sorted with the skins: an opaque line is drawn before every transparent skin, whatever its renderOrder
+      const material = new THREE.LineBasicMaterial({ color: species.colour, transparent: true });
+      const outline = keep(source, new THREE.LineSegments(geometry, material), geometry, material);
+      outline.renderOrder = 2;   // after the water and gas skins
+    },
   };
 
   function clear() {
@@ -250,6 +277,24 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
     flash.intensity = 0;
   }
 
+  // One label per space with water or gas: the species of every such actor there, in build order (water
+  // first), each once, "(claimed)" after a claimed one; a child of the space mesh at the centre of its bounds.
+  function labelSpecies(ordered) {
+    const present = new Map();   // space -> species payloads
+    for (const actor of ordered) {
+      if (actor.type !== 'water' && actor.type !== 'gas') continue;
+      for (const space of actor.type === 'water' ? [actor.space] : actor.path) {
+        const list = present.get(space) ?? [];
+        for (const species of actor.species) if (!list.some(s => s.id === species.id)) list.push(species);
+        present.set(space, list);
+      }
+    }
+    for (const [space, list] of present) {
+      const text = list.map(species => species.formula + (species.status === 'claimed' ? CLAIMED : '')).join(' · ');
+      keep(model.spaces.get(space), tag(text, 'species-label')).position.copy(centreOf(space));
+    }
+  }
+
   function build(step) {
     clear();
     current = step;
@@ -261,7 +306,7 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
     // water first: the gas in a space is clipped to what lies above the water in it
     const ordered = [...step.actors].sort((a, b) => (a.type !== 'water') - (b.type !== 'water'));
     for (const actor of ordered) factories[actor.type](actor);
-    // Extension point (Task 9, chemistry): one species label per space with water or gas goes here.
+    labelSpecies(ordered);
   }
 
   function update({ u, dt, source }) {
