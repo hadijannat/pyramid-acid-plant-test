@@ -4,6 +4,8 @@ import { DEFAULT_STATE, createStore, readUrl } from './store.js';
 import { loadData } from './data/load.js';
 import { createRenderer } from './render/renderer.js';
 import { createEnvironment } from './render/environment.js';
+import { createMaterials } from './render/materials.js';
+import { frameModel, loadModel } from './render/model.js';
 
 const message = document.getElementById('message');
 
@@ -60,13 +62,18 @@ async function boot() {
   stateParts.push(() => ({ lastDt: rendererApi.lastDt }));
   Object.assign(window.viewer, { rendererApi, environment });
 
+  // ---- materials and model (Task 5)
+  const materials = createMaterials();
+  const model = await loadModel('data/interior.glb', rendererApi.scene, materials, store);
+  frameModel(model, rendererApi.camera, rendererApi.controls);
+  Object.assign(window.viewer, { model });
+
   // ---- start (Task 4): stays the last block, so everything frame() reads exists before the first frame
   function frame(dt) {
-    environment.update(dt, false);   // no model yet, so the camera is never inside it
+    environment.update(dt, model.bounds.containsPoint(rendererApi.camera.position));
+    materials.update(dt);
+    model.setInterior(environment.mix.interior);
   }
-  // display choice: an exterior pose that shows the empty plateau and the sky
-  rendererApi.camera.position.set(320, 120, 260);
-  rendererApi.controls.target.set(0, 50, 0);
   rendererApi.start(frame);
 }
 
