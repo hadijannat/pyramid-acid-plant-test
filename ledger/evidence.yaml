@@ -119,18 +119,20 @@
   verified: true
 
 - id: E03
-  status: undefined
+  status: fail
   basis: >-
-    No evidence found: no survey of the Tomb of the Birds or of any other Giza cave that shows cave forms cut
-    in iron ore was found, and the claim names none. The paper it cites concerns iron-ore caves at other sites,
-    which the criterion sets aside, and no research file opened it. The one study of Giza cave deposits read in
-    full is of a different exposure and reports iron and manganese oxide as a minor part of gypsum and fracture
-    fills (0.65 and 6.19 percent iron oxide by weight in its two samples), and the research file finds no ore
-    body documented at Giza.
+    No evidence found: no survey of a Giza cave shows cave forms cut in iron ore. The one study of Giza cave
+    deposits that was read in full describes a mudstone exposure on the west side of the plateau and reports
+    iron and manganese oxide as a minor part of gypsum and fracture fills (0.65 and 6.19 percent iron oxide by
+    weight in its two samples), and the research file finds no ore body documented at Giza: the plateau is
+    carbonate rock with minor oxide fills. That exposure is not the Tomb of the Birds, of which no survey was
+    found. The paper the claim cites concerns iron-ore caves at other sites, which the criterion sets aside, and
+    no research file opened it.
   sources:
     - research/07-plateau-geology.md C1 with its second-pass note, and C10
+    - research/07-plateau-geology.md Verification pass, check 1
     - research/00-hypothesis.md E03
-  verified: false
+  verified: true
 
 - id: E04
   status: conditional

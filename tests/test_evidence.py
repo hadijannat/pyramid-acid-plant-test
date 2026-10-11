@@ -22,7 +22,7 @@ def register() -> dict[str, evidence.Entry]:
 STATUS = {
     "S02": "undefined", "S26": "undefined",
     "S05": "not_testable", "E05": "not_testable", "E23": "not_testable", "E24": "not_testable", "E40": "not_testable",
-    "E02": "fail", "E03": "undefined", "E04": "conditional", "E06": "undefined", "E07": "fail", "E08": "fail",
+    "E02": "fail", "E03": "fail", "E04": "conditional", "E06": "undefined", "E07": "fail", "E08": "fail",
     "E09": "fail", "E10": "pass", "E16": "fail", "E26": "pass", "E27": "fail", "E28": "conditional",
     "E30": "conditional", "E31": "undefined", "E33": "conditional", "E34": "undefined", "E35": "conditional",
     "E36": "fail", "E37": "conditional", "E39": "conditional",
