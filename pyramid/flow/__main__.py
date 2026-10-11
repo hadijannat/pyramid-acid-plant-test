@@ -53,7 +53,8 @@ def shares(ledger, q) -> dict:
             curves.append({"joint_aperture_m": aperture, "drain_time_s": drain,
                            "antechamber_share": [d[1] for d in drawn], "joint_share": [d[2] for d in drawn],
                            "pressure_difference_pa": [d[0] for d in drawn]})
-    return {"area_m2": areas.tolist(), "grooves_m2": q["ante.groove_connected_area"],
+    return {"area_m2": areas.tolist(), "submerged_share": gas.submerged_share(q),
+            "grooves_m2": q["ante.groove_connected_area"],
             "grooves_and_clearance_m2": gas.opening_area(q), "curves": curves}
 
 

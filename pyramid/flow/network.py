@@ -2,7 +2,10 @@
 
 Levels are metres above the pavement, the ledger's datum. Every quantity is a pure function of {ledger id: number};
 its range is its least and greatest value over the corners of its inputs' ranges (simkit.corners), which is exact
-because each function here is monotone in each input whose range is wider than a rounding.
+where the function is monotone in each input whose range is wider than a rounding. The gas shares are not, in the
+drain time: a slower drain helps once the antechamber opening is clear of the water and hurts while it is under
+it. Their ranges hold the three drain rates 02 evaluates, and a sweep of the rates between moves neither end by
+more than 0.002 (tests/test_flow_models.py).
 """
 import math
 from dataclasses import dataclass
@@ -15,11 +18,15 @@ from pyramid.screening import Result
 QUANTITIES: list[tuple] = []
 
 
-def quantity(name: str, label: str, unit: str, formula: str, inputs: tuple[str, ...]):
-    """Register a pure function of {ledger id: number} as the result flow.<name>."""
+def quantity(name: str, label: str, unit: str, formula: str, inputs: tuple[str, ...], held: tuple[str, ...] = ()):
+    """Register a pure function of {ledger id: number} as the result flow.<name>.
+
+    `held` inputs stay at their ledger values while the range is taken: every input with a range doubles the
+    corners, so a quantity names here those whose ranges it leaves to another result, and says which.
+    """
 
     def register(fn):
-        QUANTITIES.append((f"flow.{name}", label, unit, formula, inputs, fn))
+        QUANTITIES.append((f"flow.{name}", label, unit, formula, inputs, fn, held))
         return fn
 
     return register
@@ -27,8 +34,10 @@ def quantity(name: str, label: str, unit: str, formula: str, inputs: tuple[str, 
 
 def all_results(ledger: Ledger) -> dict[str, Result]:
     results = {}
-    for id, label, unit, formula, inputs, fn in QUANTITIES:
-        value, low, high = simkit.corners(ledger, inputs, fn)
+    for id, label, unit, formula, inputs, fn, held in QUANTITIES:
+        fixed = {i: ledger.q(i) for i in held}
+        swept = tuple(i for i in inputs if i not in fixed)
+        value, low, high = simkit.corners(ledger, swept, lambda v: fn(v | fixed))  # noqa: B023 (called at once)
         results[id] = Result(id, label, value, low, high, unit, formula, inputs)
     return results
 
@@ -39,7 +48,7 @@ FILLED = (
     ("Grand Gallery", ("gg.volume",)),
     ("Queen's Chamber with its niche", ("qc.volume", "qc.niche.volume")),
     ("Queen's passage", ("qp.volume",)),
-    ("Ascending Passage above the plugs", ("ap.volume",)),
+    ("Ascending Passage with the plugs in place", ("ap.volume",)),  # the stub below the plugs is part of it
     ("well shaft", ("ws.volume",)),
 )
 FILLED_IDS = tuple(id for _, ids in FILLED for id in ids)

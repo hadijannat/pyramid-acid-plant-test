@@ -1,9 +1,13 @@
 """Retention: how long sulfur dioxide stays in the King's Chamber with its two shafts open (S03).
 
-Two ways out are modelled. Molecular diffusion up the shafts, with the chamber well mixed. And a through-flow from
-one face to the other, driven by the wind's pressure difference between the two outlets against the shafts'
+Two ways out by the shafts are modelled. Molecular diffusion up them, with the chamber well mixed. And a through-flow
+from one face to the other, driven by the wind's pressure difference between the two outlets against the shafts'
 friction; because the shafts rise from the chamber and the gas is denser than air, that flow must first lift the
 chamber's gas up the leeward shaft, a head the wind has to exceed before anything moves.
+
+The same weight carries the gas out of any opening at the chamber's floor that is not under water, with air coming
+down the shafts in its place. drain_half_time() estimates that for the antechamber path; the floor inlet by which
+S03 has the gas arrive is taken as closed, which the hypothesis does not say.
 """
 import math
 
@@ -93,6 +97,26 @@ def half_time(q, wind: float | None = None, fraction: float = 1.0) -> float:
     flushing = 2 * scale * (math.atanh(math.sqrt(1 - head / (2 * drive)))
                             - math.atanh(math.sqrt(max(0.0, 1 - head * start / drive))))
     return min(slow * math.log(2), slow * math.log(1 / start) + flushing)
+
+
+DRAIN_IDS = ("kc.length", "kc.width", "kc.height", "flow.discharge_coefficient", "hydro.air_density") + SO2_IDS
+
+
+def drain_half_time(q, area: float) -> float:
+    """Time for half of a chamber of pure sulfur dioxide to run out through an opening at its floor: s.
+
+    The gas lies in the chamber as water would and leaves by its own weight, air coming down the shafts in its
+    place: Q = Cd a sqrt(2 g' h) with g' = g (rho_so2 - rho_air) / rho_so2, so its depth is halved after
+    t = (1 - 1 / sqrt(2)) (A_floor / (Cd a)) sqrt(2 H / g'). A shut opening lets nothing out.
+    """
+    # ponytail: an unmixed layer over an opening with air beyond it, an estimate to a factor of about two. If the
+    # incoming air stirs the charge the outflow thins as it goes; model the exchange flow if the minutes matter.
+    if area <= 0:
+        return math.inf
+    dense = so2_density(q)
+    reduced = G * (dense - q["hydro.air_density"]) / dense
+    emptying = q["kc.length"] * q["kc.width"] / (q["flow.discharge_coefficient"] * area)
+    return (1 - 1 / math.sqrt(2)) * emptying * math.sqrt(2 * q["kc.height"] / reduced)
 
 
 @quantity(

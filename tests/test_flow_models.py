@@ -1,4 +1,5 @@
 """The flow models against closed forms: each expected number is computed here from the formula it tests."""
+import itertools
 import math
 
 import numpy as np
@@ -133,16 +134,174 @@ def test_an_open_antechamber_with_tight_masonry_gives_tier0s_shaft_pressure(led,
     assert tier0 == pytest.approx(25, rel=0.05)
 
 
-def test_the_flip_apertures_are_where_the_share_crosses(q):
-    # the closed forms leave out the gas Davison's chamber gives up, a few parts in a hundred thousand here
+def test_the_flip_apertures_are_where_the_share_crosses(led, q):
+    # the roots leave out the gas Davison's chamber gives up, a few parts in a hundred thousand here
     half = q | {"hydro.joint_aperture": gas.joint_aperture_half(q)}  # with the slabs down
     assert gas.draw(half)[1] == pytest.approx(0.5, rel=1e-4)
     nine_tenths = q | {"hydro.joint_aperture": gas.joint_aperture_nine_tenths(q)}  # with no slab in the passage
     assert gas.draw(nine_tenths, area=gas.passage_area(q))[1] == pytest.approx(0.9, rel=1e-4)
-    # and the drain time at which path and joints carry the same, at the ledger's joints
-    # (the faster drain pulls harder, so the chamber's share is three parts in ten thousand)
-    assert gas.draw(q | {"hydro.drain_time": gas.flip_drain_time(q)})[1] == pytest.approx(0.5, rel=1e-3)
-    assert gas.flip_drain_time(q) / 60 == pytest.approx(19.5, rel=0.01)
+    # with the opening never under water they are the closed forms of the steady draw: the path carries the share
+    # s of Q at dp = (rho / 2) (s Q / C)^2 and the joints the rest, c dp = (1 - s) Q
+    total, density = q["gg.volume"] / q["hydro.drain_time"], q["hydro.air_density"]
+    pocket = tuple(q[id] for id in gas._POCKET)
+    for share, area in ((0.5, gas.opening_area(q)), (0.9, gas.passage_area(q))):
+        conductance = gas.antechamber_conductance(q, area)
+        slope = (1 - share) * total / (density / 2 * (share * total / conductance) ** 2)
+        steady = gas.summed(total, conductance, density, slope, gas.suction_cap(q), q["hydro.water_density"], pocket,
+                            submerged=False)
+        assert steady[2] == pytest.approx(share, rel=1e-12)
+        # under water the joints have the pocket to themselves at first, so they must be tighter for the same share
+        aperture = (12 * density * q["hydro.air_kinematic_viscosity"] * q["flow.joint_path_length"] * slope
+                    / q["hydro.joint_length"]) ** (1 / 3)
+        assert gas.flip_aperture(q, share, area) < aperture
+    # and the drain time at which half comes down the shafts, at the ledger's joints
+    time, word = gas.flip_drain_time(q, *led.rng("hydro.drain_time"))
+    assert gas.draw(q | {"hydro.drain_time": time})[1] == pytest.approx(0.5, rel=1e-6)
+    assert word == "slower" and gas.draw(q | {"hydro.drain_time": 2 * time})[1] > 0.5
+    # joints of 0.05 mm leave more than half at every drain rate: there is no such time
+    assert gas.flip_drain_time(q | {"hydro.joint_aperture": 5e-5}, *led.rng("hydro.drain_time")) is None
+
+
+# --- gas: the antechamber opening under water -------------------------------------------------
+
+
+def test_the_gallery_section_is_tier0s_and_the_pocket_is_its_integral(q):
+    bands = gas.section_bands(q)
+    assert sum(width * (high - low) for low, high, width in bands) == pytest.approx(screening._gg_section(q))
+    slope = math.radians(q["gg.angle"])
+    length = q["gg.floor_length"] * math.cos(slope)
+    roof = q["gg.south_end.z"] + q["gg.height"]
+
+    def by_slices(level, slices=20000):
+        """The Gallery above a level, cut into slices along its length: the floor falls away to the north."""
+        volume = 0.0
+        for i in range(slices):
+            depth = level - (q["gg.south_end.z"] - math.tan(slope) * (i + 0.5) * length / slices)  # over the floor
+            volume += sum(width * max(0.0, high - max(low, depth)) for low, high, width in bands) * length / slices
+        return volume / (screening._gg_section(q) * length)
+
+    top = q["ante.floor.z"] + q["ante.low_passage.height"]
+    for level in (top, q["ante.floor.z"], q["gg.south_end.z"] - 0.5, roof - 1.0):
+        assert gas.pocket_share(q, level) == pytest.approx(by_slices(level), rel=1e-4)
+    assert gas.pocket_share(q, roof) == 0.0
+    # a plain box of the same height: the pocket is a wedge, (H - h0)^2 / (2 tan(a)) across the width
+    box = q | {"gg.overhang": 0.0, "gg.slot_width": q["gg.width"]}
+    height = q["gg.height"]
+    assert gas.pocket_share(box, roof - 2.0) == pytest.approx(2.0**2 / (2 * math.tan(slope)) / (height * length))
+    # 44.10 m is the opening's top and 42.99 m its floor; the full Gallery stands 7.4 m over the top
+    assert gas.opening_depth(q) == pytest.approx(51.5 - 44.10, abs=0.01)
+    assert gas.submerged_share(q) == pytest.approx(0.132, abs=0.001)
+    assert gas.pocket_share(q, q["ante.floor.z"]) == pytest.approx(0.181, abs=0.001)
+
+
+def test_the_closed_form_of_one_orifice_and_one_leak_is_the_general_solvers_answer():
+    density, total, cap = 1.2, 0.16, 9.9e4
+    heads = [0.0, 150.0, 5e3, 3e4, 7.2e4]
+    for conductance, slope in ((0.011, 8e-4), (0.024, 1e-6), (0.011, 0.0), (0.0, 8e-4), (1e-7, 1e-9), (0.0, 0.0)):
+        dp, through, leak = gas.split(total, conductance, density, slope, heads, cap)
+        for i, head in enumerate(heads):
+            paths = [gas.orifice(conductance, density, head), lambda dp: slope * dp]
+            expected, flows = gas.solve(paths, total, cap)
+            assert dp[i] == pytest.approx(expected, rel=1e-9), (conductance, slope, head)
+            assert [through[i], leak[i]] == pytest.approx(flows, rel=1e-9, abs=1e-15)
+    # an orifice under water and nothing else: the suction is the water over it plus the orifice's own loss
+    dp, through, _ = gas.split(total, 0.011, density, 0.0, [3e4], cap)
+    assert dp[0] == pytest.approx(3e4 + density / 2 * (total / 0.011) ** 2, rel=1e-12)
+    assert through[0] == pytest.approx(total, rel=1e-12)
+    # a leak that carries everything below the head leaves the orifice dry
+    dp, through, leak = gas.split(total, 0.011, density, 8e-4, [3e4], cap)
+    assert dp[0] == pytest.approx(total / 8e-4) and through[0] == 0.0 and leak[0] == pytest.approx(total)
+
+
+def _share_level_by_level(q, area, levels=400):
+    """The antechamber path's share of a draw, each water level solved by bisection: the model's own laws."""
+    total, density = q["gg.volume"] / q["hydro.drain_time"], q["hydro.air_density"]
+    conductance, slope = gas.antechamber_conductance(q, area), gas.joint_slope(q)
+    top = q["ante.floor.z"] + q["ante.low_passage.height"]
+    roof = q["gg.south_end.z"] + q["gg.height"]
+    passed = 0.0
+    for i in range(levels):
+        upper, lower = roof - (roof - top) * i / levels, roof - (roof - top) * (i + 1) / levels
+        head = q["hydro.water_density"] * G * ((upper + lower) / 2 - top)
+        _, (through, leak) = gas.solve([gas.orifice(conductance, density, head), lambda dp: slope * dp], total,
+                                       gas.suction_cap(q))
+        passed += (gas.pocket_share(q, lower) - gas.pocket_share(q, upper)) * through / (through + leak)
+    _, (through, leak) = gas.solve([gas.orifice(conductance, density), lambda dp: slope * dp], total,
+                                   gas.suction_cap(q))
+    return passed + (1 - gas.pocket_share(q, top)) * through / (through + leak)
+
+
+def test_the_draw_is_summed_over_the_water_level(q):
+    passage = gas.passage_area(q)
+    for aperture, drain, area in ((5.08e-4, 3600.0, None), (1e-4, 3600.0, passage), (5e-5, 21600.0, passage),
+                                  (2e-4, 600.0, None)):
+        case = q | {"hydro.joint_aperture": aperture, "hydro.drain_time": drain}
+        open_area = gas.opening_area(q) if area is None else area
+        _, share, joints, stored = gas.draw(case, area=area)
+        assert share / (1 - stored) == pytest.approx(_share_level_by_level(case, open_area), rel=1e-3)
+        assert share + joints + stored == pytest.approx(1.0, rel=1e-9)
+        # eight times as many levels move it by less than one part in ten thousand
+        args = (case["gg.volume"] / drain, gas.antechamber_conductance(case, open_area), case["hydro.air_density"],
+                gas.joint_slope(case), gas.suction_cap(case), case["hydro.water_density"],
+                tuple(case[id] for id in gas._POCKET))
+        assert gas.summed(*args)[2] == pytest.approx(gas.summed(*args, steps=8 * gas.STEPS)[2], abs=1e-4)
+
+
+def test_leaking_joints_have_the_pocket_to_themselves_while_the_opening_is_under_water(q):
+    # at the ledger's joints the pocket is fed at 195 Pa, against 72 kPa of water over the opening: nothing
+    # passes it until the surface is within 2 cm of its top, so the share is the steady one less the part
+    # of the Gallery displaced by then
+    head = q["hydro.water_density"] * G * gas.opening_depth(q)
+    assert head == pytest.approx(72.4e3, rel=0.01)
+    assert gas.start_pressure(q) == pytest.approx(q["gg.volume"] / q["hydro.drain_time"] / gas.joint_slope(q))
+    assert gas.start_pressure(q) < head / 100
+    for area in (None, gas.passage_area(q)):
+        steady, summed = gas.draw(q, area=area, submerged=False), gas.draw(q, area=area)
+        assert summed[1] == pytest.approx((1 - gas.submerged_share(q)) * steady[1], rel=2e-3)
+        assert summed[0] == steady[0]  # once the opening is clear the pressure is the steady one
+    # with gas-tight masonry the gas has no other way in: the suction rises to the water over the opening
+    # plus the path's own loss, and all of it still comes through
+    tight = gas.draw(q, area=gas.passage_area(q), joints=False)
+    assert gas.start_pressure(q, area=gas.passage_area(q), joints=False) == pytest.approx(head + tight[0], rel=1e-12)
+    assert tight[1] + tight[3] == pytest.approx(1.0, rel=1e-12)
+    # and nothing at all through a shut path, where the water hangs at the most it can pull
+    shut = gas.draw(q, area=0.0, joints=False)
+    assert shut[0] == gas.suction_cap(q) and shut[1] == 0.0
+
+
+def test_the_ranges_hold_a_sweep_of_the_drain_time_and_of_the_gallerys_section(led, q):
+    results = flow.all_results(led)
+    # the shares turn round in the drain time at some apertures, where corners need not be the extremes
+    deciding = ("hydro.joint_aperture", "flow.joint_path_length", "flow.discharge_coefficient",
+                "ante.groove_connected_area", "flow.slab_leak_area")
+    times = np.geomspace(*led.rng("hydro.drain_time"), 25)
+    turned = False
+    for name, area in (("shaft_share", None), ("slabs_absent_share", gas.passage_area(q))):
+        result = results[f"flow.{name}"]
+        for corner in itertools.product(*(led.rng(id) for id in deciding)):
+            case = q | dict(zip(deciding, corner))
+            curve = [gas.draw(case | {"hydro.drain_time": float(time)}, area=area)[1] for time in times]
+            assert result.low - 0.002 <= min(curve) and max(curve) <= result.high + 0.002
+            turned = turned or max(curve) > max(curve[0], curve[-1]) + 1e-6
+    assert turned
+    # the Gallery's section and levels are held at their ledger values in those ranges: over their own ranges
+    # the share moves by less than a hundredth, as the share displaced under water does
+    under = results["flow.submerged_share"]
+    assert under.high - under.low < 0.01 and under.inputs == gas._POCKET
+    held = [id for id in gas._PHASE if led.rng(id)[0] < led.rng(id)[1]]
+    for area in (None, gas.passage_area(q)):
+        shares = [gas.draw(q | dict(zip(held, corner)), area=area)[1]
+                  for corner in itertools.product(*(led.rng(id) for id in held))]
+        assert max(shares) - min(shares) < 0.01
+    for name in ("shaft_share", "slabs_absent_share", "draw_pressure", "start_pressure", "joint_aperture_half"):
+        assert set(gas._PHASE) <= set(results[f"flow.{name}"].inputs)
+
+
+def test_three_clearances_one_after_another_pass_less_than_one(q):
+    slabs = q | {"ante.groove_connected_area": 0.0}
+    assert gas.series_area(slabs) == pytest.approx(q["flow.slab_leak_area"] / math.sqrt(3))
+    assert gas.series_area(slabs) < gas.series_area(q) < gas.opening_area(q)
+    assert gas.series_area(q | {"flow.slab_leak_area": 0.0}) == 0.0  # the grooves pass only the last slab
 
 
 def test_three_gallery_openings_lie_at_its_foot(q):
@@ -218,6 +377,17 @@ def test_the_half_time_follows_the_models_equation(q):
     weightless = math.log(2) * q["kc.volume"] / (series * wind * math.sqrt(q["flow.wind_pressure_coefficient_difference"]))
     assert retention.half_time(q, wind) == pytest.approx(weightless, rel=1e-3)
     assert retention.half_time(q, wind, fraction=0.0) == pytest.approx(weightless, rel=1e-6)
+
+
+def test_a_dense_charge_runs_out_of_a_floor_opening_as_water_leaves_a_tank(q):
+    area = gas.opening_area(q)  # 202 cm2, at the chamber's floor
+    floor, depth, cda = q["kc.length"] * q["kc.width"], q["kc.height"], q["flow.discharge_coefficient"] * area
+    # the tank benchmark's own run, to half the depth; the gas falls under g (1 - rho_air / rho_so2), not g
+    times, _ = hydraulics.simulate([floor], [depth], [(0, None, 0.0, cda)], 1e5, until=(0, depth / 2))
+    reduced = 1 - 1 / retention.so2_density_ratio(q)
+    assert retention.drain_half_time(q, area) == pytest.approx(times[-1] / math.sqrt(reduced), rel=1e-6)
+    assert retention.drain_half_time(q, area) / 60 == pytest.approx(32, rel=0.02)  # about half an hour
+    assert retention.drain_half_time(q, 0.0) == math.inf  # a shut path lets nothing out
 
 
 def test_a_thinner_charge_is_flushed_by_a_weaker_wind(q):
