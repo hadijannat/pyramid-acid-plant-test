@@ -175,7 +175,8 @@ void main() {
   // display choice: noise scale, drift speed and density
   float drift = noise3(vWorld * 0.6 + vec3(0.0, -0.25, 0.1) * uTime);
   float density = (0.25 + 0.75 * fresnel(vView)) * (0.4 + 0.6 * drift);
-  gl_FragColor = vec4(uColour, clamp(density * 2.0, 0.0, 0.85));   // display choice: the veil's opacity from its density
+  // display choice: the veil's opacity from its density, with a floor so a veil seen face on still shows its colour
+  gl_FragColor = vec4(uColour, clamp(0.35 + density * 2.0, 0.0, 0.85));
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
 }`,
