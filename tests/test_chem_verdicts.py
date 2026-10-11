@@ -147,7 +147,9 @@ def test_s23_follows_what_a_fill_dissolves_against_the_layer_a_cycle_grows(led):
                  "cycle and 2.1 mm in ten in bringing each batch to saturation (1.6 to 4.9 mm",
                  "does not rest on the cycle time, which cancels for still water, or on how long the water stays "
                  "fresh, which the hypothesis does not state", "still water would not strip a thicker deposit",
-                 "is 55 percent of the gypsum one fresh fill can dissolve (76 percent at most)."):
+                 "is 55 percent of the gypsum one fresh fill can dissolve, 76 percent at most) and, at the least "
+                 "figure, on dissolved calcium sulfate diffusing no slower than 6.0e-10 m2/s, a value recalled and "
+                 "not sourced."):
         assert text in basis, basis
 
     # The fail does not lean on the fresh water standing as long as the acid did. A layer twice as permeable at its

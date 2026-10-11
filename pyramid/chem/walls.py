@@ -86,6 +86,9 @@ def acid_takes(q) -> float:
     Gypsum brings its own sulfate, so this is less than the calcium at which Tier 0's batch saturates on calcite,
     (s rho)^2 / c, and always less than what fresh water takes, s rho.
     """
+    # ponytail: all the batch's sulfate counts as free, as in Tier 0; that favours the hypothesis. With the
+    # ledger's bisulfate constant the acid takes more gypsum than fresh water does (tests/test_chem_walls.py), so
+    # this is a floor; solve that balance here if the floor ever decides a verdict the other way.
     strength, solubility = _strength(q), _solubility(q)
     return 2 * solubility**2 / (strength + math.hypot(strength, 2 * solubility))  # the positive root, no cancellation
 

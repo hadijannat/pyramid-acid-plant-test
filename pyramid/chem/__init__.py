@@ -216,9 +216,11 @@ def _s23(ledger, r):
             f"each batch to saturation ({1e3 * ten.low:.1f} to {1e3 * ten.high:.1f} mm over the ranges of the "
             "inputs). The outcome does not rest on the cycle time, which cancels for still water, or on how long the "
             "water stays fresh, which the hypothesis does not state and which only adds to what is dissolved. It "
-            "rests on the layer being the diffusion-limited one of 03: still water would not strip a thicker "
+            "rests on the layer being the diffusion-limited one of 03 (still water would not strip a thicker "
             f"deposit, though the most a whole batch can lay down is {100 * deposit.value:.0f} percent of the gypsum "
-            f"one fresh fill can dissolve ({100 * deposit.high:.0f} percent at most)."
+            f"one fresh fill can dissolve, {100 * deposit.high:.0f} percent at most) and, at the least figure, on "
+            f"dissolved calcium sulfate diffusing no slower than {ledger.rng('rx.ion_diffusivity')[0]:.1e} m2/s, a "
+            "value recalled and not sourced."
         )
     if status == "pass":
         # Judgement call: the criterion also asks for a wall loss the surviving surfaces allow, and the ledger

@@ -1,9 +1,11 @@
 """Benchmarks for the wall model: parabolic growth, Tier 0's saturation share, the ten-cycle bookkeeping."""
+import itertools
 import math
 
 import numpy as np
 import pytest
 from scipy.integrate import quad
+from scipy.optimize import brentq
 from scipy.special import erfc
 
 from pyramid import ledger, screening
@@ -96,6 +98,28 @@ def test_still_water_dissolves_at_least_the_acid_only_figure_however_the_cycle_i
     assert margins[0] == walls.least_margin(q) and margins[-1] == walls.still_margin(q)
     for cycle in (3600.0, 365.25 * 86400.0):
         assert walls.least_margin(q | {"rx.cycle_time": cycle}) == pytest.approx(walls.least_margin(q), rel=1e-9)
+
+
+def test_counting_bisulfate_the_acid_takes_more_gypsum_than_fresh_water(led):
+    # What acid_takes leaves out. With the ledger's second dissociation constant the batch's free sulfate y obeys
+    # Ka2 = H+ y / HSO4-. Free of calcium, H+ = c + y and HSO4- = c - y: 26 percent of the sulfate is free (03 V8).
+    # With x of gypsum dissolved, y = (s rho)^2 / x, H+ = c - x + y and HSO4- = c + x - y.
+    def counted(c, s, ka2):
+        return brentq(lambda x: (c - x + s * s / x) * s * s / x - ka2 * (c + x - s * s / x),
+                      2 * s * s / (c + math.hypot(c, 2 * s)), 5 * s)  # from the root without bisulfate upward
+
+    ids = walls.DEPOSIT + ("chem.ka2_sulfuric",)
+    q = {i: led.q(i) for i in ids}
+    c, s, ka2 = walls._strength(q), walls._solubility(q), q["chem.ka2_sulfuric"]
+    assert brentq(lambda y: (c + y) * y - ka2 * (c - y), 0.0, c) / c == pytest.approx(0.26, abs=0.005)
+    assert counted(c, s, ka2) / s == pytest.approx(1.11, abs=0.005)
+    assert walls.acid_takes(q) / s == pytest.approx(0.49, abs=0.005)
+    # At every corner of the ranges the acid takes more than fresh water (1.10 to 1.16 times), and acid_takes less
+    # (0.45 to 0.58 times): the least that still water dissolves is a floor under both.
+    for corner in itertools.product(*(set(led.rng(i)) for i in ids)):
+        q = dict(zip(ids, corner))
+        c, s = walls._strength(q), walls._solubility(q)
+        assert 0.45 < walls.acid_takes(q) / s < 0.59 and 1.09 < counted(c, s, q["chem.ka2_sulfuric"]) / s < 1.17
 
 
 def test_a_whole_batch_cannot_lay_down_what_one_fresh_fill_dissolves(q):
