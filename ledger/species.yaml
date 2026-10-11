@@ -1,0 +1,21 @@
+# The compounds the source video names, for the viewer's chemistry display. Authored by hand.
+# Source: docs/superpowers/specs/2026-10-10-chemistry-display-kings-chamber-design.md section 3.1.
+#
+# Keys: id; formula, with Unicode subscripts, for display; name; phase (gas, liquid or solid);
+# colour; produced_by, the step of ledger/claims.yaml that makes the compound in the claimed
+# cycle, or null for an input. pyramid/species.py loads this file and marks a compound "claimed"
+# when its producing step's verdict is fail or undefined.
+#
+# The colours are display choices, not data: they tell compounds apart and are never verdicts.
+# Limestone (CaCO₃) and sodium chloride (NaCl) appear only inside equations: the first is the
+# wall itself, the second is outside the modelled interior.
+
+- {id: h2s, formula: "H₂S", name: "hydrogen sulfide", phase: gas, colour: "#9fd3a1", produced_by: null}
+- {id: so2, formula: "SO₂", name: "sulfur dioxide", phase: gas, colour: "#d9c24a", produced_by: S02}
+- {id: air, formula: "O₂ + N₂", name: "air", phase: gas, colour: "#bcd6e6", produced_by: null}
+- {id: so3, formula: "SO₃", name: "sulfur trioxide", phase: gas, colour: "#e08a3c", produced_by: S16}
+- {id: water, formula: "H₂O", name: "water", phase: liquid, colour: "#2f86d6", produced_by: null}
+- {id: sulfurous_acid, formula: "H₂SO₃", name: "sulfurous acid", phase: liquid, colour: "#4f9fd0", produced_by: S19}
+- {id: sulfuric_acid, formula: "H₂SO₄", name: "dilute sulfuric acid", phase: liquid, colour: "#c25b5b", produced_by: S20}
+- {id: calcium_sulfate, formula: "CaSO₄", name: "calcium sulfate", phase: solid, colour: "#efe6cf", produced_by: S23}
+- {id: hydrogen_chloride, formula: "HCl", name: "hydrogen chloride", phase: gas, colour: "#a8e0a0", produced_by: S27}
