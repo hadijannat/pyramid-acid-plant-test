@@ -1,39 +1,149 @@
 {
  "notice": "Animation of the claim. Not a simulation result.",
+ "prologue": {
+  "duration": 6.0,
+  "path": [
+   {
+    "position": [
+     620,
+     150,
+     -520
+    ],
+    "target": [
+     0,
+     17,
+     -102
+    ]
+   },
+   {
+    "position": [
+     380,
+     90,
+     -330
+    ],
+    "target": [
+     0,
+     17,
+     -102
+    ]
+   },
+   {
+    "position": [
+     230,
+     45,
+     -210
+    ],
+    "target": [
+     0,
+     17,
+     -102
+    ]
+   }
+  ]
+ },
  "steps": [
   {
    "id": "S01",
    "title": "Hydrogen sulfide rises under the plateau",
    "duration": 5.0,
-   "camera": {
-    "position": [
-     260,
-     20,
-     100
-    ],
-    "target": [
-     0,
-     -10,
-     0
-    ]
+   "path": [
+    {
+     "position": [
+      260,
+      20,
+      100
+     ],
+     "target": [
+      0,
+      -10,
+      0
+     ]
+    },
+    {
+     "position": [
+      247.65,
+      17.0,
+      -39.06
+     ],
+     "target": [
+      0,
+      -10,
+      0
+     ]
+    }
+   ],
+   "scene": {
+    "interior": false,
+    "weather": "clear"
    },
+   "species": [
+    {
+     "id": "h2s",
+     "formula": "H\u2082S",
+     "name": "hydrogen sulfide",
+     "phase": "gas",
+     "colour": "#9fd3a1",
+     "status": "plain"
+    }
+   ],
    "actors": []
   },
   {
    "id": "S02",
    "title": "Satellite pyramids convert it to sulfur dioxide",
    "duration": 5.0,
-   "camera": {
-    "position": [
-     300,
-     120,
-     -60
-    ],
-    "target": [
-     0,
-     40,
-     0
-    ]
+   "path": [
+    {
+     "position": [
+      300,
+      120,
+      -60
+     ],
+     "target": [
+      0,
+      40,
+      0
+     ]
+    },
+    {
+     "position": [
+      206.83,
+      112.0,
+      -181.77
+     ],
+     "target": [
+      0,
+      40,
+      0
+     ]
+    }
+   ],
+   "scene": {
+    "interior": false,
+    "weather": "clear"
+   },
+   "species": [
+    {
+     "id": "h2s",
+     "formula": "H\u2082S",
+     "name": "hydrogen sulfide",
+     "phase": "gas",
+     "colour": "#9fd3a1",
+     "status": "plain"
+    },
+    {
+     "id": "so2",
+     "formula": "SO\u2082",
+     "name": "sulfur dioxide",
+     "phase": "gas",
+     "colour": "#d9c24a",
+     "status": "plain"
+    }
+   ],
+   "reaction": {
+    "equation": "not stated by the hypothesis",
+    "timestamp": "F 00:14:18-00:14:39",
+    "note": "the video names a conversion without giving it"
    },
    "actors": []
   },
@@ -41,25 +151,62 @@
    "id": "S03",
    "title": "Sulfur dioxide fills the King's Chamber",
    "duration": 6.0,
-   "camera": {
-    "position": [
-     45,
-     52,
-     30
-    ],
-    "target": [
-     3,
-     44,
-     11
-    ]
+   "path": [
+    {
+     "position": [
+      45,
+      52,
+      30
+     ],
+     "target": [
+      3,
+      44,
+      11
+     ]
+    },
+    {
+     "position": [
+      44.29,
+      51.2,
+      6.91
+     ],
+     "target": [
+      3,
+      44,
+      11
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
    },
+   "species": [
+    {
+     "id": "so2",
+     "formula": "SO\u2082",
+     "name": "sulfur dioxide",
+     "phase": "gas",
+     "colour": "#d9c24a",
+     "status": "plain"
+    }
+   ],
    "actors": [
     {
      "type": "gas",
      "path": [
       "kings_chamber"
      ],
-     "color": "#d9c24a"
+     "species": [
+      {
+       "id": "so2",
+       "formula": "SO\u2082",
+       "name": "sulfur dioxide",
+       "phase": "gas",
+       "colour": "#d9c24a",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "placeholder",
@@ -77,18 +224,37 @@
    "id": "S04",
    "title": "Ground currents charge the flat top",
    "duration": 6.0,
-   "camera": {
-    "position": [
-     300,
-     60,
-     80
-    ],
-    "target": [
-     0,
-     60,
-     0
-    ]
+   "path": [
+    {
+     "position": [
+      300,
+      60,
+      80
+     ],
+     "target": [
+      0,
+      60,
+      0
+     ]
+    },
+    {
+     "position": [
+      269.83,
+      60.0,
+      -72.65
+     ],
+     "target": [
+      0,
+      60,
+      0
+     ]
+    }
+   ],
+   "scene": {
+    "interior": false,
+    "weather": "clear"
    },
+   "species": [],
    "actors": [
     {
      "type": "field",
@@ -99,7 +265,16 @@
      "path": [
       "kings_chamber"
      ],
-     "color": "#d9c24a"
+     "species": [
+      {
+       "id": "so2",
+       "formula": "SO\u2082",
+       "name": "sulfur dioxide",
+       "phase": "gas",
+       "colour": "#d9c24a",
+       "status": "plain"
+      }
+     ]
     }
    ]
   },
@@ -107,25 +282,53 @@
    "id": "S05",
    "title": "Operators wait for a storm",
    "duration": 4.0,
-   "camera": {
-    "position": [
-     -280,
-     90,
-     100
-    ],
-    "target": [
-     0,
-     45,
-     0
-    ]
+   "path": [
+    {
+     "position": [
+      -280,
+      90,
+      100
+     ],
+     "target": [
+      0,
+      45,
+      0
+     ]
+    },
+    {
+     "position": [
+      -173.24,
+      85.5,
+      203.94
+     ],
+     "target": [
+      0,
+      45,
+      0
+     ]
+    }
+   ],
+   "scene": {
+    "interior": false,
+    "weather": "storm"
    },
+   "species": [],
    "actors": [
     {
      "type": "gas",
      "path": [
       "kings_chamber"
      ],
-     "color": "#d9c24a"
+     "species": [
+      {
+       "id": "so2",
+       "formula": "SO\u2082",
+       "name": "sulfur dioxide",
+       "phase": "gas",
+       "colour": "#d9c24a",
+       "status": "plain"
+      }
+     ]
     }
    ]
   },
@@ -133,18 +336,37 @@
    "id": "S06",
    "title": "Lightning strikes the top",
    "duration": 6.0,
-   "camera": {
-    "position": [
-     300,
-     120,
-     90
-    ],
-    "target": [
-     0,
-     105,
-     0
-    ]
+   "path": [
+    {
+     "position": [
+      300,
+      120,
+      90
+     ],
+     "target": [
+      0,
+      105,
+      0
+     ]
+    },
+    {
+     "position": [
+      274.33,
+      118.5,
+      -64.85
+     ],
+     "target": [
+      0,
+      105,
+      0
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "storm"
    },
+   "species": [],
    "actors": [
     {
      "type": "lightning"
@@ -158,7 +380,16 @@
      "path": [
       "kings_chamber"
      ],
-     "color": "#d9c24a"
+     "species": [
+      {
+       "id": "so2",
+       "formula": "SO\u2082",
+       "name": "sulfur dioxide",
+       "phase": "gas",
+       "colour": "#d9c24a",
+       "status": "plain"
+      }
+     ]
     }
    ]
   },
@@ -166,25 +397,53 @@
    "id": "S07",
    "title": "Granite emits ultrasound",
    "duration": 5.0,
-   "camera": {
-    "position": [
-     40,
-     52,
-     25
-    ],
-    "target": [
-     5,
-     46,
-     8
-    ]
+   "path": [
+    {
+     "position": [
+      40,
+      52,
+      25
+     ],
+     "target": [
+      5,
+      46,
+      8
+     ]
+    },
+    {
+     "position": [
+      39.93,
+      51.4,
+      5.5
+     ],
+     "target": [
+      5,
+      46,
+      8
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
    },
+   "species": [],
    "actors": [
     {
      "type": "gas",
      "path": [
       "kings_chamber"
      ],
-     "color": "#d9c24a"
+     "species": [
+      {
+       "id": "so2",
+       "formula": "SO\u2082",
+       "name": "sulfur dioxide",
+       "phase": "gas",
+       "colour": "#d9c24a",
+       "status": "plain"
+      }
+     ]
     }
    ]
   },
@@ -192,30 +451,69 @@
    "id": "S08",
    "title": "Reservoir water enters the Subterranean Chamber",
    "duration": 6.0,
-   "camera": {
-    "position": [
-     200,
-     15,
-     -40
-    ],
-    "target": [
-     7,
-     -8,
-     -55
-    ]
+   "path": [
+    {
+     "position": [
+      200,
+      15,
+      -40
+     ],
+     "target": [
+      7,
+      -8,
+      -55
+     ]
+    },
+    {
+     "position": [
+      164.18,
+      12.7,
+      -130.16
+     ],
+     "target": [
+      7,
+      -8,
+      -55
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
    },
+   "species": [],
    "actors": [
     {
      "type": "water",
      "space": "subterranean_chamber",
      "from": 0.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "pit",
      "from": 0.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "placeholder",
@@ -232,7 +530,16 @@
      "path": [
       "kings_chamber"
      ],
-     "color": "#d9c24a"
+     "species": [
+      {
+       "id": "so2",
+       "formula": "SO\u2082",
+       "name": "sulfur dioxide",
+       "phase": "gas",
+       "colour": "#d9c24a",
+       "status": "plain"
+      }
+     ]
     }
    ]
   },
@@ -240,48 +547,117 @@
    "id": "S09",
    "title": "Water rises in the well shaft",
    "duration": 6.0,
-   "camera": {
-    "position": [
-     110,
-     5,
-     -5
-    ],
-    "target": [
-     5,
-     -5,
-     -20
-    ]
+   "path": [
+    {
+     "position": [
+      110,
+      5,
+      -5
+     ],
+     "target": [
+      5,
+      -5,
+      -20
+     ]
+    },
+    {
+     "position": [
+      93.59,
+      4.0,
+      -55.56
+     ],
+     "target": [
+      5,
+      -5,
+      -20
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
    },
+   "species": [],
    "actors": [
     {
      "type": "water",
      "space": "subterranean_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "pit",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "south_passage",
      "from": 0.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "descending_passage",
      "from": 0.0,
-     "to": 0.64
+     "to": 0.64,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "well_shaft",
      "from": 0.0,
-     "to": 0.58
+     "to": 0.58,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "placeholder",
@@ -308,7 +684,16 @@
      "path": [
       "kings_chamber"
      ],
-     "color": "#d9c24a"
+     "species": [
+      {
+       "id": "so2",
+       "formula": "SO\u2082",
+       "name": "sulfur dioxide",
+       "phase": "gas",
+       "colour": "#d9c24a",
+       "status": "plain"
+      }
+     ]
     }
    ]
   },
@@ -316,72 +701,181 @@
    "id": "S10",
    "title": "Pump push stroke",
    "duration": 8.0,
-   "camera": {
-    "position": [
-     170,
-     20,
-     -20
-    ],
-    "target": [
-     7,
-     5,
-     -35
-    ]
+   "path": [
+    {
+     "position": [
+      170,
+      20,
+      -20
+     ],
+     "target": [
+      7,
+      5,
+      -35
+     ]
+    },
+    {
+     "position": [
+      140.8,
+      18.5,
+      -96.66
+     ],
+     "target": [
+      7,
+      5,
+      -35
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
    },
+   "species": [],
    "actors": [
     {
      "type": "water",
      "space": "subterranean_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "pit",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "south_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "descending_passage",
      "from": 0.64,
-     "to": 0.0
+     "to": 0.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "well_shaft",
      "from": 0.58,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "ascending_passage",
      "from": 0.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_passage",
      "from": 0.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_chamber",
      "from": 0.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "grand_gallery",
      "from": 0.0,
-     "to": 0.25
+     "to": 0.25,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "placeholder",
@@ -418,7 +912,16 @@
      "path": [
       "kings_chamber"
      ],
-     "color": "#d9c24a"
+     "species": [
+      {
+       "id": "so2",
+       "formula": "SO\u2082",
+       "name": "sulfur dioxide",
+       "phase": "gas",
+       "colour": "#d9c24a",
+       "status": "plain"
+      }
+     ]
     }
    ]
   },
@@ -426,72 +929,181 @@
    "id": "S11",
    "title": "Pump return stroke",
    "duration": 6.0,
-   "camera": {
-    "position": [
-     135,
-     -5,
-     -30
-    ],
-    "target": [
-     5,
-     -12,
-     -44
-    ]
+   "path": [
+    {
+     "position": [
+      135,
+      -5,
+      -30
+     ],
+     "target": [
+      5,
+      -12,
+      -44
+     ]
+    },
+    {
+     "position": [
+      112.62,
+      -5.7,
+      -91.59
+     ],
+     "target": [
+      5,
+      -12,
+      -44
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
    },
+   "species": [],
    "actors": [
     {
      "type": "water",
      "space": "subterranean_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "pit",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "south_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "descending_passage",
      "from": 0.0,
-     "to": 0.64
+     "to": 0.64,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "well_shaft",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "ascending_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "grand_gallery",
      "from": 0.25,
-     "to": 0.25
+     "to": 0.25,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "placeholder",
@@ -528,7 +1140,16 @@
      "path": [
       "kings_chamber"
      ],
-     "color": "#d9c24a"
+     "species": [
+      {
+       "id": "so2",
+       "formula": "SO\u2082",
+       "name": "sulfur dioxide",
+       "phase": "gas",
+       "colour": "#d9c24a",
+       "status": "plain"
+      }
+     ]
     }
    ]
   },
@@ -536,72 +1157,181 @@
    "id": "S12",
    "title": "Four activations fill the Grand Gallery",
    "duration": 8.0,
-   "camera": {
-    "position": [
-     150,
-     30,
-     -10
-    ],
-    "target": [
-     7,
-     15,
-     -28
-    ]
+   "path": [
+    {
+     "position": [
+      150,
+      30,
+      -10
+     ],
+     "target": [
+      7,
+      15,
+      -28
+     ]
+    },
+    {
+     "position": [
+      126.56,
+      28.5,
+      -78.32
+     ],
+     "target": [
+      7,
+      15,
+      -28
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
    },
+   "species": [],
    "actors": [
     {
      "type": "water",
      "space": "subterranean_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "pit",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "south_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "descending_passage",
      "from": 0.64,
-     "to": 0.64
+     "to": 0.64,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "well_shaft",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "ascending_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "grand_gallery",
      "from": 0.25,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "placeholder",
@@ -638,7 +1368,16 @@
      "path": [
       "kings_chamber"
      ],
-     "color": "#d9c24a"
+     "species": [
+      {
+       "id": "so2",
+       "formula": "SO\u2082",
+       "name": "sulfur dioxide",
+       "phase": "gas",
+       "colour": "#d9c24a",
+       "status": "plain"
+      }
+     ]
     }
    ]
   },
@@ -646,72 +1385,190 @@
    "id": "S13",
    "title": "Gallery level is lowered",
    "duration": 6.0,
-   "camera": {
-    "position": [
-     95,
-     48,
-     5
-    ],
-    "target": [
-     6,
-     38,
-     -10
-    ]
+   "path": [
+    {
+     "position": [
+      95,
+      48,
+      5
+     ],
+     "target": [
+      6,
+      38,
+      -10
+     ]
+    },
+    {
+     "position": [
+      82.12,
+      47.0,
+      -38.36
+     ],
+     "target": [
+      6,
+      38,
+      -10
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
    },
+   "species": [
+    {
+     "id": "so2",
+     "formula": "SO\u2082",
+     "name": "sulfur dioxide",
+     "phase": "gas",
+     "colour": "#d9c24a",
+     "status": "plain"
+    }
+   ],
    "actors": [
     {
      "type": "water",
      "space": "subterranean_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "pit",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "south_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "descending_passage",
      "from": 0.64,
-     "to": 0.64
+     "to": 0.64,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "well_shaft",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "ascending_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "grand_gallery",
      "from": 1.0,
-     "to": 0.8
+     "to": 0.8,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "placeholder",
@@ -728,7 +1585,16 @@
      "path": [
       "kings_chamber"
      ],
-     "color": "#d9c24a"
+     "species": [
+      {
+       "id": "so2",
+       "formula": "SO\u2082",
+       "name": "sulfur dioxide",
+       "phase": "gas",
+       "colour": "#d9c24a",
+       "status": "plain"
+      }
+     ]
     }
    ]
   },
@@ -736,72 +1602,190 @@
    "id": "S14",
    "title": "Air is drawn down the King's Chamber shafts",
    "duration": 6.0,
-   "camera": {
-    "position": [
-     150,
-     70,
-     10
-    ],
-    "target": [
-     4,
-     60,
-     0
-    ]
+   "path": [
+    {
+     "position": [
+      150,
+      70,
+      10
+     ],
+     "target": [
+      4,
+      60,
+      0
+     ]
+    },
+    {
+     "position": [
+      122.3,
+      69.0,
+      -57.91
+     ],
+     "target": [
+      4,
+      60,
+      0
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
    },
+   "species": [
+    {
+     "id": "air",
+     "formula": "O\u2082 + N\u2082",
+     "name": "air",
+     "phase": "gas",
+     "colour": "#bcd6e6",
+     "status": "plain"
+    }
+   ],
    "actors": [
     {
      "type": "water",
      "space": "subterranean_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "pit",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "south_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "descending_passage",
      "from": 0.64,
-     "to": 0.64
+     "to": 0.64,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "well_shaft",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "ascending_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "grand_gallery",
      "from": 0.8,
-     "to": 0.6
+     "to": 0.6,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "placeholder",
@@ -818,21 +1802,48 @@
      "path": [
       "kings_chamber"
      ],
-     "color": "#d9c24a"
+     "species": [
+      {
+       "id": "so2",
+       "formula": "SO\u2082",
+       "name": "sulfur dioxide",
+       "phase": "gas",
+       "colour": "#d9c24a",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "gas",
      "path": [
       "kc_shaft_north"
      ],
-     "color": "#bcd6e6"
+     "species": [
+      {
+       "id": "air",
+       "formula": "O\u2082 + N\u2082",
+       "name": "air",
+       "phase": "gas",
+       "colour": "#bcd6e6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "gas",
      "path": [
       "kc_shaft_south"
      ],
-     "color": "#bcd6e6"
+     "species": [
+      {
+       "id": "air",
+       "formula": "O\u2082 + N\u2082",
+       "name": "air",
+       "phase": "gas",
+       "colour": "#bcd6e6",
+       "status": "plain"
+      }
+     ]
     }
    ]
   },
@@ -840,72 +1851,198 @@
    "id": "S15",
    "title": "Gas is drawn through the grooves",
    "duration": 6.0,
-   "camera": {
-    "position": [
-     42,
-     50,
-     12
-    ],
-    "target": [
-     6,
-     45,
-     7
-    ]
+   "path": [
+    {
+     "position": [
+      42,
+      50,
+      12
+     ],
+     "target": [
+      6,
+      45,
+      7
+     ]
+    },
+    {
+     "position": [
+      36.31,
+      49.5,
+      -5.3
+     ],
+     "target": [
+      6,
+      45,
+      7
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
    },
+   "species": [
+    {
+     "id": "so2",
+     "formula": "SO\u2082",
+     "name": "sulfur dioxide",
+     "phase": "gas",
+     "colour": "#d9c24a",
+     "status": "plain"
+    },
+    {
+     "id": "air",
+     "formula": "O\u2082 + N\u2082",
+     "name": "air",
+     "phase": "gas",
+     "colour": "#bcd6e6",
+     "status": "plain"
+    }
+   ],
    "actors": [
     {
      "type": "water",
      "space": "subterranean_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "pit",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "south_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "descending_passage",
      "from": 0.64,
-     "to": 0.64
+     "to": 0.64,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "well_shaft",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "ascending_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "grand_gallery",
      "from": 0.6,
-     "to": 0.4
+     "to": 0.4,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "placeholder",
@@ -923,21 +2060,48 @@
       "kings_chamber",
       "antechamber"
      ],
-     "color": "#d9c24a"
+     "species": [
+      {
+       "id": "so2",
+       "formula": "SO\u2082",
+       "name": "sulfur dioxide",
+       "phase": "gas",
+       "colour": "#d9c24a",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "gas",
      "path": [
       "kc_shaft_north"
      ],
-     "color": "#bcd6e6"
+     "species": [
+      {
+       "id": "air",
+       "formula": "O\u2082 + N\u2082",
+       "name": "air",
+       "phase": "gas",
+       "colour": "#bcd6e6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "gas",
      "path": [
       "kc_shaft_south"
      ],
-     "color": "#bcd6e6"
+     "species": [
+      {
+       "id": "air",
+       "formula": "O\u2082 + N\u2082",
+       "name": "air",
+       "phase": "gas",
+       "colour": "#bcd6e6",
+       "status": "plain"
+      }
+     ]
     }
    ]
   },
@@ -945,72 +2109,211 @@
    "id": "S16",
    "title": "Sulfur dioxide becomes trioxide in the antechamber",
    "duration": 6.0,
-   "camera": {
-    "position": [
-     30,
-     48,
-     8
-    ],
-    "target": [
-     7,
-     45,
-     4.4
-    ]
+   "path": [
+    {
+     "position": [
+      30,
+      48,
+      8
+     ],
+     "target": [
+      7,
+      45,
+      4.4
+     ]
+    },
+    {
+     "position": [
+      26.55,
+      47.7,
+      -3.14
+     ],
+     "target": [
+      7,
+      45,
+      4.4
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
+   },
+   "species": [
+    {
+     "id": "so2",
+     "formula": "SO\u2082",
+     "name": "sulfur dioxide",
+     "phase": "gas",
+     "colour": "#d9c24a",
+     "status": "plain"
+    },
+    {
+     "id": "air",
+     "formula": "O\u2082 + N\u2082",
+     "name": "air",
+     "phase": "gas",
+     "colour": "#bcd6e6",
+     "status": "plain"
+    },
+    {
+     "id": "so3",
+     "formula": "SO\u2083",
+     "name": "sulfur trioxide",
+     "phase": "gas",
+     "colour": "#e08a3c",
+     "status": "claimed"
+    }
+   ],
+   "reaction": {
+    "equation": "2 SO\u2082 + O\u2082 \u2192 2 SO\u2083",
+    "timestamp": "F 00:46:59-00:47:10",
+    "note": "as stated in the video"
    },
    "actors": [
     {
      "type": "water",
      "space": "subterranean_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "pit",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "south_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "descending_passage",
      "from": 0.64,
-     "to": 0.64
+     "to": 0.64,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "well_shaft",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "ascending_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "grand_gallery",
      "from": 0.4,
-     "to": 0.2
+     "to": 0.2,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "placeholder",
@@ -1027,28 +2330,64 @@
      "path": [
       "kings_chamber"
      ],
-     "color": "#d9c24a"
+     "species": [
+      {
+       "id": "so2",
+       "formula": "SO\u2082",
+       "name": "sulfur dioxide",
+       "phase": "gas",
+       "colour": "#d9c24a",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "gas",
      "path": [
       "antechamber"
      ],
-     "color": "#e08a3c"
+     "species": [
+      {
+       "id": "so3",
+       "formula": "SO\u2083",
+       "name": "sulfur trioxide",
+       "phase": "gas",
+       "colour": "#e08a3c",
+       "status": "claimed"
+      }
+     ]
     },
     {
      "type": "gas",
      "path": [
       "kc_shaft_north"
      ],
-     "color": "#bcd6e6"
+     "species": [
+      {
+       "id": "air",
+       "formula": "O\u2082 + N\u2082",
+       "name": "air",
+       "phase": "gas",
+       "colour": "#bcd6e6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "gas",
      "path": [
       "kc_shaft_south"
      ],
-     "color": "#bcd6e6"
+     "species": [
+      {
+       "id": "air",
+       "formula": "O\u2082 + N\u2082",
+       "name": "air",
+       "phase": "gas",
+       "colour": "#bcd6e6",
+       "status": "plain"
+      }
+     ]
     }
    ]
   },
@@ -1056,72 +2395,206 @@
    "id": "S17",
    "title": "Gases enter the Grand Gallery",
    "duration": 6.0,
-   "camera": {
-    "position": [
-     80,
-     50,
-     2
-    ],
-    "target": [
-     7,
-     40,
-     -12
-    ]
+   "path": [
+    {
+     "position": [
+      80,
+      50,
+      2
+     ],
+     "target": [
+      7,
+      40,
+      -12
+     ]
+    },
+    {
+     "position": [
+      70.2,
+      49.0,
+      -33.94
+     ],
+     "target": [
+      7,
+      40,
+      -12
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
    },
+   "species": [
+    {
+     "id": "so3",
+     "formula": "SO\u2083",
+     "name": "sulfur trioxide",
+     "phase": "gas",
+     "colour": "#e08a3c",
+     "status": "claimed"
+    },
+    {
+     "id": "so2",
+     "formula": "SO\u2082",
+     "name": "sulfur dioxide",
+     "phase": "gas",
+     "colour": "#d9c24a",
+     "status": "plain"
+    },
+    {
+     "id": "air",
+     "formula": "O\u2082 + N\u2082",
+     "name": "air",
+     "phase": "gas",
+     "colour": "#bcd6e6",
+     "status": "plain"
+    }
+   ],
    "actors": [
     {
      "type": "water",
      "space": "subterranean_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "pit",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "south_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "descending_passage",
      "from": 0.64,
-     "to": 0.64
+     "to": 0.64,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "well_shaft",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "ascending_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "grand_gallery",
      "from": 0.2,
-     "to": 0.0
+     "to": 0.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "placeholder",
@@ -1139,28 +2612,64 @@
       "antechamber",
       "grand_gallery"
      ],
-     "color": "#e08a3c"
+     "species": [
+      {
+       "id": "so3",
+       "formula": "SO\u2083",
+       "name": "sulfur trioxide",
+       "phase": "gas",
+       "colour": "#e08a3c",
+       "status": "claimed"
+      }
+     ]
     },
     {
      "type": "gas",
      "path": [
       "kings_chamber"
      ],
-     "color": "#bcd6e6"
+     "species": [
+      {
+       "id": "air",
+       "formula": "O\u2082 + N\u2082",
+       "name": "air",
+       "phase": "gas",
+       "colour": "#bcd6e6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "gas",
      "path": [
       "kc_shaft_north"
      ],
-     "color": "#bcd6e6"
+     "species": [
+      {
+       "id": "air",
+       "formula": "O\u2082 + N\u2082",
+       "name": "air",
+       "phase": "gas",
+       "colour": "#bcd6e6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "gas",
      "path": [
       "kc_shaft_south"
      ],
-     "color": "#bcd6e6"
+     "species": [
+      {
+       "id": "air",
+       "formula": "O\u2082 + N\u2082",
+       "name": "air",
+       "phase": "gas",
+       "colour": "#bcd6e6",
+       "status": "plain"
+      }
+     ]
     }
    ]
   },
@@ -1168,79 +2677,197 @@
    "id": "S18",
    "title": "Gallery is refilled in four activations",
    "duration": 6.0,
-   "camera": {
-    "position": [
-     150,
-     30,
-     -10
-    ],
-    "target": [
-     7,
-     15,
-     -28
-    ]
+   "path": [
+    {
+     "position": [
+      150,
+      30,
+      -10
+     ],
+     "target": [
+      7,
+      15,
+      -28
+     ]
+    },
+    {
+     "position": [
+      126.56,
+      28.5,
+      -78.32
+     ],
+     "target": [
+      7,
+      15,
+      -28
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
    },
+   "species": [],
    "actors": [
     {
      "type": "water",
      "space": "subterranean_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "pit",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "south_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "descending_passage",
      "from": 0.64,
-     "to": 0.64
+     "to": 0.64,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "well_shaft",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "ascending_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "grand_gallery",
      "from": 0.0,
-     "to": 0.25
+     "to": 0.25,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "gas",
      "path": [
       "grand_gallery"
      ],
-     "color": "#e08a3c"
+     "species": [
+      {
+       "id": "so3",
+       "formula": "SO\u2083",
+       "name": "sulfur trioxide",
+       "phase": "gas",
+       "colour": "#e08a3c",
+       "status": "claimed"
+      }
+     ]
     },
     {
      "type": "placeholder",
@@ -1278,79 +2905,235 @@
    "id": "S19",
    "title": "Sulfur dioxide dissolves",
    "duration": 5.0,
-   "camera": {
-    "position": [
-     95,
-     44,
-     -5
-    ],
-    "target": [
-     7,
-     35,
-     -20
-    ]
+   "path": [
+    {
+     "position": [
+      95,
+      44,
+      -5
+     ],
+     "target": [
+      7,
+      35,
+      -20
+     ]
+    },
+    {
+     "position": [
+      82.34,
+      43.1,
+      -47.91
+     ],
+     "target": [
+      7,
+      35,
+      -20
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
+   },
+   "species": [
+    {
+     "id": "so2",
+     "formula": "SO\u2082",
+     "name": "sulfur dioxide",
+     "phase": "gas",
+     "colour": "#d9c24a",
+     "status": "plain"
+    },
+    {
+     "id": "water",
+     "formula": "H\u2082O",
+     "name": "water",
+     "phase": "liquid",
+     "colour": "#2f86d6",
+     "status": "plain"
+    },
+    {
+     "id": "sulfurous_acid",
+     "formula": "H\u2082SO\u2083",
+     "name": "sulfurous acid",
+     "phase": "liquid",
+     "colour": "#4f9fd0",
+     "status": "plain"
+    }
+   ],
+   "reaction": {
+    "equation": "SO\u2082 + H\u2082O \u2192 H\u2082SO\u2083",
+    "timestamp": "F 00:53:11-00:53:46",
+    "note": "as stated in the video"
    },
    "actors": [
     {
      "type": "water",
      "space": "subterranean_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "pit",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "south_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "descending_passage",
      "from": 0.64,
-     "to": 0.64
+     "to": 0.64,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "well_shaft",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "ascending_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "grand_gallery",
      "from": 0.25,
-     "to": 0.5
+     "to": 0.5,
+     "species": [
+      {
+       "id": "sulfurous_acid",
+       "formula": "H\u2082SO\u2083",
+       "name": "sulfurous acid",
+       "phase": "liquid",
+       "colour": "#4f9fd0",
+       "status": "plain"
+      },
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "gas",
      "path": [
       "grand_gallery"
      ],
-     "color": "#d9c24a"
+     "species": [
+      {
+       "id": "so2",
+       "formula": "SO\u2082",
+       "name": "sulfur dioxide",
+       "phase": "gas",
+       "colour": "#d9c24a",
+       "status": "plain"
+      }
+     ]
     }
    ]
   },
@@ -1358,79 +3141,235 @@
    "id": "S20",
    "title": "Sulfurous acid oxidises",
    "duration": 5.0,
-   "camera": {
-    "position": [
-     95,
-     44,
-     -5
-    ],
-    "target": [
-     7,
-     35,
-     -20
-    ]
+   "path": [
+    {
+     "position": [
+      95,
+      44,
+      -5
+     ],
+     "target": [
+      7,
+      35,
+      -20
+     ]
+    },
+    {
+     "position": [
+      82.34,
+      43.1,
+      -47.91
+     ],
+     "target": [
+      7,
+      35,
+      -20
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
+   },
+   "species": [
+    {
+     "id": "sulfurous_acid",
+     "formula": "H\u2082SO\u2083",
+     "name": "sulfurous acid",
+     "phase": "liquid",
+     "colour": "#4f9fd0",
+     "status": "plain"
+    },
+    {
+     "id": "air",
+     "formula": "O\u2082 + N\u2082",
+     "name": "air",
+     "phase": "gas",
+     "colour": "#bcd6e6",
+     "status": "plain"
+    },
+    {
+     "id": "sulfuric_acid",
+     "formula": "H\u2082SO\u2084",
+     "name": "dilute sulfuric acid",
+     "phase": "liquid",
+     "colour": "#c25b5b",
+     "status": "claimed"
+    }
+   ],
+   "reaction": {
+    "equation": "2 H\u2082SO\u2083 + O\u2082 \u2192 2 H\u2082SO\u2084",
+    "timestamp": "F 00:53:30-00:53:46",
+    "note": "as stated in the video"
    },
    "actors": [
     {
      "type": "water",
      "space": "subterranean_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "pit",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "south_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "descending_passage",
      "from": 0.64,
-     "to": 0.64
+     "to": 0.64,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "well_shaft",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "ascending_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "grand_gallery",
      "from": 0.5,
-     "to": 0.75
+     "to": 0.75,
+     "species": [
+      {
+       "id": "sulfuric_acid",
+       "formula": "H\u2082SO\u2084",
+       "name": "dilute sulfuric acid",
+       "phase": "liquid",
+       "colour": "#c25b5b",
+       "status": "claimed"
+      },
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "gas",
      "path": [
       "grand_gallery"
      ],
-     "color": "#bcd6e6"
+     "species": [
+      {
+       "id": "air",
+       "formula": "O\u2082 + N\u2082",
+       "name": "air",
+       "phase": "gas",
+       "colour": "#bcd6e6",
+       "status": "plain"
+      }
+     ]
     }
    ]
   },
@@ -1438,79 +3377,235 @@
    "id": "S21",
    "title": "Sulfur trioxide dissolves in the dilute acid",
    "duration": 5.0,
-   "camera": {
-    "position": [
-     95,
-     44,
-     -5
-    ],
-    "target": [
-     7,
-     35,
-     -20
-    ]
+   "path": [
+    {
+     "position": [
+      95,
+      44,
+      -5
+     ],
+     "target": [
+      7,
+      35,
+      -20
+     ]
+    },
+    {
+     "position": [
+      82.34,
+      43.1,
+      -47.91
+     ],
+     "target": [
+      7,
+      35,
+      -20
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
+   },
+   "species": [
+    {
+     "id": "so3",
+     "formula": "SO\u2083",
+     "name": "sulfur trioxide",
+     "phase": "gas",
+     "colour": "#e08a3c",
+     "status": "claimed"
+    },
+    {
+     "id": "water",
+     "formula": "H\u2082O",
+     "name": "water",
+     "phase": "liquid",
+     "colour": "#2f86d6",
+     "status": "plain"
+    },
+    {
+     "id": "sulfuric_acid",
+     "formula": "H\u2082SO\u2084",
+     "name": "dilute sulfuric acid",
+     "phase": "liquid",
+     "colour": "#c25b5b",
+     "status": "claimed"
+    }
+   ],
+   "reaction": {
+    "equation": "SO\u2083 + H\u2082O \u2192 H\u2082SO\u2084 (into dilute acid)",
+    "timestamp": "F 00:43:10-00:43:57",
+    "note": "as stated in the video"
    },
    "actors": [
     {
      "type": "water",
      "space": "subterranean_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "pit",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "south_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "descending_passage",
      "from": 0.64,
-     "to": 0.64
+     "to": 0.64,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "well_shaft",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "ascending_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "grand_gallery",
      "from": 0.75,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "sulfuric_acid",
+       "formula": "H\u2082SO\u2084",
+       "name": "dilute sulfuric acid",
+       "phase": "liquid",
+       "colour": "#c25b5b",
+       "status": "claimed"
+      },
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "gas",
      "path": [
       "grand_gallery"
      ],
-     "color": "#e08a3c"
+     "species": [
+      {
+       "id": "so3",
+       "formula": "SO\u2083",
+       "name": "sulfur trioxide",
+       "phase": "gas",
+       "colour": "#e08a3c",
+       "status": "claimed"
+      }
+     ]
     }
    ]
   },
@@ -1518,72 +3613,214 @@
    "id": "S22",
    "title": "No gas is pushed back",
    "duration": 4.0,
-   "camera": {
-    "position": [
-     80,
-     48,
-     0
-    ],
-    "target": [
-     6,
-     38,
-     -13
-    ]
+   "path": [
+    {
+     "position": [
+      80,
+      48,
+      0
+     ],
+     "target": [
+      6,
+      38,
+      -13
+     ]
+    },
+    {
+     "position": [
+      69.53,
+      47.0,
+      -36.17
+     ],
+     "target": [
+      6,
+      38,
+      -13
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
    },
+   "species": [
+    {
+     "id": "so2",
+     "formula": "SO\u2082",
+     "name": "sulfur dioxide",
+     "phase": "gas",
+     "colour": "#d9c24a",
+     "status": "plain"
+    },
+    {
+     "id": "so3",
+     "formula": "SO\u2083",
+     "name": "sulfur trioxide",
+     "phase": "gas",
+     "colour": "#e08a3c",
+     "status": "claimed"
+    },
+    {
+     "id": "water",
+     "formula": "H\u2082O",
+     "name": "water",
+     "phase": "liquid",
+     "colour": "#2f86d6",
+     "status": "plain"
+    }
+   ],
    "actors": [
     {
      "type": "water",
      "space": "subterranean_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "pit",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "south_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "descending_passage",
      "from": 0.64,
-     "to": 0.64
+     "to": 0.64,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "well_shaft",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "ascending_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "grand_gallery",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "sulfuric_acid",
+       "formula": "H\u2082SO\u2084",
+       "name": "dilute sulfuric acid",
+       "phase": "liquid",
+       "colour": "#c25b5b",
+       "status": "claimed"
+      },
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     }
    ]
   },
@@ -1591,72 +3828,219 @@
    "id": "S23",
    "title": "Calcium sulfate coats the walls",
    "duration": 5.0,
-   "camera": {
-    "position": [
-     85,
-     40,
-     0
-    ],
-    "target": [
-     6,
-     32,
-     -15
-    ]
+   "path": [
+    {
+     "position": [
+      85,
+      40,
+      0
+     ],
+     "target": [
+      6,
+      32,
+      -15
+     ]
+    },
+    {
+     "position": [
+      74.32,
+      39.2,
+      -38.86
+     ],
+     "target": [
+      6,
+      32,
+      -15
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
+   },
+   "species": [
+    {
+     "id": "sulfuric_acid",
+     "formula": "H\u2082SO\u2084",
+     "name": "dilute sulfuric acid",
+     "phase": "liquid",
+     "colour": "#c25b5b",
+     "status": "claimed"
+    },
+    {
+     "id": "calcium_sulfate",
+     "formula": "CaSO\u2084",
+     "name": "calcium sulfate",
+     "phase": "solid",
+     "colour": "#efe6cf",
+     "status": "plain"
+    }
+   ],
+   "reaction": {
+    "equation": "CaCO\u2083 + H\u2082SO\u2084 \u2192 CaSO\u2084 + H\u2082O + CO\u2082",
+    "timestamp": "F 01:18:47-01:21:00",
+    "note": "as stated in the video"
    },
    "actors": [
     {
      "type": "water",
      "space": "subterranean_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "pit",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "south_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "descending_passage",
      "from": 0.64,
-     "to": 0.64
+     "to": 0.64,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "well_shaft",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "ascending_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "grand_gallery",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "sulfuric_acid",
+       "formula": "H\u2082SO\u2084",
+       "name": "dilute sulfuric acid",
+       "phase": "liquid",
+       "colour": "#c25b5b",
+       "status": "claimed"
+      },
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
+    },
+    {
+     "type": "coat",
+     "space": "grand_gallery"
+    },
+    {
+     "type": "coat",
+     "space": "queens_chamber"
     }
    ]
   },
@@ -1664,78 +4048,205 @@
    "id": "S24",
    "title": "Big Void as heat exchanger (speculative)",
    "duration": 5.0,
-   "camera": {
-    "position": [
-     110,
-     62,
-     0
-    ],
-    "target": [
-     7,
-     50,
-     -15
-    ]
+   "path": [
+    {
+     "position": [
+      110,
+      62,
+      0
+     ],
+     "target": [
+      7,
+      50,
+      -15
+     ]
+    },
+    {
+     "position": [
+      94.03,
+      60.8,
+      -49.66
+     ],
+     "target": [
+      7,
+      50,
+      -15
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
    },
+   "species": [],
    "actors": [
     {
      "type": "water",
      "space": "subterranean_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "pit",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "south_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "descending_passage",
      "from": 0.64,
-     "to": 0.64
+     "to": 0.64,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "well_shaft",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "ascending_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "grand_gallery",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "sulfuric_acid",
+       "formula": "H\u2082SO\u2084",
+       "name": "dilute sulfuric acid",
+       "phase": "liquid",
+       "colour": "#c25b5b",
+       "status": "claimed"
+      },
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "big_void",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     }
    ]
   },
@@ -1743,72 +4254,189 @@
    "id": "S25",
    "title": "Shaft slab as level meter (speculative)",
    "duration": 5.0,
-   "camera": {
-    "position": [
-     150,
-     50,
-     10
-    ],
-    "target": [
-     5,
-     42,
-     0
-    ]
+   "path": [
+    {
+     "position": [
+      150,
+      50,
+      10
+     ],
+     "target": [
+      5,
+      42,
+      0
+     ]
+    },
+    {
+     "position": [
+      122.52,
+      49.2,
+      -57.46
+     ],
+     "target": [
+      5,
+      42,
+      0
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
    },
+   "species": [],
    "actors": [
     {
      "type": "water",
      "space": "subterranean_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "pit",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "south_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "descending_passage",
      "from": 0.64,
-     "to": 0.64
+     "to": 0.64,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "well_shaft",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "ascending_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "grand_gallery",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "sulfuric_acid",
+       "formula": "H\u2082SO\u2084",
+       "name": "dilute sulfuric acid",
+       "phase": "liquid",
+       "colour": "#c25b5b",
+       "status": "claimed"
+      },
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     }
    ]
   },
@@ -1816,72 +4444,206 @@
    "id": "S26",
    "title": "Liquid is withdrawn through the Queen's Chamber",
    "duration": 7.0,
-   "camera": {
-    "position": [
-     80,
-     36,
-     5
-    ],
-    "target": [
-     6,
-     28,
-     -10
-    ]
+   "path": [
+    {
+     "position": [
+      80,
+      36,
+      5
+     ],
+     "target": [
+      6,
+      28,
+      -10
+     ]
+    },
+    {
+     "position": [
+      70.43,
+      35.2,
+      -31.61
+     ],
+     "target": [
+      6,
+      28,
+      -10
+     ]
+    }
+   ],
+   "scene": {
+    "interior": true,
+    "weather": "clear"
    },
+   "species": [
+    {
+     "id": "sulfuric_acid",
+     "formula": "H\u2082SO\u2084",
+     "name": "dilute sulfuric acid",
+     "phase": "liquid",
+     "colour": "#c25b5b",
+     "status": "claimed"
+    },
+    {
+     "id": "water",
+     "formula": "H\u2082O",
+     "name": "water",
+     "phase": "liquid",
+     "colour": "#2f86d6",
+     "status": "plain"
+    }
+   ],
    "actors": [
     {
      "type": "water",
      "space": "subterranean_chamber",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "pit",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "south_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "descending_passage",
      "from": 0.64,
-     "to": 0.64
+     "to": 0.64,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "well_shaft",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "ascending_passage",
      "from": 1.0,
-     "to": 1.0
+     "to": 1.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_passage",
      "from": 1.0,
-     "to": 0.0
+     "to": 0.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "queens_chamber",
      "from": 1.0,
-     "to": 0.0
+     "to": 0.0,
+     "species": [
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "water",
      "space": "grand_gallery",
      "from": 1.0,
-     "to": 0.0
+     "to": 0.0,
+     "species": [
+      {
+       "id": "sulfuric_acid",
+       "formula": "H\u2082SO\u2084",
+       "name": "dilute sulfuric acid",
+       "phase": "liquid",
+       "colour": "#c25b5b",
+       "status": "claimed"
+      },
+      {
+       "id": "water",
+       "formula": "H\u2082O",
+       "name": "water",
+       "phase": "liquid",
+       "colour": "#2f86d6",
+       "status": "plain"
+      }
+     ]
     },
     {
      "type": "placeholder",
@@ -1899,17 +4661,58 @@
    "id": "S27",
    "title": "Acid goes to the central pyramid",
    "duration": 4.0,
-   "camera": {
-    "position": [
-     220,
-     120,
-     -200
-    ],
-    "target": [
-     0,
-     40,
-     0
-    ]
+   "path": [
+    {
+     "position": [
+      220,
+      120,
+      -200
+     ],
+     "target": [
+      0,
+      40,
+      0
+     ]
+    },
+    {
+     "position": [
+      81.47,
+      112.0,
+      -254.88
+     ],
+     "target": [
+      0,
+      40,
+      0
+     ]
+    }
+   ],
+   "scene": {
+    "interior": false,
+    "weather": "clear"
+   },
+   "species": [
+    {
+     "id": "sulfuric_acid",
+     "formula": "H\u2082SO\u2084",
+     "name": "dilute sulfuric acid",
+     "phase": "liquid",
+     "colour": "#c25b5b",
+     "status": "claimed"
+    },
+    {
+     "id": "hydrogen_chloride",
+     "formula": "HCl",
+     "name": "hydrogen chloride",
+     "phase": "gas",
+     "colour": "#a8e0a0",
+     "status": "claimed"
+    }
+   ],
+   "reaction": {
+    "equation": "H\u2082SO\u2084 + 2 NaCl \u2192 Na\u2082SO\u2084 + 2 HCl",
+    "timestamp": "F 00:27:55-00:28:12",
+    "note": "as stated in the video"
    },
    "actors": []
   },
@@ -1917,72 +4720,174 @@
    "id": "S28",
    "title": "Acid fills the boat pits",
    "duration": 4.0,
-   "camera": {
-    "position": [
-     200,
-     140,
-     220
-    ],
-    "target": [
-     0,
-     20,
-     0
-    ]
+   "path": [
+    {
+     "position": [
+      200,
+      140,
+      220
+     ],
+     "target": [
+      0,
+      20,
+      0
+     ]
+    },
+    {
+     "position": [
+      254.88,
+      128.0,
+      81.47
+     ],
+     "target": [
+      0,
+      20,
+      0
+     ]
+    }
+   ],
+   "scene": {
+    "interior": false,
+    "weather": "clear"
    },
+   "species": [
+    {
+     "id": "sulfuric_acid",
+     "formula": "H\u2082SO\u2084",
+     "name": "dilute sulfuric acid",
+     "phase": "liquid",
+     "colour": "#c25b5b",
+     "status": "claimed"
+    },
+    {
+     "id": "hydrogen_chloride",
+     "formula": "HCl",
+     "name": "hydrogen chloride",
+     "phase": "gas",
+     "colour": "#a8e0a0",
+     "status": "claimed"
+    }
+   ],
    "actors": []
   },
   {
    "id": "S29",
    "title": "Iron veins carry voltage across the plateau",
    "duration": 4.0,
-   "camera": {
-    "position": [
-     260,
-     180,
-     160
-    ],
-    "target": [
-     0,
-     30,
-     0
-    ]
+   "path": [
+    {
+     "position": [
+      260,
+      180,
+      160
+     ],
+     "target": [
+      0,
+      30,
+      0
+     ]
+    },
+    {
+     "position": [
+      274.65,
+      165.0,
+      7.71
+     ],
+     "target": [
+      0,
+      30,
+      0
+     ]
+    }
+   ],
+   "scene": {
+    "interior": false,
+    "weather": "clear"
    },
+   "species": [],
    "actors": []
   },
   {
    "id": "S30",
    "title": "Acids are used for mining and metallurgy",
    "duration": 4.0,
-   "camera": {
-    "position": [
-     -260,
-     150,
-     160
-    ],
-    "target": [
-     0,
-     40,
-     0
-    ]
+   "path": [
+    {
+     "position": [
+      -260,
+      150,
+      160
+     ],
+     "target": [
+      0,
+      40,
+      0
+     ]
+    },
+    {
+     "position": [
+      -130.65,
+      139.0,
+      241.71
+     ],
+     "target": [
+      0,
+      40,
+      0
+     ]
+    }
+   ],
+   "scene": {
+    "interior": false,
+    "weather": "clear"
    },
+   "species": [
+    {
+     "id": "sulfuric_acid",
+     "formula": "H\u2082SO\u2084",
+     "name": "dilute sulfuric acid",
+     "phase": "liquid",
+     "colour": "#c25b5b",
+     "status": "claimed"
+    }
+   ],
    "actors": []
   },
   {
    "id": "S31",
    "title": "The cycle repeats with the next storm",
    "duration": 5.0,
-   "camera": {
-    "position": [
-     280,
-     110,
-     120
-    ],
-    "target": [
-     0,
-     40,
-     0
-    ]
+   "path": [
+    {
+     "position": [
+      280,
+      110,
+      120
+     ],
+     "target": [
+      0,
+      40,
+      0
+     ]
+    },
+    {
+     "position": [
+      272.24,
+      103.0,
+      -32.47
+     ],
+     "target": [
+      0,
+      40,
+      0
+     ]
+    }
+   ],
+   "scene": {
+    "interior": false,
+    "weather": "clear"
    },
+   "species": [],
    "actors": []
   }
  ],
