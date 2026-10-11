@@ -1,7 +1,9 @@
-// Boot: read the URL, load the data and create the store; later tasks add the scene.
-// Each task adds its block inside boot(), in the boot order of the plan header.
+// Boot: read the URL, load the data, create the store and the scene, start the loop.
+// Each task adds its block above "start", in the boot order of the plan header.
 import { DEFAULT_STATE, createStore, readUrl } from './store.js';
 import { loadData } from './data/load.js';
+import { createRenderer } from './render/renderer.js';
+import { createEnvironment } from './render/environment.js';
 
 const message = document.getElementById('message');
 
@@ -51,6 +53,21 @@ async function boot() {
   }];
   const state = () => Object.assign({}, ...stateParts.map(part => part()));
   window.viewer = { store, claims, cycle, manifest, state };
+
+  // ---- renderer and environment (Task 4)
+  const rendererApi = createRenderer(document.getElementById('stage'), store);
+  const environment = createEnvironment(rendererApi.scene, rendererApi, store);
+  stateParts.push(() => ({ lastDt: rendererApi.lastDt }));
+  Object.assign(window.viewer, { rendererApi, environment });
+
+  // ---- start (Task 4): stays the last block, so everything frame() reads exists before the first frame
+  function frame(dt) {
+    environment.update(dt, false);   // no model yet, so the camera is never inside it
+  }
+  // display choice: an exterior pose that shows the empty plateau and the sky
+  rendererApi.camera.position.set(320, 120, 260);
+  rendererApi.controls.target.set(0, 50, 0);
+  rendererApi.start(frame);
 }
 
 boot().catch(error => {
