@@ -151,6 +151,8 @@ def loss_per_cycle(q) -> float:
 
 def cycles(q, fill: str = "saturating", n: int = 10) -> dict:
     """Layer after each acid dwell and after the fill that follows, and the limestone lost so far, all in m."""
+    # ponytail: a layer that survives the fill grows undisturbed through the next acid dwell, the thickest it can
+    # be. Still acid would thin it (left_under_acid); integrate that sink here if the series must show it.
     removal = {"saturating": fill_dissolves, "still": still_fill_dissolves}[fill](q)
     product, calcite_per_gypsum = growth_product(q), q["chem.calcite_molar_volume"] / q["chem.gypsum_molar_volume"]
     layer, loss, after_acid, after_fill, lost = 0.0, 0.0, [], [], []

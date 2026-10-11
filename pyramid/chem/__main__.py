@@ -92,7 +92,8 @@ def _layer(q, ledger: Ledger, out: Path) -> dict:
     product, within = walls.growth_product(q), np.linspace(0.0, 1.0, 25)
     fig, (top, bottom) = plt.subplots(2, 1, figsize=(7, 5.6), sharex=True)
     cases = (("still", "C0", f"a still fill stands {q['rx.fresh_dwell']:g} times as long as the acid"),
-             ("still_shortest_dwell", "C2", f"a still fill stands {shortest:g} times as long"))
+             ("still_shortest_dwell", "C2", f"a still fill stands {shortest:g} times as long (the layer grown "
+                                            "undisturbed, an upper bound)"))
     for name, colour, label in cases:
         run, steps, layer, left = runs[name], [], [], 0.0
         for k in range(chem.CYCLES):  # the layer grows through each acid dwell and meets the next fill at its end
