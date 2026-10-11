@@ -368,9 +368,9 @@ def test_cycle_payload_has_the_contract_keys_the_notice_and_the_curves():
 def test_cycle_payload_moves_keyframes_and_placeholders_into_viewer_coordinates():
     cycle = payload()
     # project (x east, y north, z up) becomes viewer (x, z, -y)
-    # the prologue's first keyframe, authored as position [620, 520, 150], target [0, 102, 17]
+    # the prologue's first keyframe, authored as position [620, 520, 150], target [0, 60, 70]
     assert cycle["prologue"]["duration"] == 6.0
-    assert cycle["prologue"]["path"][0] == {"position": [620, 150, -520], "target": [0, 17, -102]}
+    assert cycle["prologue"]["path"][0] == {"position": [620, 150, -520], "target": [0, 70, -60]}
     step = step_of(cycle, "S08")
     # S08's first keyframe, plan A's camera, authored as position [200, 40, 15], target [7, 55, -8]
     assert step["path"][0] == {"position": [200, 15, -40], "target": [7, -8, -55]}

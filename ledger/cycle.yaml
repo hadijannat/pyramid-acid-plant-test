@@ -15,8 +15,10 @@
 # viewer can jump to any step. Water that only stays where it is has "from" equal to "to".
 #
 # Keys:
-#   prologue     a flight from far out in the north-east to the entrance on the north face before
-#                S01: a duration and a path; it carries no claim (display choice)
+#   prologue     a flight from far out in the north-east toward the north face, where the entrance
+#                is, before S01: a duration and a path; it carries no claim (display choice). It looks
+#                at the middle of the face and stops 400 m out, so the whole pyramid stays in frame
+#                above the viewer's caption card through the flight.
 #   path         2 to 4 camera keyframes {position, target}, ridden over the step's duration. The
 #                first is the step's single camera of plan A. The second was generated once from
 #                it: turned 30 degrees about the vertical through the target and brought 10 percent
@@ -66,9 +68,9 @@
 prologue:
   duration: 6.0
   path:
-    - {position: [620, 520, 150], target: [0, 102, 17]}
-    - {position: [380, 330, 90], target: [0, 102, 17]}
-    - {position: [230, 210, 45], target: [0, 102, 17]}
+    - {position: [620, 520, 150], target: [0, 60, 70]}
+    - {position: [460, 400, 105], target: [0, 60, 70]}
+    - {position: [300, 275, 60], target: [0, 60, 70]}
 steps:
   - id: S01
     title: "Hydrogen sulfide rises under the plateau"
