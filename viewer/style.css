@@ -14,6 +14,7 @@
   --conditional: #e3aa45;
   --undefined: #8f949c;
   --pending: #7f9db8;
+  --not-testable: #6f6a7c;
   --notice-height: 28px;
 }
 
@@ -118,6 +119,10 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 #hud .badge.status-fail, #hud .tick.status-fail { background: var(--fail); }
 #hud .badge.status-conditional, #hud .tick.status-conditional { background: var(--conditional); }
 #hud .badge.status-pending, #hud .tick.status-pending { background: var(--pending); }
+/* not testable: the claim's own criterion says nothing can decide it; a dotted outline, quieter than undefined */
+#hud .badge.status-not_testable, #hud .tick.status-not_testable {
+  background: transparent; color: var(--text); border: 1px dotted var(--not-testable);
+}
 #hud .badge.status-undefined, #hud .tick.status-undefined {
   background: transparent; color: var(--text); border: 1px dashed var(--undefined);   /* the dashed border is the mark */
 }

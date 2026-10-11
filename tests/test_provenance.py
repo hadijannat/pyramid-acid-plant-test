@@ -62,3 +62,5 @@ def test_committed_results_were_generated_from_the_ledger_in_the_repository():
         assert recorded == digest, (
             f"{folder} was generated from another ledger: run `{command}` on a clean tree and commit the result"
         )
+    from pyramid.verdicts import stale
+    assert stale(ledger.load()) == [], "run `uv run python -m pyramid.<package>` for each on a clean tree and commit"

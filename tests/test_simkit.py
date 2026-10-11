@@ -97,6 +97,15 @@ def test_a_result_id_may_not_be_taken_twice(tmp_path):
         verdicts.merged(LEDGER, tmp_path)
 
 
+def test_the_summary_counts_every_claim_once_and_its_table_has_a_row_for_each():
+    from pyramid import summary
+    _, decided, source = verdicts.merged(LEDGER)
+    tally = summary.counts(decided)
+    assert sum(tally.values()) == len(LEDGER.claims) and list(tally) == list(simkit.STATUSES)
+    rows = [line for line in summary.table(LEDGER, decided, source).splitlines() if line[2:3] in ("S", "E")]
+    assert [row.split(" | ")[0].lstrip("| ") for row in rows] == list(LEDGER.claims)
+
+
 def test_stale_names_the_packages_generated_from_another_ledger(tmp_path):
     simkit.write_results("flow", LEDGER, {}, {}, root=tmp_path)
     assert verdicts.stale(LEDGER, tmp_path) == []

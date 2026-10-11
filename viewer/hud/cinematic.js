@@ -104,7 +104,7 @@ export function mountCinematic(root, { store, cycle, claims, player, ride, rende
     verdict.hidden = !step;
     if (step) {
       badge.className = `badge status-${claim.status}`;
-      badge.textContent = claim.status;
+      badge.textContent = claim.status.replace('_', ' ');   // "not_testable" reads "not testable"
       basis.textContent = claim.basis;
     }
     ticks.forEach((tick, i) => tick.classList.toggle('current', i === stepIndex));
