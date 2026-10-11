@@ -1,8 +1,8 @@
 {
  "manifest": {
   "case": "viewer",
-  "timestamp": "2026-10-11T10:22:30+00:00",
-  "commit": "0284c1bd367d2b97568b8955fa8665367404a316",
+  "timestamp": "2026-10-11T15:51:51+00:00",
+  "commit": "b139733e8f1f4e54afbb2ba45d668bf47af4d45c",
   "ledger": "b5b35856040bd5f70825dbcafd7052954d4898de5ff7c8165d87c5c3159affdd",
   "python": "3.12.12",
   "versions": {
@@ -26,6 +26,7 @@
    "criterion": "Pass if a geologically defensible hydrogen sulfide flux can supply the chemistry model's minimum feed; fail if the required flux exceeds active-seep analogues by orders of magnitude (07 section 4.4).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 5.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   },
@@ -39,6 +40,7 @@
    "criterion": "Undefined until the hypothesis names the three steps; then pass if a mass balance for a plausible hydrogen sulfide flux gives a stated mass of acid per cycle and per year (00 section 7 item 12).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 4.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   },
@@ -52,6 +54,7 @@
    "criterion": "Pass if sulfur dioxide remains in the King's Chamber between delivery and draw with the air shafts open (00 section 7 item 5).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 4.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "kings_chamber",
@@ -69,6 +72,7 @@
    "criterion": "Pass only if a direct-current conduction model with a far field of 1e-7 to 2e-2 V/m gives a non-negligible field or charge at the summit or in the granite (04 section 5.3).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 2.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   },
@@ -82,6 +86,7 @@
    "criterion": "Cannot be simulated; held as a documented constraint with no computed verdict (06, evidence that cannot be simulated).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 6.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   },
@@ -95,6 +100,7 @@
    "criterion": "Pass if the peak field in the granite exceeds what the piezoelectric model needs to reach the acoustic threshold; fail if the interior field is screened to the conduction value of order kV/m or less (04 section 5.2).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 2.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "kings_chamber",
@@ -111,6 +117,7 @@
    "criterion": "Pass if the sound level in the antechamber gas reaches 189 dB, or the intensity sent into a liquid film reaches 1 W/cm2, for granite coefficients up to ten times the measured value and fields up to air breakdown (05 section 5.5 item 1).",
    "status": "fail",
    "basis": "The granite leaf driven at the air-breakdown field radiates 76 dB, and 158 dB with every input at its generous end, against the 190 dB needed to cavitate a wet film.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Sound level from the antechamber's granite leaf driven at the air-breakdown field",
@@ -142,6 +149,7 @@
    "criterion": "Pass requires an explicitly assumed reservoir, because the evidence-based boundary has no water at base level; report the level and volume it must have (02 section 5.5 item 1).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 3.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "subterranean_chamber",
@@ -158,6 +166,7 @@
    "criterion": "Conditional on the external reservoir of S08 existing at or above the level the water is to reach; passes only if such a reservoir or inlet is evidenced. A reservoir at pavement level leaves the water 51.5 m below the Gallery roof, which the pump of S10 must supply (01 premise P1). [Reworded 2026-10-10, before any solver run: the first wording, 'Fails unless the hypothesis specifies an inlet below pavement level or a pump able to deliver at least 51.5 m of head', tested S10's pump rather than this step.]",
    "status": "conditional",
    "basis": "No reservoir or inlet is evidenced on site, so the step is conditional on the reservoir of S08; water standing at the level of a pavement-level reservoir stops 21.7 m below the top of the well shaft and 51.5 m below the Gallery roof, a head that the pump of S10 must supply.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Water pressure at the foot of the Descending Passage with the Gallery full",
@@ -183,6 +192,7 @@
    "criterion": "Pass only if a named actuator and seal can supply the peak piston force of 0.6 to 1 MN and hold 0.5 to 0.8 MPa (02 section 5.5 item 4).",
    "status": "undefined",
    "basis": "The hypothesis names no actuator or seal for the pump, which must push with 0.43 to 1.01 MN depending on its position and hold 0.80 MPa with the Gallery full.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Water pressure at the foot of the Descending Passage with the Gallery full",
@@ -224,6 +234,7 @@
    "criterion": "Fail if the suction lift from the water table to the pump exceeds about 10 m (02 section 5.5 item 2).",
    "status": "fail",
    "basis": "The suction margin of a pump at the foot of the Descending Passage is -5.9 m at the Old Kingdom flood peak and -0.4 m at the most favourable documented levels, against the 0 m it needs to draw.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Suction-lift margin for a pump at the foot of the Descending Passage at the Old Kingdom flood peak",
@@ -256,6 +267,7 @@
    "criterion": "Pass if the stroke count, filled volume divided by swept volume, is within 25 percent of 4 for a stroke definition the hypothesis commits to in advance (01 premise P2).",
    "status": "conditional",
    "basis": "Filling the Gallery alone takes 4.3 strokes (3.9 to 4.7 over the ranges of the inputs) if a stroke sweeps the whole Descending Passage, 5.9 (5.4 to 6.4) if it sweeps the part below the Ascending Passage junction and 6.7 (6.2 to 7.3) if it sweeps the part below the pavement, against the 4 claimed, and the hypothesis fixes no stroke.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Strokes to fill the Gallery if a stroke sweeps the whole Descending Passage",
@@ -298,6 +310,7 @@
    "criterion": "Pass if, with the gallery filled, water stays out of the King's Chamber while gas can still pass the antechamber, and a drain route is stated (02 section 5.5 item 6).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 3.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "grand_gallery",
@@ -315,6 +328,7 @@
    "criterion": "Pass if, for a stated drain rate and realistic leak areas, most of the replacement gas comes down the shafts; report the pressure difference (02 section 5.5 item 7).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 3.",
+   "source": "none",
    "numbers": [
     {
      "label": "Pressure drop that draws replacement air down both King's Chamber shafts while the Gallery drains",
@@ -341,6 +355,7 @@
    "criterion": "Pass only if a connected duct from the King's Chamber to the Gallery exists in the as-surveyed geometry with the slabs down; the blind-groove case fails and the connected case allows at most about 0.002 m2 (01 premise P3).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 3.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "kings_chamber",
@@ -357,6 +372,7 @@
    "criterion": "Pass if gas-phase conversion of sulfur dioxide to trioxide per pass through the antechamber, with no added catalyst, heat or nitrogen oxides, is at least 10 percent; fail below 0.1 percent (03 section 4.4).",
    "status": "fail",
    "basis": "At the collision limit, sulfur dioxide lasts 2.8e+17 s (8.8e+09 years) against oxygen with no catalyst, so a pass of 10 min to 6 h converts a fraction of 9e-14 at most and 2e-15 at the least.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Shortest possible lifetime of sulfur dioxide against uncatalysed oxidation in air",
@@ -380,6 +396,7 @@
    "criterion": "Pass if, with the openings as surveyed, more than 90 percent of the displaced volume is drawn through the antechamber path rather than through other openings (01 premise P4).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 3.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "antechamber",
@@ -396,6 +413,7 @@
    "criterion": "Pass if four strokes raise the water surface to the gallery roof given the real swept volume; report the number of strokes actually needed (02 section 5.5 item 3).",
    "status": "conditional",
    "basis": "Filling the Gallery alone takes 4.3 strokes (3.9 to 4.7 over the ranges of the inputs) if a stroke sweeps the whole Descending Passage, 5.9 (5.4 to 6.4) if it sweeps the part below the Ascending Passage junction and 6.7 (6.2 to 7.3) if it sweeps the part below the pavement, against the 4 claimed, and the hypothesis fixes no stroke.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Strokes to fill the Gallery if a stroke sweeps the whole Descending Passage",
@@ -434,6 +452,7 @@
    "criterion": "Pass if at least 90 percent of the sulfur is captured into the liquid in any oxidation state within the cycle; fail below 50 percent (03 section 4.4).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 4.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "grand_gallery"
@@ -449,6 +468,7 @@
    "criterion": "Pass if the overall yield of sulfate from dissolved sulfur dioxide within one stated cycle is at least 50 percent; fail below 5 percent (03 section 4.4).",
    "status": "fail",
    "basis": "In one day, taken as the cycle because the hypothesis states none, the oxygen dissolved in the Gallery water and the oxygen crossing its still surface can oxidise 2.5 percent of a full batch (2.1 to 2.8 percent over the ranges of the inputs), below the 5 percent under which the criterion fails the claim and the 50 percent from which it passes it; a still surface would need 27 days (22 to 302 days over the ranges of the inputs) to bring the yield to 5 percent, and the hypothesis describes no aeration.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Sulfur dioxide the King's Chamber holds if filled with the pure gas",
@@ -500,6 +520,7 @@
    "criterion": "Pass if four-stage filling keeps the batch below boiling for the stated chemistry; report the adiabatic temperature rise against the boiling margin (00 section 7 item 10).",
    "status": "pass",
    "basis": "If the first of the 4 claimed fills took the whole heat of the largest batch, it would warm by 7.3 K and leave a margin of 72.7 K below boiling (62.3 K at the least), so nothing boils over with or without the dilute-acid step.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Sulfur dioxide the King's Chamber holds if filled with the pure gas",
@@ -544,6 +565,7 @@
    "criterion": "Pass if gas uptake keeps pace with the rising water so that no gas is forced back through the grooves (00 section 7 item 9).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 4.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "grand_gallery",
@@ -561,6 +583,7 @@
    "criterion": "Pass if a calcium sulfate layer forms and persists over ten fill and drain cycles with fresh water and limits wall loss to a rate compatible with the surviving surfaces; fail if it is stripped each cycle (03 section 4.4; 00 section 7 item 11).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 4.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "grand_gallery",
@@ -577,6 +600,7 @@
    "criterion": "Pass if the bulk temperature rise of the batch is at least 20 K, which would justify a heat exchanger; fail below 5 K (03 section 4.4).",
    "status": "fail",
    "basis": "The largest possible batch warms the Gallery water by 1.8 K (2.0 K at most), below the 5 K at which a heat exchanger would start to matter.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Sulfur dioxide the King's Chamber holds if filled with the pure gas",
@@ -615,6 +639,7 @@
    "criterion": "Pass if the through-path signal-to-noise ratio at the north slab is at least 10 dB with the bounded source and the received signal varies monotonically with liquid level over a useful range (05 section 5.5 item 5).",
    "status": "fail",
    "basis": "A slab driven at the air-breakdown field emits 50 dB and the path to the north slab loses 101 dB at 13 kHz, so the signal arrives at -51 dB (-55 dB at the least), against the 10 dB needed above a 0 dB noise floor.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Sound level from the Queen's Chamber shaft slab driven at the air-breakdown field",
@@ -647,6 +672,7 @@
    "criterion": "Undefined until the hypothesis names the outlet, driver and destination; the Queen's Chamber shafts are dead-end ducts and no other outlet is surveyed (06, geometry facts handed to other domains).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 3.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "queens_chamber",
@@ -663,6 +689,7 @@
    "criterion": "Pass if the partial pressure of hydrogen chloride over the dilute acid and salt mixture is at least 1e-3 atm; fail below 1e-5 atm (03 section 4.4).",
    "status": "fail",
    "basis": "Hydrogen chloride stands at 1.2e-07 atm over the dilute acid and salt mixture, and at 1.5e-07 atm over saturated brine, against the 1e-05 atm below which the criterion fails the claim.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Hydrogen chloride pressure over the dilute acid and salt mixture",
@@ -684,6 +711,7 @@
    "criterion": "Pass only if the pit's resistance ratio between empty and acid-filled exceeds about 10 and the veins on either side can carry current over the link length; fail if the vein-to-host conductivity contrast is below 1e3 (07 section 4.2).",
    "status": "conditional",
    "basis": "A vein must conduct 2.7e+05 times better than the rock to carry current 100 m; the best measured specular hematite reaches 3.3e+04 times in 100 ohm m rock and 1.0e+06 times in the most resistive 3000 ohm m rock, earthy red hematite reaches 4.2e-02 times at most, and no Giza vein has been measured.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Vein-to-rock conductivity contrast a vein needs to carry current over the link length",
@@ -705,6 +733,7 @@
    "criterion": "Pass only if a vein's leakage length is at least the claimed link length and the power delivered at the load is non-trivial for a realistic driving field (07 section 4.2).",
    "status": "conditional",
    "basis": "A vein must conduct 2.7e+05 times better than the rock to carry current 100 m; the best measured specular hematite reaches 3.3e+04 times in 100 ohm m rock and 1.0e+06 times in the most resistive 3000 ohm m rock, earthy red hematite reaches 4.2e-02 times at most, and no Giza vein has been measured.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Vein-to-rock conductivity contrast a vein needs to carry current over the link length",
@@ -726,6 +755,7 @@
    "criterion": "Pass if the product strength at draw-off is at least 0.05 mol/L; fail below 0.005 mol/L (03 section 4.4).",
    "status": "conditional",
    "basis": "Pure sulfur dioxide at one atmosphere caps the product at 0.023 mol/L (0.026 mol/L at most), or 0.012 mol/L if its oxygen comes with the same draw of air, below the 0.05 mol/L pass line at any gas fraction; the ceiling scales with the sulfur dioxide fraction of the chamber gas, so the product stays above the 0.005 mol/L fail line only if that fraction is at least 22 percent (19 percent with every input at its favourable end), and the hypothesis states no gas fraction.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Sulfur dioxide the King's Chamber holds if filled with the pure gas",
@@ -764,6 +794,7 @@
    "criterion": "Report the cycles per year allowed by the expected direct-strike rate; the hypothesis states no required rate, so the number has no pass threshold until one is given (04 section 4.4; 00 section 5 item 26).",
    "status": "undefined",
    "basis": "Direct strikes come at most 0.12 times per year, one every 8 years, and the hypothesis states no cycle rate to compare this with.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Direct lightning strikes on the pyramid per year, at most",
@@ -785,6 +816,7 @@
    "criterion": "Pass if an opened source gives a measured hydrogen sulfide flux, composition or source pressure under the plateau that meets the chemistry model's minimum feed; fail if the required flux exceeds active-seep analogues by orders of magnitude (07 section 4.4).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 5.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   },
@@ -798,6 +830,7 @@
    "criterion": "Documentary check, not simulated: pass if the elements and levels reported in the cited paper match those reported for the iron-oxide vein samples.",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 5.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   },
@@ -811,6 +844,7 @@
    "criterion": "Documentary check, not simulated: pass if a survey of the Giza caves shows cave forms cut in iron ore; cases at other sites do not decide it.",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 5.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   },
@@ -824,6 +858,7 @@
    "criterion": "Documentary check, not simulated: pass only if mineral evidence of sulfuric-acid cave formation is published for those sites; visual likeness does not decide it.",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 5.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   },
@@ -837,6 +872,7 @@
    "criterion": "Analogy only, no test: recorded so that the reply can state what the cited paper does and does not say about the pyramid.",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 6.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   },
@@ -850,6 +886,7 @@
    "criterion": "Documentary check, not simulated: pass if a dated archaeological source records Old Kingdom sulfur mining; the claim belongs to the superseded sulfur-burning version of the hypothesis.",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 6.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   },
@@ -863,6 +900,7 @@
    "criterion": "Pass only if every step of the cited patent can run at ambient temperature without a catalyst, since the hypothesis supplies neither heat nor catalyst (03 section 2c and check V14).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 4.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   },
@@ -876,6 +914,7 @@
    "criterion": "Documentary check, not simulated: pass if a survey older than the excavations records an original lined shaft in the King's Chamber floor.",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 6.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "kings_chamber"
@@ -891,6 +930,7 @@
    "criterion": "Pass only if a surveyed conduit from below the structure to the King's Chamber floor exists; the chamber floor is about 43 m above the pavement.",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 6.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "kings_chamber"
@@ -906,6 +946,7 @@
    "criterion": "Documentary check, not simulated: pass if the excavation record reports air flow resuming when a shaft was cleared.",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 6.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "kc_shaft_north",
@@ -923,6 +964,7 @@
    "criterion": "Geometric premise: pass for a shaft only if a survey shows its outer end running level through the casing; carried as the kc_shaft_ends_level variant, and the shaft exits must fall on the casing plane at Z = 80 +/- 1 m in either case (01 fidelity criterion).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 1.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "kc_shaft_north",
@@ -939,6 +981,7 @@
    "criterion": "Geometric premise: pass for the grooves as a gas path only if a connected duct exists in the as-surveyed geometry; the blind-groove case fails (01 premise P3).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 1.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "antechamber"
@@ -954,6 +997,7 @@
    "criterion": "Rank the modal quality factor and decay time of the antechamber, King's Chamber and Grand Gallery in an audio-band model; pass if the antechamber ranks first (05 section 5.5 item 4).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 2.",
+   "source": "none",
    "numbers": [
     {
      "label": "King's Chamber volume, floor to ceiling",
@@ -979,6 +1023,7 @@
    "criterion": "Pass if a ram cycle sustains itself with the chamber as it exists, which has no outfall; report the delivered fraction and the water that must be spilled (02 section 5.5 item 8).",
    "status": "fail",
    "basis": "A ram at the foot of the Descending Passage delivers 22 percent of its drive water to the Gallery roof, so one Gallery fill spills 2022 m3 (1259 m3 at the least) into a chamber of 300 m3 (450 m3 at most) that has no outfall.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Share of its drive water that a hydraulic ram delivers to the Gallery roof",
@@ -1003,6 +1048,7 @@
    "criterion": "Geometric premise: pass if the surveyed passage ends blind in rock with no outlet (01 claim 6).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 1.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "south_passage"
@@ -1018,6 +1064,7 @@
    "criterion": "Documentary check, not simulated: pass if valve seats or valve parts are recorded in the Subterranean Chamber or its pit.",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 3.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "subterranean_chamber",
@@ -1034,6 +1081,7 @@
    "criterion": "Counts as evidence of an ancient aquifer link only if the pit as it stood before 1837 reaches a documented water table; the suction test then decides the draw (02 section 5.5 item 2).",
    "status": "fail",
    "basis": "The pit as it stood before 1837 had a clearance of 11.4 m over the Old Kingdom flood peak (5.4 m at the least), so it reached no documented water table, while the shaft sunk in 1837 and 1838 has a clearance of 2.9 m over today's water table (-2.4 to 6.5 m over the ranges of the inputs), so modern groundwater cannot be excluded as the cause of wet fill.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Height of the pit bottom, as it stood before 1837, above the Old Kingdom flood peak",
@@ -1057,6 +1105,7 @@
    "criterion": "Pass for a dry gas if the time-averaged Arrhenius enhancement reaches 2 for the sulfur dioxide oxidation barrier, which needs a temperature swing of about 12 K or about 174 dB (05 section 5.5 item 2).",
    "status": "conditional",
    "basis": "The strongest airborne ultrasound engineered, 172 dB, speeds a dry-gas reaction 2.2 times if its barrier is the 150 kJ/mol of the direct gas reaction and 1.5 times if it is 100 kJ/mol, so the doubling the criterion asks for is met only at the higher barrier, and over the ranges of the inputs the gain runs from 1.4 to 2.3 times.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Speed-up of a dry-gas reaction by the temperature swing of the strongest airborne ultrasound",
@@ -1080,6 +1129,7 @@
    "criterion": "As modelled, pass if the band-maximum volume-mean field-intensity ratio in the King's Chamber in case R1 is at least twice that of its control; under realism, pass if in case V4 the ratio is at least 2 and at least twice its control across 6.7e-4 to 3.3e-3 S/m, fail if it is below 2 at 6.7e-4 S/m, otherwise conditional (spec section 6).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 1.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "paper_kings_chamber",
@@ -1098,6 +1148,7 @@
    "criterion": "Pass only if the band-maximum summit metric, the volume mean of the field-intensity ratio in the masonry between Z 132.4 m and 137.4 m, for the apex truncated at 137.4 m is at least twice that for the apex pointed at 146.71 m in the on-ground case (spec section 6).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 1.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   },
@@ -1111,6 +1162,7 @@
    "criterion": "Pass only if a direct-current conduction model with conductive sheets for the ore bodies gives a non-negligible field or charge at the summit or in the granite (04 section 5.3).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 2.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   },
@@ -1124,6 +1176,7 @@
    "criterion": "Pass if the charge relaxation time of the granite is at least as long as the time over which the source field changes, which is seconds for a storm; fail if it is shorter by orders of magnitude (04 sections 4.3 and 5.2).",
    "status": "fail",
    "basis": "Charge in the granite relaxes in 5.3 ms in the driest measured case (21 ms at most) and in the limestone in 31 ns, against a storm field that changes over seconds.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Charge relaxation time of the limestone masonry",
@@ -1155,6 +1208,7 @@
    "criterion": "Analogy only, no test in this project.",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 6.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   },
@@ -1168,6 +1222,7 @@
    "criterion": "Cannot be simulated; held as a documented constraint with no computed verdict (06, evidence that cannot be simulated).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 6.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   },
@@ -1181,6 +1236,7 @@
    "criterion": "Geometric premise: pass if the survey record shows the shaft mouths closed by uncut wall stone of about that thickness until they were opened (01 claim 3).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 1.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "qc_shaft_north",
@@ -1198,6 +1254,7 @@
    "criterion": "Documentary check, not simulated: pass if the 1978 analysis letter lists those three phases.",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 4.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "queens_chamber"
@@ -1213,6 +1270,7 @@
    "criterion": "Counts for the hypothesis only if the acid-wall model predicts something the no-acid salt model cannot, such as no sodium chloride in the wetted zone, and that is then found (06, pass/fail item 4).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 4.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "queens_chamber"
@@ -1228,6 +1286,7 @@
    "criterion": "Pass if a crust is found whose upper limit follows a level surface at the modelled fill height in both the Queen's Chamber and the Grand Gallery (06, pass/fail item 1).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 4.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "grand_gallery",
@@ -1244,6 +1303,7 @@
    "criterion": "Pass if at least 80 percent of the acid survives wall contact for one cycle; fail below 20 percent (03 section 4.4).",
    "status": "conditional",
    "basis": "Bare limestone neutralises 41 percent of the strongest possible batch (32 to 77 percent over the input ranges) before gypsum saturates and can coat it, so 59 percent of the acid survives one cycle, and more only where a coat is already in place.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Sulfur dioxide the King's Chamber holds if filled with the pure gas",
@@ -1282,6 +1342,7 @@
    "criterion": "Pass if gypsum is found as a replacement rind on etched calcite with dissolution textures beneath it, not as efflorescence on an intact tooled surface (06, pass/fail item 2).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 4.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "queens_chamber"
@@ -1297,6 +1358,7 @@
    "criterion": "Documentary check, not simulated: pass if quantitative mineralogy shows Tura limestone to be quartz-rich compared with Mokattam bedrock.",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 2.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "qc_shaft_south"
@@ -1312,6 +1374,7 @@
    "criterion": "Geometric premise: pass if a published void of comparable size lies above the Gallery; its use as a heat exchanger is judged separately by the thermal criterion for the masonry between them (01 premise P5).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 1.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "big_void",
@@ -1328,6 +1391,7 @@
    "criterion": "Documentary check, not simulated: pass if a published analysis identifies sodium chloride on the walls of Khafre's burial chamber.",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 5.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   },
@@ -1341,6 +1405,7 @@
    "criterion": "Documentary check, not simulated: pass if a published analysis is produced; none is attributed in the transcripts.",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 6.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   },
@@ -1354,6 +1419,7 @@
    "criterion": "Documentary check, not simulated: pass if laboratory data show vitrified vein material and if the stela's lightning passage stands in a primary edition of the text.",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 5.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   },
@@ -1367,6 +1433,7 @@
    "criterion": "Documentary check, not simulated: pass if the sample analyses report fulgurite, glass or spherules, and metal levels above those of the local control sample.",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 5.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   },
@@ -1380,6 +1447,7 @@
    "criterion": "Counts as wiring only if a four-point measurement along a vein against the adjacent rock gives a conductivity contrast high enough for the claimed link lengths; fail below 1e3 (07 section 4.2).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 5.",
+   "source": "none",
    "numbers": [],
    "spaces": [
     "pit",
@@ -1396,6 +1464,7 @@
    "criterion": "Pass only if the vein-to-host conductivity contrast reaches the value that a leakage length equal to the link length needs, about 2.7e5 for 100 m with a 0.03 m2 section; fail if it is below 1e3 (07 section 4.2).",
    "status": "conditional",
    "basis": "A vein must conduct 2.7e+05 times better than the rock to carry current 100 m; the best measured specular hematite reaches 3.3e+04 times in 100 ohm m rock and 1.0e+06 times in the most resistive 3000 ohm m rock, earthy red hematite reaches 4.2e-02 times at most, and no Giza vein has been measured.",
+   "source": "tier0",
    "numbers": [
     {
      "label": "Vein-to-rock conductivity contrast a vein needs to carry current over the link length",
@@ -1417,6 +1486,7 @@
    "criterion": "Pass if the pit walls show metres of retreat or thick gypsum crusts in the Khufu pits and none in the Khafre pits; tool-marked, uncorroded walls count against it (07 section 4.3).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 5.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   },
@@ -1430,6 +1500,7 @@
    "criterion": "Cannot be simulated; held as a documented constraint with no computed verdict (06, evidence that cannot be simulated).",
    "status": "pending",
    "basis": "No Tier 0 rule; tested in piece 6.",
+   "source": "none",
    "numbers": [],
    "spaces": []
   }
