@@ -52,7 +52,8 @@ QUANTITIES = [
     ("chem.still_margin", "What still water that stays fresh dissolves over the layer one cycle grows",
      "1", "chem.still_fill_dissolves / chem.gypsum_layer_per_cycle; the cycle time cancels",
      tuple(dict.fromkeys(walls.LAYER + walls.STILL)), walls.still_margin),
-    ("chem.least_still_margin", "The least still water dissolves, as acid for the whole cycle, over the layer it grows",
+    ("chem.least_still_margin",
+     "The least still water dissolves, as acid for the whole cycle, over the layer one cycle grows",
      "1", "2 x sqrt(D_w t / pi) Vm / chem.gypsum_layer_per_cycle; x (c + x) = (s rho)^2, c = n_SO2 / V_gallery; the "
      "cycle time cancels, and a spell as fresh water only adds",
      tuple(dict.fromkeys(walls.LAYER + walls.STILL)), walls.least_margin),
@@ -208,8 +209,9 @@ def _s23(ledger, r):
     if status == "fail":
         return status, head + (
             f"and still water dissolves {least.value:.1f} times the layer by diffusion alone even if it is acid of "
-            f"full strength from the first moment of the cycle ({least.low:.1f} times at the least; {fresh.value:.1f} "
-            "times if it stays fresh throughout), so every cycle strips the layer and starts on bare stone, which "
+            "full strength from the first moment of the cycle, with all its sulfate counted against the gypsum "
+            f"({least.low:.2f} times at the least; {fresh.value:.1f} times if it stays fresh throughout), so every "
+            "cycle strips the layer and starts on bare stone, which "
             f"loses up to {1e3 * ten.value / CYCLES:.2f} mm per cycle and {1e3 * ten.value:.1f} mm in ten in bringing "
             f"each batch to saturation ({1e3 * ten.low:.1f} to {1e3 * ten.high:.1f} mm over the ranges of the "
             "inputs). The outcome does not rest on the cycle time, which cancels for still water, or on how long the "
