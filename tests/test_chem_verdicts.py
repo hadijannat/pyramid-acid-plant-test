@@ -144,7 +144,8 @@ def test_the_feed_claims_are_undefined_whatever_the_cycle_time(led):
     assert s01.startswith("One full batch needs") and "60 ppmv" in s01
     assert e01.startswith("No opened source gives a measured hydrogen sulfide flux")
     assert "the passing clause is not met" in e01
-    assert "3.7 mol/s and 3979 t a year at one batch every 1 h" in with_quantities(led, {"rx.cycle_time": fixed(3600.0)})["S01"][1]
+    hourly = with_quantities(led, {"rx.cycle_time": fixed(3600.0)})["S01"][1]
+    assert "3.7 mol/s and 3979 t a year at one batch every 1 h" in hourly
 
 
 def test_the_package_decides_only_its_five_claims_and_merges_with_tier_0(led, results, tmp_path):
@@ -159,3 +160,35 @@ def test_the_package_decides_only_its_five_claims_and_merges_with_tier_0(led, re
     assert all(source[claim] == "chem" and merged[claim] == decided[claim] for claim in decided)
     assert merged_results["chem.capture_share"] == results["chem.capture_share"]
     assert source["S20"] == "tier0"  # Tier 0's verdict on the oxidation stands
+
+
+def test_the_viewer_shows_the_numbers_once_the_claims_gain_the_listed_inputs(led, results):
+    from pyramid import viewer_data
+
+    gained = chem.depends_on(led)
+    assert set(gained) == set(chem.RULES)
+    assert gained["S01"] == gained["E01"] == ["site.atm_pressure", "kc.volume", "chem.temperature", "rx.cycle_time",
+                                              "rx.h2s_cave_air"]
+    assert "rx.kg_gas" in gained["S19"] and "chem.henry_so2" not in gained["S19"]  # the claim already names it
+    assert "rx.henry_n2" in gained["S22"] and "rx.ion_diffusivity" in gained["S23"]
+    claims = {id: dataclasses.replace(claim, depends_on=claim.depends_on + tuple(gained.get(id, ())))
+              for id, claim in led.claims.items()}
+    decided = chem.verdicts(led, results)
+    payload = viewer_data.claims_payload(dataclasses.replace(led, claims=claims), results, decided)
+    shown = {claim["id"]: {number["label"] for number in claim["numbers"]} for claim in payload["claims"]}
+    for claim, ids in chem.SHOWN.items():
+        assert {results[id].label for id in ids} <= shown[claim], claim
+
+
+def test_the_production_run_writes_results_series_and_figures(tmp_path):
+    from pyramid.chem.__main__ import main
+
+    out = main(root=tmp_path)
+    assert out == tmp_path / "chem"
+    for name in ("summary.json", "manifest.json", "capture.json", "pushback.json", "layer.json", "feed.json",
+                 "oxidation.json", "figures/capture.png", "figures/pushback.png", "figures/layer.png",
+                 "figures/feed.png"):
+        assert (out / name).stat().st_size > 0, name
+    stored_results, stored_verdicts, manifest = simkit.read_results("chem", root=tmp_path)
+    assert len(stored_results) == len(chem.QUANTITIES) and set(stored_verdicts) == set(chem.RULES)
+    assert len(manifest["assumptions"]) >= 8

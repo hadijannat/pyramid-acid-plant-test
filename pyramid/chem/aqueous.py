@@ -21,11 +21,14 @@ from scipy.optimize import brentq
 from pyramid.chem.transfer import solubility
 from pyramid.screening import _OXYGEN, _SO2, LITRE, O2_PER_SO2, R, _oxygen, _so2_moles
 
-SPECIATION = ("chem.pka1_so2", "chem.pka2_so2", "chem.ka2_sulfuric")
+SPECIATION = ("chem.pka1_so2", "chem.pka2_so2")
 EQUILIBRIUM = _SO2 + ("gg.volume", "chem.henry_so2") + SPECIATION
 OXIDATION = _SO2 + ("gg.volume", "chem.fe_rate_constant", "chem.fe_concentration") + SPECIATION
 YIELD = _OXYGEN  # the inputs of Tier 0's oxygen supply
-GAS = ("kc.volume", "gg.volume", "chem.o2_fraction", "chem.henry_o2", "rx.henry_n2", "chem.temperature")
+BATCH = tuple(dict.fromkeys(YIELD + OXIDATION + ("chem.ka2_sulfuric",)))  # every input of the batch run
+MIXTURE = ("chem.o2_fraction", "chem.henry_o2", "rx.henry_n2", "chem.temperature")
+THRESHOLD = ("chem.o2_fraction", "rx.henry_n2", "chem.temperature")
+GAS = ("kc.volume", "gg.volume") + MIXTURE
 OXYGEN_CUT = 1e-3  # numerical, not physical: the share of air saturation below which the oxidation is switched off
 
 
@@ -40,11 +43,12 @@ def hydrogen(s4: float, s6: float, q) -> float:
     """Hydrogen-ion concentration, mol/m3, of water holding s4 of sulfur(IV) and s6 of sulfate: the charge balance."""
     if s4 + s6 <= 0:
         return 0.0
-    k2 = q["chem.ka2_sulfuric"]
+    k2 = q["chem.ka2_sulfuric"] if s6 else 0.0  # the bisulfate constant matters only where there is sulfate
 
     def excess(h):  # positive charge less negative charge
         _, bisulfite, sulfite = fractions(h, q)
-        return h - s4 * (bisulfite + 2 * sulfite) - s6 * (h + 2 * k2) / (h + k2)
+        sulfate = s6 * (h + 2 * k2) / (h + k2) if s6 else 0.0
+        return h - s4 * (bisulfite + 2 * sulfite) - sulfate
 
     return brentq(excess, 0.0, 2 * (s4 + s6), xtol=1e-14, rtol=1e-13)
 

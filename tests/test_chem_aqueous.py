@@ -15,7 +15,7 @@ def led() -> ledger.Ledger:
 
 @pytest.fixture(scope="module")
 def q(led) -> dict[str, float]:
-    ids = set(aqueous.EQUILIBRIUM + aqueous.OXIDATION + aqueous.YIELD + aqueous.GAS)
+    ids = set(aqueous.EQUILIBRIUM + aqueous.BATCH + aqueous.GAS)
     return {i: led.q(i) for i in ids}
 
 

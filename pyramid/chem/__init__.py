@@ -34,38 +34,60 @@ QUANTITIES = [
      aqueous.GAS, lambda q: aqueous.forced_back(q, aqueous.least_air(q))),
     ("chem.forced_back_stoichiometric", "Share of the gas pushed back for the mixture with oxygen for all its sulfur",
      "1", "as chem.forced_back_least_air with x_air = 1 - 1 / (1 + 0.5 / x_O2)",
-     aqueous.GAS, lambda q: aqueous.forced_back(q, aqueous.stoichiometric_air(q))),
+     aqueous.MIXTURE, lambda q: aqueous.forced_back(q, aqueous.stoichiometric_air(q))),
     ("chem.air_without_pushback", "Largest share of air in the gas for which nothing need be pushed back",
-     "1", "x = H_N2 R T / (1 - x_O2)", aqueous.GAS, aqueous.air_without_pushback),
+     "1", "x = H_N2 R T / (1 - x_O2)", aqueous.THRESHOLD, aqueous.air_without_pushback),
     ("chem.sulfur_oxidisable_without_pushback", "Share of the sulfur that the oxygen of that much air can oxidise",
-     "1", "y = x_O2 x / (0.5 (1 - x))", aqueous.GAS,
+     "1", "y = x_O2 x / (0.5 (1 - x))", aqueous.THRESHOLD,
      lambda q: aqueous.sulfur_oxidisable(q, aqueous.air_without_pushback(q))),
     ("chem.gypsum_layer_per_cycle", "Gypsum layer that grows in one cycle on a wall bare at its start",
-     "m", "d = sqrt(Vm D C t); C = 2 n_SO2 / V_gallery", walls.WALL, walls.layer_per_cycle),
+     "m", "d = sqrt(Vm D C t); C = 2 n_SO2 / V_gallery", walls.LAYER, walls.layer_per_cycle),
     ("chem.fill_dissolves", "Gypsum layer one Gallery of fresh water dissolves in coming to saturation",
-     "m", "d = s rho V_gallery Vm / A_wall", walls.WALL, walls.fill_dissolves),
+     "m", "d = s rho V_gallery Vm / A_wall", walls.FILL, walls.fill_dissolves),
     ("chem.still_fill_dissolves", "Gypsum layer a still fill of fresh water dissolves by diffusion alone in one cycle",
-     "m", "d = 2 s rho sqrt(D_w t / pi) Vm", walls.WALL, walls.still_fill_dissolves),
+     "m", "d = 2 s rho sqrt(D_w t / pi) Vm", walls.STILL, walls.still_fill_dissolves),
     ("chem.saturating_margin", "What a saturating fill dissolves over the layer one cycle grows",
-     "1", "chem.fill_dissolves / chem.gypsum_layer_per_cycle", walls.WALL, walls.saturating_margin),
+     "1", "chem.fill_dissolves / chem.gypsum_layer_per_cycle", tuple(dict.fromkeys(walls.LAYER + walls.FILL)),
+     walls.saturating_margin),
     ("chem.still_margin", "What a still fill dissolves over the layer one cycle grows",
      "1", "chem.still_fill_dissolves / chem.gypsum_layer_per_cycle; the cycle time cancels",
-     walls.WALL, walls.still_margin),
+     tuple(dict.fromkeys(walls.LAYER + walls.STILL)), walls.still_margin),
     ("chem.wall_loss_per_cycle", "Limestone lost in a cycle that starts with a bare wall",
-     "m", "w = x c V_gallery Vc / A_wall + d Vc / Vm; x = min(1, (s rho / c)^2)", walls.WALL, walls.loss_per_cycle),
+     "m", "w = x c V_gallery Vc / A_wall + d Vc / Vm; x = min(1, (s rho / c)^2)", walls.LOSS, walls.loss_per_cycle),
     ("chem.wall_loss_ten_cycles", "Limestone lost in ten cycles if every fill strips the layer",
-     "m", "10 x chem.wall_loss_per_cycle", walls.WALL, lambda q: CYCLES * walls.loss_per_cycle(q)),
+     "m", "10 x chem.wall_loss_per_cycle", walls.LOSS, lambda q: CYCLES * walls.loss_per_cycle(q)),
     ("chem.h2s_per_batch", "Hydrogen sulfide one full batch needs",
      "mol", "n = p V / (R T), a mole for each mole of sulfur dioxide", screening._SO2, feed.batch_moles),
     ("chem.h2s_mass_per_batch", "Mass of the hydrogen sulfide one full batch needs",
-     "kg", "m = n M", feed.FEED, feed.batch_mass),
+     "kg", "m = n M", feed.MASS, feed.batch_mass),
     ("chem.h2s_flux", "Hydrogen sulfide flux for one full batch per cycle",
-     "mol/s", "F = n / t", feed.FEED, feed.flux),
+     "mol/s", "F = n / t", feed.FLUX, feed.flux),
     ("chem.h2s_mass_per_year", "Hydrogen sulfide for a year of full batches",
      "kg", "m = n M x one year / t", feed.FEED, feed.yearly_mass),
     ("chem.cave_air_per_batch", "Cave air at the analogue's ceiling that holds the sulfur of one batch",
      "m3", "V = V_chamber / x_H2S", feed.CAVE_AIR, feed.cave_air_per_batch),
 ]
+
+
+# The results the viewer should show under each claim: a claim shows a result once it depends on all its inputs.
+SHOWN = {
+    "S01": ("chem.h2s_per_batch", "chem.h2s_mass_per_batch", "chem.h2s_flux", "chem.h2s_mass_per_year",
+            "chem.cave_air_per_batch"),
+    "S19": ("chem.capture_share", "chem.capture_equilibrium"),
+    "S22": ("chem.least_air", "chem.forced_back_least_air", "chem.forced_back_stoichiometric",
+            "chem.air_without_pushback", "chem.sulfur_oxidisable_without_pushback", "chem.uptake_pace"),
+    "S23": ("chem.gypsum_layer_per_cycle", "chem.fill_dissolves", "chem.still_fill_dissolves",
+            "chem.saturating_margin", "chem.still_margin", "chem.wall_loss_per_cycle", "chem.wall_loss_ten_cycles"),
+}
+SHOWN["E01"] = SHOWN["S01"]
+
+
+def depends_on(ledger: Ledger) -> dict[str, list[str]]:
+    """The ledger ids each claim's depends_on must gain for the viewer to show these results under it."""
+    inputs = {row[0]: row[4] for row in QUANTITIES}
+    return {claim: [i for i in dict.fromkeys(i for id in ids for i in inputs[id])
+                    if i not in ledger.claims[claim].depends_on]
+            for claim, ids in SHOWN.items()}
 
 
 def results(ledger: Ledger) -> dict[str, Result]:

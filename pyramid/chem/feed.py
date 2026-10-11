@@ -10,7 +10,9 @@ Assumptions:
 """
 from pyramid.screening import _SO2, YEAR, R, _so2_moles
 
-FEED = _SO2 + ("chem.molar_mass_h2s", "rx.cycle_time")
+MASS = _SO2 + ("chem.molar_mass_h2s",)
+FLUX = _SO2 + ("rx.cycle_time",)
+FEED = MASS + ("rx.cycle_time",)
 CAVE_AIR = _SO2 + ("rx.h2s_cave_air",)
 
 
