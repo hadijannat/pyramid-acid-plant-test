@@ -22,6 +22,7 @@ const BOLT_GLOW = 4;         // display choice: the bolt is drawn brighter than 
 const BOLT_WIDTH = 1.2;      // display choice: metres, so the bolt thins with distance
 const FLASH = 6;             // display choice: the flash's intensity; with no fall-off it lights the pyramid alike
 const PARTICLES = 4000;      // display choice: the most gas particles in one step, all its spaces together
+const CANDIDATES = 20;       // display choice: random points tried per particle asked for, at most
 const PARTICLE_SIZE = 0.15;  // display choice: metres
 const SWAY = 0.25;           // display choice: radians per second of each particle's slow sway
 const CHORD = 0.15;          // display choice: a particle sways over this fraction of a chord of its space
@@ -44,22 +45,48 @@ function shown(object) {
   return true;
 }
 
-// A point inside the convex hull of a mesh's vertices: a convex combination of four of them, with
-// exponential weights, which spread the points evenly over the tetrahedron of the four.
-// ponytail: the hull, not the mesh. The Grand Gallery's corbels make its hull a few decimetres wider than the
-// space near the roof; test candidates with a parity raycast against the mesh if particles show outside it.
-function inside(vertices, out) {
-  out.set(0, 0, 0);
-  let sum = 0;
-  for (let n = 0; n < 4; n++) {
-    const i = Math.floor(Math.random() * vertices.count);
-    const w = -Math.log(1 - Math.random());
-    out.x += w * vertices.getX(i);
-    out.y += w * vertices.getY(i);
-    out.z += w * vertices.getZ(i);
-    sum += w;
+// The triangles of a space's mesh (three corners each, in the mesh's own frame) and its bounding box.
+function solidOf(geometry) {
+  const position = geometry.attributes.position;
+  const { index } = geometry;
+  const corners = [];
+  for (let i = 0; i < (index ? index.count : position.count); i++) {
+    corners.push(new THREE.Vector3().fromBufferAttribute(position, index ? index.getX(i) : i));
   }
-  return out.divideScalar(sum);
+  if (!geometry.boundingBox) geometry.computeBoundingBox();
+  return { corners, box: geometry.boundingBox };
+}
+
+// Three fixed oblique directions, so that a ray seldom runs along a face of the axis-aligned rooms.
+const RAYS = [[1, 0.31, 0.17], [-0.23, 1, 0.41], [0.37, -0.29, 1]].map(v => new THREE.Vector3(...v).normalize());
+const ray = new THREE.Ray();
+const hit = new THREE.Vector3();
+
+// How many triangles the ray from origin along direction crosses within length.
+function crossings({ corners }, origin, direction, length = Infinity) {
+  ray.set(origin, direction);
+  let n = 0;
+  for (let i = 0; i < corners.length; i += 3) {
+    if (ray.intersectTriangle(corners[i], corners[i + 1], corners[i + 2], false, hit) && hit.distanceTo(origin) <= length) n++;
+  }
+  return n;
+}
+
+// Whether a point lies inside a closed mesh: an odd number of crossings along a ray. The majority of the
+// three rays decides, so a ray that grazes an edge or a corner does not flip the answer.
+// ponytail: every triangle per ray, fine for the spaces' tens to hundreds of triangles; a BVH if a mesh grows.
+function inside(solid, point) {
+  let odd = 0;
+  for (const direction of RAYS) odd += crossings(solid, point, direction) % 2;
+  return odd >= 2;
+}
+
+// A uniform point of the space's bounding box that lies inside the mesh, or null for a candidate outside it.
+function candidate(solid, out) {
+  const { min, max } = solid.box;
+  out.set(THREE.MathUtils.lerp(min.x, max.x, Math.random()), THREE.MathUtils.lerp(min.y, max.y, Math.random()),
+    THREE.MathUtils.lerp(min.z, max.z, Math.random()));
+  return inside(solid, out) ? out : null;
 }
 
 export function createActors({ scene, model, materials, store, cycle, tiers }) {
@@ -101,26 +128,34 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
   }
 
   // A sparse cloud of gas particles in a space, a child of its haze (same visibility, same clipping plane).
-  // Each particle sways along a short chord between two points of the space's hull, so it stays inside.
+  // Each particle sways along a short chord from a point inside the mesh, and only where no wall crosses the
+  // chord, so it stays inside. Drawn without the depth test: the opaque walls of its space never hide it.
+  // ponytail: candidates are drawn in the bounding box, at most CANDIDATES per particle asked for; a thin slanted
+  // shaft fills about one percent of its box and gets fewer particles than asked. Sample along the shaft if that shows.
   function cloud(space, haze, plane, count) {
-    const vertices = model.spaces.get(space).geometry.attributes.position;
-    const from = new Float32Array(count * 3);
-    const to = new Float32Array(count * 3);
-    const phase = new Float32Array(count);
-    const a = new THREE.Vector3();
-    const b = new THREE.Vector3();
-    for (let i = 0; i < count; i++) {
-      inside(vertices, a);
-      inside(vertices, b).lerp(a, 1 - CHORD);   // b is moved most of the way back to a
+    const solid = solidOf(model.spaces.get(space).geometry);
+    const found = [];   // points inside the mesh
+    const trial = new THREE.Vector3();
+    for (let tries = 0; found.length < count && tries < CANDIDATES * count; tries++) {
+      if (candidate(solid, trial)) found.push(trial.clone());
+    }
+    const from = new Float32Array(found.length * 3);
+    const to = new Float32Array(found.length * 3);
+    const phase = new Float32Array(found.length);
+    const toward = new THREE.Vector3();
+    found.forEach((a, i) => {
+      const b = found[Math.floor(Math.random() * found.length)].clone().lerp(a, 1 - CHORD);   // most of the way back to a
+      const length = a.distanceTo(b);
+      if (length > 0 && crossings(solid, a, toward.subVectors(b, a).divideScalar(length), length) > 0) b.copy(a);
       a.toArray(from, 3 * i);
       b.toArray(to, 3 * i);
       phase[i] = Math.random() * 2 * Math.PI;
-    }
+    });
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute('position', new THREE.BufferAttribute(from.slice(), 3));
     const material = new THREE.PointsMaterial({
-      color: HAZE_COLOUR, size: PARTICLE_SIZE, transparent: true, opacity: 0.6, depthWrite: false,
-      blending: THREE.AdditiveBlending, clippingPlanes: [plane],
+      color: HAZE_COLOUR, size: PARTICLE_SIZE, transparent: true, opacity: 0.9, depthWrite: false,   // display choice
+      depthTest: false, blending: THREE.NormalBlending, clippingPlanes: [plane],                     // display choice
     });
     const points = keep(haze, new THREE.Points(geometry, material), geometry, material);
     points.frustumCulled = false;   // the particles move; the bounding sphere of their first positions is stale

@@ -157,7 +157,8 @@ totalEmissiveRadiance += diffuseColor.rgb * 0.6 * step(0.0, belowSurface) * step
     return material;
   }
 
-  // Gas: a view-dependent haze, denser where the space is seen edge on, broken by drifting noise; additive.
+  // Gas: a view-dependent veil, denser where the space is seen edge on, broken by drifting noise. Normal blending:
+  // an additive haze vanishes over the self-lit spaces it lies on.
   function gas(plane, colourHex) {
     return new THREE.ShaderMaterial({
       uniforms: { uColour: { value: new THREE.Color(colourHex) }, uTime: time },
@@ -175,11 +176,12 @@ void main() {
   // display choice: noise scale, drift speed and density
   float drift = noise3(vWorld * 0.6 + vec3(0.0, -0.25, 0.1) * uTime);
   float density = (0.25 + 0.75 * fresnel(vView)) * (0.4 + 0.6 * drift);
-  gl_FragColor = vec4(uColour * density, density * 0.7);
+  gl_FragColor = vec4(uColour, clamp(density * 2.0, 0.0, 0.85));   // display choice: the veil's opacity from its density
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
 }`,
-      transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending,
+      transparent: true, depthWrite: false, side: THREE.DoubleSide,
+      blending: THREE.NormalBlending,   // display choice
       clipping: true, clippingPlanes: [plane],
     });
   }
