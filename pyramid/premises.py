@@ -85,6 +85,9 @@ QUANTITIES: list[tuple] = [
      lambda q: (q["ante.slot_width"] - q["ante.slab_thickness"]) * q["ante.slab_width"]),
     ("premises.sp_length_between_ends", "South passage, distance between its surveyed ends", "m",
      "L = |south end - north end|", _SP_ENDS, _passage_length),
+    # the record itself, listed so that the number E25 turns on appears among the results
+    ("premises.qcs_stone_left", "Uncut wall stone at each Queen's Chamber shaft mouth, as recorded", "m",
+     "t = the thickness in the survey record", ("qcs.stone_left",), lambda q: q["qcs.stone_left"]),
     ("premises.void_length_ratio", "Big Void length over the Grand Gallery's", "1", "L_void / L_gallery",
      ("bv.length", "gg.roof_length_sloping"), lambda q: q["bv.length"] / q["gg.roof_length_sloping"]),
     ("premises.void_centre_above_roof", "Big Void centre above the top of the Gallery roof", "m",
@@ -203,7 +206,8 @@ def _e15(ledger, r):
 
 
 def _e25(ledger, r):
-    stone, (thin, thick) = ledger.q("qcs.stone_left"), ledger.rng("qcs.stone_left")
+    record = r["premises.qcs_stone_left"]
+    stone, thin, thick = record.value, record.low, record.high
     claim_low, claim_high = CLAIMED_STONE
 
     def fits(thickness):  # closed, and "about" the claim's 3 to 5 in
@@ -267,6 +271,20 @@ def _e32(ledger, r):
 # of the criteria in ledger/claims.yaml, which come from research/01-geometry.md.
 RULES = {"E11": _e11, "E12": _e12, "E15": _e15, "E25": _e25, "E32": _e32, "S15": _s15}
 
+# Every ledger quantity each rule reads, itself or through the results it quotes. The viewer shows a result under
+# a claim only when the claim's depends_on in ledger/claims.yaml holds all the result's inputs, so depends_on must
+# gain whichever of these it lacks; the merge applies that, since claims.yaml is not this package's to edit.
+_GROOVES = ("ante.groove_count", "ante.groove_width", "ante.groove_residual_depth", "ante.groove_depth")
+READS = {
+    "E11": tuple(dict.fromkeys(_exit_inputs("north", True) + _exit_inputs("south", True))),
+    "E12": (*_GROOVES, "ante.slot_count"),
+    "E15": (*_SP_ENDS, "sp.length"),
+    "E25": ("qcs.stone_left",),
+    "E32": ("bv.length", "gg.roof_length_sloping", "bv.centre.z", "gg.roof_top.z", "bv.south_end.y",
+            "bv.incline_angle", "gg.south_end.y", "gg.north_end.y"),
+    "S15": (*_GROOVES, "ante.slot_width", "ante.slab_thickness", "ante.slab_width"),
+}
+
 ASSUMPTIONS = [
     "A King's Chamber shaft is a level run from the chamber wall, one straight incline at the surveyed mean slope "
     "and, in the level-end reading, a level last stretch, met with the plane of the original casing.",
@@ -285,10 +303,36 @@ def verdicts(ledger: Ledger, computed: dict[str, Result] | None = None) -> dict[
     return {claim: rule(ledger, computed) for claim, rule in RULES.items()}
 
 
+def figure(computed: dict[str, Result], out_dir) -> None:
+    """figures/kcs_exits.png: the four shaft exits with their ranges against the criterion's 80 +/- 1 m."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    exits = [computed[id] for id in computed if id.startswith("premises.kcs_")]
+    names = [f"{'north' if '_north_' in e.id else 'south'}, {'level end' if e.id.endswith('_level') else 'inclined'}"
+             for e in exits]
+    fig, ax = plt.subplots(figsize=(7, 2.8))
+    ax.axvspan(*EXIT_BAND, color="0.85", label="criterion: Z = 80 +/- 1 m")
+    ax.errorbar([e.value for e in exits], range(len(exits)), fmt="o", color="black", capsize=4,
+                xerr=[[e.value - e.low for e in exits], [e.high - e.value for e in exits]],
+                label="surveyed values, with the range of the inputs")
+    ax.set_yticks(range(len(exits)), names)
+    ax.set_ylim(len(exits) - 0.5, -0.5)
+    ax.set_xlabel("level of the shaft's exit on the casing plane, m above the pavement")
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, 1.3), ncols=2, frameon=False, fontsize=8)
+    fig.tight_layout()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_dir / "kcs_exits.png", dpi=150, metadata={"Software": None})  # no version, no timestamp
+    plt.close(fig)
+
+
 def main(root=simkit.RESULTS) -> None:
     ledger = load()
     computed = results(ledger)
-    simkit.write_results("premises", ledger, computed, verdicts(ledger, computed), {"assumptions": ASSUMPTIONS}, root)
+    out_dir = simkit.write_results("premises", ledger, computed, verdicts(ledger, computed),
+                                   {"assumptions": ASSUMPTIONS}, root)
+    figure(computed, out_dir / "figures")
 
 
 if __name__ == "__main__":

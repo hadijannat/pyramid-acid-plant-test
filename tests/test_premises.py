@@ -4,7 +4,7 @@ import math
 
 import pytest
 
-from pyramid import ledger, premises, screening, simkit
+from pyramid import ledger, premises, screening, simkit, viewer_data
 
 
 @pytest.fixture(scope="module")
@@ -92,12 +92,39 @@ def test_shaft_exit_reproduces_the_figures_of_01_check_6(led, side, angle, level
 
 def test_results_are_named_for_the_package_and_read_only_the_ledger(led):
     results = premises.results(led)
-    assert len(results) == 10
+    assert len(results) == 11
     for id, result in results.items():
         assert id == result.id and id.startswith("premises.")
         assert result.low <= result.value <= result.high
         assert all(i in led.quantities for i in result.inputs)
     assert not set(results) & set(screening.all_results(led))
+
+
+def test_reads_lists_what_each_rule_reads_so_the_viewer_can_show_its_numbers(led):
+    results = premises.results(led)
+    for claim, rule in premises.RULES.items():
+        quoted, asked = [], []
+
+        class Results(dict):  # records which results the rule quotes
+            def __getitem__(self, key):
+                quoted.append(key)
+                return super().__getitem__(key)
+
+        class Recording(ledger.Ledger):  # records which quantities the rule reads directly
+            def _quantity(self, id):
+                asked.append(id)
+                return super()._quantity(id)
+
+        rule(Recording(led.quantities, led.claims, led.digest), Results(results))
+        read = {i for id in quoted for i in results[id].inputs} | set(asked)
+        assert quoted and read == set(premises.READS[claim]), claim
+    # Once depends_on holds those ids, every premise carries at least one number in the viewer's payload.
+    claims = {id: dataclasses.replace(claim, depends_on=claim.depends_on + premises.READS.get(id, ()))
+              for id, claim in led.claims.items()}
+    payload = viewer_data.claims_payload(dataclasses.replace(led, claims=claims), results, premises.verdicts(led))
+    shown = {claim["id"]: claim["numbers"] for claim in payload["claims"]}
+    assert all(shown[claim] for claim in premises.RULES)
+    assert len(shown["E11"]) == 4 and len(shown["S15"]) == 3 and len(shown["E25"]) == 1
 
 
 def test_the_numbers_the_bases_quote(led):
@@ -214,3 +241,5 @@ def test_main_writes_what_the_merge_reads(tmp_path, led):
     results, verdicts, manifest = simkit.read_results("premises", tmp_path)
     assert results == premises.results(led) and verdicts == premises.verdicts(led)
     assert manifest["ledger"] == led.digest and len(manifest["assumptions"]) == len(premises.ASSUMPTIONS)
+    png = (tmp_path / "premises" / "figures" / "kcs_exits.png").read_bytes()
+    assert png.startswith(b"\x89PNG") and b"tIME" not in png and b"Software" not in png  # no timestamp in the file
