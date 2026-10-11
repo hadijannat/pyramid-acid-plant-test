@@ -125,7 +125,7 @@ Behaviour:
 
 ### 5.5 Electromagnetic module
 
-Two independent codes: MEEP (finite-difference time domain, broadband pulse) and FEniCSx (frequency-domain finite elements with edge elements and absorbing layers, scattered-field formulation). Both read the same case files and the same geometry parameters. The incident field for cases with ground is the exact plane-wave solution for the air and ground half-spaces without the pyramid.
+Two independent codes: MEEP (finite-difference time domain, broadband pulse) and FEniCSx (frequency-domain finite elements with edge elements and absorbing layers, scattered-field formulation). (Amended 2026-10-11 by the owner's decision: neither code is on PyPI and conda is not installed, so the cases are first run with two independent in-house solvers written in this repository with numpy and scipy only, a frequency-domain volume-integral solver and a time-domain FDTD solver, held to the same benchmark, reproduction and agreement criteria of section 6; a cross-check with MEEP and FEniCSx follows when Miniforge is installed.) Both read the same case files and the same geometry parameters. The incident field for cases with ground is the exact plane-wave solution for the air and ground half-spaces without the pyramid.
 
 Metrics, computed identically for both codes:
 
