@@ -9,6 +9,7 @@ import { frameModel, loadModel } from './render/model.js';
 import { createActors } from './render/actors.js';
 import { createRide } from './tour/camera.js';
 import { createPlayer } from './tour/player.js';
+import { mountCinematic } from './hud/cinematic.js';
 
 const message = document.getElementById('message');
 
@@ -89,6 +90,9 @@ async function boot() {
   const player = createPlayer({ store, cycle, actors, ride, claims });   // enters the prologue and sets the hash to '#'
   Object.assign(window.viewer, { player, ride, camera: rendererApi.camera });
   stateParts.push(player.state);
+
+  // ---- Task 8: the cinematic HUD
+  mountCinematic(document.getElementById('hud'), { store, cycle, claims, player, ride });
 
   rendererApi.start(frame);
   player.gotoId(url.stepId);   // url was read first at boot, before the player rewrote the hash
