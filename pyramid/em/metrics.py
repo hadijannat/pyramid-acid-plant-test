@@ -17,6 +17,7 @@ PEAK_GROUND = 0.10     # the on-ground maximum's wavelength
 PEAK_VALUE = 0.20      # peak cross-sections against the values read from the study's figures
 AGREEMENT = 0.10       # the two solvers' spectra, normalised RMS difference
 FACTOR = 2.0           # "at least twice its control", "at least 2", "at least twice the pointed apex"
+AIR_REGIONS = ("kings", "queens", "lower", "gallery")     # the other region, the summit, is masonry
 
 
 def region_stats(intensity: np.ndarray, weights: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -39,6 +40,16 @@ def side_intensity(field: np.ndarray, normal: np.ndarray, factor) -> np.ndarray:
     """
     across = np.sum(normal * field, axis=0)
     return np.sum(np.abs(field + (factor - 1) * across * normal) ** 2, axis=0)
+
+
+def region_value(name: str, field, normal, inverse, weights, eps_masonry) -> tuple[float, float]:
+    """(volume mean, maximum) of |E|^2 / |E0|^2 in one region at one wavelength, from the mean field in its cells.
+
+    In a cell cut by a wall a chamber takes the field on the air side and the summit the field in the masonry.
+    """
+    factor = 1 / inverse / (1 if name in AIR_REGIONS else eps_masonry)
+    mean, peak = region_stats(side_intensity(field, normal, factor)[None], weights)
+    return float(mean[0]), float(peak[0])
 
 
 def peaks(wavelengths, spectrum) -> list[tuple[float, float]]:

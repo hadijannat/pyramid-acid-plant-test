@@ -25,7 +25,6 @@ B1, B2, B3 = -1.891531, 0.1648469, -1.7700004     # coefficients of the lattice 
 TOLERANCE = 1e-5                                  # relative residual of the linear solve
 RESTART = 60                                      # Krylov vectors kept: memory against products
 PAIRS = ((0, 0), (1, 1), (2, 2), (0, 1), (0, 2), (1, 2))
-AIR_REGIONS = ("kings", "queens", "lower", "gallery")     # the other region, the summit, is masonry
 
 
 def polarisability(eps, k: float, cell: float, s: float = 0.0):
@@ -153,13 +152,9 @@ def region_metrics(model, field: np.ndarray, mixing, eps_masonry) -> dict:
     In a cell cut by a wall the chamber's share is the field on the air side and the summit's the masonry side.
     """
     _, inverse, normal = mixing
-    out = {}
-    for name, (slices, weights) in model.regions.items():
-        factor = 1 / inverse[slices] / (1 if name in AIR_REGIONS else eps_masonry)
-        box = metrics.side_intensity(field[(slice(None), *slices)], normal[(slice(None), *slices)], factor)
-        mean, peak = metrics.region_stats(box[None], weights)
-        out[name] = (float(mean[0]), float(peak[0]))
-    return out
+    return {name: metrics.region_value(name, field[(slice(None), *slices)], normal[(slice(None), *slices)],
+                                       inverse[slices], weights, eps_masonry)
+            for name, (slices, weights) in model.regions.items()}
 
 
 def spectrum(model, wavelengths, permittivity, direction: int, dtype=np.complex128) -> dict:

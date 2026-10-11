@@ -39,13 +39,16 @@ class Model:
         A cell cut by a surface answers a field along the surface with the first and a field across it with the
         inverse of the second; the normal is the gradient of the mean (zero where the neighbourhood is uniform).
         """
-        fm = self.masonry.astype(float)
-        fg = np.zeros_like(fm) if self.granite is None else self.granite.astype(float)
-        air = np.clip(1 - fm - fg, 0.0, None)
-        mean = air + fm * eps_masonry + fg * eps_granite
+        mean = self.inverse(1 / np.asarray(eps_masonry), 1 / np.asarray(eps_granite))    # the same sum of the inverses' inverses
         normal = np.array(np.gradient(np.real(mean)))
         size = np.sqrt(np.sum(normal**2, axis=0))
-        return mean, air + fm / eps_masonry + fg / eps_granite, normal / np.where(size > 1e-9, size, np.inf)
+        return mean, self.inverse(eps_masonry, eps_granite), normal / np.where(size > 1e-9, size, np.inf)
+
+    def inverse(self, eps_masonry, eps_granite=1.0, slices=...) -> np.ndarray:
+        """The volume mean of 1 / permittivity in each cell (of a box of cells, if slices are given)."""
+        fm = self.masonry[slices].astype(float)
+        fg = 0.0 if self.granite is None else self.granite[slices].astype(float)
+        return np.clip(1 - fm - fg, 0.0, None) + fm / eps_masonry + fg / eps_granite
 
     def padded(self, below, above, ground: bool) -> "Model":
         """The same model on a larger grid: `below` and `above` cells of air added on each axis (ground under z = 0)."""
