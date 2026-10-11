@@ -3,18 +3,17 @@
 Assumptions:
 - each room is a rectangular box for its modes, f = (c / 2) sqrt((nx / Lx)^2 + (ny / Ly)^2 + (nz / Lz)^2); the Grand
   Gallery's box is its sloping floor length, its width above the ramps and its vertical height;
-- the decay is Sabine's, T60 = 24 ln(10) V / (c A), with A = alpha S + openings + 4 m V. It is a statistical formula
+- the decay is Sabine's, T60 = 24 ln(10) V / (c A), with A = alpha S + 4 m V. It is a statistical formula
   used down to the lowest modes; ponytail: its ceiling is a factor of about two on a single mode's decay, and the
   upgrade path is a modal damping sum or a Helmholtz solve with wall impedances (05 section 5.1);
-- a passage mouth absorbs all that reaches it, the usual open-window rule (05 section 5.3 names the openings as what
-  sets the loss). The passages are open, as the hypothesis has them when gas passes through and as they are today.
-  The antechamber has two, the King's Chamber one, the Gallery two (the well shaft, the lower passages and the
-  shaft mouths are left out). Sound that comes back from the next room is left out; with it a small room can share
-  its neighbours' decay but cannot outlast them;
-- the wall absorption is the ledger's one assumed value for stone; its range is applied to each room separately;
+- the loss is the walls' and the air's, as the task asks. The wall absorption is the ledger's one assumed value for
+  stone, the same in the three rooms: no measurement tells them apart;
+- the passage mouths are a sensitivity case, not part of the ranking: a mouth then absorbs all that reaches it (the
+  open-window rule, which overstates the loss at wavelengths much longer than the mouth; 05 section 5.3 names the
+  openings as what sets the loss). The antechamber has two, the King's Chamber one, the Gallery two; their section
+  is a recalled figure in the ledger. Open mouths lower the antechamber's standing in both measures;
 - air absorbs as frequency squared, the classical law, scaled to the ledger's 13 kHz value; ponytail: this
-  under-reads below a few kHz, where the walls and openings carry the loss anyway (at the lowest modes air is under
-  2 percent of the absorption by either reckoning); the upgrade path is ISO 9613-1.
+  under-reads below a few kHz, where the walls carry the loss anyway; the upgrade path is ISO 9613-1.
 """
 import math
 from itertools import product
@@ -42,7 +41,10 @@ NEPER = 10 / math.log(10)  # dB per neper of energy, 4.343
 def inputs(room: str) -> tuple[str, ...]:
     spec = ROOMS[room]
     own = spec["dims"] + tuple(i for i in (spec["volume"], spec["area"]) if i)
-    return tuple(dict.fromkeys(own + PASSAGE + AIR + (REFERENCE,)))
+    return tuple(dict.fromkeys(own + AIR + (REFERENCE,)))
+
+
+ALL = tuple(dict.fromkeys(sum((inputs(room) for room in ROOMS), ())))  # one draw of each input for the three rooms
 
 
 def modes(dims, speed: float, top: float) -> list[tuple[float, tuple[int, int, int]]]:
@@ -79,24 +81,36 @@ def volume_and_area(q, room: str) -> tuple[float, float]:
     return volume, area
 
 
-def absorption_area(q, room: str, frequency: float, open_passages: bool = True) -> float:
+def absorption_area(q, room: str, frequency: float, open_passages: bool = False) -> float:
     volume, area = volume_and_area(q, room)
     mouths = ROOMS[room]["openings"] * q[PASSAGE[0]] * q[PASSAGE[1]] if open_passages else 0.0
     return q["ac.wall_absorption"] * area + mouths + 4 * air_attenuation(q, frequency) * volume
 
 
-def decay_time(q, room: str, frequency: float, open_passages: bool = True) -> float:
+def decay_time(q, room: str, frequency: float, open_passages: bool = False) -> float:
     """Sabine's time for the sound to fall by 60 dB, s."""
     volume, _ = volume_and_area(q, room)
     return 24 * math.log(10) * volume / (q["ac.sound_speed_air"] * absorption_area(q, room, frequency, open_passages))
 
 
-def quality_factor(q, room: str, frequency: float) -> float:
+def quality_factor(q, room: str, frequency: float, open_passages: bool = False) -> float:
     """Q = 2 pi f T60 / (6 ln 10): the energy of a mode falls by e in T60 / (6 ln 10)."""
-    return 2 * math.pi * frequency * decay_time(q, room, frequency) / (6 * math.log(10))
+    return 2 * math.pi * frequency * decay_time(q, room, frequency, open_passages) / (6 * math.log(10))
 
 
-def closed_decay_ratio(q) -> float:
-    """King's Chamber over antechamber decay time with every passage shut and one wall absorption: the ratio of V / S."""
-    (kc_volume, kc_area), (ante_volume, ante_area) = volume_and_area(q, "kings_chamber"), volume_and_area(q, "antechamber")
-    return (kc_volume / kc_area) / (ante_volume / ante_area)
+def _others(room: str = "antechamber") -> list[str]:
+    return [other for other in ROOMS if other != room]
+
+
+def decay_lead(q, open_passages: bool = False) -> float:
+    """The antechamber's decay time over the longest of the other two, at the antechamber's lowest mode."""
+    f = reference_frequency(q)
+    return decay_time(q, "antechamber", f, open_passages) / max(decay_time(q, o, f, open_passages) for o in _others())
+
+
+def quality_lead(q, open_passages: bool = False) -> float:
+    """The quality factor of the antechamber's lowest mode over the highest of the other two rooms' lowest modes."""
+    def own(room):
+        return quality_factor(q, room, lowest_mode(q, room), open_passages)
+
+    return own("antechamber") / max(own(o) for o in _others())

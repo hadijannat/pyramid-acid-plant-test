@@ -73,7 +73,7 @@ def _decay_figure(ledger, out_dir):
                 markersize=3)
         series[room] = {"decay_time_s": times, "lowest_modes_hz": [f for f, _ in lowest]}
     ax.set(xlabel="frequency, Hz", ylabel="decay time T60, s",
-           title="Decay time of the three rooms, passages open (dots: lowest modes)")
+           title="Decay time of the three rooms from walls and air (dots: lowest modes)")
     ax.legend()
     fig.savefig(out_dir / "figures" / "room_decay_time.png", dpi=130, bbox_inches="tight")
     plt.close(fig)

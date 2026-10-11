@@ -41,9 +41,9 @@ ASSUMPTIONS = [
     "The field the granite needs is Tier 0's pulse chain run backwards, with every part of the chain at its most "
     "generous for the favourable end.",
     "Non-negligible, in the criteria of S04 and E21, is read as reaching the field that chain needs: a judgement call.",
-    "The rooms are hard-walled boxes with Sabine decay, open passage mouths that absorb all that reaches them, one "
-    "assumed wall absorption whose range is applied to each room separately, and air absorption as frequency squared "
-    "scaled to the ledger's 13 kHz value.",
+    "The rooms are hard-walled boxes with Sabine decay from the walls and the air: one assumed wall absorption shared "
+    "by the three rooms, and air absorption as frequency squared scaled to the ledger's 13 kHz value; open passage "
+    "mouths are a sensitivity case only.",
     "The field in the lining of a gas-filled chamber is capped at the air-breakdown field, whatever the masonry's "
     "resistivity.",
     "Ranks first, in the criterion of E13, is read as first in both decay time and modal quality factor: a judgement "
@@ -183,16 +183,27 @@ def room_results(ledger: Ledger) -> dict[str, Result]:
         ids, label = rooms.inputs(room), spec["label"]
         add(f"lowest_mode_{room}", f"Lowest mode of the {label} as a hard-walled box",
             simkit.corners(ledger, ids, lambda q, room=room: rooms.lowest_mode(q, room)), "Hz", "f = c / (2 L)", ids)
-        add(f"decay_time_{room}", f"Decay time of the {label} at the antechamber's lowest mode, passages open",
+        add(f"decay_time_{room}", f"Decay time of the {label} at the antechamber's lowest mode",
             simkit.corners(ledger, ids, lambda q, room=room: rooms.decay_time(q, room, rooms.reference_frequency(q))),
-            "s", "T60 = 24 ln(10) V / (c (alpha S + open mouths + 4 m V))", ids)
-        add(f"modal_q_{room}", f"Quality factor of the lowest mode of the {label}, passages open",
+            "s", "T60 = 24 ln(10) V / (c (alpha S + 4 m V))", ids)
+        add(f"modal_q_{room}", f"Quality factor of the lowest mode of the {label}",
             simkit.corners(ledger, ids, lambda q, room=room: rooms.quality_factor(q, room, rooms.lowest_mode(q, room))),
             "1", "Q = 2 pi f T60 / (6 ln 10) at f = c / (2 L)", ids)
-    ids = tuple(dict.fromkeys(rooms.inputs("kings_chamber") + rooms.inputs("antechamber")))
-    add("decay_ratio_closed", "King's Chamber over antechamber decay time with the passages shut and one wall absorption",
-        simkit.corners(ledger, ids, rooms.closed_decay_ratio), "1", "(V / S) of the King's Chamber / (V / S) of the "
-        "antechamber", ids)
+    # The ranking is taken with one draw of every input for the three rooms together, so that the wall absorption,
+    # which is one ledger quantity, has one value at a time.
+    add("decay_lead", "Antechamber decay time over the longest of the other two rooms",
+        simkit.corners(ledger, rooms.ALL, rooms.decay_lead), "1", "T60 of the antechamber / max T60 of the others",
+        rooms.ALL)
+    add("quality_lead", "Quality factor of the antechamber's lowest mode over the highest of the other two rooms",
+        simkit.corners(ledger, rooms.ALL, rooms.quality_lead), "1", "Q of the antechamber / max Q of the others",
+        rooms.ALL)
+    mouths = rooms.ALL + rooms.PASSAGE
+    add("decay_lead_open", "Antechamber decay time over the longest of the other two rooms, passage mouths open",
+        simkit.corners(ledger, mouths, lambda q: rooms.decay_lead(q, True)), "1",
+        "as decay_lead with A = alpha S + open mouths + 4 m V", mouths)
+    add("quality_lead_open", "Quality factor of the antechamber's lowest mode over the highest other, passage mouths open",
+        simkit.corners(ledger, mouths, lambda q: rooms.quality_lead(q, True)), "1",
+        "as quality_lead with A = alpha S + open mouths + 4 m V", mouths)
     return out
 
 
@@ -280,8 +291,8 @@ def _s06(ledger, r):
         f"A stroke of {ledger.q(STROKES[0]) / 1e3:.0f} kA entering at the summit and spreading by steady conduction "
         f"puts {peak.value / 1e3:.1f} kV/m in the King's Chamber granite at the peak ({mean.value / 1e3:.1f} kV/m as "
         f"a volume mean), {multiple.value:.1f} times the even-spreading conduction value, and "
-        f"{peak.high / 1e3:.0f} kV/m for the {ledger.rng(STROKES[1])[1] / 1e3:.0f} kA design maximum in the most "
-        f"resistive masonry measured ({peak.low:.0f} V/m at the least). ")
+        f"{peak.high / 1e3:.0f} kV/m at the favourable corner of the ranges, the {ledger.rng(STROKES[1])[1] / 1e3:.0f} "
+        f"kA design maximum in the most resistive masonry measured ({peak.low:.0f} V/m at the least). ")
     ceiling = (f"{needed.low / breakdown:.1f} times the {breakdown:.0e} V/m at which air breaks down"
                if needed.low > breakdown else f"below the {breakdown:.0e} V/m at which air breaks down")
     induction = (f" The chamber lies {skin.value:.1f} skin depths ({skin.low:.1f} to {skin.high:.1f}) inside the "
@@ -303,44 +314,42 @@ def _s06(ledger, r):
 
 def _e13(ledger, r):
     names = list(rooms.ROOMS)
-    decay = {room: r[f"electro.decay_time_{room}"] for room in names}
-    quality = {room: r[f"electro.modal_q_{room}"] for room in names}
-    mode = {room: r[f"electro.lowest_mode_{room}"] for room in names}
-    others = names[1:]
-    # Judgement call: "ranks first" is read as first in both measures the criterion names. Each room's range carries
-    # its own draw of the assumed wall absorption, so the favourable end gives the antechamber the hardest walls
-    # and the other rooms the softest.
-    first_at_worst = all(m["antechamber"].low > max(m[o].high for o in others) for m in (decay, quality))
-    first_at_best = all(m["antechamber"].high > max(m[o].low for o in others) for m in (decay, quality))
-    status = simkit.three_way(first_at_worst, first_at_best)
+    decay, quality, mode = ({room: r[f"electro.{kind}_{room}"] for room in names}
+                            for kind in ("decay_time", "modal_q", "lowest_mode"))
+    decay_lead, quality_lead = r["electro.decay_lead"], r["electro.quality_lead"]
+    open_decay, open_quality = r["electro.decay_lead_open"], r["electro.quality_lead_open"]
+    # Judgement call: "ranks first" is read as first in both measures the criterion names. A lead above 1 is first.
+    status = simkit.three_way(decay_lead.low > 1 and quality_lead.low > 1, decay_lead.high > 1 and quality_lead.high > 1)
 
     def rank(measure):
         ordered = sorted(names, key=lambda room: -measure[room].value)
         return ("first", "second", "last")[ordered.index("antechamber")]
 
     def listed(measure, unit, digits):
-        return ", ".join(f"{rooms.ROOMS[room]['label']} {measure[room].value:.{digits}f}{unit} "
-                         f"({measure[room].low:.{digits}f} to {measure[room].high:.{digits}f})" for room in names)
+        return ", ".join(f"{rooms.ROOMS[room]['label']} {measure[room].value:.{digits}f}{unit}" for room in names)
 
-    closed = r["electro.decay_ratio_closed"]
     head = (
-        "As hard-walled boxes with their passage mouths open and one assumed wall absorption, the decay times at "
-        f"{mode['antechamber'].value:.0f} Hz are: {listed(decay, ' s', 1)}; the quality factors of the lowest modes "
+        "As hard-walled boxes with one assumed wall absorption, the three rooms decay at "
+        f"{mode['antechamber'].value:.0f} Hz in: {listed(decay, ' s', 1)}; the quality factors of their lowest modes "
         f"({', '.join(f'{mode[room].value:.1f}' for room in names)} Hz) are: {listed(quality, '', 0)}. The antechamber "
-        f"ranks {rank(decay)} of three in decay time and {rank(quality)} in modal quality factor at the ledger values. ")
-    longest = max(others, key=lambda room: decay[room].low)
+        f"ranks {rank(decay)} of three in decay time, with {decay_lead.value:.2f} of the longest other "
+        f"({decay_lead.low:.2f} to {decay_lead.high:.2f} over the ranges of the inputs), and {rank(quality)} in modal "
+        f"quality factor, with {quality_lead.value:.2f} of the highest other ({quality_lead.low:.2f} to "
+        f"{quality_lead.high:.2f}). ")
     if status == "fail":
+        cause = [name for name, lead in (("decay time", decay_lead), ("modal quality factor", quality_lead))
+                 if lead.high <= 1]
         return status, head + (
-            f"Even with its own walls at the hard end of the assumed range and the others' at the soft end, it "
-            f"decays in {decay['antechamber'].high:.1f} s against at least {decay[longest].low:.1f} s for the "
-            f"{rooms.ROOMS[longest]['label']}, so it cannot rank first in both; with the passages shut and one wall "
-            f"absorption the King's Chamber still decays {closed.value:.1f} times longer ({closed.low:.1f} to "
-            f"{closed.high:.1f}). No acoustic measurement of the antechamber exists to check the model.")
+            f"It is never first in {' or in '.join(cause)}, so it does not rank first in both, the reading this rule "
+            "takes of the criterion as a judgement call; the decay times go as volume over wall area, whatever the "
+            f"absorption the rooms share. With the passage mouths open it falls to {open_decay.value:.2f} of the "
+            f"longest decay and {open_quality.value:.2f} of the highest quality factor. No acoustic measurement of the "
+            "antechamber exists to check the model.")
     if status == "pass":
         return status, head + "It stays first in both over the whole of the ranges, so the model ranks it first."
     return status, head + (
         "Over the ranges of the inputs it is first in both measures at the favourable end only, so the ranking "
-        "turns on wall absorptions that have not been measured.")
+        "turns on dimensions and absorptions that are not known well enough.")
 
 
 RULES = {"S04": _s04, "E21": _e21, "S06": _s06, "E13": _e13}

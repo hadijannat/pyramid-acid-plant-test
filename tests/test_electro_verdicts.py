@@ -135,20 +135,26 @@ def test_s06_compares_the_stroke_field_with_the_need_under_the_breakdown_cap(led
 def test_e13_ranks_the_three_rooms_in_both_measures(led, conduction, results):
     status, basis = electro.verdicts(led, results)["E13"]
     assert status == "fail"
-    # hand values: T60 = 0.161 V / A with A = alpha S + mouths: antechamber 18.5 / (0.02 x 44.7 + 2 x 1.167) = 0.92 s,
-    # King's Chamber 320.4 / (0.02 x 293.3 + 1.167) = 7.3 s; at the favourable end 21.3 / (0.01 x 38 + 2.334) = 1.3 s
-    # against 320 / (0.05 x 293 + 1.167) = 3.2 s
-    for text in ("antechamber 0.9 s (0.5 to 1.3)", "King's Chamber 7.3 s (3.2 to 12.7)", "45.2, 16.4, 3.6 Hz",
-                 "ranks last of three in decay time and second in modal quality factor",
-                 "it decays in 1.3 s against at least 3.2 s for the King's Chamber", "2.6 times longer (1.9 to 3.8)",
+    decay, quality = results["electro.decay_lead"], results["electro.quality_lead"]
+    # hand values: the decay times go as V / S, 0.414 m against 1.092 m, a lead of 0.38, and at the antechamber's best
+    # (21.3 / 38) / (318.8 / 293) = 0.52; Q of the lowest mode goes as f V / S, a lead of 1.05
+    assert decay.value == pytest.approx(0.379, abs=0.002) and decay.high == pytest.approx(0.515, abs=0.003)
+    assert quality.low < 1 < quality.value == pytest.approx(1.045, abs=0.002)
+    for text in ("antechamber 3.3 s, King's Chamber 8.8 s, Grand Gallery 4.6 s", "45.2, 16.4, 3.6 Hz",
+                 "antechamber 69, King's Chamber 66, Grand Gallery 8",
+                 "ranks last of three in decay time, with 0.38 of the longest other (0.27 to 0.52",
+                 "first in modal quality factor, with 1.05 of the highest other (0.73 to 1.42)",
+                 "It is never first in decay time, so it does not rank first in both", "a judgement call",
+                 "With the passage mouths open it falls to 0.13 of the longest decay and 0.35 of the highest quality",
                  "No acoustic measurement of the antechamber exists"):
         assert text in basis, basis
 
-    # with every passage shut the ranking turns on the wall absorptions, which are assumed
-    shut = {"ante.low_passage.width": (0.0, 0.0, 0.0)}
-    status, basis = with_quantities(led, conduction, shut)["E13"]
+    # an antechamber whose volume might be three times the surveyed box could lead in both, at that end only
+    status, basis = with_quantities(led, conduction, {"ante.volume": (18.5, 18.5, 60.0)})["E13"]
     assert status == "conditional" and "at the favourable end only" in basis
-    # a room far larger than the antechamber, with the walls' absorption known, would rank first
-    vast = shut | {"ante.volume": (2000.0, 2000.0, 2000.0), "ac.wall_absorption": (0.02, 0.02, 0.02)}
-    status, basis = with_quantities(led, conduction, vast)["E13"]
-    assert status == "pass" and "ranks first of three in decay time and first in modal quality factor" in basis
+    # a room far larger than the antechamber would rank first whatever the other inputs
+    status, basis = with_quantities(led, conduction, {"ante.volume": (2000.0, 2000.0, 2000.0)})["E13"]
+    assert status == "pass" and "ranks first of three in decay time" in basis and "first in modal quality factor" in basis
+    # and one first in decay time but never in quality factor fails on that measure
+    status, basis = with_results(led, results, decay_lead=(2.0, 1.5, 3.0), quality_lead=(0.5, 0.4, 0.9))["E13"]
+    assert status == "fail" and "It is never first in modal quality factor" in basis

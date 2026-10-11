@@ -16,7 +16,7 @@ def led() -> ledger.Ledger:
 def q(led):
     """Every ledger value the models read."""
     ids = (sources.GEOMETRY + sources.MATERIALS + (sources.SHELL,) + sources.SHEETS + piezo.GAS_SOLID + piezo.WET_FILM
-           + sum((rooms.inputs(room) for room in rooms.ROOMS), ()))
+           + rooms.ALL + rooms.PASSAGE)
     return {i: led.q(i) for i in ids}
 
 
@@ -133,30 +133,36 @@ def test_the_lowest_axial_mode_of_a_box_is_c_over_2l(q):
 
 
 def test_the_decay_time_is_sabines_and_the_quality_factor_follows_from_it(q):
-    # King's Chamber: V = 320.4 m3, S = 293.3 m2, one passage mouth of 1.167 m2, alpha = 0.02: A = 7.03 m2 and
-    # T60 = 24 ln(10) V / (c A) = 0.161 V / A = 7.34 s; Q = 2 pi f T60 / (6 ln 10).
+    # King's Chamber: V = 320.4 m3, S = 293.3 m2, alpha = 0.02: A = 5.87 m2 and T60 = 24 ln(10) V / (c A) =
+    # 0.161 V / A = 8.80 s; Q = 2 pi f T60 / (6 ln 10) = 65.6 at its 16.4 Hz mode. 05 section 5.2 quotes a vendor's
+    # 13 s for the same room, which an absorption of 0.0135 would give.
     length, width, height = (q[i] for i in rooms.ROOMS["kings_chamber"]["dims"])
     volume, area = length * width * height, 2 * (length * width + length * height + width * height)
-    mouth = q["ante.low_passage.width"] * q["ante.low_passage.height"]
-    absorbing = q["ac.wall_absorption"] * area + mouth
-    expected = 24 * math.log(10) * volume / (q["ac.sound_speed_air"] * absorbing)
+    expected = 24 * math.log(10) * volume / (q["ac.sound_speed_air"] * q["ac.wall_absorption"] * area)
     frequency = rooms.reference_frequency(q)
     assert frequency == pytest.approx(45.24, abs=0.01)
     assert rooms.decay_time(q, "kings_chamber", frequency) == pytest.approx(expected, rel=1e-3)  # air adds under 0.1 %
-    assert expected == pytest.approx(7.34, abs=0.01)
-    assert rooms.quality_factor(q, "kings_chamber", 16.388) == pytest.approx(2 * math.pi * 16.388 * 7.34 / 13.816, rel=2e-3)
+    assert expected == pytest.approx(8.80, abs=0.01)
+    assert rooms.quality_factor(q, "kings_chamber", 16.388) == pytest.approx(2 * math.pi * 16.388 * 8.80 / 13.816, rel=2e-3)
+    # with its one passage mouth of 1.167 m2 open: 0.161 x 320.4 / (5.87 + 1.167) = 7.34 s
+    mouth = q["ante.low_passage.width"] * q["ante.low_passage.height"]
+    assert rooms.decay_time(q, "kings_chamber", frequency, open_passages=True) == pytest.approx(
+        expected * q["ac.wall_absorption"] * area / (q["ac.wall_absorption"] * area + mouth), rel=1e-3)
     # the air law returns the ledger's 13 kHz value and is frequency squared
     assert rooms.air_attenuation(q, 13000.0) * rooms.NEPER == pytest.approx(q["ac.absorption_13khz"])
     assert rooms.air_attenuation(q, 6500.0) == pytest.approx(rooms.air_attenuation(q, 13000.0) / 4)
 
 
-def test_the_antechamber_decays_fastest_open_or_shut(q):
+def test_the_antechamber_decays_fastest_but_its_lowest_mode_has_the_highest_quality_factor(q):
     frequency = rooms.reference_frequency(q)
-    open_times = {room: rooms.decay_time(q, room, frequency) for room in rooms.ROOMS}
-    assert open_times["kings_chamber"] > open_times["grand_gallery"] > open_times["antechamber"]
-    assert open_times["antechamber"] == pytest.approx(0.92, abs=0.01)
-    shut = {room: rooms.decay_time(q, room, frequency, open_passages=False) for room in rooms.ROOMS}
-    assert shut["kings_chamber"] > shut["grand_gallery"] > shut["antechamber"]
-    # shut and with one wall absorption the ratio is that of V / S: (320.4 / 293.3) / (18.5 / 44.7) = 2.64
-    assert rooms.closed_decay_ratio(q) == pytest.approx((320.4 / 293.3) / (18.5 / 44.7), rel=2e-3)
-    assert shut["kings_chamber"] / shut["antechamber"] == pytest.approx(rooms.closed_decay_ratio(q), rel=1e-3)
+    for mouths in (False, True):
+        times = {room: rooms.decay_time(q, room, frequency, mouths) for room in rooms.ROOMS}
+        assert times["kings_chamber"] > times["grand_gallery"] > times["antechamber"]
+    # walls and air only: the decay times go as V / S, so the lead is (18.5 / 44.7) / (320.4 / 293.3) = 0.379
+    assert rooms.decay_lead(q) == pytest.approx((18.5 / 44.7) / (320.4 / 293.3), rel=2e-3)
+    # Q of the lowest mode goes as f V / S: 45.24 x 0.4139 = 18.7 against 16.39 x 1.0925 = 17.9, a lead of 1.045
+    assert rooms.quality_lead(q) == pytest.approx(45.235 * (18.5 / 44.7) / (16.388 * (320.4 / 293.3)), rel=2e-3)
+    assert rooms.quality_lead(q) == pytest.approx(1.045, abs=0.002)
+    # open mouths cost the small room most: 0.92 s against 7.34 s
+    assert rooms.decay_time(q, "antechamber", frequency, True) == pytest.approx(0.92, abs=0.01)
+    assert rooms.decay_lead(q, True) == pytest.approx(0.126, abs=0.002) and rooms.quality_lead(q, True) < 0.4
