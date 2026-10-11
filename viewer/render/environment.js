@@ -20,6 +20,10 @@ const SHADOW_HALF = 200;     // display choice: the shadow camera covers a 400 m
 const GROUND_SIZE = 20000;   // display choice: the plateau plane, 20 km across, its edge lost in the fog
 const SAND = 0xd8b47a;       // display choice: warm enough to read as sand under the blue sky light
 const ENV_STEP = 0.05;       // display choice: the environment map is rebuilt when the storm mix has moved this far
+// display choice: seen from inside the stone, the sky behind the glass fades to a dark tone near the glass body
+// (GLASS_BODY in materials.js), so the self-lit spaces stand out instead of sitting on a pale sky
+const INSIDE_SKY = 0x0e141a;
+const BACKDROP_SIZE = 20000;  // display choice: a box inside the sky box, its corners within the camera's far plane
 
 export function createEnvironment(scene, rendererApi, store) {
   const { renderer } = rendererApi;
@@ -47,6 +51,15 @@ export function createEnvironment(scene, rendererApi, store) {
   );
   ground.receiveShadow = true;
   scene.add(ground);
+
+  // The dark backdrop: drawn first among the transparent objects (renderOrder -1), so it covers only the sky,
+  // and the glass and the skins blend over it; invisible outside, so the exterior look is untouched.
+  const backdrop = new THREE.Mesh(
+    new THREE.BoxGeometry(BACKDROP_SIZE, BACKDROP_SIZE, BACKDROP_SIZE),
+    new THREE.MeshBasicMaterial({ color: INSIDE_SKY, side: THREE.BackSide, transparent: true, depthWrite: false, fog: false }),
+  );
+  backdrop.renderOrder = -1;
+  scene.add(backdrop);
 
   scene.fog = new THREE.FogExp2(CLEAR.fogColour, CLEAR.fog);
   const fogClear = new THREE.Color(CLEAR.fogColour);
@@ -98,6 +111,8 @@ export function createEnvironment(scene, rendererApi, store) {
     ground.material.opacity = 1 - gone;
     ground.material.depthWrite = gone === 0;   // a fading ground must not hide the spaces under the plateau
     ground.visible = gone < 1;
+    backdrop.material.opacity = gone;
+    backdrop.visible = gone > 0;
     const settled = k !== envStorm && (k === 0 || k === 1);   // the last map of a fade is made at its end value
     if (Math.abs(k - envStorm) > ENV_STEP || settled) rebuildEnvironment();
   }
