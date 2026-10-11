@@ -73,6 +73,9 @@
 #
 # Species colours are display choices and live in ledger/species.yaml.
 
+# 2026-10-11, after the Task 11 review: the cameras of S01, S02, S04, S05, S10, S12, S18 to S24 and S27 to S31 stand
+# farther back or higher, on the same line of sight, so the subject stays in the free area between the notice and the
+# caption card through the whole hold (the card lifts the frame; a camera authored for the bare frame lost the top).
 prologue:
   duration: 6.0
   path:
@@ -84,7 +87,7 @@ steps:
     title: "Hydrogen sulfide rises under the plateau"
     duration: 5.0
     path:
-      - {position: [260, -100, 20], target: [0, 0, -10]}
+      - {position: [372, -143, 112], target: [0, 0, 69]}
     scene: {interior: false, weather: clear}
     species: [h2s]
     actors: []
@@ -92,7 +95,7 @@ steps:
     title: "Satellite pyramids convert it to sulfur dioxide"
     duration: 5.0
     path:
-      - {position: [300, 60, 120], target: [0, 0, 40]}
+      - {position: [423, 85, 182], target: [0, 0, 69]}
     scene: {interior: false, weather: clear}
     species: [h2s, so2]
     reaction: {equation: "not stated by the hypothesis", timestamp: "F 00:14:18-00:14:39", note: "the video names a conversion without giving it"}
@@ -111,7 +114,7 @@ steps:
     title: "Ground currents charge the flat top"
     duration: 6.0
     path:
-      - {position: [300, -80, 60], target: [0, 0, 60]}
+      - {position: [372, -99, 78], target: [0, 0, 78]}
     scene: {interior: false, weather: clear}
     species: []
     actors:
@@ -121,7 +124,7 @@ steps:
     title: "Operators wait for a storm"
     duration: 4.0
     path:
-      - {position: [320, -60, 80], target: [0, 0, 45]}
+      - {position: [378, -71, 112], target: [0, 0, 71]}
     scene: {interior: false, weather: storm}
     species: []
     actors:
@@ -178,7 +181,7 @@ steps:
     title: "Pump push stroke"
     duration: 8.0
     path:
-      - {position: [170, 20, 20], target: [7, 35, 5]}
+      - {position: [186, 18.5, 42], target: [7, 35, 25.5]}
     scene: {interior: true, weather: clear}
     species: []
     actors:
@@ -220,7 +223,7 @@ steps:
     title: "Four activations fill the Grand Gallery"
     duration: 8.0
     path:
-      - {position: [150, 10, 30], target: [7, 28, 15]}
+      - {position: [203, 3, 50], target: [7, 28, 29.5]}
     scene: {interior: true, weather: clear}
     species: []
     actors:
@@ -347,7 +350,7 @@ steps:
     title: "Gallery is refilled in four activations"
     duration: 6.0
     path:
-      - {position: [150, 10, 30], target: [7, 28, 15]}
+      - {position: [203, 3, 50], target: [7, 28, 29.5]}
     scene: {interior: true, weather: clear}
     species: []
     actors:
@@ -368,7 +371,7 @@ steps:
     title: "Sulfur dioxide dissolves"
     duration: 5.0
     path:
-      - {position: [95, 5, 44], target: [7, 20, 35]}
+      - {position: [95, 5, 54.5], target: [7, 20, 45.5]}
     scene: {interior: true, weather: clear}
     species: [so2, water, sulfurous_acid]
     reaction: {equation: "SO₂ + H₂O → H₂SO₃", timestamp: "F 00:53:11-00:53:46", note: "as stated in the video"}
@@ -387,7 +390,7 @@ steps:
     title: "Sulfurous acid oxidises"
     duration: 5.0
     path:
-      - {position: [95, 5, 44], target: [7, 20, 35]}
+      - {position: [95, 5, 54.5], target: [7, 20, 45.5]}
     scene: {interior: true, weather: clear}
     species: [sulfurous_acid, air, sulfuric_acid]
     reaction: {equation: "2 H₂SO₃ + O₂ → 2 H₂SO₄", timestamp: "F 00:53:30-00:53:46", note: "as stated in the video"}
@@ -406,7 +409,7 @@ steps:
     title: "Sulfur trioxide dissolves in the dilute acid"
     duration: 5.0
     path:
-      - {position: [95, 5, 44], target: [7, 20, 35]}
+      - {position: [95, 5, 54.5], target: [7, 20, 45.5]}
     scene: {interior: true, weather: clear}
     species: [so3, water, sulfuric_acid]
     reaction: {equation: "SO₃ + H₂O → H₂SO₄ (into dilute acid)", timestamp: "F 00:43:10-00:43:57", note: "as stated in the video"}
@@ -425,7 +428,7 @@ steps:
     title: "No gas is pushed back"
     duration: 4.0
     path:
-      - {position: [80, 0, 48], target: [6, 13, 38]}
+      - {position: [80, 0, 52.5], target: [6, 13, 42.5]}
     scene: {interior: true, weather: clear}
     species: [so2, so3, water]
     actors:
@@ -442,7 +445,7 @@ steps:
     title: "Calcium sulfate coats the walls"
     duration: 5.0
     path:
-      - {position: [85, 0, 40], target: [6, 15, 32]}
+      - {position: [85, 0, 50.5], target: [6, 15, 42.5]}
     scene: {interior: true, weather: clear}
     species: [sulfuric_acid, calcium_sulfate]
     reaction: {equation: "CaCO₃ + H₂SO₄ → CaSO₄ + H₂O + CO₂", timestamp: "F 01:18:47-01:21:00", note: "as stated in the video"}
@@ -462,7 +465,7 @@ steps:
     title: "Big Void as heat exchanger (speculative)"
     duration: 5.0
     path:
-      - {position: [110, 0, 62], target: [7, 15, 50]}
+      - {position: [110, 0, 66.5], target: [7, 15, 54.5]}
     scene: {interior: true, weather: clear}
     species: []
     actors:
@@ -515,7 +518,7 @@ steps:
     title: "Acid goes to the central pyramid"
     duration: 4.0
     path:
-      - {position: [260, -160, 150], target: [0, 0, 40]}
+      - {position: [445, -274, 270], target: [0, 0, 82]}
     scene: {interior: false, weather: clear}
     species: [sulfuric_acid, hydrogen_chloride]
     reaction: {equation: "H₂SO₄ + 2 NaCl → Na₂SO₄ + 2 HCl", timestamp: "F 00:27:55-00:28:12", note: "as stated in the video"}
@@ -524,7 +527,7 @@ steps:
     title: "Acid fills the boat pits"
     duration: 4.0
     path:
-      - {position: [260, -160, 150], target: [0, 0, 40]}
+      - {position: [445, -274, 270], target: [0, 0, 82]}
     scene: {interior: false, weather: clear}
     species: [sulfuric_acid, hydrogen_chloride]
     actors: []
@@ -532,7 +535,7 @@ steps:
     title: "Iron veins carry voltage across the plateau"
     duration: 4.0
     path:
-      - {position: [260, -160, 150], target: [0, 0, 40]}
+      - {position: [445, -274, 270], target: [0, 0, 82]}
     scene: {interior: false, weather: clear}
     species: []
     actors: []
@@ -540,7 +543,7 @@ steps:
     title: "Acids are used for mining and metallurgy"
     duration: 4.0
     path:
-      - {position: [260, -160, 150], target: [0, 0, 40]}
+      - {position: [445, -274, 270], target: [0, 0, 82]}
     scene: {interior: false, weather: clear}
     species: [sulfuric_acid]
     actors: []
@@ -548,7 +551,7 @@ steps:
     title: "The cycle repeats with the next storm"
     duration: 5.0
     path:
-      - {position: [260, -160, 150], target: [0, 0, 40]}
+      - {position: [445, -274, 270], target: [0, 0, 82]}
     scene: {interior: false, weather: clear}
     species: []
     actors: []
