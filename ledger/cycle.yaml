@@ -4,8 +4,8 @@
 # Frame: the project frame (origin at the pyramid's centre on the pavement, X east, Y north,
 # Z up, metres). pyramid/viewer_data.py converts every camera keyframe and placeholder position
 # to viewer coordinates. For the steps inside the pyramid the camera stands east of the passage
-# system and looks west, so north is on the right; the wide views of the steps outside it move
-# round the pyramid. Each step's first keyframe has the spaces of its step's claim (the "spaces"
+# system and looks west, so north is on the right; the wide views of the steps outside it stand
+# on its east side too. Each step's first keyframe has the spaces of its step's claim (the "spaces"
 # of ledger/claims.yaml) in view on a stage at least 5:4 wide; the viewer keeps that width of
 # view on narrower stages. The one exception is S03, a close view of the King's Chamber and its
 # inlet: the two shafts in that claim's list run 80 m up to the faces and cannot share a frame
@@ -19,10 +19,18 @@
 #                is, before S01: a duration and a path; it carries no claim (display choice). It looks
 #                at the middle of the face and stops 400 m out, so the whole pyramid stays in frame
 #                above the viewer's caption card through the flight.
-#   path         2 to 4 camera keyframes {position, target}, ridden over the step's duration. The
-#                first is the step's single camera of plan A. The second was generated once from
-#                it: turned 30 degrees about the vertical through the target and brought 10 percent
-#                closer (display choice). Both may be edited by hand.
+#   path         1 to 4 camera keyframes {position, target}. The viewer flies into the first in at
+#                most 1.5 s; a step with one keyframe then holds that framing with a slow orbital
+#                drift about its target, carried on across consecutive steps with the same camera,
+#                and a step with more rides through them over the rest of its duration (display
+#                choices). Every step has one keyframe, its single camera of plan A, except S05 and
+#                S27 to S31. Changed 2026-10-11 at the owner's request, after he watched the
+#                tour: the second keyframe generated from the first (turned 30 degrees and brought
+#                10 percent closer) is gone, because riding it from the previous step's pose spent
+#                most of each step in flight and swung identical cameras back at every step; S05
+#                moved from the west side to the east, between the cameras of S04 and S06, so the
+#                storm sequence no longer crosses the pyramid; S27 to S31 share one south-east view
+#                of the plateau instead of five flights of 250 to 550 m with nothing drawn.
 #   scene        interior: true exactly when the step has a water, placeholder or coat actor, or a
 #                gas actor whose first path space is one of its claim's "spaces" in
 #                ledger/claims.yaml; a tint that only persists in a space the claim does not name
@@ -77,7 +85,6 @@ steps:
     duration: 5.0
     path:
       - {position: [260, -100, 20], target: [0, 0, -10]}
-      - {position: [247.65, 39.06, 17.0], target: [0, 0, -10]}
     scene: {interior: false, weather: clear}
     species: [h2s]
     actors: []
@@ -86,7 +93,6 @@ steps:
     duration: 5.0
     path:
       - {position: [300, 60, 120], target: [0, 0, 40]}
-      - {position: [206.83, 181.77, 112.0], target: [0, 0, 40]}
     scene: {interior: false, weather: clear}
     species: [h2s, so2]
     reaction: {equation: "not stated by the hypothesis", timestamp: "F 00:14:18-00:14:39", note: "the video names a conversion without giving it"}
@@ -96,7 +102,6 @@ steps:
     duration: 6.0
     path:
       - {position: [45, -30, 52], target: [3, -11, 44]}
-      - {position: [44.29, -6.91, 51.2], target: [3, -11, 44]}
     scene: {interior: true, weather: clear}
     species: [so2]
     actors:
@@ -107,7 +112,6 @@ steps:
     duration: 6.0
     path:
       - {position: [300, -80, 60], target: [0, 0, 60]}
-      - {position: [269.83, 72.65, 60.0], target: [0, 0, 60]}
     scene: {interior: false, weather: clear}
     species: []
     actors:
@@ -117,8 +121,7 @@ steps:
     title: "Operators wait for a storm"
     duration: 4.0
     path:
-      - {position: [-280, -100, 90], target: [0, 0, 45]}
-      - {position: [-173.24, -203.94, 85.5], target: [0, 0, 45]}
+      - {position: [320, -60, 80], target: [0, 0, 45]}
     scene: {interior: false, weather: storm}
     species: []
     actors:
@@ -128,7 +131,6 @@ steps:
     duration: 6.0
     path:
       - {position: [300, -90, 120], target: [0, 0, 105]}
-      - {position: [274.33, 64.85, 118.5], target: [0, 0, 105]}
     scene: {interior: true, weather: storm}
     species: []
     actors:
@@ -140,7 +142,6 @@ steps:
     duration: 5.0
     path:
       - {position: [40, -25, 52], target: [5, -8, 46]}
-      - {position: [39.93, -5.5, 51.4], target: [5, -8, 46]}
     scene: {interior: true, weather: clear}
     species: []
     actors:
@@ -150,7 +151,6 @@ steps:
     duration: 6.0
     path:
       - {position: [200, 40, 15], target: [7, 55, -8]}
-      - {position: [164.18, 130.16, 12.7], target: [7, 55, -8]}
     scene: {interior: true, weather: clear}
     species: []
     actors:
@@ -163,7 +163,6 @@ steps:
     duration: 6.0
     path:
       - {position: [110, 5, 5], target: [5, 20, -5]}
-      - {position: [93.59, 55.56, 4.0], target: [5, 20, -5]}
     scene: {interior: true, weather: clear}
     species: []
     actors:
@@ -180,7 +179,6 @@ steps:
     duration: 8.0
     path:
       - {position: [170, 20, 20], target: [7, 35, 5]}
-      - {position: [140.8, 96.66, 18.5], target: [7, 35, 5]}
     scene: {interior: true, weather: clear}
     species: []
     actors:
@@ -202,7 +200,6 @@ steps:
     duration: 6.0
     path:
       - {position: [135, 30, -5], target: [5, 44, -12]}
-      - {position: [112.62, 91.59, -5.7], target: [5, 44, -12]}
     scene: {interior: true, weather: clear}
     species: []
     actors:
@@ -224,7 +221,6 @@ steps:
     duration: 8.0
     path:
       - {position: [150, 10, 30], target: [7, 28, 15]}
-      - {position: [126.56, 78.32, 28.5], target: [7, 28, 15]}
     scene: {interior: true, weather: clear}
     species: []
     actors:
@@ -246,7 +242,6 @@ steps:
     duration: 6.0
     path:
       - {position: [95, -5, 48], target: [6, 10, 38]}
-      - {position: [82.12, 38.36, 47.0], target: [6, 10, 38]}
     scene: {interior: true, weather: clear}
     species: [so2]
     actors:
@@ -266,7 +261,6 @@ steps:
     duration: 6.0
     path:
       - {position: [150, -10, 70], target: [4, 0, 60]}
-      - {position: [122.3, 57.91, 69.0], target: [4, 0, 60]}
     scene: {interior: true, weather: clear}
     species: [air]
     actors:
@@ -288,7 +282,6 @@ steps:
     duration: 6.0
     path:
       - {position: [42, -12, 50], target: [6, -7, 45]}
-      - {position: [36.31, 5.3, 49.5], target: [6, -7, 45]}
     scene: {interior: true, weather: clear}
     species: [so2, air]
     actors:
@@ -310,7 +303,6 @@ steps:
     duration: 6.0
     path:
       - {position: [30, -8, 48], target: [7, -4.4, 45]}
-      - {position: [26.55, 3.14, 47.7], target: [7, -4.4, 45]}
     scene: {interior: true, weather: clear}
     species: [so2, air, so3]
     reaction: {equation: "2 SO₂ + O₂ → 2 SO₃", timestamp: "F 00:46:59-00:47:10", note: "as stated in the video"}
@@ -334,7 +326,6 @@ steps:
     duration: 6.0
     path:
       - {position: [80, -2, 50], target: [7, 12, 40]}
-      - {position: [70.2, 33.94, 49.0], target: [7, 12, 40]}
     scene: {interior: true, weather: clear}
     species: [so3, so2, air]
     actors:
@@ -357,7 +348,6 @@ steps:
     duration: 6.0
     path:
       - {position: [150, 10, 30], target: [7, 28, 15]}
-      - {position: [126.56, 78.32, 28.5], target: [7, 28, 15]}
     scene: {interior: true, weather: clear}
     species: []
     actors:
@@ -379,7 +369,6 @@ steps:
     duration: 5.0
     path:
       - {position: [95, 5, 44], target: [7, 20, 35]}
-      - {position: [82.34, 47.91, 43.1], target: [7, 20, 35]}
     scene: {interior: true, weather: clear}
     species: [so2, water, sulfurous_acid]
     reaction: {equation: "SO₂ + H₂O → H₂SO₃", timestamp: "F 00:53:11-00:53:46", note: "as stated in the video"}
@@ -399,7 +388,6 @@ steps:
     duration: 5.0
     path:
       - {position: [95, 5, 44], target: [7, 20, 35]}
-      - {position: [82.34, 47.91, 43.1], target: [7, 20, 35]}
     scene: {interior: true, weather: clear}
     species: [sulfurous_acid, air, sulfuric_acid]
     reaction: {equation: "2 H₂SO₃ + O₂ → 2 H₂SO₄", timestamp: "F 00:53:30-00:53:46", note: "as stated in the video"}
@@ -419,7 +407,6 @@ steps:
     duration: 5.0
     path:
       - {position: [95, 5, 44], target: [7, 20, 35]}
-      - {position: [82.34, 47.91, 43.1], target: [7, 20, 35]}
     scene: {interior: true, weather: clear}
     species: [so3, water, sulfuric_acid]
     reaction: {equation: "SO₃ + H₂O → H₂SO₄ (into dilute acid)", timestamp: "F 00:43:10-00:43:57", note: "as stated in the video"}
@@ -439,7 +426,6 @@ steps:
     duration: 4.0
     path:
       - {position: [80, 0, 48], target: [6, 13, 38]}
-      - {position: [69.53, 36.17, 47.0], target: [6, 13, 38]}
     scene: {interior: true, weather: clear}
     species: [so2, so3, water]
     actors:
@@ -457,7 +443,6 @@ steps:
     duration: 5.0
     path:
       - {position: [85, 0, 40], target: [6, 15, 32]}
-      - {position: [74.32, 38.86, 39.2], target: [6, 15, 32]}
     scene: {interior: true, weather: clear}
     species: [sulfuric_acid, calcium_sulfate]
     reaction: {equation: "CaCO₃ + H₂SO₄ → CaSO₄ + H₂O + CO₂", timestamp: "F 01:18:47-01:21:00", note: "as stated in the video"}
@@ -478,7 +463,6 @@ steps:
     duration: 5.0
     path:
       - {position: [110, 0, 62], target: [7, 15, 50]}
-      - {position: [94.03, 49.66, 60.8], target: [7, 15, 50]}
     scene: {interior: true, weather: clear}
     species: []
     actors:
@@ -497,7 +481,6 @@ steps:
     duration: 5.0
     path:
       - {position: [150, -10, 50], target: [5, 0, 42]}
-      - {position: [122.52, 57.46, 49.2], target: [5, 0, 42]}
     scene: {interior: true, weather: clear}
     species: []
     actors:
@@ -515,7 +498,6 @@ steps:
     duration: 7.0
     path:
       - {position: [80, -5, 36], target: [6, 10, 28]}
-      - {position: [70.43, 31.61, 35.2], target: [6, 10, 28]}
     scene: {interior: true, weather: clear}
     species: [sulfuric_acid, water]
     actors:
@@ -533,8 +515,7 @@ steps:
     title: "Acid goes to the central pyramid"
     duration: 4.0
     path:
-      - {position: [220, 200, 120], target: [0, 0, 40]}
-      - {position: [81.47, 254.88, 112.0], target: [0, 0, 40]}
+      - {position: [260, -160, 150], target: [0, 0, 40]}
     scene: {interior: false, weather: clear}
     species: [sulfuric_acid, hydrogen_chloride]
     reaction: {equation: "H₂SO₄ + 2 NaCl → Na₂SO₄ + 2 HCl", timestamp: "F 00:27:55-00:28:12", note: "as stated in the video"}
@@ -543,8 +524,7 @@ steps:
     title: "Acid fills the boat pits"
     duration: 4.0
     path:
-      - {position: [200, -220, 140], target: [0, 0, 20]}
-      - {position: [254.88, -81.47, 128.0], target: [0, 0, 20]}
+      - {position: [260, -160, 150], target: [0, 0, 40]}
     scene: {interior: false, weather: clear}
     species: [sulfuric_acid, hydrogen_chloride]
     actors: []
@@ -552,8 +532,7 @@ steps:
     title: "Iron veins carry voltage across the plateau"
     duration: 4.0
     path:
-      - {position: [260, -160, 180], target: [0, 0, 30]}
-      - {position: [274.65, -7.71, 165.0], target: [0, 0, 30]}
+      - {position: [260, -160, 150], target: [0, 0, 40]}
     scene: {interior: false, weather: clear}
     species: []
     actors: []
@@ -561,8 +540,7 @@ steps:
     title: "Acids are used for mining and metallurgy"
     duration: 4.0
     path:
-      - {position: [-260, -160, 150], target: [0, 0, 40]}
-      - {position: [-130.65, -241.71, 139.0], target: [0, 0, 40]}
+      - {position: [260, -160, 150], target: [0, 0, 40]}
     scene: {interior: false, weather: clear}
     species: [sulfuric_acid]
     actors: []
@@ -570,8 +548,7 @@ steps:
     title: "The cycle repeats with the next storm"
     duration: 5.0
     path:
-      - {position: [280, -120, 110], target: [0, 0, 40]}
-      - {position: [272.24, 32.47, 103.0], target: [0, 0, 40]}
+      - {position: [260, -160, 150], target: [0, 0, 40]}
     scene: {interior: false, weather: clear}
     species: []
     actors: []

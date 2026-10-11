@@ -40,7 +40,7 @@ export function createPlayer({ store, cycle, actors, ride, claims }) {
     water = new Map(entry.actors.filter(actor => actor.type === 'water').map(actor => [actor.space, actor]));
     actors.build(i < 0 ? null : entry);
     ride.drift(i < 0 && !playing);   // before setPath: the new path replaces the glide that ending a drift starts
-    ride.setPath(entry.path, { from });
+    ride.setPath(entry.path, { from, duration: entry.duration });
     store.set({ stepIndex: i, interior: entry.scene.interior, weather: entry.scene.weather });
     setAddress(i < 0 ? '#' : '#' + entry.id);
   }

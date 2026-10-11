@@ -7,7 +7,6 @@ import pytest
 import yaml
 
 from pyramid import REPO_ROOT, screening, viewer_data
-from pyramid.geometry.export import to_viewer
 from pyramid.ledger import STATUSES, Claim, Ledger, LedgerError, Quantity, load
 from pyramid.screening import Result
 from pyramid.species import load_species
@@ -216,7 +215,7 @@ def test_every_step_and_actor_matches_the_contract():
         assert set(step) == STEP_KEYS | ({"reaction"} if where in REACTIONS else set()), where
         assert isinstance(step["title"], str) and step["title"], where
         assert isinstance(step["duration"], float) and step["duration"] > 0, where
-        assert 2 <= len(step["path"]) <= 4, where
+        assert 1 <= len(step["path"]) <= 4, where
         assert all(is_keyframe(keyframe) for keyframe in step["path"]), where
         assert set(step["scene"]) == {"interior", "weather"} and isinstance(step["scene"]["interior"], bool), where
         assert step["scene"]["weather"] in ("clear", "storm"), where
@@ -374,9 +373,7 @@ def test_cycle_payload_moves_keyframes_and_placeholders_into_viewer_coordinates(
     step = step_of(cycle, "S08")
     # S08's first keyframe, plan A's camera, authored as position [200, 40, 15], target [7, 55, -8]
     assert step["path"][0] == {"position": [200, 15, -40], "target": [7, -8, -55]}
-    second = step_of(authored(), "S08")["path"][1]
-    assert step["path"][1] == {"position": list(to_viewer(*second["position"])),
-                               "target": list(to_viewer(*second["target"]))}
+    # no generated second keyframe to check: the 30-degree orbit moved into the ride on 2026-10-11
     reservoir = next(actor for actor in step["actors"] if actor["type"] == "placeholder")
     assert reservoir["at"] == [7, 0, -125]   # authored as [7, 125, 0]
     assert reservoir["label"] == "Reservoir: not specified by the hypothesis"
@@ -411,8 +408,8 @@ def drop_gas_species(step: dict) -> None:
 
 
 @pytest.mark.parametrize("change, message", [
-    (lambda step: step.update(path=step["path"][:1]), "cycle.yaml: S03: path needs 2 to 4 keyframes"),
-    (lambda step: step.update(path=step["path"] * 3), "cycle.yaml: S03: path needs 2 to 4 keyframes"),
+    (lambda step: step.update(path=step["path"][:0]), "cycle.yaml: S03: path needs 1 to 4 keyframes"),
+    (lambda step: step.update(path=step["path"] * 5), "cycle.yaml: S03: path needs 1 to 4 keyframes"),
     (lambda step: step.update(species=["xyz"]), "cycle.yaml: S03: unknown species xyz"),
     (drop_gas_species, "cycle.yaml: S03: gas actor needs species"),
     (lambda step: step["scene"].update(weather="fog"), "cycle.yaml: S03: weather must be clear or storm"),
