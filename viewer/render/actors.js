@@ -30,6 +30,7 @@ const CHORD = 0.15;          // display choice: a particle sways over this fract
 // cycle.json is "claimed"; the "conditional" tag belongs to the inspector's legend (plan V2), not to the scene.
 const CLAIMED = ' (claimed)';
 const COAT_SPECIES = 'calcium_sulfate';   // the coat of S23 is its calcium sulfate layer (chemistry spec 3.2)
+const COAT_OPACITY = 0.25;   // display choice: a faint film of the coat's colour over the coated walls
 
 // The height (viewer Y) at which a space holds the fraction f of its volume.
 // curve: [[y, volume below y], ...] with y ascending, as written by level_volume_curve.
@@ -254,10 +255,13 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
       keep(scene, tag('Solver result pending', 'pending-label')).position.copy(model.masonryBounds.getCenter(new THREE.Vector3()));
     },
 
-    // The calcium sulfate layer of S23: the edges of the coated space, in that species' colour.
+    // The calcium sulfate layer of S23: a faint film and the edges of the coated space, in that species' colour.
     coat(actor) {
       const species = current.species.find(s => s.id === COAT_SPECIES);
       if (!species) throw new Error(`cycle.json: ${current.id}: a coat needs ${COAT_SPECIES} in the step's species`);
+      skin(actor.space, new THREE.MeshBasicMaterial({
+        color: species.colour, transparent: true, opacity: COAT_OPACITY, depthWrite: false, side: THREE.DoubleSide,
+      }), -3);   // between the water's offset and the gas's
       const source = model.spaces.get(actor.space);
       const geometry = new THREE.EdgesGeometry(source.geometry);
       // transparent so it is sorted with the skins: an opaque line is drawn before every transparent skin, whatever its renderOrder
@@ -278,11 +282,17 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
     flash.intensity = 0;
   }
 
-  // One label per space with water or gas: the species of every such actor there, in build order (water
-  // first), each once, "(claimed)" after a claimed one; a child of the space mesh at the centre of its bounds.
+  // One label per space with water, gas or a coat: the species of every such actor there, in build order (water
+  // first; a coat's species leads its space's list), each once, "(claimed)" after a claimed one; a child of the
+  // space mesh at the centre of its bounds.
   function labelSpecies(ordered) {
     const present = new Map();   // space -> species payloads
     for (const actor of ordered) {
+      if (actor.type === 'coat') {
+        const list = present.get(actor.space) ?? [];
+        if (!list.some(s => s.id === COAT_SPECIES)) list.unshift(current.species.find(s => s.id === COAT_SPECIES));
+        present.set(actor.space, list);
+      }
       if (actor.type !== 'water' && actor.type !== 'gas') continue;
       for (const space of actor.type === 'water' ? [actor.space] : actor.path) {
         const list = present.get(space) ?? [];
