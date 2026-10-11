@@ -57,6 +57,7 @@ export function createStore(initial = DEFAULT_STATE) {
       const changed = new Set();
       for (const [key, value] of Object.entries(patch)) {
         const merged = NESTED.includes(key) ? { ...state[key], ...value } : value;
+        if (key === 'layers' && value.hidden) merged.hidden = new Set(value.hidden);   // never keep the caller's Set
         if (same(state[key], merged)) continue;
         next[key] = merged;
         changed.add(key);
