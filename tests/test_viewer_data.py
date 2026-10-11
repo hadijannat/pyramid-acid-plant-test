@@ -7,8 +7,10 @@ import pytest
 import yaml
 
 from pyramid import REPO_ROOT, screening, viewer_data
+from pyramid.geometry.export import to_viewer
 from pyramid.ledger import STATUSES, Claim, Ledger, LedgerError, Quantity, load
 from pyramid.screening import Result
+from pyramid.species import load_species
 
 SURVEY_SPACES = [
     "descending_passage", "subterranean_chamber", "pit", "south_passage", "well_shaft", "grotto",
@@ -148,57 +150,134 @@ def test_real_claims_payload_covers_all_71_claims_and_is_strict_json():
 
 STEP_IDS = [f"S{i:02d}" for i in range(1, 32)]
 SUFFIX = "not specified by the hypothesis"
+STEP_KEYS = {"id", "title", "duration", "path", "scene", "species", "actors"}
 ACTOR_KEYS = {
-    "water": {"type", "space", "from", "to"},
-    "gas": {"type", "path", "color"},
+    "water": {"type", "space", "from", "to", "species"},
+    "gas": {"type", "path", "species"},
     "placeholder": {"type", "kind", "at", "label"},
     "lightning": {"type"},
     "field": {"type", "slice"},
+    "coat": {"type", "space"},
 }
 PLACEHOLDER_KINDS = {"pump", "valve", "reservoir", "drain", "gas_inlet"}
+STATED = "as stated in the video"
+# docs/superpowers/specs/2026-10-10-chemistry-display-kings-chamber-design.md section 3.2
+REACTIONS = {
+    "S02": ("not stated by the hypothesis", "the video names a conversion without giving it"),
+    "S16": ("2 SO₂ + O₂ → 2 SO₃", STATED),
+    "S19": ("SO₂ + H₂O → H₂SO₃", STATED),
+    "S20": ("2 H₂SO₃ + O₂ → 2 H₂SO₄", STATED),
+    "S21": ("SO₃ + H₂O → H₂SO₄ (into dilute acid)", STATED),
+    "S23": ("CaCO₃ + H₂SO₄ → CaSO₄ + H₂O + CO₂", STATED),
+    "S27": ("H₂SO₄ + 2 NaCl → Na₂SO₄ + 2 HCl", STATED),
+}
 
 
-def authored() -> list[dict]:
+def authored() -> dict:
     """ledger/cycle.yaml as written by hand, in the project frame."""
-    return yaml.safe_load((REPO_ROOT / "ledger" / "cycle.yaml").read_text())
+    return yaml.safe_load((REPO_ROOT / "ledger" / "cycle.yaml").read_bytes())
+
+
+def step_of(cycle: dict, step_id: str) -> dict:
+    return next(step for step in cycle["steps"] if step["id"] == step_id)
 
 
 def actors(step_id: str, kind: str) -> list[dict]:
-    step = next(step for step in authored() if step["id"] == step_id)
-    return [actor for actor in step["actors"] if actor["type"] == kind]
+    return [actor for actor in step_of(authored(), step_id)["actors"] if actor["type"] == kind]
 
 
 def is_point(value) -> bool:
     return isinstance(value, list) and len(value) == 3 and all(isinstance(v, (int, float)) for v in value)
 
 
-def test_cycle_has_one_entry_per_step_in_order_and_every_id_is_a_claim():
-    assert [step["id"] for step in authored()] == STEP_IDS
+def is_keyframe(value) -> bool:
+    return isinstance(value, dict) and set(value) == {"position", "target"} and \
+        is_point(value["position"]) and is_point(value["target"])
+
+
+def test_cycle_has_a_prologue_then_one_entry_per_step_in_order_and_every_id_is_a_claim():
+    cycle = authored()
+    assert set(cycle) == {"prologue", "steps"}
+    assert [step["id"] for step in cycle["steps"]] == STEP_IDS
     assert set(STEP_IDS) <= set(load().claims)
 
 
+def test_the_prologue_is_a_six_second_flight_with_no_claim():
+    prologue = authored()["prologue"]
+    assert set(prologue) == {"duration", "path"}
+    assert prologue["duration"] == 6.0
+    assert len(prologue["path"]) == 3 and all(is_keyframe(keyframe) for keyframe in prologue["path"])
+
+
 def test_every_step_and_actor_matches_the_contract():
-    for step in authored():
+    species = load_species()
+    for step in authored()["steps"]:
         where = step["id"]
-        assert set(step) == {"id", "title", "duration", "camera", "actors"}, where
+        assert set(step) == STEP_KEYS | ({"reaction"} if where in REACTIONS else set()), where
         assert isinstance(step["title"], str) and step["title"], where
         assert isinstance(step["duration"], float) and step["duration"] > 0, where
-        assert set(step["camera"]) == {"position", "target"}, where
-        assert is_point(step["camera"]["position"]) and is_point(step["camera"]["target"]), where
+        assert 2 <= len(step["path"]) <= 4, where
+        assert all(is_keyframe(keyframe) for keyframe in step["path"]), where
+        assert set(step["scene"]) == {"interior", "weather"} and isinstance(step["scene"]["interior"], bool), where
+        assert step["scene"]["weather"] in ("clear", "storm"), where
+        assert set(step["species"]) <= set(species), where
         for actor in step["actors"]:
             assert set(actor) == ACTOR_KEYS[actor["type"]], (where, actor)
-            if actor["type"] == "water":
+            if actor["type"] in ("water", "gas"):
+                assert actor["species"] and set(actor["species"]) <= set(species), (where, actor)
+            if actor["type"] in ("water", "coat"):
                 assert actor["space"] in SURVEY_SPACES, (where, actor)
+            if actor["type"] == "water":
                 assert 0.0 <= actor["from"] <= 1.0 and 0.0 <= actor["to"] <= 1.0, (where, actor)
             if actor["type"] == "gas":
                 assert actor["path"] and set(actor["path"]) <= set(SURVEY_SPACES), (where, actor)
-                assert re.fullmatch(r"#[0-9a-f]{6}", actor["color"]), (where, actor)
             if actor["type"] == "placeholder":
                 assert actor["kind"] in PLACEHOLDER_KINDS, (where, actor)
                 assert is_point(actor["at"]), (where, actor)
                 assert actor["label"].endswith(SUFFIX), (where, actor)
             if actor["type"] == "field":
                 assert re.fullmatch(r"fields/\w+\.png", actor["slice"]), (where, actor)
+
+
+INSIDE = {"water", "placeholder", "coat"}   # actors drawn inside the stone
+
+
+def test_a_step_is_interior_exactly_when_it_draws_inside_the_stone_where_its_claim_acts():
+    # the camera may stand outside looking in; the flag follows the actors and the claim, never the camera.
+    # A gas counts only when its path starts in a space the claim names: a tint that merely persists
+    # elsewhere (the King's Chamber through S04 and S05, whose claims name no space) does not.
+    claims = load().claims
+    for step in authored()["steps"]:
+        spaces = claims[step["id"]].spaces
+        inside = any(actor["type"] in INSIDE or (actor["type"] == "gas" and actor["path"][0] in spaces)
+                     for actor in step["actors"])
+        assert step["scene"]["interior"] is inside, step["id"]
+
+
+def test_only_the_two_storm_steps_carry_the_storm():
+    assert [step["id"] for step in authored()["steps"] if step["scene"]["weather"] == "storm"] == ["S05", "S06"]
+
+
+def test_the_reaction_steps_carry_the_equation_as_stated_and_the_claims_timestamp():
+    claims = load().claims
+    cycle = authored()
+    assert [step["id"] for step in cycle["steps"] if "reaction" in step] == list(REACTIONS)
+    for step_id, (equation, note) in REACTIONS.items():
+        assert step_of(cycle, step_id)["reaction"] == {
+            "equation": equation, "timestamp": claims[step_id].timestamp, "note": note,
+        }, step_id
+
+
+def test_the_gallery_liquid_turns_to_acid_where_the_claims_put_it():
+    liquid = {
+        (step["id"], actor["space"]): actor["species"]
+        for step in authored()["steps"] for actor in step["actors"] if actor["type"] == "water"
+    }
+    acid = {("S19", "grand_gallery"): ["sulfurous_acid", "water"]}
+    acid |= {(f"S{i}", "grand_gallery"): ["sulfuric_acid", "water"] for i in range(20, 27)}
+    for key, species in liquid.items():
+        assert species == acid.get(key, ["water"]), key
+    assert set(acid) <= set(liquid)
 
 
 def test_each_kind_of_actor_appears_on_the_step_that_claims_it():
@@ -211,15 +290,20 @@ def test_each_kind_of_actor_appears_on_the_step_that_claims_it():
         "S03": {"gas_inlet"}, "S08": {"reservoir"}, "S09": {"valve"},
         "S10": {"pump", "valve"}, "S13": {"drain"}, "S26": {"drain"},
     }
-    assert {"type": "gas", "path": ["kings_chamber", "antechamber"], "color": "#d9c24a"} in actors("S15", "gas")
-    used = {actor["kind"] for step in authored() for actor in step["actors"] if actor["type"] == "placeholder"}
+    assert {"type": "gas", "path": ["kings_chamber", "antechamber"], "species": ["so2"]} in actors("S15", "gas")
+    assert {"type": "gas", "path": ["antechamber"], "species": ["so3"]} in actors("S16", "gas")
+    used = {actor["kind"] for step in authored()["steps"] for actor in step["actors"] if actor["type"] == "placeholder"}
     assert used == PLACEHOLDER_KINDS
+    # the calcium sulfate layer of S23, on the two spaces the claim names, and nowhere else
+    assert actors("S23", "coat") == [{"type": "coat", "space": "grand_gallery"}, {"type": "coat", "space": "queens_chamber"}]
+    coated = [step["id"] for step in authored()["steps"] for actor in step["actors"] if actor["type"] == "coat"]
+    assert coated == ["S23", "S23"]
 
 
 def test_the_gallery_fills_in_four_quarters_drains_and_fills_again():
     gallery = {
         step["id"]: (actor["from"], actor["to"])
-        for step in authored() for actor in step["actors"]
+        for step in authored()["steps"] for actor in step["actors"]
         if actor["type"] == "water" and actor["space"] == "grand_gallery"
     }
     quarter = 1 / load().q("hydro.claimed_strokes")                  # one of the claimed four activations
@@ -244,7 +328,7 @@ def test_water_standing_at_the_reservoir_level_follows_the_ledger():
 
 def test_water_levels_join_up_from_one_step_to_the_next():
     previous: dict[str, float] = {}
-    for step in authored():
+    for step in authored()["steps"]:
         current = {actor["space"]: actor for actor in step["actors"] if actor["type"] == "water"}
         for space, actor in current.items():
             if space in previous:
@@ -253,37 +337,91 @@ def test_water_levels_join_up_from_one_step_to_the_next():
 
 
 CURVES = {"grand_gallery": [(21.656, 0.0), (51.5, 573.0)]}
+# a fixed verdict per producing step, so each marking below is known exactly
+MARKS = {"S16": "fail", "S20": "conditional"}
+PAYLOAD_KEYS = {"id", "formula", "name", "phase", "colour", "status"}
+WATER = {"id": "water", "formula": "H₂O", "name": "water", "phase": "liquid", "colour": "#2f86d6", "status": "plain"}
+
+
+def payload() -> dict:
+    return viewer_data.cycle_payload(load(), CURVES, load_species(), MARKS)
 
 
 def test_cycle_payload_has_the_contract_keys_the_notice_and_the_curves():
-    payload = viewer_data.cycle_payload(load(), CURVES)
-    assert set(payload) == {"notice", "steps", "curves"}
-    assert payload["notice"] == "Animation of the claim. Not a simulation result."
-    assert [step["id"] for step in payload["steps"]] == STEP_IDS
-    for step in payload["steps"]:
-        assert set(step) == {"id", "title", "duration", "camera", "actors"}, step["id"]
-        assert set(step["camera"]) == {"position", "target"}, step["id"]
+    cycle = payload()
+    assert set(cycle) == {"notice", "prologue", "steps", "curves"}
+    assert cycle["notice"] == "Animation of the claim. Not a simulation result."
+    assert [step["id"] for step in cycle["steps"]] == STEP_IDS
+    for step in cycle["steps"]:
+        assert set(step) == STEP_KEYS | ({"reaction"} if step["id"] in REACTIONS else set()), step["id"]
+        assert all(is_keyframe(keyframe) for keyframe in step["path"]), step["id"]
+        for species in step["species"]:
+            assert set(species) == PAYLOAD_KEYS, step["id"]
         for actor in step["actors"]:
             assert set(actor) == ACTOR_KEYS[actor["type"]], (step["id"], actor)
-    written = json.loads(json.dumps(payload, allow_nan=False))
+            for species in actor.get("species", []):
+                assert set(species) == PAYLOAD_KEYS, (step["id"], actor)
+    written = json.loads(json.dumps(cycle, allow_nan=False))
     assert written["curves"] == {"grand_gallery": [[21.656, 0.0], [51.5, 573.0]]}
 
 
-def test_cycle_payload_moves_cameras_and_placeholders_into_viewer_coordinates():
-    payload = viewer_data.cycle_payload(load(), CURVES)
-    step = next(step for step in payload["steps"] if step["id"] == "S08")
-    # authored in the project frame as position [200, 40, 15], target [7, 55, -8];
+def test_cycle_payload_moves_keyframes_and_placeholders_into_viewer_coordinates():
+    cycle = payload()
     # project (x east, y north, z up) becomes viewer (x, z, -y)
-    assert step["camera"] == {"position": [200, 15, -40], "target": [7, -8, -55]}
+    # the prologue's first keyframe, authored as position [620, 520, 150], target [0, 102, 17]
+    assert cycle["prologue"]["duration"] == 6.0
+    assert cycle["prologue"]["path"][0] == {"position": [620, 150, -520], "target": [0, 17, -102]}
+    step = step_of(cycle, "S08")
+    # S08's first keyframe, plan A's camera, authored as position [200, 40, 15], target [7, 55, -8]
+    assert step["path"][0] == {"position": [200, 15, -40], "target": [7, -8, -55]}
+    second = step_of(authored(), "S08")["path"][1]
+    assert step["path"][1] == {"position": list(to_viewer(*second["position"])),
+                               "target": list(to_viewer(*second["target"]))}
     reservoir = next(actor for actor in step["actors"] if actor["type"] == "placeholder")
     assert reservoir["at"] == [7, 0, -125]   # authored as [7, 125, 0]
     assert reservoir["label"] == "Reservoir: not specified by the hypothesis"
-    # every other actor passes through untouched
-    assert {"type": "water", "space": "subterranean_chamber", "from": 0.0, "to": 1.0} in step["actors"]
+    # a water actor keeps its keys; its species id becomes the species' payload
+    assert {"type": "water", "space": "subterranean_chamber", "from": 0.0, "to": 1.0, "species": [WATER]} in step["actors"]
     assert (step["title"], step["duration"]) == ("Reservoir water enters the Subterranean Chamber", 6.0)
+    assert step["scene"] == {"interior": True, "weather": "clear"}   # S08 draws water and a placeholder
+
+
+def test_cycle_payload_marks_each_species_by_the_verdict_of_its_producing_step():
+    step = step_of(payload(), "S21")   # species [so3, water, sulfuric_acid]
+    assert [(species["id"], species["status"]) for species in step["species"]] == [
+        ("so3", "claimed"),                # S16 fail
+        ("water", "plain"),                # an input
+        ("sulfuric_acid", "conditional"),  # S20 conditional
+    ]
+    gallery = next(actor for actor in step["actors"] if actor["type"] == "water" and actor["space"] == "grand_gallery")
+    assert [(species["id"], species["status"]) for species in gallery["species"]] == [
+        ("sulfuric_acid", "conditional"), ("water", "plain"),
+    ]
+    assert gallery["species"][0]["colour"] == "#c25b5b"   # the liquid's colour comes from the species table
 
 
 def test_cycle_payload_rejects_a_step_that_is_not_a_claim():
     # the tiny ledger holds only S12 and S05, so the first step of cycle.yaml is unknown to it
     with pytest.raises(LedgerError, match=re.escape("cycle.yaml: S01 is not a claim id")):
-        viewer_data.cycle_payload(tiny_ledger(), CURVES)
+        viewer_data.cycle_payload(tiny_ledger(), CURVES, load_species(), {})
+
+
+def drop_gas_species(step: dict) -> None:
+    next(actor for actor in step["actors"] if actor["type"] == "gas").pop("species")
+
+
+@pytest.mark.parametrize("change, message", [
+    (lambda step: step.update(path=step["path"][:1]), "cycle.yaml: S03: path needs 2 to 4 keyframes"),
+    (lambda step: step.update(path=step["path"] * 3), "cycle.yaml: S03: path needs 2 to 4 keyframes"),
+    (lambda step: step.update(species=["xyz"]), "cycle.yaml: S03: unknown species xyz"),
+    (drop_gas_species, "cycle.yaml: S03: gas actor needs species"),
+    (lambda step: step["scene"].update(weather="fog"), "cycle.yaml: S03: weather must be clear or storm"),
+])
+def test_cycle_payload_rejects_a_broken_step_naming_it(tmp_path, monkeypatch, change, message):
+    cycle = authored()
+    change(step_of(cycle, "S03"))   # one thing broken on one step; everything else as authored
+    broken = tmp_path / "cycle.yaml"
+    broken.write_text(yaml.safe_dump(cycle, allow_unicode=True, sort_keys=False), encoding="utf-8")
+    monkeypatch.setattr(viewer_data, "CYCLE_FILE", broken)
+    with pytest.raises(LedgerError, match=re.escape(message)):
+        viewer_data.cycle_payload(load(), CURVES, load_species(), {})

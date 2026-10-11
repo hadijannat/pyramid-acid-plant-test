@@ -1,25 +1,47 @@
 # Choreography of the claimed cycle for the viewer. Authored by hand; it is not a result.
-# One entry per step S01 to S31 of ledger/claims.yaml, in order.
+# A prologue, then one entry per step S01 to S31 of ledger/claims.yaml, in order.
 #
 # Frame: the project frame (origin at the pyramid's centre on the pavement, X east, Y north,
-# Z up, metres). pyramid/viewer_data.py converts cameras and placeholder positions to viewer
-# coordinates. For the steps inside the pyramid the camera stands east of the passage system and
-# looks west, so north is on the right; the wide views of the steps outside it move round the
-# pyramid. Each camera has the spaces of its step's claim (the "spaces" of ledger/claims.yaml) in
-# view on a stage at least 5:4 wide; viewer/scene.js keeps that width of view on narrower stages.
-# The one exception is S03, a close view of the King's Chamber and its inlet: the two shafts in
-# that claim's list run 80 m up to the faces and cannot share a frame with a 4 m placeholder.
+# Z up, metres). pyramid/viewer_data.py converts every camera keyframe and placeholder position
+# to viewer coordinates. For the steps inside the pyramid the camera stands east of the passage
+# system and looks west, so north is on the right; the wide views of the steps outside it move
+# round the pyramid. Each step's first keyframe has the spaces of its step's claim (the "spaces"
+# of ledger/claims.yaml) in view on a stage at least 5:4 wide; the viewer keeps that width of
+# view on narrower stages. The one exception is S03, a close view of the King's Chamber and its
+# inlet: the two shafts in that claim's list run 80 m up to the faces and cannot share a frame
+# with a 4 m placeholder.
 #
 # Each step is complete in itself: its actors list everything drawn during that step, so the
 # viewer can jump to any step. Water that only stays where it is has "from" equal to "to".
 #
+# Keys:
+#   prologue     a flight from far out in the north-east to the entrance on the north face before
+#                S01: a duration and a path; it carries no claim (display choice)
+#   path         2 to 4 camera keyframes {position, target}, ridden over the step's duration. The
+#                first is the step's single camera of plan A. The second was generated once from
+#                it: turned 30 degrees about the vertical through the target and brought 10 percent
+#                closer (display choice). Both may be edited by hand.
+#   scene        interior: true exactly when the step has a water, placeholder or coat actor, or a
+#                gas actor whose first path space is one of its claim's "spaces" in
+#                ledger/claims.yaml; a tint that only persists in a space the claim does not name
+#                does not count. The camera may stand outside: it sees in through the glass look
+#                (tests/test_viewer_data.py checks the flag against the actors and the claims).
+#                weather: clear, or storm on the steps whose claim states a storm (S05 and S06).
+#   species      the ids of ledger/species.yaml that the step's statement involves; [] when none
+#   reaction     on S02, S16, S19, S20, S21, S23 and S27: the equation as the video states it, the
+#                claim's timestamp and a note; "not stated by the hypothesis" where the video
+#                names a conversion without giving it (S02)
+#
 # Actors:
-#   water        fill fraction of the space's volume (0 to 1) at the start and end of the step
-#   gas          the spaces of the path are tinted one after another; a one-space path is a steady tint
+#   water        fill fraction of the space's volume (0 to 1) at the start and end of the step;
+#                species: what the liquid is, the first-listed giving its colour
+#   gas          the spaces of the path are tinted one after another; a one-space path is a steady
+#                tint; species: what the gas is, the first-listed giving its colour
 #   placeholder  a dashed box for something the hypothesis leaves unspecified; its position only
 #                marks where the claim has it act and is not survey data
 #   lightning    a strike on the top
 #   field        a solver field slice; none exists until the second plan, and the viewer says so
+#   coat         the calcium sulfate layer the claim puts on the walls of a space (S23)
 #
 # Numbers that are more than choreography:
 #   The quarter steps of the Grand Gallery are the claimed four activations (hydro.claimed_strokes).
@@ -39,375 +61,515 @@
 #   one refill in four, because the hypothesis describes them as happening together.
 #   Steps S01, S02 and S27 to S31 take place outside the Great Pyramid: nothing is drawn.
 #
-# Gas colours: "#d9c24a" sulfur dioxide, "#e08a3c" sulfur trioxide, "#bcd6e6" air.
+# Species colours are display choices and live in ledger/species.yaml.
 
-- id: S01
-  title: "Hydrogen sulfide rises under the plateau"
-  duration: 5.0
-  camera: {position: [260, -100, 20], target: [0, 0, -10]}
-  actors: []
-- id: S02
-  title: "Satellite pyramids convert it to sulfur dioxide"
-  duration: 5.0
-  camera: {position: [300, 60, 120], target: [0, 0, 40]}
-  actors: []
-- id: S03
-  title: "Sulfur dioxide fills the King's Chamber"
+prologue:
   duration: 6.0
-  camera: {position: [45, -30, 52], target: [3, -11, 44]}
-  actors:
-    - {type: gas, path: [kings_chamber], color: "#d9c24a"}
-    - {type: placeholder, kind: gas_inlet, at: [2.5, -11, 41], label: "Gas inlet: not specified by the hypothesis"}
-- id: S04
-  title: "Ground currents charge the flat top"
-  duration: 6.0
-  camera: {position: [300, -80, 60], target: [0, 0, 60]}
-  actors:
-    - {type: field, slice: "fields/R2_333m.png"}
-    - {type: gas, path: [kings_chamber], color: "#d9c24a"}
-- id: S05
-  title: "Operators wait for a storm"
-  duration: 4.0
-  camera: {position: [-280, -100, 90], target: [0, 0, 45]}
-  actors:
-    - {type: gas, path: [kings_chamber], color: "#d9c24a"}
-- id: S06
-  title: "Lightning strikes the top"
-  duration: 6.0
-  camera: {position: [300, -90, 120], target: [0, 0, 105]}
-  actors:
-    - {type: lightning}
-    - {type: field, slice: "fields/R1_230m.png"}
-    - {type: gas, path: [kings_chamber], color: "#d9c24a"}
-- id: S07
-  title: "Granite emits ultrasound"
-  duration: 5.0
-  camera: {position: [40, -25, 52], target: [5, -8, 46]}
-  actors:
-    - {type: gas, path: [kings_chamber], color: "#d9c24a"}
-- id: S08
-  title: "Reservoir water enters the Subterranean Chamber"
-  duration: 6.0
-  camera: {position: [200, 40, 15], target: [7, 55, -8]}
-  actors:
-    - {type: water, space: subterranean_chamber, from: 0.0, to: 1.0}
-    - {type: water, space: pit, from: 0.0, to: 1.0}
-    - {type: placeholder, kind: reservoir, at: [7, 125, 0], label: "Reservoir: not specified by the hypothesis"}
-    - {type: gas, path: [kings_chamber], color: "#d9c24a"}
-- id: S09
-  title: "Water rises in the well shaft"
-  duration: 6.0
-  camera: {position: [110, 5, 5], target: [5, 20, -5]}
-  actors:
-    - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: pit, from: 1.0, to: 1.0}
-    - {type: water, space: south_passage, from: 0.0, to: 1.0}
-    - {type: water, space: descending_passage, from: 0.0, to: 0.64}
-    - {type: water, space: well_shaft, from: 0.0, to: 0.58}
-    - {type: placeholder, kind: valve, at: [1, -5, -35], label: "Lower one-way valve: not specified by the hypothesis"}
-    - {type: placeholder, kind: valve, at: [6, 14, -27], label: "Well-shaft one-way valve: not specified by the hypothesis"}
-    - {type: gas, path: [kings_chamber], color: "#d9c24a"}
-- id: S10
-  title: "Pump push stroke"
-  duration: 8.0
-  camera: {position: [170, 20, 20], target: [7, 35, 5]}
-  actors:
-    - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: pit, from: 1.0, to: 1.0}
-    - {type: water, space: south_passage, from: 1.0, to: 1.0}
-    - {type: water, space: descending_passage, from: 0.64, to: 0.0}
-    - {type: water, space: well_shaft, from: 0.58, to: 1.0}
-    - {type: water, space: ascending_passage, from: 0.0, to: 1.0}
-    - {type: water, space: queens_passage, from: 0.0, to: 1.0}
-    - {type: water, space: queens_chamber, from: 0.0, to: 1.0}
-    - {type: water, space: grand_gallery, from: 0.0, to: 0.25}
-    - {type: placeholder, kind: pump, at: [7.3, 72, 3], label: "Pump: not specified by the hypothesis"}
-    - {type: placeholder, kind: valve, at: [1, -5, -35], label: "Lower one-way valve: not specified by the hypothesis"}
-    - {type: placeholder, kind: valve, at: [6, 14, -27], label: "Well-shaft one-way valve: not specified by the hypothesis"}
-    - {type: gas, path: [kings_chamber], color: "#d9c24a"}
-- id: S11
-  title: "Pump return stroke"
-  duration: 6.0
-  camera: {position: [135, 30, -5], target: [5, 44, -12]}
-  actors:
-    - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: pit, from: 1.0, to: 1.0}
-    - {type: water, space: south_passage, from: 1.0, to: 1.0}
-    - {type: water, space: descending_passage, from: 0.0, to: 0.64}
-    - {type: water, space: well_shaft, from: 1.0, to: 1.0}
-    - {type: water, space: ascending_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: grand_gallery, from: 0.25, to: 0.25}
-    - {type: placeholder, kind: pump, at: [7.3, 72, 3], label: "Pump: not specified by the hypothesis"}
-    - {type: placeholder, kind: valve, at: [1, -5, -35], label: "Lower one-way valve: not specified by the hypothesis"}
-    - {type: placeholder, kind: valve, at: [6, 14, -27], label: "Well-shaft one-way valve: not specified by the hypothesis"}
-    - {type: gas, path: [kings_chamber], color: "#d9c24a"}
-- id: S12
-  title: "Four activations fill the Grand Gallery"
-  duration: 8.0
-  camera: {position: [150, 10, 30], target: [7, 28, 15]}
-  actors:
-    - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: pit, from: 1.0, to: 1.0}
-    - {type: water, space: south_passage, from: 1.0, to: 1.0}
-    - {type: water, space: descending_passage, from: 0.64, to: 0.64}
-    - {type: water, space: well_shaft, from: 1.0, to: 1.0}
-    - {type: water, space: ascending_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: grand_gallery, from: 0.25, to: 1.0}
-    - {type: placeholder, kind: pump, at: [7.3, 72, 3], label: "Pump: not specified by the hypothesis"}
-    - {type: placeholder, kind: valve, at: [1, -5, -35], label: "Lower one-way valve: not specified by the hypothesis"}
-    - {type: placeholder, kind: valve, at: [6, 14, -27], label: "Well-shaft one-way valve: not specified by the hypothesis"}
-    - {type: gas, path: [kings_chamber], color: "#d9c24a"}
-- id: S13
-  title: "Gallery level is lowered"
-  duration: 6.0
-  camera: {position: [95, -5, 48], target: [6, 10, 38]}
-  actors:
-    - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: pit, from: 1.0, to: 1.0}
-    - {type: water, space: south_passage, from: 1.0, to: 1.0}
-    - {type: water, space: descending_passage, from: 0.64, to: 0.64}
-    - {type: water, space: well_shaft, from: 1.0, to: 1.0}
-    - {type: water, space: ascending_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: grand_gallery, from: 1.0, to: 0.8}
-    - {type: placeholder, kind: drain, at: [7.3, 43, 19], label: "Gallery drain: not specified by the hypothesis"}
-    - {type: gas, path: [kings_chamber], color: "#d9c24a"}
-- id: S14
-  title: "Air is drawn down the King's Chamber shafts"
-  duration: 6.0
-  camera: {position: [150, -10, 70], target: [4, 0, 60]}
-  actors:
-    - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: pit, from: 1.0, to: 1.0}
-    - {type: water, space: south_passage, from: 1.0, to: 1.0}
-    - {type: water, space: descending_passage, from: 0.64, to: 0.64}
-    - {type: water, space: well_shaft, from: 1.0, to: 1.0}
-    - {type: water, space: ascending_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: grand_gallery, from: 0.8, to: 0.6}
-    - {type: placeholder, kind: drain, at: [7.3, 43, 19], label: "Gallery drain: not specified by the hypothesis"}
-    - {type: gas, path: [kings_chamber], color: "#d9c24a"}
-    - {type: gas, path: [kc_shaft_north], color: "#bcd6e6"}
-    - {type: gas, path: [kc_shaft_south], color: "#bcd6e6"}
-- id: S15
-  title: "Gas is drawn through the grooves"
-  duration: 6.0
-  camera: {position: [42, -12, 50], target: [6, -7, 45]}
-  actors:
-    - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: pit, from: 1.0, to: 1.0}
-    - {type: water, space: south_passage, from: 1.0, to: 1.0}
-    - {type: water, space: descending_passage, from: 0.64, to: 0.64}
-    - {type: water, space: well_shaft, from: 1.0, to: 1.0}
-    - {type: water, space: ascending_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: grand_gallery, from: 0.6, to: 0.4}
-    - {type: placeholder, kind: drain, at: [7.3, 43, 19], label: "Gallery drain: not specified by the hypothesis"}
-    - {type: gas, path: [kings_chamber, antechamber], color: "#d9c24a"}
-    - {type: gas, path: [kc_shaft_north], color: "#bcd6e6"}
-    - {type: gas, path: [kc_shaft_south], color: "#bcd6e6"}
-- id: S16
-  title: "Sulfur dioxide becomes trioxide in the antechamber"
-  duration: 6.0
-  camera: {position: [30, -8, 48], target: [7, -4.4, 45]}
-  actors:
-    - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: pit, from: 1.0, to: 1.0}
-    - {type: water, space: south_passage, from: 1.0, to: 1.0}
-    - {type: water, space: descending_passage, from: 0.64, to: 0.64}
-    - {type: water, space: well_shaft, from: 1.0, to: 1.0}
-    - {type: water, space: ascending_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: grand_gallery, from: 0.4, to: 0.2}
-    - {type: placeholder, kind: drain, at: [7.3, 43, 19], label: "Gallery drain: not specified by the hypothesis"}
-    - {type: gas, path: [kings_chamber], color: "#d9c24a"}
-    - {type: gas, path: [antechamber], color: "#e08a3c"}
-    - {type: gas, path: [kc_shaft_north], color: "#bcd6e6"}
-    - {type: gas, path: [kc_shaft_south], color: "#bcd6e6"}
-- id: S17
-  title: "Gases enter the Grand Gallery"
-  duration: 6.0
-  camera: {position: [80, -2, 50], target: [7, 12, 40]}
-  actors:
-    - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: pit, from: 1.0, to: 1.0}
-    - {type: water, space: south_passage, from: 1.0, to: 1.0}
-    - {type: water, space: descending_passage, from: 0.64, to: 0.64}
-    - {type: water, space: well_shaft, from: 1.0, to: 1.0}
-    - {type: water, space: ascending_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: grand_gallery, from: 0.2, to: 0.0}
-    - {type: placeholder, kind: drain, at: [7.3, 43, 19], label: "Gallery drain: not specified by the hypothesis"}
-    - {type: gas, path: [antechamber, grand_gallery], color: "#e08a3c"}
-    - {type: gas, path: [kings_chamber], color: "#bcd6e6"}
-    - {type: gas, path: [kc_shaft_north], color: "#bcd6e6"}
-    - {type: gas, path: [kc_shaft_south], color: "#bcd6e6"}
-- id: S18
-  title: "Gallery is refilled in four activations"
-  duration: 6.0
-  camera: {position: [150, 10, 30], target: [7, 28, 15]}
-  actors:
-    - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: pit, from: 1.0, to: 1.0}
-    - {type: water, space: south_passage, from: 1.0, to: 1.0}
-    - {type: water, space: descending_passage, from: 0.64, to: 0.64}
-    - {type: water, space: well_shaft, from: 1.0, to: 1.0}
-    - {type: water, space: ascending_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: grand_gallery, from: 0.0, to: 0.25}
-    - {type: gas, path: [grand_gallery], color: "#e08a3c"}
-    - {type: placeholder, kind: pump, at: [7.3, 72, 3], label: "Pump: not specified by the hypothesis"}
-    - {type: placeholder, kind: valve, at: [1, -5, -35], label: "Lower one-way valve: not specified by the hypothesis"}
-    - {type: placeholder, kind: valve, at: [6, 14, -27], label: "Well-shaft one-way valve: not specified by the hypothesis"}
-- id: S19
-  title: "Sulfur dioxide dissolves"
-  duration: 5.0
-  camera: {position: [95, 5, 44], target: [7, 20, 35]}
-  actors:
-    - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: pit, from: 1.0, to: 1.0}
-    - {type: water, space: south_passage, from: 1.0, to: 1.0}
-    - {type: water, space: descending_passage, from: 0.64, to: 0.64}
-    - {type: water, space: well_shaft, from: 1.0, to: 1.0}
-    - {type: water, space: ascending_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: grand_gallery, from: 0.25, to: 0.5}
-    - {type: gas, path: [grand_gallery], color: "#d9c24a"}
-- id: S20
-  title: "Sulfurous acid oxidises"
-  duration: 5.0
-  camera: {position: [95, 5, 44], target: [7, 20, 35]}
-  actors:
-    - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: pit, from: 1.0, to: 1.0}
-    - {type: water, space: south_passage, from: 1.0, to: 1.0}
-    - {type: water, space: descending_passage, from: 0.64, to: 0.64}
-    - {type: water, space: well_shaft, from: 1.0, to: 1.0}
-    - {type: water, space: ascending_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: grand_gallery, from: 0.5, to: 0.75}
-    - {type: gas, path: [grand_gallery], color: "#bcd6e6"}
-- id: S21
-  title: "Sulfur trioxide dissolves in the dilute acid"
-  duration: 5.0
-  camera: {position: [95, 5, 44], target: [7, 20, 35]}
-  actors:
-    - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: pit, from: 1.0, to: 1.0}
-    - {type: water, space: south_passage, from: 1.0, to: 1.0}
-    - {type: water, space: descending_passage, from: 0.64, to: 0.64}
-    - {type: water, space: well_shaft, from: 1.0, to: 1.0}
-    - {type: water, space: ascending_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: grand_gallery, from: 0.75, to: 1.0}
-    - {type: gas, path: [grand_gallery], color: "#e08a3c"}
-- id: S22
-  title: "No gas is pushed back"
-  duration: 4.0
-  camera: {position: [80, 0, 48], target: [6, 13, 38]}
-  actors:
-    - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: pit, from: 1.0, to: 1.0}
-    - {type: water, space: south_passage, from: 1.0, to: 1.0}
-    - {type: water, space: descending_passage, from: 0.64, to: 0.64}
-    - {type: water, space: well_shaft, from: 1.0, to: 1.0}
-    - {type: water, space: ascending_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: grand_gallery, from: 1.0, to: 1.0}
-- id: S23
-  title: "Calcium sulfate coats the walls"
-  duration: 5.0
-  camera: {position: [85, 0, 40], target: [6, 15, 32]}
-  actors:
-    - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: pit, from: 1.0, to: 1.0}
-    - {type: water, space: south_passage, from: 1.0, to: 1.0}
-    - {type: water, space: descending_passage, from: 0.64, to: 0.64}
-    - {type: water, space: well_shaft, from: 1.0, to: 1.0}
-    - {type: water, space: ascending_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: grand_gallery, from: 1.0, to: 1.0}
-- id: S24
-  title: "Big Void as heat exchanger (speculative)"
-  duration: 5.0
-  camera: {position: [110, 0, 62], target: [7, 15, 50]}
-  actors:
-    - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: pit, from: 1.0, to: 1.0}
-    - {type: water, space: south_passage, from: 1.0, to: 1.0}
-    - {type: water, space: descending_passage, from: 0.64, to: 0.64}
-    - {type: water, space: well_shaft, from: 1.0, to: 1.0}
-    - {type: water, space: ascending_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: grand_gallery, from: 1.0, to: 1.0}
-    - {type: water, space: big_void, from: 1.0, to: 1.0}
-- id: S25
-  title: "Shaft slab as level meter (speculative)"
-  duration: 5.0
-  camera: {position: [150, -10, 50], target: [5, 0, 42]}
-  actors:
-    - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: pit, from: 1.0, to: 1.0}
-    - {type: water, space: south_passage, from: 1.0, to: 1.0}
-    - {type: water, space: descending_passage, from: 0.64, to: 0.64}
-    - {type: water, space: well_shaft, from: 1.0, to: 1.0}
-    - {type: water, space: ascending_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: grand_gallery, from: 1.0, to: 1.0}
-- id: S26
-  title: "Liquid is withdrawn through the Queen's Chamber"
-  duration: 7.0
-  camera: {position: [80, -5, 36], target: [6, 10, 28]}
-  actors:
-    - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0}
-    - {type: water, space: pit, from: 1.0, to: 1.0}
-    - {type: water, space: south_passage, from: 1.0, to: 1.0}
-    - {type: water, space: descending_passage, from: 0.64, to: 0.64}
-    - {type: water, space: well_shaft, from: 1.0, to: 1.0}
-    - {type: water, space: ascending_passage, from: 1.0, to: 1.0}
-    - {type: water, space: queens_passage, from: 1.0, to: 0.0}
-    - {type: water, space: queens_chamber, from: 1.0, to: 0.0}
-    - {type: water, space: grand_gallery, from: 1.0, to: 0.0}
-    - {type: placeholder, kind: drain, at: [5, 0, 19], label: "Queen's Chamber outlet: not specified by the hypothesis"}
-- id: S27
-  title: "Acid goes to the central pyramid"
-  duration: 4.0
-  camera: {position: [220, 200, 120], target: [0, 0, 40]}
-  actors: []
-- id: S28
-  title: "Acid fills the boat pits"
-  duration: 4.0
-  camera: {position: [200, -220, 140], target: [0, 0, 20]}
-  actors: []
-- id: S29
-  title: "Iron veins carry voltage across the plateau"
-  duration: 4.0
-  camera: {position: [260, -160, 180], target: [0, 0, 30]}
-  actors: []
-- id: S30
-  title: "Acids are used for mining and metallurgy"
-  duration: 4.0
-  camera: {position: [-260, -160, 150], target: [0, 0, 40]}
-  actors: []
-- id: S31
-  title: "The cycle repeats with the next storm"
-  duration: 5.0
-  camera: {position: [280, -120, 110], target: [0, 0, 40]}
-  actors: []
+  path:
+    - {position: [620, 520, 150], target: [0, 102, 17]}
+    - {position: [380, 330, 90], target: [0, 102, 17]}
+    - {position: [230, 210, 45], target: [0, 102, 17]}
+steps:
+  - id: S01
+    title: "Hydrogen sulfide rises under the plateau"
+    duration: 5.0
+    path:
+      - {position: [260, -100, 20], target: [0, 0, -10]}
+      - {position: [247.65, 39.06, 17.0], target: [0, 0, -10]}
+    scene: {interior: false, weather: clear}
+    species: [h2s]
+    actors: []
+  - id: S02
+    title: "Satellite pyramids convert it to sulfur dioxide"
+    duration: 5.0
+    path:
+      - {position: [300, 60, 120], target: [0, 0, 40]}
+      - {position: [206.83, 181.77, 112.0], target: [0, 0, 40]}
+    scene: {interior: false, weather: clear}
+    species: [h2s, so2]
+    reaction: {equation: "not stated by the hypothesis", timestamp: "F 00:14:18-00:14:39", note: "the video names a conversion without giving it"}
+    actors: []
+  - id: S03
+    title: "Sulfur dioxide fills the King's Chamber"
+    duration: 6.0
+    path:
+      - {position: [45, -30, 52], target: [3, -11, 44]}
+      - {position: [44.29, -6.91, 51.2], target: [3, -11, 44]}
+    scene: {interior: true, weather: clear}
+    species: [so2]
+    actors:
+      - {type: gas, path: [kings_chamber], species: [so2]}
+      - {type: placeholder, kind: gas_inlet, at: [2.5, -11, 41], label: "Gas inlet: not specified by the hypothesis"}
+  - id: S04
+    title: "Ground currents charge the flat top"
+    duration: 6.0
+    path:
+      - {position: [300, -80, 60], target: [0, 0, 60]}
+      - {position: [269.83, 72.65, 60.0], target: [0, 0, 60]}
+    scene: {interior: false, weather: clear}
+    species: []
+    actors:
+      - {type: field, slice: "fields/R2_333m.png"}
+      - {type: gas, path: [kings_chamber], species: [so2]}
+  - id: S05
+    title: "Operators wait for a storm"
+    duration: 4.0
+    path:
+      - {position: [-280, -100, 90], target: [0, 0, 45]}
+      - {position: [-173.24, -203.94, 85.5], target: [0, 0, 45]}
+    scene: {interior: false, weather: storm}
+    species: []
+    actors:
+      - {type: gas, path: [kings_chamber], species: [so2]}
+  - id: S06
+    title: "Lightning strikes the top"
+    duration: 6.0
+    path:
+      - {position: [300, -90, 120], target: [0, 0, 105]}
+      - {position: [274.33, 64.85, 118.5], target: [0, 0, 105]}
+    scene: {interior: true, weather: storm}
+    species: []
+    actors:
+      - {type: lightning}
+      - {type: field, slice: "fields/R1_230m.png"}
+      - {type: gas, path: [kings_chamber], species: [so2]}
+  - id: S07
+    title: "Granite emits ultrasound"
+    duration: 5.0
+    path:
+      - {position: [40, -25, 52], target: [5, -8, 46]}
+      - {position: [39.93, -5.5, 51.4], target: [5, -8, 46]}
+    scene: {interior: true, weather: clear}
+    species: []
+    actors:
+      - {type: gas, path: [kings_chamber], species: [so2]}
+  - id: S08
+    title: "Reservoir water enters the Subterranean Chamber"
+    duration: 6.0
+    path:
+      - {position: [200, 40, 15], target: [7, 55, -8]}
+      - {position: [164.18, 130.16, 12.7], target: [7, 55, -8]}
+    scene: {interior: true, weather: clear}
+    species: []
+    actors:
+      - {type: water, space: subterranean_chamber, from: 0.0, to: 1.0, species: [water]}
+      - {type: water, space: pit, from: 0.0, to: 1.0, species: [water]}
+      - {type: placeholder, kind: reservoir, at: [7, 125, 0], label: "Reservoir: not specified by the hypothesis"}
+      - {type: gas, path: [kings_chamber], species: [so2]}
+  - id: S09
+    title: "Water rises in the well shaft"
+    duration: 6.0
+    path:
+      - {position: [110, 5, 5], target: [5, 20, -5]}
+      - {position: [93.59, 55.56, 4.0], target: [5, 20, -5]}
+    scene: {interior: true, weather: clear}
+    species: []
+    actors:
+      - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: pit, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: south_passage, from: 0.0, to: 1.0, species: [water]}
+      - {type: water, space: descending_passage, from: 0.0, to: 0.64, species: [water]}
+      - {type: water, space: well_shaft, from: 0.0, to: 0.58, species: [water]}
+      - {type: placeholder, kind: valve, at: [1, -5, -35], label: "Lower one-way valve: not specified by the hypothesis"}
+      - {type: placeholder, kind: valve, at: [6, 14, -27], label: "Well-shaft one-way valve: not specified by the hypothesis"}
+      - {type: gas, path: [kings_chamber], species: [so2]}
+  - id: S10
+    title: "Pump push stroke"
+    duration: 8.0
+    path:
+      - {position: [170, 20, 20], target: [7, 35, 5]}
+      - {position: [140.8, 96.66, 18.5], target: [7, 35, 5]}
+    scene: {interior: true, weather: clear}
+    species: []
+    actors:
+      - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: pit, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: south_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: descending_passage, from: 0.64, to: 0.0, species: [water]}
+      - {type: water, space: well_shaft, from: 0.58, to: 1.0, species: [water]}
+      - {type: water, space: ascending_passage, from: 0.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_passage, from: 0.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_chamber, from: 0.0, to: 1.0, species: [water]}
+      - {type: water, space: grand_gallery, from: 0.0, to: 0.25, species: [water]}
+      - {type: placeholder, kind: pump, at: [7.3, 72, 3], label: "Pump: not specified by the hypothesis"}
+      - {type: placeholder, kind: valve, at: [1, -5, -35], label: "Lower one-way valve: not specified by the hypothesis"}
+      - {type: placeholder, kind: valve, at: [6, 14, -27], label: "Well-shaft one-way valve: not specified by the hypothesis"}
+      - {type: gas, path: [kings_chamber], species: [so2]}
+  - id: S11
+    title: "Pump return stroke"
+    duration: 6.0
+    path:
+      - {position: [135, 30, -5], target: [5, 44, -12]}
+      - {position: [112.62, 91.59, -5.7], target: [5, 44, -12]}
+    scene: {interior: true, weather: clear}
+    species: []
+    actors:
+      - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: pit, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: south_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: descending_passage, from: 0.0, to: 0.64, species: [water]}
+      - {type: water, space: well_shaft, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: ascending_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: grand_gallery, from: 0.25, to: 0.25, species: [water]}
+      - {type: placeholder, kind: pump, at: [7.3, 72, 3], label: "Pump: not specified by the hypothesis"}
+      - {type: placeholder, kind: valve, at: [1, -5, -35], label: "Lower one-way valve: not specified by the hypothesis"}
+      - {type: placeholder, kind: valve, at: [6, 14, -27], label: "Well-shaft one-way valve: not specified by the hypothesis"}
+      - {type: gas, path: [kings_chamber], species: [so2]}
+  - id: S12
+    title: "Four activations fill the Grand Gallery"
+    duration: 8.0
+    path:
+      - {position: [150, 10, 30], target: [7, 28, 15]}
+      - {position: [126.56, 78.32, 28.5], target: [7, 28, 15]}
+    scene: {interior: true, weather: clear}
+    species: []
+    actors:
+      - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: pit, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: south_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: descending_passage, from: 0.64, to: 0.64, species: [water]}
+      - {type: water, space: well_shaft, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: ascending_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: grand_gallery, from: 0.25, to: 1.0, species: [water]}
+      - {type: placeholder, kind: pump, at: [7.3, 72, 3], label: "Pump: not specified by the hypothesis"}
+      - {type: placeholder, kind: valve, at: [1, -5, -35], label: "Lower one-way valve: not specified by the hypothesis"}
+      - {type: placeholder, kind: valve, at: [6, 14, -27], label: "Well-shaft one-way valve: not specified by the hypothesis"}
+      - {type: gas, path: [kings_chamber], species: [so2]}
+  - id: S13
+    title: "Gallery level is lowered"
+    duration: 6.0
+    path:
+      - {position: [95, -5, 48], target: [6, 10, 38]}
+      - {position: [82.12, 38.36, 47.0], target: [6, 10, 38]}
+    scene: {interior: true, weather: clear}
+    species: [so2]
+    actors:
+      - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: pit, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: south_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: descending_passage, from: 0.64, to: 0.64, species: [water]}
+      - {type: water, space: well_shaft, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: ascending_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: grand_gallery, from: 1.0, to: 0.8, species: [water]}
+      - {type: placeholder, kind: drain, at: [7.3, 43, 19], label: "Gallery drain: not specified by the hypothesis"}
+      - {type: gas, path: [kings_chamber], species: [so2]}
+  - id: S14
+    title: "Air is drawn down the King's Chamber shafts"
+    duration: 6.0
+    path:
+      - {position: [150, -10, 70], target: [4, 0, 60]}
+      - {position: [122.3, 57.91, 69.0], target: [4, 0, 60]}
+    scene: {interior: true, weather: clear}
+    species: [air]
+    actors:
+      - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: pit, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: south_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: descending_passage, from: 0.64, to: 0.64, species: [water]}
+      - {type: water, space: well_shaft, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: ascending_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: grand_gallery, from: 0.8, to: 0.6, species: [water]}
+      - {type: placeholder, kind: drain, at: [7.3, 43, 19], label: "Gallery drain: not specified by the hypothesis"}
+      - {type: gas, path: [kings_chamber], species: [so2]}
+      - {type: gas, path: [kc_shaft_north], species: [air]}
+      - {type: gas, path: [kc_shaft_south], species: [air]}
+  - id: S15
+    title: "Gas is drawn through the grooves"
+    duration: 6.0
+    path:
+      - {position: [42, -12, 50], target: [6, -7, 45]}
+      - {position: [36.31, 5.3, 49.5], target: [6, -7, 45]}
+    scene: {interior: true, weather: clear}
+    species: [so2, air]
+    actors:
+      - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: pit, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: south_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: descending_passage, from: 0.64, to: 0.64, species: [water]}
+      - {type: water, space: well_shaft, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: ascending_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: grand_gallery, from: 0.6, to: 0.4, species: [water]}
+      - {type: placeholder, kind: drain, at: [7.3, 43, 19], label: "Gallery drain: not specified by the hypothesis"}
+      - {type: gas, path: [kings_chamber, antechamber], species: [so2]}
+      - {type: gas, path: [kc_shaft_north], species: [air]}
+      - {type: gas, path: [kc_shaft_south], species: [air]}
+  - id: S16
+    title: "Sulfur dioxide becomes trioxide in the antechamber"
+    duration: 6.0
+    path:
+      - {position: [30, -8, 48], target: [7, -4.4, 45]}
+      - {position: [26.55, 3.14, 47.7], target: [7, -4.4, 45]}
+    scene: {interior: true, weather: clear}
+    species: [so2, air, so3]
+    reaction: {equation: "2 SO₂ + O₂ → 2 SO₃", timestamp: "F 00:46:59-00:47:10", note: "as stated in the video"}
+    actors:
+      - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: pit, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: south_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: descending_passage, from: 0.64, to: 0.64, species: [water]}
+      - {type: water, space: well_shaft, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: ascending_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: grand_gallery, from: 0.4, to: 0.2, species: [water]}
+      - {type: placeholder, kind: drain, at: [7.3, 43, 19], label: "Gallery drain: not specified by the hypothesis"}
+      - {type: gas, path: [kings_chamber], species: [so2]}
+      - {type: gas, path: [antechamber], species: [so3]}
+      - {type: gas, path: [kc_shaft_north], species: [air]}
+      - {type: gas, path: [kc_shaft_south], species: [air]}
+  - id: S17
+    title: "Gases enter the Grand Gallery"
+    duration: 6.0
+    path:
+      - {position: [80, -2, 50], target: [7, 12, 40]}
+      - {position: [70.2, 33.94, 49.0], target: [7, 12, 40]}
+    scene: {interior: true, weather: clear}
+    species: [so3, so2, air]
+    actors:
+      - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: pit, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: south_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: descending_passage, from: 0.64, to: 0.64, species: [water]}
+      - {type: water, space: well_shaft, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: ascending_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: grand_gallery, from: 0.2, to: 0.0, species: [water]}
+      - {type: placeholder, kind: drain, at: [7.3, 43, 19], label: "Gallery drain: not specified by the hypothesis"}
+      - {type: gas, path: [antechamber, grand_gallery], species: [so3]}
+      - {type: gas, path: [kings_chamber], species: [air]}
+      - {type: gas, path: [kc_shaft_north], species: [air]}
+      - {type: gas, path: [kc_shaft_south], species: [air]}
+  - id: S18
+    title: "Gallery is refilled in four activations"
+    duration: 6.0
+    path:
+      - {position: [150, 10, 30], target: [7, 28, 15]}
+      - {position: [126.56, 78.32, 28.5], target: [7, 28, 15]}
+    scene: {interior: true, weather: clear}
+    species: []
+    actors:
+      - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: pit, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: south_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: descending_passage, from: 0.64, to: 0.64, species: [water]}
+      - {type: water, space: well_shaft, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: ascending_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: grand_gallery, from: 0.0, to: 0.25, species: [water]}
+      - {type: gas, path: [grand_gallery], species: [so3]}
+      - {type: placeholder, kind: pump, at: [7.3, 72, 3], label: "Pump: not specified by the hypothesis"}
+      - {type: placeholder, kind: valve, at: [1, -5, -35], label: "Lower one-way valve: not specified by the hypothesis"}
+      - {type: placeholder, kind: valve, at: [6, 14, -27], label: "Well-shaft one-way valve: not specified by the hypothesis"}
+  - id: S19
+    title: "Sulfur dioxide dissolves"
+    duration: 5.0
+    path:
+      - {position: [95, 5, 44], target: [7, 20, 35]}
+      - {position: [82.34, 47.91, 43.1], target: [7, 20, 35]}
+    scene: {interior: true, weather: clear}
+    species: [so2, water, sulfurous_acid]
+    reaction: {equation: "SO₂ + H₂O → H₂SO₃", timestamp: "F 00:53:11-00:53:46", note: "as stated in the video"}
+    actors:
+      - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: pit, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: south_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: descending_passage, from: 0.64, to: 0.64, species: [water]}
+      - {type: water, space: well_shaft, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: ascending_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: grand_gallery, from: 0.25, to: 0.5, species: [sulfurous_acid, water]}
+      - {type: gas, path: [grand_gallery], species: [so2]}
+  - id: S20
+    title: "Sulfurous acid oxidises"
+    duration: 5.0
+    path:
+      - {position: [95, 5, 44], target: [7, 20, 35]}
+      - {position: [82.34, 47.91, 43.1], target: [7, 20, 35]}
+    scene: {interior: true, weather: clear}
+    species: [sulfurous_acid, air, sulfuric_acid]
+    reaction: {equation: "2 H₂SO₃ + O₂ → 2 H₂SO₄", timestamp: "F 00:53:30-00:53:46", note: "as stated in the video"}
+    actors:
+      - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: pit, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: south_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: descending_passage, from: 0.64, to: 0.64, species: [water]}
+      - {type: water, space: well_shaft, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: ascending_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: grand_gallery, from: 0.5, to: 0.75, species: [sulfuric_acid, water]}
+      - {type: gas, path: [grand_gallery], species: [air]}
+  - id: S21
+    title: "Sulfur trioxide dissolves in the dilute acid"
+    duration: 5.0
+    path:
+      - {position: [95, 5, 44], target: [7, 20, 35]}
+      - {position: [82.34, 47.91, 43.1], target: [7, 20, 35]}
+    scene: {interior: true, weather: clear}
+    species: [so3, water, sulfuric_acid]
+    reaction: {equation: "SO₃ + H₂O → H₂SO₄ (into dilute acid)", timestamp: "F 00:43:10-00:43:57", note: "as stated in the video"}
+    actors:
+      - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: pit, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: south_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: descending_passage, from: 0.64, to: 0.64, species: [water]}
+      - {type: water, space: well_shaft, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: ascending_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: grand_gallery, from: 0.75, to: 1.0, species: [sulfuric_acid, water]}
+      - {type: gas, path: [grand_gallery], species: [so3]}
+  - id: S22
+    title: "No gas is pushed back"
+    duration: 4.0
+    path:
+      - {position: [80, 0, 48], target: [6, 13, 38]}
+      - {position: [69.53, 36.17, 47.0], target: [6, 13, 38]}
+    scene: {interior: true, weather: clear}
+    species: [so2, so3, water]
+    actors:
+      - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: pit, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: south_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: descending_passage, from: 0.64, to: 0.64, species: [water]}
+      - {type: water, space: well_shaft, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: ascending_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: grand_gallery, from: 1.0, to: 1.0, species: [sulfuric_acid, water]}
+  - id: S23
+    title: "Calcium sulfate coats the walls"
+    duration: 5.0
+    path:
+      - {position: [85, 0, 40], target: [6, 15, 32]}
+      - {position: [74.32, 38.86, 39.2], target: [6, 15, 32]}
+    scene: {interior: true, weather: clear}
+    species: [sulfuric_acid, calcium_sulfate]
+    reaction: {equation: "CaCO₃ + H₂SO₄ → CaSO₄ + H₂O + CO₂", timestamp: "F 01:18:47-01:21:00", note: "as stated in the video"}
+    actors:
+      - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: pit, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: south_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: descending_passage, from: 0.64, to: 0.64, species: [water]}
+      - {type: water, space: well_shaft, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: ascending_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: grand_gallery, from: 1.0, to: 1.0, species: [sulfuric_acid, water]}
+      - {type: coat, space: grand_gallery}
+      - {type: coat, space: queens_chamber}
+  - id: S24
+    title: "Big Void as heat exchanger (speculative)"
+    duration: 5.0
+    path:
+      - {position: [110, 0, 62], target: [7, 15, 50]}
+      - {position: [94.03, 49.66, 60.8], target: [7, 15, 50]}
+    scene: {interior: true, weather: clear}
+    species: []
+    actors:
+      - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: pit, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: south_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: descending_passage, from: 0.64, to: 0.64, species: [water]}
+      - {type: water, space: well_shaft, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: ascending_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: grand_gallery, from: 1.0, to: 1.0, species: [sulfuric_acid, water]}
+      - {type: water, space: big_void, from: 1.0, to: 1.0, species: [water]}
+  - id: S25
+    title: "Shaft slab as level meter (speculative)"
+    duration: 5.0
+    path:
+      - {position: [150, -10, 50], target: [5, 0, 42]}
+      - {position: [122.52, 57.46, 49.2], target: [5, 0, 42]}
+    scene: {interior: true, weather: clear}
+    species: []
+    actors:
+      - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: pit, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: south_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: descending_passage, from: 0.64, to: 0.64, species: [water]}
+      - {type: water, space: well_shaft, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: ascending_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: grand_gallery, from: 1.0, to: 1.0, species: [sulfuric_acid, water]}
+  - id: S26
+    title: "Liquid is withdrawn through the Queen's Chamber"
+    duration: 7.0
+    path:
+      - {position: [80, -5, 36], target: [6, 10, 28]}
+      - {position: [70.43, 31.61, 35.2], target: [6, 10, 28]}
+    scene: {interior: true, weather: clear}
+    species: [sulfuric_acid, water]
+    actors:
+      - {type: water, space: subterranean_chamber, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: pit, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: south_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: descending_passage, from: 0.64, to: 0.64, species: [water]}
+      - {type: water, space: well_shaft, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: ascending_passage, from: 1.0, to: 1.0, species: [water]}
+      - {type: water, space: queens_passage, from: 1.0, to: 0.0, species: [water]}
+      - {type: water, space: queens_chamber, from: 1.0, to: 0.0, species: [water]}
+      - {type: water, space: grand_gallery, from: 1.0, to: 0.0, species: [sulfuric_acid, water]}
+      - {type: placeholder, kind: drain, at: [5, 0, 19], label: "Queen's Chamber outlet: not specified by the hypothesis"}
+  - id: S27
+    title: "Acid goes to the central pyramid"
+    duration: 4.0
+    path:
+      - {position: [220, 200, 120], target: [0, 0, 40]}
+      - {position: [81.47, 254.88, 112.0], target: [0, 0, 40]}
+    scene: {interior: false, weather: clear}
+    species: [sulfuric_acid, hydrogen_chloride]
+    reaction: {equation: "H₂SO₄ + 2 NaCl → Na₂SO₄ + 2 HCl", timestamp: "F 00:27:55-00:28:12", note: "as stated in the video"}
+    actors: []
+  - id: S28
+    title: "Acid fills the boat pits"
+    duration: 4.0
+    path:
+      - {position: [200, -220, 140], target: [0, 0, 20]}
+      - {position: [254.88, -81.47, 128.0], target: [0, 0, 20]}
+    scene: {interior: false, weather: clear}
+    species: [sulfuric_acid, hydrogen_chloride]
+    actors: []
+  - id: S29
+    title: "Iron veins carry voltage across the plateau"
+    duration: 4.0
+    path:
+      - {position: [260, -160, 180], target: [0, 0, 30]}
+      - {position: [274.65, -7.71, 165.0], target: [0, 0, 30]}
+    scene: {interior: false, weather: clear}
+    species: []
+    actors: []
+  - id: S30
+    title: "Acids are used for mining and metallurgy"
+    duration: 4.0
+    path:
+      - {position: [-260, -160, 150], target: [0, 0, 40]}
+      - {position: [-130.65, -241.71, 139.0], target: [0, 0, 40]}
+    scene: {interior: false, weather: clear}
+    species: [sulfuric_acid]
+    actors: []
+  - id: S31
+    title: "The cycle repeats with the next storm"
+    duration: 5.0
+    path:
+      - {position: [280, -120, 110], target: [0, 0, 40]}
+      - {position: [272.24, 32.47, 103.0], target: [0, 0, 40]}
+    scene: {interior: false, weather: clear}
+    species: []
+    actors: []

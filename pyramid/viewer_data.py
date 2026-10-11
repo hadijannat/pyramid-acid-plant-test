@@ -11,10 +11,12 @@ from pyramid.geometry.frame import session
 from pyramid.geometry.model import level_volume_curve
 from pyramid.ledger import Ledger, LedgerError, load
 from pyramid.screening import Result
+from pyramid.species import Species, load_species, species_payload
 
 NOTICE = "Animation of the claim. Not a simulation result."
 CYCLE_FILE = REPO_ROOT / "ledger" / "cycle.yaml"
 OUT_DIR = REPO_ROOT / "viewer" / "data"
+WEATHER = ("clear", "storm")
 
 # The alternative reading of the survey (plan header): what interior_alt.glb shows.
 ALTERNATIVE = Variants(
@@ -96,29 +98,56 @@ def claims_payload(ledger: Ledger, results: dict[str, Result],
     return {"manifest": provenance.manifest("viewer", ledger), "claims": claims, "spaces": spaces}
 
 
-def cycle_payload(ledger: Ledger, curves: dict[str, list[tuple[float, float]]]) -> dict:
-    steps = yaml.safe_load(CYCLE_FILE.read_text())
+def _viewer_path(path: list[dict]) -> list[dict]:
+    """Camera keyframes from the project frame to the viewer's."""
+    return [{key: list(to_viewer(*keyframe[key])) for key in ("position", "target")} for keyframe in path]
+
+
+def cycle_payload(ledger: Ledger, curves: dict[str, list[tuple[float, float]]],
+                  species: dict[str, Species], verdicts: dict[str, str]) -> dict:
+    """cycle.yaml in viewer coordinates, each species id replaced by its payload with the marking status."""
+    cycle = yaml.safe_load(CYCLE_FILE.read_bytes())
+
+    def payloads(ids: list[str], where: str) -> list[dict]:
+        for key in ids:
+            if key not in species:
+                raise LedgerError(f"cycle.yaml: {where}: unknown species {key}")
+        return [species_payload(species[key], verdicts) for key in ids]
+
+    prologue = {"duration": cycle["prologue"]["duration"], "path": _viewer_path(cycle["prologue"]["path"])}
+    steps = cycle["steps"]
     for step in steps:
-        if step["id"] not in ledger.claims:
-            raise LedgerError(f"cycle.yaml: {step['id']} is not a claim id")
-        for key in ("position", "target"):
-            step["camera"][key] = list(to_viewer(*step["camera"][key]))
+        where = step["id"]
+        if where not in ledger.claims:
+            raise LedgerError(f"cycle.yaml: {where} is not a claim id")
+        if not 2 <= len(step["path"]) <= 4:
+            raise LedgerError(f"cycle.yaml: {where}: path needs 2 to 4 keyframes")
+        if step["scene"]["weather"] not in WEATHER:
+            raise LedgerError(f"cycle.yaml: {where}: weather must be clear or storm")
+        step["path"] = _viewer_path(step["path"])
+        step["species"] = payloads(step["species"], where)
         for actor in step["actors"]:
-            if actor["type"] == "placeholder":
+            if actor["type"] in ("water", "gas"):
+                if not actor.get("species"):
+                    raise LedgerError(f"cycle.yaml: {where}: {actor['type']} actor needs species")
+                actor["species"] = payloads(actor["species"], where)
+            elif actor["type"] == "placeholder":
                 actor["at"] = list(to_viewer(*actor["at"]))
     # a curve's z is the viewer's Y, so the curves need no conversion
-    return {"notice": NOTICE, "steps": steps, "curves": curves}
+    return {"notice": NOTICE, "prologue": prologue, "steps": steps, "curves": curves}
 
 
 def main() -> None:
     led = load()
     results = screening.all_results(led)
+    decided = screening.verdicts(led, results)
+    species = load_species(step_ids=set(led.claims))
     wet = sorted({
         actor["space"]
-        for step in yaml.safe_load(CYCLE_FILE.read_text())
+        for step in yaml.safe_load(CYCLE_FILE.read_bytes())["steps"]
         for actor in step["actors"] if actor["type"] == "water"
     })
-    (OUT_DIR / "fields").mkdir(parents=True, exist_ok=True)
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     with session():
         model = build(led)
@@ -128,14 +157,12 @@ def main() -> None:
     with session():  # a fresh session, so that nothing of the first model is left in the kernel
         write_glb(build(led, variants=ALTERNATIVE), OUT_DIR / "interior_alt.glb")
 
-    # Field slices come with the solver results of the second plan. The viewer draws only the
-    # slices listed here, so it never asks the server for a file that is not there.
-    extra = {"fields": sorted(f"fields/{path.name}" for path in (OUT_DIR / "fields").glob("*.png"))}
-    claims = claims_payload(led, results, screening.verdicts(led, results))
-    claims["manifest"].update(extra)
-    for name, payload in (("claims.json", claims), ("cycle.json", cycle_payload(led, curves))):
+    # the marking rule reads the verdict word alone; the basis sentence goes to claims.json
+    statuses = {claim: status for claim, (status, _) in decided.items()}
+    for name, payload in (("claims.json", claims_payload(led, results, decided)),
+                          ("cycle.json", cycle_payload(led, curves, species, statuses))):
         (OUT_DIR / name).write_text(json.dumps(payload, indent=1, allow_nan=False) + "\n")
-    provenance.write_manifest(OUT_DIR, "viewer", led, extra)
+    provenance.write_manifest(OUT_DIR, "viewer", led)
     for path in sorted(OUT_DIR.iterdir()):
         print(path.relative_to(REPO_ROOT))
 
