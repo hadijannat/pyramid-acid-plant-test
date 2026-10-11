@@ -3,6 +3,8 @@ import math
 
 import numpy as np
 import pytest
+from scipy.integrate import quad
+from scipy.special import erfc
 
 from pyramid import ledger, screening
 from pyramid.chem import walls
@@ -58,6 +60,52 @@ def test_one_cycle_at_the_ledger_values(q):
     assert walls.bare_loss(q) == pytest.approx(0.414913 * strength * 573.0 / 1000.0 * 3.69e-5, rel=1e-5)
     assert walls.bare_loss(q) == pytest.approx(0.204e-3, rel=0.005)
     assert walls.loss_per_cycle(q) == pytest.approx(walls.bare_loss(q) + layer * 3.69 / 7.39, rel=1e-9)
+
+
+def test_still_water_dissolves_at_least_the_acid_only_figure_however_the_cycle_is_split(q):
+    c, s = 101325 * 320.4 / (8.314462618 * 293.15) / 573.0, 0.015 * 998.2  # 23.2 and 15.0 mol/m3
+    # Gypsum into acid that holds c of sulfate and no calcium: x (c + x) = (s rho)^2, the positive root.
+    x = (math.sqrt(c * c + 4 * s * s) - c) / 2
+    assert x == pytest.approx(7.33, rel=0.005) and x * (c + x) == pytest.approx(s * s, rel=1e-12)
+    assert walls.acid_takes(q) == pytest.approx(x, rel=1e-9)
+    # Less than the calcium at which Tier 0's batch saturates on calcite, (s rho)^2 / c = 9.64 mol/m3, which
+    # counts no sulfate from the gypsum itself; and that in turn less than fresh water takes.
+    assert walls.saturation_share(q) * c == pytest.approx(s * s / c, rel=1e-9)
+    assert s * s / c == pytest.approx(9.64, rel=0.005) and walls.acid_takes(q) < s * s / c < s
+
+    diffusivity, day, molar_volume = 1e-9, 86400.0, 7.39e-5
+    reach = math.sqrt(diffusivity * day / math.pi)  # 5.24 mm
+    layer = walls.layer_per_cycle(q)  # 3.67 micrometres
+    assert walls.still_dissolves(q) == pytest.approx(2 * x * reach * molar_volume, rel=1e-9)
+    assert walls.still_dissolves(q) == pytest.approx(5.68e-6, rel=0.005)
+    assert walls.least_margin(q) == pytest.approx(5.68e-6 / 3.67e-6, rel=0.01)  # 1.55 times the layer
+
+    # Fresh for the first third of the cycle: the wall concentration steps from s to x at t1, and the calcium
+    # in the water is the integral of s erfc(z / 2 sqrt(D t)) - (s - x) erfc(z / 2 sqrt(D (t - t1))) over z.
+    def profile(z):
+        return s * erfc(z / (2 * math.sqrt(diffusivity * day))) - (s - x) * erfc(
+            z / (2 * math.sqrt(diffusivity * day * 2 / 3)))
+
+    in_the_water = quad(profile, 0.0, 0.1, epsabs=1e-12)[0]  # mol/m2; 0.1 m is ten diffusion lengths sqrt(D t)
+    assert walls.still_dissolves(q, fresh=1 / 3) == pytest.approx(in_the_water * molar_volume, rel=0.01)
+    assert walls.still_dissolves(q, fresh=1.0) == walls.still_fill_dissolves(q)
+
+    # Any spell as fresh water adds to what is dissolved, and the length of the cycle cancels against the layer.
+    margins = [walls.still_dissolves(q, share) / layer for share in (0.0, 0.01, 0.1, 0.5, 0.9, 1.0)]
+    assert margins == sorted(margins)
+    assert margins[0] == walls.least_margin(q) and margins[-1] == walls.still_margin(q)
+    for cycle in (3600.0, 365.25 * 86400.0):
+        assert walls.least_margin(q | {"rx.cycle_time": cycle}) == pytest.approx(walls.least_margin(q), rel=1e-9)
+
+
+def test_a_whole_batch_cannot_lay_down_what_one_fresh_fill_dissolves(q):
+    c, s = 101325 * 320.4 / (8.314462618 * 293.15) / 573.0, 0.015 * 998.2
+    # Wholly neutralised, the batch keeps s rho of its sulfate dissolved: (c - s) x 573 m3 = 4.74e3 mol of gypsum
+    # at the most, against the 8.58e3 mol of 03 check V17. The same as c / (2 s rho) = 0.78 being under one.
+    assert (c - s) * 573.0 == pytest.approx(4740, rel=0.002) and s * 573.0 == pytest.approx(8580, rel=0.002)
+    assert walls.deposit_over_fill(q) == pytest.approx((c - s) / s, rel=1e-9)
+    assert walls.deposit_over_fill(q) == pytest.approx(0.552, abs=0.001)
+    assert walls.deposit_over_fill(q | {"kc.volume": 100.0}) == 0.0  # a batch under the solubility deposits nothing
 
 
 def test_ten_cycles_strip_the_layer_each_time_and_keep_dissolving_the_wall(q):

@@ -8,8 +8,13 @@ Assumptions:
 - The layer then grows only as fast as acid diffuses through it (03 section 4.1 item 7), with the measured
   diffusivity of the ledger and the whole acidity of the batch, two hydrogen ions per sulfur, outside it. One
   mole of calcite dissolves for each mole of gypsum laid down.
-- A fill of fresh water takes gypsum off the wall up to its solubility (03 check V17), or at the least what
-  diffusion alone carries into still water in the time the acid stood.
+- The water of the next cycle takes gypsum off the wall: up to its solubility if it comes to saturation while
+  fresh (03 check V17), and at the least what diffusion alone carries into still water. How long that water stays
+  fresh the hypothesis does not say, so the least takes it as the strongest acid from the first moment: free of
+  calcium it is still undersaturated, and a layer that covers the wall keeps it so, because the batch saturates
+  only on calcium from bare limestone. Any spell as fresh water dissolves more.
+- Gypsum dissolving into the acid adds its own sulfate to the batch's; calcium and sulfate diffuse alike
+  (rx.ion_diffusivity). Bisulfate, which leaves less free sulfate and so dissolves more, is left out.
 - The wall is the Gallery's wetted area in the ledger; the Queen's Chamber is left out.
 """
 import math
@@ -74,8 +79,31 @@ def fill_dissolves(q) -> float:
     return _solubility(q) * q["gg.volume"] / q["gg.wall_area"] * q["chem.gypsum_molar_volume"]
 
 
+def acid_takes(q) -> float:
+    """Gypsum, mol/m3, that the strongest batch dissolves while it holds no calcium: x (c + x) = (s rho)^2.
+
+    Gypsum brings its own sulfate, so this is less than the calcium at which Tier 0's batch saturates on calcite,
+    (s rho)^2 / c, and always less than what fresh water takes, s rho.
+    """
+    strength, solubility = _strength(q), _solubility(q)
+    return 2 * solubility**2 / (strength + math.hypot(strength, 2 * solubility))  # the positive root, no cancellation
+
+
+def still_dissolves(q, fresh: float = 0.0) -> float:
+    """Gypsum layer, m, that diffusion alone carries into still water in one cycle.
+
+    The water is fresh for the share `fresh` of the cycle and the strongest acid for the rest: the concentration
+    at the wall steps from s rho down to acid_takes and the two diffusion fronts add,
+    2 (s rho - (s rho - x) sqrt(1 - fresh)) sqrt(D t / pi). The least is fresh = 0.
+    """
+    reach = math.sqrt(q["rx.ion_diffusivity"] * q["rx.cycle_time"] / math.pi)
+    solubility = _solubility(q)
+    at_wall = solubility - (solubility - acid_takes(q)) * math.sqrt(1 - fresh)
+    return 2 * at_wall * reach * q["chem.gypsum_molar_volume"]
+
+
 def still_fill_dissolves(q) -> float:
-    """The least a fill dissolves, m: diffusion alone into still fresh water for one cycle, 2 s sqrt(D t / pi)."""
+    """The same for water that stays fresh through the whole cycle, m: 2 s rho sqrt(D t / pi), whatever the batch."""
     reach = math.sqrt(q["rx.ion_diffusivity"] * q["rx.cycle_time"] / math.pi)
     return 2 * _solubility(q) * reach * q["chem.gypsum_molar_volume"]
 
@@ -86,8 +114,24 @@ def saturating_margin(q) -> float:
 
 
 def still_margin(q) -> float:
-    """What a still fill dissolves over the layer one cycle grows; the cycle time cancels."""
+    """What still water that stays fresh dissolves over the layer one cycle grows; the cycle time cancels."""
     return still_fill_dissolves(q) / layer_per_cycle(q)
+
+
+def least_margin(q) -> float:
+    """The least still water dissolves over the layer one cycle grows: acid from the first moment of the cycle.
+
+    The cycle time cancels, and the split of the cycle between fresh water and acid can only add to it.
+    """
+    return still_dissolves(q) / layer_per_cycle(q)
+
+
+def deposit_over_fill(q) -> float:
+    """The most gypsum a batch can lay down over what one fresh fill dissolves: (c - s rho) V over s rho V.
+
+    A batch wholly neutralised on the wall keeps s rho of its sulfate in solution; the rest is the deposit.
+    """
+    return max(0.0, _strength(q) / _solubility(q) - 1)
 
 
 def bare_loss(q) -> float:
@@ -102,8 +146,11 @@ def loss_per_cycle(q) -> float:
 
 
 def cycles(q, fill: str = "saturating", n: int = 10) -> dict:
-    """Layer after each acid dwell and after the fill that follows, and the limestone lost so far, all in m."""
-    removal = {"saturating": fill_dissolves, "still": still_fill_dissolves}[fill](q)
+    """Layer after each acid dwell and after the water that follows, and the limestone lost so far, all in m.
+
+    "saturating" is a fresh fill that comes to saturation, "still" the least that still water dissolves.
+    """
+    removal = {"saturating": fill_dissolves, "still": still_dissolves}[fill](q)
     product, calcite_per_gypsum = growth_product(q), q["chem.calcite_molar_volume"] / q["chem.gypsum_molar_volume"]
     layer, loss, after_acid, after_fill, lost = 0.0, 0.0, [], [], []
     for _ in range(n):
