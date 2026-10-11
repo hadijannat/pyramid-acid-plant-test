@@ -2,10 +2,11 @@
 // Each task adds its block above "start", in the boot order of the plan header.
 import { DEFAULT_STATE, createStore, readUrl } from './store.js';
 import { loadData } from './data/load.js';
-import { createRenderer } from './render/renderer.js';
+import { createRenderer, TIERS } from './render/renderer.js';
 import { createEnvironment } from './render/environment.js';
 import { createMaterials } from './render/materials.js';
 import { frameModel, loadModel } from './render/model.js';
+import { createActors } from './render/actors.js';
 
 const message = document.getElementById('message');
 
@@ -67,6 +68,11 @@ async function boot() {
   const model = await loadModel('data/interior.glb', rendererApi.scene, materials, store);
   frameModel(model, rendererApi.camera, rendererApi.controls);
   Object.assign(window.viewer, { model });
+
+  // ---- actors (Task 6): Task 7's player builds and updates them; until then the console drives them
+  const actors = createActors({ scene: rendererApi.scene, model, materials, store, cycle, tiers: TIERS });
+  stateParts.push(actors.state);
+  Object.assign(window.viewer, { actors });
 
   // ---- start (Task 4): stays the last block, so everything frame() reads exists before the first frame
   function frame(dt) {
