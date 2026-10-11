@@ -14,8 +14,7 @@ const SHADE = 0.4;             // display choice: a hatching stripe is the actor
 // GLSL float literals (written with a decimal point: GLSL does not convert integers).
 const GRAIN = '0.2';           // display choice: the stone's brightness varies by 20 percent either way
 const BAND = '0.3';            // display choice: metres of brighter water under the free surface
-const PITCH = '8.0';           // display choice: hatching stripes repeat every 8 device pixels along a row
-// ponytail: device pixels, so the stripes are finer on a high-density screen; divide by the pixel ratio if they read too fine.
+const PITCH = '8.0';           // display choice: hatching stripes repeat every 8 CSS pixels along a row, on every tier
 
 // 3D value noise in 0 to 1: hashed values on the integer lattice, smoothly interpolated between them.
 const NOISE = /* glsl */ `
@@ -186,10 +185,13 @@ void main() {
     });
   }
 
-  // Screen-space diagonal stripes over a material: every other band of PITCH pixels takes a darker shade
+  // Screen-space diagonal stripes over a material: every other band of PITCH CSS pixels takes a darker shade
   // of the colour. Works on the standard materials and on the shader materials above, which all have
   // the tonemapping chunk; the stripes go in just before it, in linear colour. A stripe is drawn opaque: at the
   // skin's own opacity the self-lit space behind a veil or a liquid washed it out to a few levels of grey.
+  // gl_FragCoord counts device pixels, so the pitch is scaled by the renderer's pixel ratio.
+  // ponytail: the ratio is read when the material compiles; actors make new materials each step, so a tier change
+  // in mid-step (the probe, on a deep link) shows from the next step. Share one uniform set on each tier change if that shows.
   function hatch(material, colourHex) {
     const shade = new THREE.Color(colourHex).multiplyScalar(SHADE);
     const previous = material.onBeforeCompile;
@@ -197,9 +199,10 @@ void main() {
     material.onBeforeCompile = (shader, renderer) => {
       previous.call(material, shader, renderer);
       shader.uniforms.uHatch = { value: shade };
+      shader.uniforms.uPixelRatio = { value: renderer.getPixelRatio() };
       shader.fragmentShader = shader.fragmentShader
-        .replace('void main() {', 'uniform vec3 uHatch;\nvoid main() {')
-        .replace('#include <tonemapping_fragment>', `if (fract((gl_FragCoord.x + gl_FragCoord.y) / ${PITCH}) < 0.5) gl_FragColor = vec4(uHatch, 1.0);
+        .replace('void main() {', 'uniform vec3 uHatch;\nuniform float uPixelRatio;\nvoid main() {')
+        .replace('#include <tonemapping_fragment>', `if (fract((gl_FragCoord.x + gl_FragCoord.y) / (${PITCH} * uPixelRatio)) < 0.5) gl_FragColor = vec4(uHatch, 1.0);
 #include <tonemapping_fragment>`);
     };
     // the wrapper's source is the same for every material it wraps; keep their programs apart
