@@ -30,6 +30,17 @@ def region_stats(intensity: np.ndarray, weights: np.ndarray) -> tuple[np.ndarray
     return flat @ w / w.sum(), flat[:, inside].max(axis=1)
 
 
+def side_intensity(field: np.ndarray, normal: np.ndarray, factor) -> np.ndarray:
+    """|E|^2 on one side of the surface in every cell, from the cell's mean field (3, ...).
+
+    In a cell cut by a surface the field along the surface is the same on both sides, and the field across it is
+    `factor` times its mean: 1 / (mean inverse permittivity) on the air side, that over the material's permittivity
+    on the material's side. In an uncut cell the factor is 1 or the normal is zero, and the field is unchanged.
+    """
+    across = np.sum(normal * field, axis=0)
+    return np.sum(np.abs(field + (factor - 1) * across * normal) ** 2, axis=0)
+
+
 def peaks(wavelengths, spectrum) -> list[tuple[float, float]]:
     """Local maxima of a spectrum as (wavelength, value), each refined with a parabola through three points."""
     x, y = np.asarray(wavelengths, float), np.asarray(spectrum, float)

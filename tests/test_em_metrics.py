@@ -13,6 +13,13 @@ def test_region_mean_is_volume_weighted_and_the_maximum_ignores_slivers():
     assert peak == pytest.approx([3.0, 2.0])
 
 
+def test_the_field_across_a_wall_is_larger_on_the_air_side():
+    field = np.array([1.0, 2.0, 0.0]).reshape(3, 1)              # across the wall (x) and along it (y)
+    normal = np.array([1.0, 0.0, 0.0]).reshape(3, 1)
+    assert metrics.side_intensity(field, normal, 5.0) == pytest.approx([5.0**2 + 2.0**2])
+    assert metrics.side_intensity(field, 0 * normal, 5.0) == pytest.approx([1.0 + 4.0])    # an uncut cell
+
+
 def test_peaks_are_found_between_the_samples():
     x = np.arange(200.0, 601.0, 5.0)
     y = 9e4 * np.exp(-((x - 332.0) / 40) ** 2) + 13e4 * np.exp(-((x - 231.0) / 25) ** 2)
