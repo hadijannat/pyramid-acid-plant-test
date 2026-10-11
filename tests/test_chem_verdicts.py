@@ -92,7 +92,8 @@ def test_s22_fails_on_the_nitrogen_and_otherwise_follows_the_pace_of_uptake(led)
     for text in ("draws 573 m3 of gas", "holds 320 m3", "at least 44 percent of the gas over the water is the "
                  "outside air of S14 (39 percent at the least)", "push 33 percent of the gas back (29 to 37 percent",
                  "54 percent of a mixture", "under 2.0 percent of the gas (2.4 percent at most)",
-                 "oxygen for 0.8 percent of the sulfur", "states no gas fraction and no stroke"):
+                 "oxygen for 0.8 percent of the sulfur, while S14 to S17 carry air into the Gallery",
+                 "states no gas fraction and no stroke"):
         assert text in basis, basis
 
     # Were nitrogen as soluble as the gas space it leaves, nothing would have to go back, and the pace would decide.
@@ -115,8 +116,8 @@ def test_s23_follows_what_a_fill_dissolves_against_the_layer_a_cycle_grows(led):
     for text in ("neutralise 41 percent of the strongest batch", "reaches 3.7 micrometres in a cycle of 24 h",
                  "(0.1 to 74 micrometres over the ranges of the inputs)", "can dissolve 0.63 mm of gypsum, 173 times "
                  "that layer (7.7 times at the least)", "dissolves 3.2 times the layer by diffusion alone (2.5 times "
-                 "at the least)", "every fill strips it", "0.21 mm of wall per cycle and 2.1 mm in ten (1.6 to 4.9 mm",
-                 "not on the cycle time"):
+                 "at the least)", "every fill strips it", "loses up to 0.21 mm per cycle and 2.1 mm in ten in bringing "
+                 "each batch to saturation (1.6 to 4.9 mm", "not on the cycle time"):
         assert text in basis, basis
 
     # A layer a hundred times more permeable at its fast end grows ten times thicker: still water no longer strips it.

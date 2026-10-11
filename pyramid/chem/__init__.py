@@ -52,9 +52,9 @@ QUANTITIES = [
     ("chem.still_margin", "What a still fill dissolves over the layer one cycle grows",
      "1", "chem.still_fill_dissolves / chem.gypsum_layer_per_cycle; the cycle time cancels",
      tuple(dict.fromkeys(walls.LAYER + walls.STILL)), walls.still_margin),
-    ("chem.wall_loss_per_cycle", "Limestone lost in a cycle that starts with a bare wall",
+    ("chem.wall_loss_per_cycle", "Limestone lost in a cycle that starts bare and comes to gypsum saturation",
      "m", "w = x c V_gallery Vc / A_wall + d Vc / Vm; x = min(1, (s rho / c)^2)", walls.LOSS, walls.loss_per_cycle),
-    ("chem.wall_loss_ten_cycles", "Limestone lost in ten cycles if every fill strips the layer",
+    ("chem.wall_loss_ten_cycles", "Limestone lost in ten such cycles, every fill stripping the layer",
      "m", "10 x chem.wall_loss_per_cycle", walls.LOSS, lambda q: CYCLES * walls.loss_per_cycle(q)),
     ("chem.h2s_per_batch", "Hydrogen sulfide one full batch needs",
      "mol", "n = p V / (R T), a mole for each mole of sulfur dioxide", screening._SO2, feed.batch_moles),
@@ -166,7 +166,8 @@ def _s22(ledger, r):
         f"over the ranges of the inputs), and {100 * mixture.value:.0f} percent of a mixture that carries the oxygen "
         f"for all its sulfur. Nothing is pushed back only if air is under {100 * limit.value:.1f} percent of the gas "
         f"({100 * limit.high:.1f} percent at most), which brings oxygen for {100 * oxidisable.value:.1f} percent of "
-        "the sulfur; the hypothesis states no gas fraction and no stroke."
+        "the sulfur, while S14 to S17 carry air into the Gallery; the hypothesis states no gas fraction and no "
+        "stroke."
     )
 
 
@@ -188,8 +189,9 @@ def _s23(ledger, r):
         return status, head + (
             f"and water standing still for as long as the acid did dissolves {still.value:.1f} times the layer by "
             f"diffusion alone ({still.low:.1f} times at the least), so every fill strips it and every cycle starts "
-            f"on bare stone: {1e3 * ten.value / CYCLES:.2f} mm of wall per cycle and {1e3 * ten.value:.1f} mm in ten "
-            f"({1e3 * ten.low:.1f} to {1e3 * ten.high:.1f} mm over the ranges of the inputs). The outcome rests on "
+            f"on bare stone, which loses up to {1e3 * ten.value / CYCLES:.2f} mm per cycle and {1e3 * ten.value:.1f} "
+            f"mm in ten in bringing each batch to saturation ({1e3 * ten.low:.1f} to {1e3 * ten.high:.1f} mm over "
+            "the ranges of the inputs). The outcome rests on "
             "the layer being the diffusion-limited one of 03, not on the cycle time, which cancels for still water."
         )
     if status == "pass":
