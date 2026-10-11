@@ -75,16 +75,23 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 #hud .hud-card {
   position: fixed; left: 50%; bottom: 16px; z-index: 5; transform: translateX(-50%);
-  box-sizing: border-box; width: calc(100% - 32px); max-width: 720px; padding: 16px;
+  box-sizing: border-box; width: calc(100% - 32px); max-width: 720px; padding: 18px 20px;
   display: grid; gap: 12px; pointer-events: auto;
   color: var(--text);
-  background: rgba(21, 23, 26, 0.78);   /* display choice: dark glass; the text keeps 4.5:1 over a bright sky */
-  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-  border: 1px solid var(--line); border-radius: 12px;
+  /* display choice: dark glass; at 0.86 the muted text keeps 4.5:1 over the brightest interior */
+  background: rgba(21, 23, 26, 0.86);
+  -webkit-backdrop-filter: blur(16px) saturate(130%); backdrop-filter: blur(16px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 #hud .caption { max-height: 40vh; overflow-y: auto; overflow-wrap: break-word; }
-#hud .caption h2 { margin: 0 0 6px; font-size: 16px; line-height: 1.3; }
+#hud .caption h2 { margin: 0 0 6px; font-size: 20px; line-height: 1.3; letter-spacing: -0.01em; }
+#hud .caption .step-id {
+  display: block; margin-bottom: 2px; color: var(--accent);
+  font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+}
 #hud .caption p { margin: 0 0 6px; }
+#hud .caption .statement { font-size: 16px; line-height: 1.5; }
 #hud .verdict { display: flex; gap: 10px; align-items: flex-start; }
 #hud .verdict .basis { margin: 0; color: var(--muted); }
 #hud .badge {
@@ -92,18 +99,19 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #14161a;
 }
 
-#hud .strip { display: flex; gap: 2px; align-items: center; height: 16px; cursor: pointer; touch-action: none; }
+/* the strip is 24 px tall; the current tick (18 px and its 2 px ring) stays inside it */
+#hud .strip { display: flex; gap: 2px; align-items: center; height: 24px; cursor: pointer; touch-action: none; }
 #hud .tick {
-  flex: 1 1 0; min-width: 0; height: 6px; box-sizing: border-box;
+  flex: 1 1 0; min-width: 0; height: 8px; box-sizing: border-box;
   border: 1px solid transparent; border-radius: 2px;
 }
-#hud .tick.current { height: 16px; box-shadow: 0 0 0 1px var(--text); }
+#hud .tick.current { height: 18px; box-shadow: 0 0 0 2px var(--accent); }
 #hud .badge.status-pass, #hud .tick.status-pass { background: var(--pass); }
 #hud .badge.status-fail, #hud .tick.status-fail { background: var(--fail); }
 #hud .badge.status-conditional, #hud .tick.status-conditional { background: var(--conditional); }
 #hud .badge.status-pending, #hud .tick.status-pending { background: var(--pending); }
 #hud .badge.status-undefined, #hud .tick.status-undefined {
-  background: transparent; color: var(--undefined); border: 1px dashed var(--undefined);
+  background: transparent; color: var(--text); border: 1px dashed var(--undefined);   /* the dashed border is the mark */
 }
 
 #hud .controls { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -111,11 +119,21 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   font: inherit; color: var(--text); background: var(--raised);
   border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; cursor: pointer;
 }
+/* display choice: quiet controls in the muted colour; Play carries the accent; Fullscreen, Hide and Resume sit right */
+#hud .controls button { background: transparent; border-color: transparent; color: var(--muted); }
+#hud .controls button:hover:enabled { background: var(--raised); color: var(--text); }
+#hud .controls button[aria-label="Play"], #hud .controls button[aria-label="Pause"] { border-color: var(--accent); color: var(--text); }
+#hud .controls button[aria-label="Next step"] { margin-right: auto; }
 #hud button:disabled { opacity: 0.45; cursor: default; }
 #hud button:focus-visible, #hud .strip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 #hud .overlay { position: fixed; inset: 0; z-index: 6; display: grid; place-items: center; pointer-events: none; }
-#hud .overlay button { pointer-events: auto; padding: 12px 20px; font-size: 16px; border-color: var(--accent); }
+#hud .overlay button {
+  pointer-events: auto; padding: 14px 28px; font-size: 18px; border-color: var(--accent); border-radius: 999px;
+  background: rgba(21, 23, 26, 0.72);   /* display choice */
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  box-shadow: 0 0 0 1px var(--accent), 0 10px 40px rgba(0, 0, 0, 0.4);
+}
 
 /* phone width: the card spans the bottom edge, with its 16 px gutters inside */
 @media (max-width: 760px) {

@@ -17,12 +17,18 @@ function button(text, label, onClick) {
   return node;
 }
 
-export function mountCinematic(root, { store, cycle, claims, player, ride }) {
+const CARD_GUTTER = 16;   // display choice: the gap under the card in style.css, part of what it covers
+
+export function mountCinematic(root, { store, cycle, claims, player, ride, rendererApi }) {
   const steps = cycle.steps;
   const { starts } = timelineOf(cycle);
 
-  // ---- caption: the prologue shows the title and the notice, a step its claim and verdict
+  // ---- caption: the prologue shows the title and the notice, a step its claim and verdict.
+  // The step id sits in its own line above the title; the heading's text still reads "S07 Title".
+  const stepId = el('span', 'step-id');
+  const title = document.createTextNode('');
   const heading = el('h2');
+  heading.append(stepId, title);
   const statement = el('p', 'statement');
   const badge = el('span', 'badge');
   const basis = el('p', 'basis');
@@ -79,7 +85,7 @@ export function mountCinematic(root, { store, cycle, claims, player, ride }) {
   // ponytail: with the HUD hidden only the H key brings it back; V2's phone layout adds a touch control.
   const hideButton = button('Hide HUD', 'Hide HUD (H shows it again)', toggleHud);
   const controls = el('div', 'controls');
-  controls.append(backButton, playButton, nextButton, resumeButton, fullscreenButton, hideButton);
+  controls.append(backButton, playButton, nextButton, fullscreenButton, hideButton, resumeButton);   // Resume last: it comes and goes
 
   const card = el('div', 'hud-card');
   card.append(caption, strip, controls);
@@ -91,7 +97,9 @@ export function mountCinematic(root, { store, cycle, claims, player, ride }) {
   function renderStep({ stepIndex }) {
     const step = steps[stepIndex];   // undefined on the prologue (-1)
     const claim = step && claims.claims[step.id];
-    heading.textContent = step ? `${step.id} ${step.title}` : document.title;
+    stepId.textContent = step ? step.id : '';
+    stepId.hidden = !step;
+    title.textContent = step ? ` ${step.title}` : document.title;   // the space is collapsed at the line's start
     statement.textContent = step ? claim.statement : cycle.notice;
     verdict.hidden = !step;
     if (step) {
@@ -108,10 +116,25 @@ export function mountCinematic(root, { store, cycle, claims, player, ride }) {
   function renderPlaying({ stepIndex, playing }) {
     playButton.textContent = playing ? 'Pause' : 'Play';
     playButton.setAttribute('aria-label', playButton.textContent);
-    overlay.hidden = stepIndex !== -1 || playing;
+    hide(overlay, stepIndex !== -1 || playing);
   }
-  const renderRiding = ({ riding }) => { resumeButton.hidden = riding; };
-  const renderHud = ({ hud }) => { root.classList.toggle('hidden', !hud.visible); };
+  // A control that hides while it has the focus hands the focus to Play, so the keyboard keeps its place.
+  function hide(node, hidden) {
+    if (hidden && node.contains(document.activeElement)) playButton.focus();
+    node.hidden = hidden;
+  }
+  const renderRiding = ({ riding }) => hide(resumeButton, riding);
+  // The card covers the bottom of the stage; the renderer lifts the scene's centre above it (0 while hidden).
+  function fitInset() {
+    const height = card.offsetHeight;   // 0 while #hud is hidden
+    rendererApi.setInset(height ? height + CARD_GUTTER : 0);
+  }
+  const cardObserver = new ResizeObserver(fitInset);   // the caption's height changes with each step
+  cardObserver.observe(card);
+  function renderHud({ hud }) {
+    root.classList.toggle('hidden', !hud.visible);
+    fitInset();   // at once, not on the observer's next frame
+  }
 
   const unsubscribe = store.subscribe((state, previous, changed) => {
     if (changed.has('stepIndex')) renderStep(state);
@@ -142,6 +165,7 @@ export function mountCinematic(root, { store, cycle, claims, player, ride }) {
     const action = keys[key.length === 1 ? key.toLowerCase() : key];
     if (!action) return;
     event.preventDefault();   // Space would scroll the page
+    if (event.repeat && key === ' ') return;   // a held Space would flip play and pause on every repeat
     action();
   }
   window.addEventListener('keydown', onKey);
@@ -149,6 +173,8 @@ export function mountCinematic(root, { store, cycle, claims, player, ride }) {
   return {
     unmount() {
       unsubscribe();
+      cardObserver.disconnect();
+      rendererApi.setInset(0);
       window.removeEventListener('keydown', onKey);
       root.replaceChildren();
       root.classList.remove('hidden');

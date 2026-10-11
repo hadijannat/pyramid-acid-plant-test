@@ -92,7 +92,7 @@ async function boot() {
   stateParts.push(player.state);
 
   // ---- Task 8: the cinematic HUD
-  mountCinematic(document.getElementById('hud'), { store, cycle, claims, player, ride });
+  mountCinematic(document.getElementById('hud'), { store, cycle, claims, player, ride, rendererApi });
 
   rendererApi.start(frame);
   player.gotoId(url.stepId);   // url was read first at boot, before the player rewrote the hash

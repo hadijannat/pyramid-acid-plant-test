@@ -48,6 +48,8 @@ export function createRenderer(stage, store) {
   composer.addPass(new SMAAPass(1, 1));   // sized by composer.setSize in resize()
   composer.addPass(new OutputPass());
 
+  let inset = 0;   // pixels at the stage's bottom that the HUD card covers
+
   function resize() {
     const width = stage.clientWidth;
     const height = stage.clientHeight;
@@ -55,12 +57,32 @@ export function createRenderer(stage, store) {
     renderer.setSize(width, height);
     composer.setSize(width, height);
     labels.setSize(width, height);
+    project();
+  }
+
+  // The lens for the stage's size and the HUD's inset; the CSS2D labels share the camera, so they follow.
+  function project() {
+    const width = stage.clientWidth;
+    const height = stage.clientHeight;
+    if (!width || !height) return;
     camera.aspect = width / height;
     // A stage narrower than 5:4 (a phone) keeps the width of view of a 5:4 one by opening the
     // vertical angle, so a step's camera shows the same stretch of the passages on every screen.
     const half = Math.tan(THREE.MathUtils.degToRad(FOV / 2)) * Math.max(1, 1.25 / camera.aspect);
     camera.fov = THREE.MathUtils.radToDeg(2 * Math.atan(half));
+    // The window slides inset/2 down a picture of the stage's own size, so the scene's centre sits inset/2
+    // above the stage's centre, at the middle of what the card leaves free; scale and aspect are unchanged.
+    // ponytail: things in the lowest inset/2 of an authored frame still fall under the card; shrinking the
+    // whole frame into the free part (a setViewOffset with a smaller full picture) clears them at a scale cost.
+    if (inset > 0) camera.setViewOffset(width, height, 0, inset / 2, width, height);
+    else camera.clearViewOffset();
     camera.updateProjectionMatrix();
+  }
+
+  // The HUD calls this with its card's height (0 while hidden): the scene's centre moves above the card.
+  function setInset(bottomPx) {
+    inset = Math.max(0, bottomPx);
+    project();   // the canvas keeps its size: no render target is rebuilt
   }
   const observer = new ResizeObserver(resize);
   observer.observe(stage);
@@ -128,7 +150,7 @@ export function createRenderer(stage, store) {
     labels.domElement.remove();
   }
 
-  const api = { renderer, camera, controls, labels, scene, composer, resize, setQuality, start, measure, lastDt: 0, dispose };
+  const api = { renderer, camera, controls, labels, scene, composer, resize, setQuality, setInset, start, measure, lastDt: 0, dispose };
   setQuality(store.get().quality);
   return api;
 }
