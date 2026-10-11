@@ -59,12 +59,16 @@ def test_headline_numbers(results):
     assert results["chem.forced_back_least_air"].low == pytest.approx(0.289, abs=0.001)
     assert value("chem.gypsum_layer_per_cycle") == pytest.approx(3.67e-6, rel=0.005)
     assert value("chem.wall_loss_ten_cycles") == pytest.approx(10 * value("chem.wall_loss_per_cycle"))
-    # Still water against the layer of one cycle: fresh throughout 3.16 times (2.28 at the least), acid throughout
-    # 1.55 times (1.03 at the least). The most a batch can deposit: 4740 of 8580 mol, 5882 of 7736 mol at the most.
+    # A still fill against the layer of one cycle: 3.16 times at equal dwell; at the favourable corner 2.277 times,
+    # and a hundredth of that for the shortest dwell taken, 1e-4 of the acid's. It strips the layer from a dwell of
+    # 1 / 3.16^2 = 0.100 (1 / 2.277^2 = 0.193 at most). Still acid leaves 49 percent of the layer (7 to 61).
     assert value("chem.still_margin") == pytest.approx(3.161, abs=0.001)
-    assert results["chem.still_margin"].low == pytest.approx(2.277, abs=0.001)
-    assert value("chem.least_still_margin") == pytest.approx(1.548, abs=0.001)
-    assert results["chem.least_still_margin"].low == pytest.approx(1.029, abs=0.001)
+    assert results["chem.still_margin"].low == pytest.approx(0.02277, abs=0.00001)
+    assert value("chem.fresh_dwell_to_strip") == pytest.approx(0.1001, abs=0.0001)
+    assert results["chem.fresh_dwell_to_strip"].high == pytest.approx(1 / 2.277**2, abs=0.0005)
+    left = results["chem.layer_left_under_acid"]
+    assert (left.value, left.low, left.high) == pytest.approx((0.4905, 0.0740, 0.6101), abs=0.0001)
+    # The most a batch can deposit: 4740 of the 8580 mol a fill dissolves, 5882 of 7736 mol at the most.
     assert value("chem.deposit_over_fill") == pytest.approx(4740 / 8580, abs=0.001)
     assert results["chem.deposit_over_fill"].high == pytest.approx(5882 / 7736, abs=0.001)
     # 09 row 26: 13 320 mol; 07 section 4.4: 0.3475 t of hydrogen sulfide per tonne of sulfuric acid.
@@ -137,44 +141,44 @@ def test_s22_fails_on_the_nitrogen_and_otherwise_follows_the_pace_of_uptake(led)
 
 def test_s23_follows_what_a_fill_dissolves_against_the_layer_a_cycle_grows(led):
     status, basis = with_quantities(led, {})["S23"]
-    assert status == "fail"
+    assert status == "conditional"
     for text in ("neutralise 41 percent of the strongest batch", "reaches 3.7 micrometres in a cycle of 24 h",
                  "(0.1 to 74 micrometres over the ranges of the inputs)", "can dissolve 0.63 mm of gypsum, 173 times "
-                 "that layer (7.7 times at the least)", "still water dissolves 1.5 times the layer by diffusion alone "
-                 "even if it is acid of full strength from the first moment of the cycle, with all its sulfate "
-                 "counted against the gypsum (1.03 times at the least; 3.2 times if it stays fresh throughout)",
-                 "every cycle strips the layer", "loses up to 0.21 mm per "
-                 "cycle and 2.1 mm in ten in bringing each batch to saturation (1.6 to 4.9 mm",
-                 "does not rest on the cycle time, which cancels for still water, or on how long the water stays "
-                 "fresh, which the hypothesis does not state", "still water would not strip a thicker deposit",
-                 "is 55 percent of the gypsum one fresh fill can dissolve, 76 percent at most) and, at the least "
-                 "figure, on dissolved calcium sulfate diffusing no slower than 6.0e-10 m2/s, a value recalled and "
-                 "not sourced."):
+                 "that layer (7.7 times at the least); even the most gypsum a whole batch can lay down is 55 percent "
+                 "of what one fill dissolves (76 percent at most), so a fill that comes to saturation strips it",
+                 "loses up to 0.21 mm per cycle and 2.1 mm in ten in bringing each batch to saturation (1.6 to 4.9 mm",
+                 "A fill that stands still strips it by diffusion alone only if it stands at least 0.1 times as long "
+                 "as the acid stood (0.19 times at most). The hypothesis does not state that time; over the range "
+                 "taken, 0.0001 to 1 of the acid's, a still fill dissolves 0.023 to 23 times the layer.",
+                 "The acid of the next batch does not strip it: still acid dissolves it from outside while it grows "
+                 "from beneath and leaves 49 percent of it (7 to 61 percent).",
+                 "depends on how long the fresh water stands against the wall and on how it moves, neither of which "
+                 "the hypothesis states."):
         assert text in basis, basis
 
-    # The fail does not lean on the fresh water standing as long as the acid did. A layer twice as permeable at its
-    # fast end is 1.41 times thicker: water that stayed fresh for a whole cycle would still strip it at every corner
-    # (2.28 / 1.41 = 1.61 times), but water that is acid from the first moment would not (1.03 / 1.41 = 0.73), and
-    # how long the water stays fresh is not stated. The status must then be conditional, not fail.
-    fast, slow = 2 * 4.54e-14, 1.71e-15
-    twice = altered(led, {"chem.gypsum_h_diffusivity": (fast, slow, fast)})
-    results = chem.results(twice)
-    assert results["chem.still_margin"].low == pytest.approx(2.277 / 2**0.5, abs=0.001)
-    assert results["chem.least_still_margin"].low == pytest.approx(1.029 / 2**0.5, abs=0.001)
-    assert results["chem.least_still_margin"].low < 1 < results["chem.still_margin"].low
-    status, basis = chem.verdicts(twice, results)["S23"]
-    assert status == "conditional"
-    assert ("dissolves only 1.1 times the layer by diffusion alone (0.73 to 13 times over the ranges of the inputs; "
-            "2.2 times if it stays fresh throughout)") in basis
-    assert "how long it stays fresh, neither of which the hypothesis states." in basis
+    # The status follows the fresh water's dwell, which the hypothesis does not state. Taken as equal to the acid's,
+    # as the first pass took it without saying so, a still fill strips the layer at every corner and the claim fails.
+    status, basis = with_quantities(led, {"rx.fresh_dwell": fixed(1.0)})["S23"]
+    assert status == "fail"
+    for text in ("a fill that stands still dissolves 3.2 times the layer by diffusion alone (2.28 times at the least, "
+                 "over fresh-water dwells from 1 to 1 of the acid's, which the hypothesis does not state), so every "
+                 "fill strips it; every cycle then starts on bare stone", "still water would not strip a thicker "
+                 "deposit."):
+        assert text in basis, basis
+    # A quarter of the acid's time still strips it (2.277 / 2 = 1.14 at the least); 0.15 of it, under the 0.193 at
+    # which the favourable corner turns, does not (2.277 x sqrt(0.15) = 0.88), and the claim is no longer failed.
+    status, basis = with_quantities(led, {"rx.fresh_dwell": fixed(0.25)})["S23"]
+    assert status == "fail" and "(1.14 times at the least, over fresh-water dwells from 0.25 to 0.25" in basis
+    status, basis = with_quantities(led, {"rx.fresh_dwell": fixed(0.15)})["S23"]
+    assert status == "conditional" and "a still fill dissolves 0.88 to 8.9 times the layer" in basis
 
-    # A layer a hundred times more permeable at its fast end grows ten times thicker: still water no longer strips it.
-    fast = 4.54e-12
+    # A layer a hundred times more permeable at its fast end grows ten times thicker: a still fill would have to
+    # stand ten times as long as the acid to strip it.
+    fast, slow = 4.54e-12, 1.71e-15
     status, basis = with_quantities(led, {"chem.gypsum_h_diffusivity": (fast, slow, fast)})["S23"]
     assert status == "conditional"
-    assert ("dissolves only 0.15 times the layer by diffusion alone (0.1 to 13 times over the ranges of the inputs; "
-            "0.32 times if it stays fresh throughout)") in basis
-    assert "depends on how the water moves against the wall" in basis and "every cycle strips the layer" not in basis
+    assert "at least 10 times as long as the acid stood (19 times at most)" in basis
+    assert "leaves 93 percent of it (7 to 95 percent)" in basis and "so every fill strips it" not in basis
 
     # A layer thicker than any fill dissolves outlasts them all, and the criterion's second half stays open.
     status, basis = with_quantities(led, {"chem.gypsum_h_diffusivity": fixed(1e-6)})["S23"]
@@ -202,7 +206,7 @@ def test_the_package_decides_only_its_five_claims_and_merges_with_tier_0(led, re
     decided = chem.verdicts(led, results)
     assert set(decided) == {"S01", "E01", "S19", "S22", "S23"}
     assert {claim: status for claim, (status, _) in decided.items()} == {
-        "S01": "undefined", "E01": "undefined", "S19": "conditional", "S22": "fail", "S23": "fail"}
+        "S01": "undefined", "E01": "undefined", "S19": "conditional", "S22": "fail", "S23": "conditional"}
     for _, basis in decided.values():
         assert "—" not in basis and basis.endswith(".")
     simkit.write_results("chem", led, results, decided, {"assumptions": ["test"]}, root=tmp_path)
@@ -220,7 +224,7 @@ def test_the_viewer_shows_the_numbers_once_the_claims_gain_the_listed_inputs(led
     assert gained["S01"] == gained["E01"] == ["site.atm_pressure", "kc.volume", "chem.temperature", "rx.cycle_time",
                                               "rx.h2s_cave_air"]
     assert "rx.kg_gas" in gained["S19"] and "chem.henry_so2" not in gained["S19"]  # the claim already names it
-    assert "rx.henry_n2" in gained["S22"] and "rx.ion_diffusivity" in gained["S23"]
+    assert "rx.henry_n2" in gained["S22"] and {"rx.ion_diffusivity", "rx.fresh_dwell"} <= set(gained["S23"])
     claims = {id: dataclasses.replace(claim, depends_on=claim.depends_on + tuple(gained.get(id, ())))
               for id, claim in led.claims.items()}
     decided = chem.verdicts(led, results)

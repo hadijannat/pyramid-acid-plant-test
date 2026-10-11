@@ -4,9 +4,8 @@ import math
 
 import numpy as np
 import pytest
-from scipy.integrate import quad
+from scipy.integrate import solve_ivp
 from scipy.optimize import brentq
-from scipy.special import erfc
 
 from pyramid import ledger, screening
 from pyramid.chem import walls
@@ -64,7 +63,17 @@ def test_one_cycle_at_the_ledger_values(q):
     assert walls.loss_per_cycle(q) == pytest.approx(walls.bare_loss(q) + layer * 3.69 / 7.39, rel=1e-9)
 
 
-def test_still_water_dissolves_at_least_the_acid_only_figure_however_the_cycle_is_split(q):
+def test_a_still_fill_strips_the_layer_only_if_it_stands_long_enough(q):
+    # The margin goes as the root of the fresh water's dwell f: a quarter of the acid's time halves it.
+    assert walls.still_margin(q | {"rx.fresh_dwell": 0.25}) == pytest.approx(walls.still_margin(q) / 2, rel=1e-9)
+    # At equal dwell the fill dissolves 3.16 times the layer, so it just strips it at f = 1 / 3.16^2 = 0.100.
+    assert walls.dwell_to_strip(q) == pytest.approx(1 / 3.1614**2, rel=1e-4)
+    assert walls.still_margin(q | {"rx.fresh_dwell": walls.dwell_to_strip(q)}) == pytest.approx(1.0, rel=1e-9)
+    for dwell in (1e-4, 0.3):  # the threshold is the same whatever dwell the ledger holds
+        assert walls.dwell_to_strip(q | {"rx.fresh_dwell": dwell}) == pytest.approx(walls.dwell_to_strip(q), rel=1e-9)
+
+
+def test_still_acid_thins_a_layer_and_cannot_strip_it(q):
     c, s = 101325 * 320.4 / (8.314462618 * 293.15) / 573.0, 0.015 * 998.2  # 23.2 and 15.0 mol/m3
     # Gypsum into acid that holds c of sulfate and no calcium: x (c + x) = (s rho)^2, the positive root.
     x = (math.sqrt(c * c + 4 * s * s) - c) / 2
@@ -75,29 +84,30 @@ def test_still_water_dissolves_at_least_the_acid_only_figure_however_the_cycle_i
     assert walls.saturation_share(q) * c == pytest.approx(s * s / c, rel=1e-9)
     assert s * s / c == pytest.approx(9.64, rel=0.005) and walls.acid_takes(q) < s * s / c < s
 
-    diffusivity, day, molar_volume = 1e-9, 86400.0, 7.39e-5
-    reach = math.sqrt(diffusivity * day / math.pi)  # 5.24 mm
-    layer = walls.layer_per_cycle(q)  # 3.67 micrometres
-    assert walls.still_dissolves(q) == pytest.approx(2 * x * reach * molar_volume, rel=1e-9)
-    assert walls.still_dissolves(q) == pytest.approx(5.68e-6, rel=0.005)
-    assert walls.least_margin(q) == pytest.approx(5.68e-6 / 3.67e-6, rel=0.01)  # 1.55 times the layer
+    # dd/dt = a / (2 d) - b / (2 sqrt(t)): beneath, the acid that crosses the layer; outside, diffusion into still
+    # acid, which takes b sqrt(t) in all. From a bare start d = k sqrt(t) with k^2 + b k - a = 0.
+    day = 86400.0
+    a = 7.39e-5 * 4.54e-14 * 2 * c  # m2/s
+    b = 2 * x * math.sqrt(1e-9 / math.pi) * 7.39e-5  # m per root second
+    full = math.sqrt(a * day)  # the layer that grows undisturbed, 3.67 micrometres
+    assert b * math.sqrt(day) / full == pytest.approx(1.55, abs=0.005)  # alone, the acid would take 1.55 layers
+    left = (math.sqrt(b * b + 4 * a) - b) / 2 * math.sqrt(day) / full
+    assert left == pytest.approx(0.4905, abs=0.0005)
+    assert walls.left_under_acid(q) == pytest.approx(left, rel=1e-9)
 
-    # Fresh for the first third of the cycle: the wall concentration steps from s to x at t1, and the calcium
-    # in the water is the integral of s erfc(z / 2 sqrt(D t)) - (s - x) erfc(z / 2 sqrt(D (t - t1))) over z.
-    def profile(z):
-        return s * erfc(z / (2 * math.sqrt(diffusivity * day))) - (s - x) * erfc(
-            z / (2 * math.sqrt(diffusivity * day * 2 / 3)))
+    def rate(t, d):
+        return a / (2 * d) - b / (2 * math.sqrt(t))
 
-    in_the_water = quad(profile, 0.0, 0.1, epsabs=1e-12)[0]  # mol/m2; 0.1 m is ten diffusion lengths sqrt(D t)
-    assert walls.still_dissolves(q, fresh=1 / 3) == pytest.approx(in_the_water * molar_volume, rel=0.01)
-    assert walls.still_dissolves(q, fresh=1.0) == walls.still_fill_dissolves(q)
+    def end_and_least(thickness):  # integrated over a day from a microsecond in; tolerance 1 percent below
+        d = solve_ivp(rate, (1e-6, day), [thickness], method="LSODA", rtol=1e-10, atol=1e-18).y[0]
+        return d[-1] / full, d.min() / full
 
-    # Any spell as fresh water adds to what is dissolved, and the length of the cycle cancels against the layer.
-    margins = [walls.still_dissolves(q, share) / layer for share in (0.0, 0.01, 0.1, 0.5, 0.9, 1.0)]
-    assert margins == sorted(margins)
-    assert margins[0] == walls.least_margin(q) and margins[-1] == walls.still_margin(q)
-    for cycle in (3600.0, 365.25 * 86400.0):
-        assert walls.least_margin(q | {"rx.cycle_time": cycle}) == pytest.approx(walls.least_margin(q), rel=1e-9)
+    assert end_and_least(1e-9)[0] == pytest.approx(left, rel=0.01)  # a nanometre comes up to the same solution
+    ended, least = end_and_least(full)  # a whole cycle's layer is thinned to half and never near nothing
+    assert ended == pytest.approx(0.511, abs=0.005) and least == pytest.approx(0.418, abs=0.005)
+    # The length of the cycle cancels, and however much the acid takes a share of the layer stands.
+    assert walls.left_under_acid(q | {"rx.cycle_time": 3600.0}) == pytest.approx(left, rel=1e-9)
+    assert 0 < walls.left_under_acid(q | {"rx.ion_diffusivity": 1e-6}) < 0.03
 
 
 def test_counting_bisulfate_the_acid_takes_more_gypsum_than_fresh_water(led):
@@ -115,7 +125,7 @@ def test_counting_bisulfate_the_acid_takes_more_gypsum_than_fresh_water(led):
     assert counted(c, s, ka2) / s == pytest.approx(1.11, abs=0.005)
     assert walls.acid_takes(q) / s == pytest.approx(0.49, abs=0.005)
     # At every corner of the ranges the acid takes more than fresh water (1.10 to 1.16 times), and acid_takes less
-    # (0.45 to 0.58 times): the least that still water dissolves is a floor under both.
+    # (0.45 to 0.58 times). Taking more thins the layer further and still leaves a share of it standing.
     for corner in itertools.product(*(set(led.rng(i)) for i in ids)):
         q = dict(zip(ids, corner))
         c, s = walls._strength(q), walls._solubility(q)
@@ -150,3 +160,10 @@ def test_ten_cycles_strip_the_layer_each_time_and_keep_dissolving_the_wall(q):
     first = walls.bare_loss(thick)
     assert first < run["loss"][-1] < 2 * first
     assert walls.cycles(thick, "saturating")["after_fill"] == [0.0] * 10
+
+    # So does the ledger's own layer under a still fill that stands a hundredth as long as the acid, a tenth of
+    # the 0.100 at which it would be stripped: the fill takes 0.32 of a cycle's layer each time.
+    run = walls.cycles(q | {"rx.fresh_dwell": 0.01}, "still")
+    assert run["after_fill"][0] == pytest.approx((1 - 0.316) * walls.layer_per_cycle(q), rel=0.005)
+    assert all(b > a > 0 for a, b in zip(run["after_fill"], run["after_fill"][1:]))
+    assert walls.bare_loss(q) < run["loss"][-1] < 1.1 * walls.bare_loss(q)  # the wall is bare only once
