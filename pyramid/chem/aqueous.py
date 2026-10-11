@@ -138,5 +138,7 @@ def air_without_pushback(q) -> float:
 
 def sulfur_oxidisable(q, air: float) -> float:
     """Share of the sulfur dioxide that the oxygen of this share of air can oxidise."""
+    if air >= 1:  # no sulfur dioxide left to oxidise
+        return 1.0
     return min(1.0, q["chem.o2_fraction"] * air / (O2_PER_SO2 * (1 - air)))
 
