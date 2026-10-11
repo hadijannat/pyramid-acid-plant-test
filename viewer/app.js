@@ -7,6 +7,8 @@ import { createEnvironment } from './render/environment.js';
 import { createMaterials } from './render/materials.js';
 import { frameModel, loadModel } from './render/model.js';
 import { createActors } from './render/actors.js';
+import { createRide } from './tour/camera.js';
+import { createPlayer } from './tour/player.js';
 
 const message = document.getElementById('message');
 
@@ -79,8 +81,18 @@ async function boot() {
     environment.update(dt, model.contains(rendererApi.camera.position));
     materials.update(dt);
     model.setInterior(environment.mix.interior);
+    player.tick(dt);   // the clock; it updates the actors and the ride
   }
+
+  // ---- Task 7: the camera ride and the cycle clock
+  const ride = createRide(rendererApi.camera, rendererApi.controls, store);
+  const player = createPlayer({ store, cycle, actors, ride, claims });   // enters the prologue and sets the hash to '#'
+  Object.assign(window.viewer, { player, ride, camera: rendererApi.camera });
+  stateParts.push(player.state);
+
   rendererApi.start(frame);
+  player.gotoId(url.stepId);   // url was read first at boot, before the player rewrote the hash
+  window.addEventListener('hashchange', () => player.gotoId(readUrl(location).stepId));
 }
 
 boot().catch(error => {
