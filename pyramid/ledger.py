@@ -8,7 +8,9 @@ import yaml
 
 from pyramid import REPO_ROOT
 
-STATUSES: tuple[str, ...] = ("pass", "fail", "conditional", "undefined", "pending")
+# pending: no rule has decided the claim yet. not_testable: the claim's own criterion says no computation or
+# document can decide it (an analogy, an unnamed witness); the word was added on 2026-10-11.
+STATUSES: tuple[str, ...] = ("pass", "fail", "conditional", "undefined", "pending", "not_testable")
 
 UNITS: frozenset[str] = frozenset({
     # dimensionless, angle, sound level
@@ -22,6 +24,9 @@ UNITS: frozenset[str] = frozenset({
     "mol/m3/Pa", "mol2/m6/Pa",
     # electricity
     "A", "V", "V/m", "ohm m", "S/m", "F/m", "H/m", "C/N", "C/m2",
+    # added with the simulation packages (2026-10-11): rates, transport and circuit quantities
+    "1/s", "mol/s", "mol/m2/s", "mol/m3/s", "kg/s", "m/s2", "W/m/K", "W/m2/K", "J/m3/K", "kg/m/s",
+    "A/m2", "ohm", "S", "C", "1/m", "mol/m3/Pa/s", "1/K",
 })
 
 

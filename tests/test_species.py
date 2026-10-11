@@ -65,7 +65,7 @@ def test_produced_by_is_checked_against_the_steps_only_when_they_are_given(tmp_p
 
 
 MARKING = [("fail", "claimed"), ("undefined", "claimed"), ("conditional", "conditional"),
-           ("pass", "plain"), ("pending", "plain")]
+           ("pass", "plain"), ("pending", "plain"), ("not_testable", "plain")]
 
 
 def test_the_marking_cases_cover_every_verdict_word():
