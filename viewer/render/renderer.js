@@ -21,6 +21,9 @@ const FAR = 40000;  // display choice: metres, beyond the plateau's edge
 // away from the sun up to 2.6, so neither blooms, while the sun's disc and halo (above 5) do
 const BLOOM = { strength: 0.6, radius: 0.4, threshold: 3 };
 const MAX_DT = 0.1;   // seconds: a tab that was in the background resumes with a long gap
+// display choice: how far the scene moves up, as a fraction of the HUD card's inset (0.5 would centre the
+// frame in the free area; 0.75 lifts it further, so labels near the frame's bottom clear the card)
+const INSET_SHIFT = 0.75;
 
 export function createRenderer(stage, store) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
@@ -70,11 +73,12 @@ export function createRenderer(stage, store) {
     // vertical angle, so a step's camera shows the same stretch of the passages on every screen.
     const half = Math.tan(THREE.MathUtils.degToRad(FOV / 2)) * Math.max(1, 1.25 / camera.aspect);
     camera.fov = THREE.MathUtils.radToDeg(2 * Math.atan(half));
-    // The window slides inset/2 down a picture of the stage's own size, so the scene's centre sits inset/2
-    // above the stage's centre, at the middle of what the card leaves free; scale and aspect are unchanged.
-    // ponytail: things in the lowest inset/2 of an authored frame still fall under the card; shrinking the
-    // whole frame into the free part (a setViewOffset with a smaller full picture) clears them at a scale cost.
-    if (inset > 0) camera.setViewOffset(width, height, 0, inset / 2, width, height);
+    // The window slides down a picture of the stage's own size by INSET_SHIFT of the inset, so the scene's centre
+    // sits above the middle of what the card leaves free and labels authored near the frame's bottom clear the
+    // card; scale and aspect are unchanged.
+    // ponytail: the top INSET_SHIFT * inset pixels of an authored frame leave the stage; a frame authored near
+    // its top edge would need its keyframes moved, or the whole frame shrunk into the free part at a scale cost.
+    if (inset > 0) camera.setViewOffset(width, height, 0, INSET_SHIFT * inset, width, height);
     else camera.clearViewOffset();
     camera.updateProjectionMatrix();
   }
