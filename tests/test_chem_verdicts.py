@@ -17,13 +17,18 @@ def results(led) -> dict:
     return chem.results(led)
 
 
-def with_quantities(led, changes: dict[str, tuple[float, float, float]]):
-    """Verdicts after replacing (value, low, high) of some ledger quantities and recomputing every result."""
+def altered(led, changes: dict[str, tuple[float, float, float]]):
+    """The ledger with (value, low, high) of some quantities replaced."""
     quantities = dict(led.quantities)
     for id, (value, low, high) in changes.items():
         quantities[id] = dataclasses.replace(quantities[id], value=value, low=low, high=high)
-    altered = dataclasses.replace(led, quantities=quantities)
-    return chem.verdicts(altered, chem.results(altered))
+    return dataclasses.replace(led, quantities=quantities)
+
+
+def with_quantities(led, changes: dict[str, tuple[float, float, float]]):
+    """Verdicts after replacing some ledger quantities and recomputing every result."""
+    changed = altered(led, changes)
+    return chem.verdicts(changed, chem.results(changed))
 
 
 def fixed(value: float) -> tuple[float, float, float]:
@@ -54,6 +59,14 @@ def test_headline_numbers(results):
     assert results["chem.forced_back_least_air"].low == pytest.approx(0.289, abs=0.001)
     assert value("chem.gypsum_layer_per_cycle") == pytest.approx(3.67e-6, rel=0.005)
     assert value("chem.wall_loss_ten_cycles") == pytest.approx(10 * value("chem.wall_loss_per_cycle"))
+    # Still water against the layer of one cycle: fresh throughout 3.16 times (2.46 at the least), acid throughout
+    # 1.55 times (1.11 at the least). The most a batch can deposit: 4740 of 8580 mol, 5882 of 7736 mol at the most.
+    assert value("chem.still_margin") == pytest.approx(3.161, abs=0.001)
+    assert results["chem.still_margin"].low == pytest.approx(2.459, abs=0.001)
+    assert value("chem.least_still_margin") == pytest.approx(1.548, abs=0.001)
+    assert results["chem.least_still_margin"].low == pytest.approx(1.111, abs=0.001)
+    assert value("chem.deposit_over_fill") == pytest.approx(4740 / 8580, abs=0.001)
+    assert results["chem.deposit_over_fill"].high == pytest.approx(5882 / 7736, abs=0.001)
     # 09 row 26: 13 320 mol; 07 section 4.4: 0.3475 t of hydrogen sulfide per tonne of sulfuric acid.
     assert value("chem.h2s_per_batch") == pytest.approx(13320, rel=0.001)
     assert value("chem.h2s_mass_per_batch") / (value("chem.h2s_per_batch") * 0.09808) == pytest.approx(0.3475, abs=2e-4)
@@ -71,8 +84,17 @@ def test_s19_follows_the_capture_against_the_90_and_50_percent_lines(led):
     for text in ("a cycle of 24 h (the hypothesis states none; 1 h to 1 yr is taken as its range)",
                  "87 percent of the sulfur dioxide", "(0.1 to 97 percent over the ranges of the inputs)",
                  "neither always at the 90 percent", "could hold 98 percent at equilibrium",
-                 "gas-side coefficient 0.003 to 10 mm/s, assumed", "neither of which the hypothesis gives"):
+                 "gas-side coefficient 0.003 to 10 mm/s, assumed",
+                 "liquid-film coefficient 0.001 to 0.01 mm/s, assumed with no source",
+                 "none of which the hypothesis gives; the 87 percent is for a gas-side coefficient of 1.5 mm/s and a "
+                 "liquid-film coefficient of 0.01 mm/s."):
         assert text in basis, basis
+
+    # The liquid film alone moves the share across the 50 percent line, which is why the basis names it: at its
+    # slow end, a tenth of the ledger's value, a convecting gas and a one-day cycle give 23 percent, not 87.
+    slow_film = chem.results(altered(led, {"chem.kl_surface": fixed(1e-6), "rx.cycle_time": fixed(86400.0),
+                                           "rx.kg_gas": fixed(1.5e-3)}))["chem.capture_share"]
+    assert slow_film.value == pytest.approx(0.23, abs=0.01) and slow_film.high < 0.5
 
     # Convecting gas over stirred water for a day: 96 percent or more at every end of the ranges.
     stirred = {"rx.kg_gas": fixed(1e-2), "chem.kl_surface": fixed(1e-4), "rx.cycle_time": fixed(86400.0)}
@@ -94,7 +116,8 @@ def test_s22_fails_on_the_nitrogen_and_otherwise_follows_the_pace_of_uptake(led)
                  "outside air of S14 (39 percent at the least)", "push 33 percent of the gas back (29 to 37 percent",
                  "54 percent of a mixture", "under 2.0 percent of the gas (2.4 percent at most)",
                  "oxygen for 0.8 percent of the sulfur, while S14 to S17 carry air into the Gallery",
-                 "states no gas fraction and no stroke"):
+                 "states no gas fraction and no stroke. Taking the least air of a full stroke, not a gas without "
+                 "air, as the end most favourable to the hypothesis is a judgement call."):
         assert text in basis, basis
 
     # Were nitrogen as soluble as the gas space it leaves, nothing would have to go back, and the pace would decide.
@@ -102,11 +125,12 @@ def test_s22_fails_on_the_nitrogen_and_otherwise_follows_the_pace_of_uptake(led)
     status, basis = with_quantities(led, soluble)["S22"]
     assert status == "conditional"
     assert "1.1 times the rate at which the water displaces it (0.00042 to 6.1e+02 times" in basis
-    assert "depends on the cycle time and the stirring" in basis
+    assert "depends on the cycle time and the stirring" in basis and basis.endswith("is a judgement call.")
 
     stirred = {"rx.kg_gas": fixed(1e-2), "chem.kl_surface": fixed(1e-4), "rx.cycle_time": fixed(86400.0)}
     status, basis = with_quantities(led, soluble | stirred)["S22"]
     assert status == "pass" and "nothing is forced back at any end of the ranges" in basis
+    assert basis.endswith("is a judgement call.")
     # Fast uptake does not help while the nitrogen stays: the ledger's solubility with the same stirring still fails.
     assert with_quantities(led, stirred)["S22"][0] == "fail"
 
@@ -116,17 +140,38 @@ def test_s23_follows_what_a_fill_dissolves_against_the_layer_a_cycle_grows(led):
     assert status == "fail"
     for text in ("neutralise 41 percent of the strongest batch", "reaches 3.7 micrometres in a cycle of 24 h",
                  "(0.1 to 74 micrometres over the ranges of the inputs)", "can dissolve 0.63 mm of gypsum, 173 times "
-                 "that layer (7.7 times at the least)", "dissolves 3.2 times the layer by diffusion alone (2.5 times "
-                 "at the least)", "every fill strips it", "loses up to 0.21 mm per cycle and 2.1 mm in ten in bringing "
-                 "each batch to saturation (1.6 to 4.9 mm", "not on the cycle time"):
+                 "that layer (7.7 times at the least)", "still water dissolves 1.5 times the layer by diffusion alone "
+                 "even if it is acid of full strength from the first moment of the cycle (1.1 times at the least; 3.2 "
+                 "times if it stays fresh throughout)", "every cycle strips the layer", "loses up to 0.21 mm per "
+                 "cycle and 2.1 mm in ten in bringing each batch to saturation (1.6 to 4.9 mm",
+                 "does not rest on the cycle time, which cancels for still water, or on how long the water stays "
+                 "fresh, which the hypothesis does not state", "still water would not strip a thicker deposit",
+                 "is 55 percent of the gypsum one fresh fill can dissolve (76 percent at most)."):
         assert text in basis, basis
 
+    # The fail does not lean on the fresh water standing as long as the acid did. A layer twice as permeable at its
+    # fast end is 1.41 times thicker: water that stayed fresh for a whole cycle would still strip it at every corner
+    # (2.46 / 1.41 = 1.74 times), but water that is acid from the first moment would not (1.11 / 1.41 = 0.79), and
+    # how long the water stays fresh is not stated. The status must then be conditional, not fail.
+    fast, slow = 2 * 4.54e-14, 1.71e-15
+    twice = altered(led, {"chem.gypsum_h_diffusivity": (fast, slow, fast)})
+    results = chem.results(twice)
+    assert results["chem.still_margin"].low == pytest.approx(2.459 / 2**0.5, abs=0.001)
+    assert results["chem.least_still_margin"].low == pytest.approx(1.111 / 2**0.5, abs=0.001)
+    assert results["chem.least_still_margin"].low < 1 < results["chem.still_margin"].low
+    status, basis = chem.verdicts(twice, results)["S23"]
+    assert status == "conditional"
+    assert ("dissolves only 1.1 times the layer by diffusion alone (0.79 to 13 times over the ranges of the inputs; "
+            "2.2 times if it stays fresh throughout)") in basis
+    assert "how long it stays fresh, neither of which the hypothesis states." in basis
+
     # A layer a hundred times more permeable at its fast end grows ten times thicker: still water no longer strips it.
-    fast, slow = 4.54e-12, 1.71e-15
+    fast = 4.54e-12
     status, basis = with_quantities(led, {"chem.gypsum_h_diffusivity": (fast, slow, fast)})["S23"]
     assert status == "conditional"
-    assert "dissolves only 0.32 times the layer by diffusion alone (0.25 to 23 times" in basis
-    assert "depends on how the fresh water moves against the wall" in basis and "every fill strips it" not in basis
+    assert ("dissolves only 0.15 times the layer by diffusion alone (0.11 to 13 times over the ranges of the inputs; "
+            "0.32 times if it stays fresh throughout)") in basis
+    assert "depends on how the water moves against the wall" in basis and "every cycle strips the layer" not in basis
 
     # A layer thicker than any fill dissolves outlasts them all, and the criterion's second half stays open.
     status, basis = with_quantities(led, {"chem.gypsum_h_diffusivity": fixed(1e-6)})["S23"]

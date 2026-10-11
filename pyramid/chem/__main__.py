@@ -12,6 +12,7 @@ import numpy as np  # noqa: E402
 from pyramid import chem  # noqa: E402
 from pyramid.chem import aqueous, feed, transfer, walls  # noqa: E402
 from pyramid.ledger import Ledger, load  # noqa: E402
+from pyramid.screening import DAY  # noqa: E402
 from pyramid.simkit import RESULTS, write_results  # noqa: E402
 
 ASSUMPTIONS = [
@@ -29,8 +30,9 @@ ASSUMPTIONS = [
     "nitrogen and oxygen up to their solubility in water that arrives free of dissolved gas.",
     "S23: each cycle starts with fresh water; bare limestone neutralises acid until gypsum saturates, then a layer "
     "grows only as fast as acid diffuses through it, with the measured diffusivity of the ledger.",
-    "S23: a fill of fresh water dissolves gypsum up to its solubility, or at the least what diffusion alone carries "
-    "into still water in the time the acid stood.",
+    "S23: the water of the next cycle dissolves gypsum up to its solubility if it comes to saturation while fresh, "
+    "and at the least what diffusion alone carries into still water that is the strongest acid, free of calcium, "
+    "for the whole cycle; how long the water stays fresh is not stated, and any such spell dissolves more.",
     "S01 and E01: one mole of hydrogen sulfide per mole of sulfur dioxide, with no loss in the conversion.",
     "The oxidation follows the ledger's iron law and stops when the dissolved oxygen is used up; concentrations "
     "stand for activities.",
@@ -45,13 +47,13 @@ def _save(fig, path: Path) -> None:
 
 def _capture(q, ledger: Ledger, out: Path) -> dict:
     low, high = ledger.rng("rx.kg_gas")
-    coefficients = sorted({low, 1e-5, 1e-4, q["rx.kg_gas"], high})
+    coefficients = sorted({*np.geomspace(low, high, 4).tolist(), q["rx.kg_gas"]})  # the ledger's range and value
     fig, ax = plt.subplots(figsize=(7, 4.2))
     series = {}
     for k in coefficients:
         times, share = transfer.capture_series(q, k)
-        series[f"{k:g}"] = share.tolist()
-        ax.plot(times / chem.HOUR, 100 * share, label=f"{1e3 * k:g} mm/s")
+        series[f"{k:.3g}"] = share.tolist()
+        ax.plot(times / chem.HOUR, 100 * share, label=f"{1e3 * k:.2g} mm/s")
     for line, text in ((90, "passes from 90 percent"), (50, "fails below 50 percent")):
         ax.axhline(line, color="0.4", linestyle="--", linewidth=0.8)
         ax.annotate(text, (12.5, line + 1.5), fontsize=8, color="0.3")
@@ -92,8 +94,8 @@ def _layer(q, out: Path) -> dict:
         left = run["after_fill"][k]
     fig, (top, bottom) = plt.subplots(2, 1, figsize=(7, 5.6), sharex=True)
     top.plot(steps, 1e6 * np.array(layer), color="C0", label="gypsum layer")
-    top.axhline(1e6 * walls.still_fill_dissolves(q), color="C1", linestyle="--",
-                label="a still fill dissolves (diffusion alone)")
+    top.axhline(1e6 * walls.still_dissolves(q), color="C1", linestyle="--",
+                label="the least still water dissolves (acid throughout)")
     top.set(ylabel="micrometres", title="S23: gypsum layer and wall loss over ten cycles")
     top.annotate(f"a saturating fill dissolves {1e6 * walls.fill_dissolves(q):.0f} micrometres", (0.3, 8.5), fontsize=8)
     top.legend(fontsize=8, loc="center right")
@@ -109,15 +111,15 @@ def _feed(q, ledger: Ledger, out: Path) -> dict:
     flux = feed.batch_moles(q) / cycle
     air_per_mole = feed.cave_air_per_batch(q) / feed.batch_moles(q)  # m3 of cave air at the analogue's ceiling
     fig, ax = plt.subplots(figsize=(7, 4.2))
-    ax.loglog(cycle / 86400, flux, color="C0")
-    ax.plot([q["rx.cycle_time"] / 86400], [feed.flux(q)], "o", color="C0")
-    ax.annotate(f"one batch every {q['rx.cycle_time'] / chem.HOUR:.0f} h", (q["rx.cycle_time"] / 86400, feed.flux(q)),
+    ax.loglog(cycle / DAY, flux, color="C0")
+    ax.plot([q["rx.cycle_time"] / DAY], [feed.flux(q)], "o", color="C0")
+    ax.annotate(f"one batch every {q['rx.cycle_time'] / chem.HOUR:.0f} h", (q["rx.cycle_time"] / DAY, feed.flux(q)),
                 textcoords="offset points",
                 xytext=(8, 6), fontsize=8)
     ax.set(xlabel="cycle time, days", ylabel="hydrogen sulfide needed, mol/s",
            title="S01: required feed; 07 gives no measured seep flux to set against it")
     right = ax.secondary_yaxis("right", functions=(lambda f: f * air_per_mole, lambda v: v / air_per_mole))
-    right.set_ylabel("the same as cave air at 60 ppmv, m3/s")
+    right.set_ylabel(f"the same as cave air at {1e6 * q['rx.h2s_cave_air']:.0f} ppmv, m3/s")
     _save(fig, out / "figures" / "feed.png")
     return {"cycle_time_s": cycle.tolist(), "h2s_mol_per_s": flux.tolist(),
             "cave_air_m3_per_s": (flux * air_per_mole).tolist()}

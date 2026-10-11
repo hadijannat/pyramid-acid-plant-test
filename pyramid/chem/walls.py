@@ -28,6 +28,7 @@ LAYER = _SO2 + ("gg.volume", "chem.gypsum_h_diffusivity", "chem.gypsum_molar_vol
 FILL = ("chem.gypsum_solubility", "hydro.water_density", "gg.volume", "gg.wall_area", "chem.gypsum_molar_volume")
 STILL = ("chem.gypsum_solubility", "hydro.water_density", "rx.ion_diffusivity", "rx.cycle_time",
          "chem.gypsum_molar_volume")
+DEPOSIT = _SO2 + ("gg.volume", "chem.gypsum_solubility", "hydro.water_density")
 LOSS = LAYER + ("gg.wall_area", "chem.gypsum_solubility", "hydro.water_density", "chem.calcite_molar_volume")
 WALL = tuple(dict.fromkeys(LOSS + STILL))  # every input of the wall model, once
 H_PER_SULFUR = 2  # H2SO4 gives two hydrogen ions, and CaCO3 takes two: stoichiometry

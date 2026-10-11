@@ -44,14 +44,21 @@ QUANTITIES = [
      "m", "d = sqrt(Vm D C t); C = 2 n_SO2 / V_gallery", walls.LAYER, walls.layer_per_cycle),
     ("chem.fill_dissolves", "Gypsum layer one Gallery of fresh water dissolves in coming to saturation",
      "m", "d = s rho V_gallery Vm / A_wall", walls.FILL, walls.fill_dissolves),
-    ("chem.still_fill_dissolves", "Gypsum layer a still fill of fresh water dissolves by diffusion alone in one cycle",
+    ("chem.still_fill_dissolves", "Gypsum layer still water dissolves by diffusion alone if it stays fresh for a cycle",
      "m", "d = 2 s rho sqrt(D_w t / pi) Vm", walls.STILL, walls.still_fill_dissolves),
     ("chem.saturating_margin", "What a saturating fill dissolves over the layer one cycle grows",
      "1", "chem.fill_dissolves / chem.gypsum_layer_per_cycle", tuple(dict.fromkeys(walls.LAYER + walls.FILL)),
      walls.saturating_margin),
-    ("chem.still_margin", "What a still fill dissolves over the layer one cycle grows",
+    ("chem.still_margin", "What still water that stays fresh dissolves over the layer one cycle grows",
      "1", "chem.still_fill_dissolves / chem.gypsum_layer_per_cycle; the cycle time cancels",
      tuple(dict.fromkeys(walls.LAYER + walls.STILL)), walls.still_margin),
+    ("chem.least_still_margin", "The least still water dissolves, as acid for the whole cycle, over the layer it grows",
+     "1", "2 x sqrt(D_w t / pi) Vm / chem.gypsum_layer_per_cycle; x (c + x) = (s rho)^2, c = n_SO2 / V_gallery; the "
+     "cycle time cancels, and a spell as fresh water only adds",
+     tuple(dict.fromkeys(walls.LAYER + walls.STILL)), walls.least_margin),
+    ("chem.deposit_over_fill", "Most gypsum a whole batch can lay down over what one fresh fill dissolves",
+     "1", "max(0, c / (s rho) - 1): (c - s rho) V_gallery over s rho V_gallery", walls.DEPOSIT,
+     walls.deposit_over_fill),
     ("chem.wall_loss_per_cycle", "Limestone lost in a cycle that starts bare and comes to gypsum saturation",
      "m", "w = x c V_gallery Vc / A_wall + d Vc / Vm; x = min(1, (s rho / c)^2)", walls.LOSS, walls.loss_per_cycle),
     ("chem.wall_loss_ten_cycles", "Limestone lost in ten such cycles, every fill stripping the layer",
@@ -77,7 +84,8 @@ SHOWN = {
     "S22": ("chem.least_air", "chem.forced_back_least_air", "chem.forced_back_stoichiometric",
             "chem.air_without_pushback", "chem.sulfur_oxidisable_without_pushback", "chem.uptake_pace"),
     "S23": ("chem.gypsum_layer_per_cycle", "chem.fill_dissolves", "chem.still_fill_dissolves",
-            "chem.saturating_margin", "chem.still_margin", "chem.wall_loss_per_cycle", "chem.wall_loss_ten_cycles"),
+            "chem.saturating_margin", "chem.still_margin", "chem.least_still_margin", "chem.deposit_over_fill",
+            "chem.wall_loss_per_cycle", "chem.wall_loss_ten_cycles"),
 }
 SHOWN["E01"] = SHOWN["S01"]
 
@@ -116,16 +124,19 @@ def _s19(ledger, r):
     share, held = r["chem.capture_share"], r["chem.capture_equilibrium"]
     # The criterion's lines (03 section 4.4): pass from 90 percent, fail below 50 percent.
     status = three_way(share.low >= 0.90, share.high >= 0.50)
-    still, stirred = ledger.rng("rx.kg_gas")
+    (still, stirred), (slow, fast) = ledger.rng("rx.kg_gas"), ledger.rng("chem.kl_surface")
     head = (
         f"With the Gallery half full and {_cycle(ledger)}, {_percent(share.value)} percent of the sulfur dioxide "
         f"crosses the level surface into the water "
     )
     tail = (
-        f" The water could hold {100 * held.value:.0f} percent at equilibrium, so the rate decides, and it "
-        f"depends on the cycle time and on whether the gas over the water stands still or convects (gas-side "
-        f"coefficient {1e3 * still:.3f} to {1e3 * stirred:.0f} mm/s, assumed), neither of which the hypothesis "
-        "gives."
+        f" The water could hold {100 * held.value:.0f} percent at equilibrium, so the rate decides. It depends on "
+        "the cycle time, on whether the gas over the water stands still or convects (gas-side coefficient "
+        f"{1e3 * still:.3g} to {1e3 * stirred:.3g} mm/s, assumed) and on the film on the water's side of the surface "
+        f"(liquid-film coefficient {1e3 * slow:.3g} to {1e3 * fast:.3g} mm/s, assumed with no source), none of which "
+        f"the hypothesis gives; the {_percent(share.value)} percent is for a gas-side coefficient of "
+        f"{1e3 * ledger.q('rx.kg_gas'):.3g} mm/s and a liquid-film coefficient of "
+        f"{1e3 * ledger.q('chem.kl_surface'):.3g} mm/s."
     )
     if status == "pass":
         return status, head + (
@@ -155,6 +166,8 @@ def _s22(ledger, r):
         f"{ledger.q('kc.volume'):.0f} m3, so at least {100 * air.value:.0f} percent of the gas over the water is "
         f"the outside air of S14 ({100 * air.low:.0f} percent at the least). "
     )
+    call = (" Taking the least air of a full stroke, not a gas without air, as the end most favourable to the "
+            "hypothesis is a judgement call.")
     if status != "fail":
         return status, head + (
             f"Its nitrogen and unused oxygen can dissolve in the rising water, and the sulfur dioxide is taken up at "
@@ -163,7 +176,7 @@ def _s22(ledger, r):
         ) + ("so nothing is forced back at any end of the ranges."
              if status == "pass" else
              "so whether gas is forced back depends on the cycle time and the stirring, which the hypothesis does "
-             "not give.")
+             "not give.") + call
     return status, head + (
         "Its nitrogen hardly dissolves: if all the sulfur dioxide dissolved, the oxidation used every mole of "
         "oxygen it could and the water arrived free of dissolved gas, the rising water would still push "
@@ -173,16 +186,18 @@ def _s22(ledger, r):
         f"({100 * limit.high:.1f} percent at most), which brings oxygen for {100 * oxidisable.value:.1f} percent of "
         "the sulfur, while S14 to S17 carry air into the Gallery; the hypothesis states no gas fraction and no "
         "stroke."
-    )
+    ) + call
 
 
 def _s23(ledger, r):
     layer, fill = r["chem.gypsum_layer_per_cycle"], r["chem.fill_dissolves"]
-    saturating, still = r["chem.saturating_margin"], r["chem.still_margin"]
-    ten, share = r["chem.wall_loss_ten_cycles"], r["t0.gypsum_saturation_loss"]
+    saturating, fresh, least = r["chem.saturating_margin"], r["chem.still_margin"], r["chem.least_still_margin"]
+    ten, share, deposit = r["chem.wall_loss_ten_cycles"], r["t0.gypsum_saturation_loss"], r["chem.deposit_over_fill"]
     # The criterion as written: fail if the layer is stripped each cycle. The unfavourable end is a fill that comes
-    # to saturation (03 check V17), the favourable end a fill that stands still and dissolves by diffusion alone.
-    status = three_way(saturating.high < 1, still.low < 1)
+    # to saturation (03 check V17). The favourable end is still water that dissolves by diffusion alone and is the
+    # strongest acid from the first moment of the cycle, the least undersaturated the water can be. How long the
+    # water stays fresh the hypothesis does not say, and it does not enter: any spell as fresh water dissolves more.
+    status = three_way(saturating.high < 1, least.low < 1)
     head = (
         f"Fresh water lets bare limestone neutralise {100 * share.value:.0f} percent of the strongest batch before "
         f"gypsum can form (Tier 0), and the layer that then grows by acid diffusing through it reaches "
@@ -192,12 +207,16 @@ def _s23(ledger, r):
     )
     if status == "fail":
         return status, head + (
-            f"and water standing still for as long as the acid did dissolves {still.value:.1f} times the layer by "
-            f"diffusion alone ({still.low:.1f} times at the least), so every fill strips it and every cycle starts "
-            f"on bare stone, which loses up to {1e3 * ten.value / CYCLES:.2f} mm per cycle and {1e3 * ten.value:.1f} "
-            f"mm in ten in bringing each batch to saturation ({1e3 * ten.low:.1f} to {1e3 * ten.high:.1f} mm over "
-            "the ranges of the inputs). The outcome rests on "
-            "the layer being the diffusion-limited one of 03, not on the cycle time, which cancels for still water."
+            f"and still water dissolves {least.value:.1f} times the layer by diffusion alone even if it is acid of "
+            f"full strength from the first moment of the cycle ({least.low:.1f} times at the least; {fresh.value:.1f} "
+            "times if it stays fresh throughout), so every cycle strips the layer and starts on bare stone, which "
+            f"loses up to {1e3 * ten.value / CYCLES:.2f} mm per cycle and {1e3 * ten.value:.1f} mm in ten in bringing "
+            f"each batch to saturation ({1e3 * ten.low:.1f} to {1e3 * ten.high:.1f} mm over the ranges of the "
+            "inputs). The outcome does not rest on the cycle time, which cancels for still water, or on how long the "
+            "water stays fresh, which the hypothesis does not state and which only adds to what is dissolved. It "
+            "rests on the layer being the diffusion-limited one of 03: still water would not strip a thicker "
+            f"deposit, though the most a whole batch can lay down is {100 * deposit.value:.0f} percent of the gypsum "
+            f"one fresh fill can dissolve ({100 * deposit.high:.0f} percent at most)."
         )
     if status == "pass":
         # Judgement call: the criterion also asks for a wall loss the surviving surfaces allow, and the ledger
@@ -209,10 +228,11 @@ def _s23(ledger, r):
             "the ledger holds no measured bound on it."
         )
     return status, head + (
-        f"so a fill that comes to saturation strips it, but water standing still for as long as the acid did "
-        f"dissolves only {still.value:.2g} times the layer by diffusion alone ({still.low:.2g} to {still.high:.2g} "
-        "times over the ranges of the inputs), so whether the layer lasts depends on how the fresh water moves "
-        "against the wall, which the hypothesis does not say."
+        "so a fill that comes to saturation strips it, but still water that is acid of full strength from the first "
+        f"moment of the cycle dissolves only {least.value:.2g} times the layer by diffusion alone ({least.low:.2g} to "
+        f"{least.high:.2g} times over the ranges of the inputs; {fresh.value:.2g} times if it stays fresh "
+        "throughout), so whether the layer lasts depends on how the water moves against the wall and how long it "
+        "stays fresh, neither of which the hypothesis states."
     )
 
 
