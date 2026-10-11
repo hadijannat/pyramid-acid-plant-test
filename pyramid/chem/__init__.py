@@ -107,13 +107,18 @@ def _cycle(ledger: Ledger) -> str:
     )
 
 
+def _percent(share: float) -> str:
+    """A share as a percentage, with a decimal below one percent so that a small share does not print as none."""
+    return f"{100 * share:.0f}" if share >= 0.01 else f"{100 * share:.1f}"
+
+
 def _s19(ledger, r):
     share, held = r["chem.capture_share"], r["chem.capture_equilibrium"]
     # The criterion's lines (03 section 4.4): pass from 90 percent, fail below 50 percent.
     status = three_way(share.low >= 0.90, share.high >= 0.50)
     still, stirred = ledger.rng("rx.kg_gas")
     head = (
-        f"With the Gallery half full and {_cycle(ledger)}, {100 * share.value:.0f} percent of the sulfur dioxide "
+        f"With the Gallery half full and {_cycle(ledger)}, {_percent(share.value)} percent of the sulfur dioxide "
         f"crosses the level surface into the water "
     )
     tail = (
@@ -124,10 +129,10 @@ def _s19(ledger, r):
     )
     if status == "pass":
         return status, head + (
-            f"({100 * share.low:.0f} percent at the least), at least the 90 percent from which the criterion passes "
+            f"({_percent(share.low)} percent at the least), at least the 90 percent from which the criterion passes "
             "the claim."
         ) + tail
-    spread = f"({100 * share.low:.0f} to {100 * share.high:.0f} percent over the ranges of the inputs), "
+    spread = f"({_percent(share.low)} to {_percent(share.high)} percent over the ranges of the inputs), "
     if status == "fail":
         return status, head + spread + "below the 50 percent under which the criterion fails the claim." + tail
     return status, head + spread + (

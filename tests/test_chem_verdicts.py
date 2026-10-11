@@ -69,7 +69,7 @@ def test_s19_follows_the_capture_against_the_90_and_50_percent_lines(led):
     status, basis = with_quantities(led, {})["S19"]
     assert status == "conditional"
     for text in ("a cycle of 24 h (the hypothesis states none; 1 h to 1 yr is taken as its range)",
-                 "87 percent of the sulfur dioxide", "(0 to 97 percent over the ranges of the inputs)",
+                 "87 percent of the sulfur dioxide", "(0.1 to 97 percent over the ranges of the inputs)",
                  "neither always at the 90 percent", "could hold 98 percent at equilibrium",
                  "gas-side coefficient 0.003 to 10 mm/s, assumed", "neither of which the hypothesis gives"):
         assert text in basis, basis
@@ -83,7 +83,8 @@ def test_s19_follows_the_capture_against_the_90_and_50_percent_lines(led):
     # Still gas for an hour: a tenth of a percent at most.
     status, basis = with_quantities(led, {"rx.kg_gas": fixed(3e-6), "rx.cycle_time": fixed(3600.0)})["S19"]
     assert status == "fail"
-    assert "0 percent of the sulfur dioxide" in basis and "below the 50 percent under which" in basis
+    assert "0.1 percent of the sulfur dioxide crosses" in basis and "(0.1 to 0.1 percent" in basis
+    assert "below the 50 percent under which" in basis
 
 
 def test_s22_fails_on_the_nitrogen_and_otherwise_follows_the_pace_of_uptake(led):
