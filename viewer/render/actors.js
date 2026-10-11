@@ -174,6 +174,7 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
     });
     const points = keep(haze, new THREE.Points(geometry, material), geometry, material);
     points.frustumCulled = false;   // the particles move; the bounding sphere of their first positions is stale
+    points.renderOrder = 2;         // after the hazes (1): the opaque stripes of a claimed haze must not cover them
     clouds.push({ points, from, to, phase });
   }
 
