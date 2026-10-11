@@ -64,11 +64,20 @@ export function createRide(camera, controls, store) {
     controls.target.copy(target);
   }
 
+  // A press or a wheel turn hands the camera to the user, who keeps the pose they took: the drift stops too.
   function pause() {
     glide = null;
+    drifting = false;
+    controls.autoRotate = false;
+    // ponytail: the damping keeps the drift's momentum (about 7 m of coasting at the prologue's distance); this internal of the pinned
+    // three 0.170.0 stops it. If an upgrade renames it, spend it instead with one controls.update() with
+    // enableDamping off, then put the camera and the target back.
+    controls._sphericalDelta.set(0, 0, 0);
     setRiding(false);
   }
 
+  // Back onto the path. On the prologue the drift stays off after a resume until the player switches it on
+  // again (a step change, or a pause of the clock): the simplest honest behaviour.
   function resume() {
     if (riding) return;
     setRiding(true);
@@ -95,6 +104,7 @@ export function createRide(camera, controls, store) {
 
   controls.domElement.addEventListener('pointerdown', pause);
   controls.domElement.addEventListener('touchstart', pause, { passive: true });
+  controls.domElement.addEventListener('wheel', pause, { passive: true });   // a dolly is the user's too
 
   return { setPath, update, pause, resume, pose, drift, get riding() { return riding; } };
 }

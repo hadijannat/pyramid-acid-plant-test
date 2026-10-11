@@ -42,8 +42,12 @@ export function createPlayer({ store, cycle, actors, ride, claims }) {
     ride.drift(i < 0 && !playing);   // before setPath: the new path replaces the glide that ending a drift starts
     ride.setPath(entry.path, { from });
     store.set({ stepIndex: i, interior: entry.scene.interior, weather: entry.scene.weather });
+    setAddress(i < 0 ? '#' : '#' + entry.id);
+  }
+
+  function setAddress(hash) {
     try {
-      history.replaceState(null, '', i < 0 ? '#' : '#' + entry.id);
+      history.replaceState(null, '', hash);
     } catch {
       // browsers throttle rapid replacements while the strip is scrubbed (Safari throws); the next step catches up
     }
@@ -100,7 +104,9 @@ export function createPlayer({ store, cycle, actors, ride, claims }) {
 
   function gotoId(id) {
     const k = entries.findIndex(entry => entry.id === id);
-    goto(k > 0 ? k - 1 : -1);   // an unknown id (#S99, #foo, none) opens the prologue
+    if (k > 0) return goto(k - 1);
+    goto(-1);          // an unknown id (#S99, #foo, none) opens the prologue
+    setAddress('#');   // already on the prologue enter() does not run, so the unknown id would stay in the address
   }
 
   const state = () => ({ id: entries[index + 1].id, u: +u.toFixed(3), playing, t: +t.toFixed(3) });
