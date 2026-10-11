@@ -114,7 +114,7 @@ def pocket_share(q, level: float) -> float:
 
 def opening_depth(q) -> float:
     """Water over the top of the antechamber opening with the Gallery full to its roof: m."""
-    return q["gg.south_end.z"] + q["gg.height"] - q["ante.floor.z"] - q["ante.low_passage.height"]
+    return max(0.0, q["gg.south_end.z"] + q["gg.height"] - q["ante.floor.z"] - q["ante.low_passage.height"])
 
 
 STEPS = 512  # water levels between the roof and the opening's top; a test sets them against eight times as many
