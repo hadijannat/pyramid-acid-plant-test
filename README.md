@@ -1,6 +1,6 @@
 # Was the Great Pyramid a sulfuric-acid plant? A quantitative test
 
-[![tests](https://img.shields.io/badge/tests-515%20passed%20%C2%B7%201%20xfail-2ea44f)](#reproduce-everything)
+[![tests](https://img.shields.io/badge/tests-516%20passed%20%C2%B7%201%20xfail-2ea44f)](#reproduce-everything)
 [![python](https://img.shields.io/badge/python-3.12-3776ab)](pyproject.toml)
 [![solvers](https://img.shields.io/badge/solvers-open%20source%20only-555)](#roadmap)
 [![claim status](https://img.shields.io/badge/claims%20decided-71%20of%2071-orange)](results/summary/report.md)
@@ -8,9 +8,9 @@
 
 A neutral, reproducible test of Geoffrey Drumm's "Land of Chem" hypothesis: that the Great Pyramid of Giza ran as a chemical plant, pumping water up its passages, drawing sulfur dioxide through an "acoustic catalyst chamber", and making dilute sulfuric acid in the Grand Gallery, as presented on the Danny Jones podcast and two History Drops clips.
 
-![The viewer on step S06 of the claimed cycle: lightning strikes the flat top of the pyramid; the passages and chambers show through the masonry as a lit schematic, the sulfur dioxide the claim puts in the King's Chamber is marked as claimed, and the caption gives the claim, its verdict and the sentence that decides it](docs/figures/viewer-hero.jpg)
+![The viewer on step S06 of the claimed cycle: lightning strikes the flat top of the pyramid; the passages and chambers show through the masonry as a lit schematic, the sulfur dioxide the hypothesis puts in the King's Chamber is marked as claimed, and the caption gives the claim, its verdict and the opening of the sentence that decides it](docs/figures/viewer-hero.jpg)
 
-*The claimed cycle, step by step, in the [viewer](#viewer): every step shows the claim as stated, its verdict and the number that decides it. Animation of the claim, not a simulation result.*
+*The claimed cycle, step by step, in the [viewer](#viewer): every step shows the claim as stated, its verdict and the opening of the sentence that decides it (the whole on hover and in the report). Animation of the claim, not a simulation result.*
 
 The hypothesis asks for a simulation. This repository builds one, piece by piece, on three rules:
 
@@ -39,27 +39,42 @@ The rule is three-way and deliberately generous to the hypothesis: a claim **pas
 
 Six claims pass. One is a process step (S21, below). The other five are statements about the building or the record that the hypothesis cites, and the sources bear them out: air flowed when the southern King's Chamber shaft was cleared in 1837 (E10); the south passage of the Subterranean Chamber ends blind in rock, 16.41 m long (E15); the Queen's Chamber shaft mouths stayed closed by a plate of the wall stone until 1872 (E25); the 1978 analysis letter lists calcite, halite and gypsum (E26); and the muon image of 2017 shows a void at least 30 m long above the Gallery (E32).
 
+## Quick start
+
+Requires Python 3.12 and [uv](https://github.com/astral-sh/uv). Gmsh is installed as a Python wheel; no system packages are needed.
+
+```
+git clone https://github.com/hadijannat/pyramid-acid-plant-test.git
+cd pyramid-acid-plant-test
+uv sync
+uv run pytest -q                                  # 516 passed, 1 xfailed
+uv run python -m pyramid.summary                  # the verdict table, the verdict map, the figures and the report
+python3 -m http.server 8765 --directory viewer    # then open http://localhost:8765/
+```
+
+Every other result regenerates from the ledger with one command each ([Reproduce everything](#reproduce-everything)).
+
 ## The claimed cycle
 
-![The north-south elevation of the pyramid's interior with the 31 process steps placed at the spaces their claims name, each coloured by its verdict](results/summary/cycle-elevation.svg)
+![The north-south elevation of the pyramid's interior with the 23 process steps whose claims name a modelled space placed at the first one and the other eight set apart, each coloured by its verdict](results/summary/cycle-elevation.svg)
 
-*Each process step once, at the first space its claim names, on the interior as modelled from Petrie's 1883 survey. The steps outside the modelled interior (the plateau, the satellite pyramids, the summit) stand at the top right.*
+*Each process step once, at the first space its claim names, on the interior as modelled from Petrie's 1883 survey. The eight steps whose claims name no modelled space (S01, S02, S04, S05, S27 to S29, S31) stand at the top right.*
 
 The tables below follow the claimed cycle. Each row gives the number that decides the verdict; the full bases are in the [report](results/summary/report.md).
 
 <details>
-<summary><b>Water</b>: S08 to S13, E14, E17</summary>
+<summary><b>Water</b>: S08 to S13, S18, E14, E17</summary>
 
 | Claim | What the hypothesis claims | Verdict | The deciding number |
 |---|---|---|---|
-| S08 | Water is let into the Subterranean Chamber from a reservoir | conditional | The highest documented water stands 15 m (10 to 18) below the foot of the Descending Passage; an assumed reservoir must stand 51.5 m above the pavement to fill the Gallery by communicating vessels, and supply 866 m^3 (808 to 924) per fill |
+| S08 | Water is let into the Subterranean Chamber from a reservoir | conditional | The highest documented water stands 15 m (10 to 18) below the foot of the Descending Passage; an assumed reservoir must stand 51.5 m above the pavement to fill the Gallery by communicating vessels, and supply 866 m³ (808 to 924) per fill |
 | S09 | Water stands at reservoir level in the well shaft | conditional | No reservoir is evidenced; a pavement-level one leaves water 51.5 m below the Gallery roof |
 | S10 | A pump in the Descending Passage lifts the water | undefined | No actuator or seal is named; it would need 0.43 to 1.01 MN and hold 0.80 MPa |
 | S11 | The retracting pump draws water up from an aquifer | **fail** | Suction margin -5.9 m at the Old Kingdom flood peak, -0.4 m at the best documented level |
-| S12, S18 | Four strokes fill the Grand Gallery | conditional | 4.3 strokes (3.9 to 4.7) only if a stroke sweeps the whole passage; 5.9 to 6.7 otherwise |
+| S12, S18 | Four strokes fill the Grand Gallery | conditional | 4.3 strokes (3.9 to 4.7) only if a stroke sweeps the whole passage; 5.9 or 6.7 (5.4 to 7.3) otherwise |
 | S13 | The Gallery stands full of water while the King's Chamber holds the gas | **fail** | The water stands 8.5 m (8.3 to 8.6) above the antechamber floor and presses with 83 kPa, so an opening that passes gas passes water: it reaches the King's Chamber shaft mouths in 6 minutes (4 to 7) past slabs as loose as the surviving fragment |
-| E14 | Cadman's hydraulic-ram model shows the pump works | **fail** | One Gallery fill spills 2022 m^3 of drive water into a 300 m^3 chamber with no outfall |
-| E17 | Wet fill in the pit shows the aquifer was tapped | **fail** | The pit as built cleared the flood peak by 11.4 m; the 1837 shaft comes within 2.9 m of today's water table |
+| E14 | Cadman's hydraulic-ram model shows the pump works | **fail** | One Gallery fill spills 2022 m³ of drive water into a 300 m³ chamber with no outfall |
+| E17 | Wet fill in the pit shows the aquifer was tapped | **fail** | The pit as it stood before 1837 cleared the flood peak by 11.4 m; the 1837 shaft comes within 2.9 m of today's water table |
 
 ![Water level in the King's Chamber against time for three openings of the antechamber path, with the Gallery held full](results/flow/figures/s13_ingress.png)
 
@@ -75,7 +90,7 @@ The tables below follow the claimed cycle. Each row gives the number that decide
 | S01, E01 | Hydrogen sulfide rises under the plateau | undefined | One batch needs 454 kg of hydrogen sulfide; the hypothesis states no cycle rate, and no opened source gives a measured flux for any seep under the plateau |
 | S03 | Sulfur dioxide stays in the King's Chamber with its shafts open | conditional | By diffusion alone half the charge lasts 361 years (271 to 460); through the claimed gas path at the chamber's floor half is gone in about 69 minutes (41 at the fastest); the hypothesis states neither the wait nor what keeps the gas in |
 | S14 | The falling water draws outside air down the King's Chamber shafts | conditional | 60 % of the replacement gas comes down the shafts for a 1 h drain; 20 to 100 % over the drain times and joint widths taken, and 0 % if the antechamber path is shut |
-| S15, E12 | The four grooves carry the gas past the three slabs | conditional | Petrie's groove depths run out to between 0.0 and 5.1 mm at the doorway: a connected duct, 0.0021 m^2 at most, exists only in the reading that lets them reach it |
+| S15, E12 | The four grooves carry the gas past the three slabs | conditional | Petrie's groove depths run out to between 0.0 and 5.1 mm at the doorway: a connected duct, 0.0021 m² at most, exists only in the reading that lets them reach it |
 | S17 | The gases pass into the Gallery through the antechamber | conditional | 100 % of the displaced volume with gas-tight masonry; 78 % (38 to 100 %) with leaking joints, reaching the criterion's 90 % with joints tighter than about 0.11 mm (0.04 to 0.24) |
 | S22 | No gas is pushed back as the water rises again | **fail** | At least 44 % of the gas over the water (39 % at the least over the ranges) is outside air, whose nitrogen hardly dissolves: 33 % (29 to 37 %) of the gas is pushed back even if all the sulfur dioxide dissolves |
 
@@ -90,14 +105,14 @@ The tables below follow the claimed cycle. Each row gives the number that decide
 
 | Claim | What the hypothesis claims | Verdict | The deciding number |
 |---|---|---|---|
-| S16 | Sulfur dioxide becomes trioxide in the antechamber | **fail** | Uncatalysed lifetime 8.8 billion years; converted fraction at most 9 x 10^-14 |
+| S16 | Sulfur dioxide becomes trioxide in the antechamber | **fail** | Uncatalysed lifetime 8.8 billion years; converted fraction at most 9 x 10⁻¹⁴ |
 | S19 | The sulfur dioxide dissolves in the Gallery water | conditional | 87 % crosses the surface if the gas stands over the water for a 24 h cycle, 9 % in the 1 h the ledger carries for one fill; 0.1 to 97 % over the cycle times and film coefficients taken, none of which the hypothesis states |
 | S20 | Sulfurous acid is oxidised quickly to sulfuric acid | **fail** | One day's oxygen oxidises 2.5 % (2.1 to 2.8 %) of a batch |
 | S21 | Staged filling prevents boil-over | **pass** | The worst fill warms by 7.3 K, leaving 72.7 K to boiling (62.3 K at the least) |
 | S23 | A calcium sulfate layer forms on the walls and stops further attack | conditional | The layer grows to 3.7 micrometres in a 24 h cycle (0.1 to 74); one fill of fresh water can dissolve 0.63 mm of gypsum, 173 times that, so whether it lasts turns on how long the fresh water stands, which the hypothesis does not state |
 | E29 | A gypsum coat protects the limestone walls | conditional | Bare limestone neutralises 41 % (32 to 77 %) of a batch before gypsum can saturate |
 | S24 | The Big Void is a heat exchanger for the reaction | **fail** | A full batch warms the Gallery water by 1.8 K (2.0 K at most) |
-| S27 | Dilute acid and salt give hydrogen chloride in Khafre's pyramid | **fail** | HCl partial pressure 1.2 x 10^-7 atm, against a 10^-5 atm fail line |
+| S27 | Dilute acid and salt give hydrogen chloride in Khafre's pyramid | **fail** | HCl partial pressure 1.2 x 10⁻⁷ atm, against a 10⁻⁵ atm fail line |
 | S30 | The acid is strong enough for leaching and metallurgy | conditional | Ceiling 0.023 mol/L (0.026 at most), below the 0.05 mol/L pass line at any gas fraction |
 
 ![Thickness of the gypsum layer and the limestone lost over ten fill and drain cycles](results/chem/figures/layer.png)
@@ -111,9 +126,9 @@ The tables below follow the claimed cycle. Each row gives the number that decide
 
 | Claim | What the hypothesis claims | Verdict | The deciding number |
 |---|---|---|---|
-| S04 | Ground currents build a field at the top and in the granite | **fail** | 0.04 V/m in the King's Chamber granite at the most, 8.8 orders of magnitude below the 2.7 x 10^7 V/m at which a single-pulse piezoelectric chain first reaches a documented acoustic effect, and 7.7 below the 2.1 x 10^6 V/m of the sustained chain of S07, each with every input at its generous end |
+| S04 | Ground currents build a field at the top and in the granite | **fail** | 0.04 V/m in the King's Chamber granite at the most, 8.8 orders of magnitude below the 2.7 x 10⁷ V/m at which a single-pulse piezoelectric chain first reaches a documented acoustic effect, and 7.7 below the 2.1 x 10⁶ V/m of the sustained chain of S07, each with every input at its generous end |
 | E21 | Ore deposits concentrate the ground current | **fail** | Sheets of the most conductive hematite measured give 2.3 times the far field (0.4 to 4.2), against 2.2 without them: 0.08 V/m at the most |
-| S06 | Lightning charges the granite | **fail** | A 30 kA stroke puts 4.3 kV/m in the granite; the favourable corner, 200 kA in the most resistive masonry measured, gives 88 kV/m, 303 times short of what the single-pulse chain needs (2.7 x 10^7 V/m, itself 8.9 times the field at which air breaks down) and 23 times short of the sustained chain of S07 |
+| S06 | Lightning charges the granite | **fail** | A 30 kA stroke puts 4.3 kV/m in the granite; the favourable corner, 200 kA in the most resistive masonry measured, gives 88 kV/m, 303 times short of what the single-pulse chain needs (2.7 x 10⁷ V/m, itself 8.9 times the field at which air breaks down) and 23 times short of the sustained chain of S07 |
 | E22 | The granite stores the storm's field | **fail** | Charge relaxes in 5.3 ms (21 ms at most); limestone in 31 ns; storm fields change over seconds |
 | S07 | The granite leaf emits ultrasound when the field drives it | **fail** | 76 dB (158 dB with every input at its generous end) against 190 dB to cavitate a wet film |
 | E18 | Ultrasound can double a gas reaction rate | conditional | 1.4 to 2.3 times at 172 dB, the strongest airborne ultrasound engineered, depending on the barrier |
@@ -128,7 +143,7 @@ The tables below follow the claimed cycle. Each row gives the number that decide
 
 ![Intensity in the King's Chamber against the conductivity of the masonry, for the study's pyramid and for the surveyed one on ground](results/em/figures/kings_chamber_against_conductivity.png)
 
-*E19: the intensity in the King's Chamber against the conductivity of the masonry. The line is the criterion's 2; the masonry measured in place lies between 6.7 x 10^-4 and 3.3 x 10^-3 S/m. The squares, at a 1 m cell, decide; the curves, at a 2.5 m cell, show the trend and decide nothing. Both solvers first reproduce the study's free-space extinction peaks at 333 m and 230 m (the solvers give 336 m and 230 m, within 1.1 % in wavelength and 5 % in extinction); the time-domain solver, the one that carries a ground, gives the on-ground maximum at 247 m, 1.2 % off in wavelength and 13.7 % in extinction.*
+*E19: the intensity in the King's Chamber against the conductivity of the masonry. The line is the criterion's 2; the masonry measured in place lies between 6.7 x 10⁻⁴ and 3.3 x 10⁻³ S/m. The squares, at a 1 m cell, decide; the curves, at a 2.5 m cell, show the trend and decide nothing. Both solvers first reproduce the study's free-space extinction peaks at 333 m and 230 m (the solvers give 336 m and 230 m, within 1.1 % in wavelength and 5 % in extinction); the time-domain solver, the one that carries a ground, gives the on-ground maximum at 247 m against the study's 250 m, 1.2 % off in wavelength and 13.7 % in extinction.*
 
 </details>
 
@@ -137,7 +152,7 @@ The tables below follow the claimed cycle. Each row gives the number that decide
 
 | Claim | What the hypothesis claims | Verdict | The deciding number |
 |---|---|---|---|
-| S28, S29, E38 | Iron-oxide veins wire the plateau | conditional | Needs a conductivity contrast of 2.7 x 10^5; the best measured hematite reaches 3.3 x 10^4 in 100 ohm m rock and 1.0 x 10^6 in the most resistive rock; no Giza vein has been measured |
+| S28, S29, E38 | Iron-oxide veins wire the plateau | conditional | Needs a conductivity contrast of 2.7 x 10⁵; the best measured hematite reaches 3.3 x 10⁴ in 100 ohm m rock and 1.0 x 10⁶ in the most resistive rock; no Giza vein has been measured |
 | S31 | The cycle is paced by storms | undefined | At most 0.12 direct strikes per year; the hypothesis states no cycle rate |
 
 </details>
@@ -151,26 +166,11 @@ Of the 27 claims decided from the documentary register, 2 pass, 8 fail, 7 are co
 
 ### What the conditional verdicts turn on
 
-Twenty-five verdicts are conditional. Thirteen of them are process steps, and most of those turn on a quantity the hypothesis leaves unstated; stating it would let the same code decide the claim: the level, volume and inlet of the reservoir (S08, S09); the stroke of the pump (S12, S18); the wait between delivery and draw, and what keeps the gas in the chamber (S03); the drain rate of the Gallery and how its masonry is made gas-tight (S14, S17); the cycle time, and whether the gas over the water stands still or convects (S19); how long fresh water stands against the walls (S23); the gas fraction of a batch (S30). The others turn on a measurement nobody has made: whether the antechamber grooves reach the doorway (S15, E12), and the conductivity of an iron-oxide vein at Giza (S28, S29, E38). The ten other conditional evidence claims are documentary: five that the sources partly support (E04, E28, E33, E35, E39), two that wait on a measurement nobody has made (E30, the pitting of the Queen's Chamber; E37, a four-point measurement along a vein), one that rests on a plate known only through a later citation (E11), and two that turn on the range of an input (E18 on the reaction's barrier, E29 on whether a coat is already in place).
+Twenty-five verdicts are conditional. Thirteen of them are process steps, and most of those turn on a quantity the hypothesis leaves unstated; stating it would let the same code decide the claim: the level, volume and inlet of the reservoir (S08, S09); the stroke of the pump (S12, S18); the wait between delivery and draw, and what keeps the gas in the chamber (S03); the drain rate of the Gallery and how its masonry is made gas-tight (S14, S17); the cycle time, and whether the gas over the water stands still or convects (S19); how long fresh water stands against the walls (S23); the gas fraction of a batch (S30). The others turn on a measurement nobody has made: whether the antechamber grooves reach the doorway (S15, E12), and the conductivity of an iron-oxide vein at Giza (S28, S29, E38). Of the ten other conditional evidence claims, seven come from the documentary register: five that the sources partly support (E04, E28, E33, E35, E39) and two that wait on a measurement nobody has made (E30, the pitting of the Queen's Chamber; E37, a four-point measurement along a vein). E11 comes from the survey record: the shaft exits lie inside the criterion's 80 ± 1 m at the surveyed values and not over their ranges, and a level outer end is known only through a later citation of an unread plate. Two are Tier 0 calculations: E18 turns on the reaction's barrier, and for E29 59 % of a batch (23 to 68 % over the ranges) survives bare limestone, between the criterion's 20 % and 80 % lines.
 
 ## What the evidence says the structure was for
 
 [research/10-process-gaps-and-purpose.md](research/10-process-gaps-and-purpose.md) lists, subsystem by subsystem, what the claimed process would still need (a water source at the inlet level, a head source, a pump, an oxidation mechanism, an oxygen supply, a sulfur feed, gas containment, surviving walls) and sets each against the evidence, with status words that distinguish *not evidenced*, *contradicted by measurement*, *physically excluded* and *unknown*. Its conclusion, stated no further than the sources go: the pyramid was built in Khufu's reign, bears his name, and was built by an organised workforce housed on site (Merer's logbook, read at source); it carries what the sources name as the furnishings of a royal funerary complex; the evidence base holds no positive evidence of an industrial purpose, every trace offered as diagnostic of acid has a documented non-acid source or no analysis, and the one test that could discriminate, sulfur isotopes of the chamber gypsum against mortar and bedrock, has never been run.
-
-## Quick start
-
-Requires Python 3.12 and [uv](https://github.com/astral-sh/uv). Gmsh is installed as a Python wheel; no system packages are needed.
-
-```
-git clone https://github.com/hadijannat/pyramid-acid-plant-test.git
-cd pyramid-acid-plant-test
-uv sync
-uv run pytest -q                                  # 515 passed, 1 xfailed
-uv run python -m pyramid.summary                  # the verdict table, the verdict map, the figures and the report
-python3 -m http.server 8765 --directory viewer    # then open http://localhost:8765/
-```
-
-Every other result regenerates from the ledger with one command each ([Reproduce everything](#reproduce-everything)).
 
 ## How it is built
 
@@ -197,6 +197,9 @@ flowchart LR
   - [`pyramid/chem/`](pyramid/chem/): two-film transfer across the Gallery's free surface, sulfur(IV) speciation and iron-catalysed oxidation limited by oxygen, the gas the rising water must displace, calcite attack and a gypsum layer over ten fill and drain cycles, and the hydrogen sulfide a batch needs.
   - [`pyramid/electro/`](pyramid/electro/): a three-dimensional steady conduction solver (finite volumes) for a ground current over conductive sheets and for a lightning stroke at the summit, the field the piezoelectric and acoustic chain needs, and the modes of the three rooms.
   - [`pyramid/em/`](pyramid/em/): the cases of the 2018 electromagnetic study in two independent solvers written for this project in numpy and scipy, a volume-integral (coupled-dipole) solver in the frequency domain and a finite-difference solver in the time domain, both gated by the Mie series for a sphere.
+- **Verdicts** ([`pyramid/verdicts.py`](pyramid/verdicts.py), [`pyramid/summary.py`](pyramid/summary.py)): one verdict per claim. Tier 0 verdicts stand; a package decides only claims Tier 0 left pending, and the merge is an error if two sources decide the same claim, so a verdict never changes silently. The table, the verdict map, the figures above and the report are generated from the merge.
+- **Geometry** ([`pyramid/geometry/`](pyramid/geometry/)): a parametric model of the interior from Petrie's survey, with nine variant switches for readings the sources leave open, self-checks against ledger volumes, and exporters for field solvers (STEP; the Gmsh msh export works for the study's model and is the suite's one expected failure for the surveyed one) and the viewer (glTF). A second model reproduces the simplified geometry of Balezin et al. (2018), the electromagnetic study the hypothesis cites.
+- **Viewer** ([`viewer/`](viewer/)): a full-screen three.js scene that tours the 31 steps of the cycle exactly as claimed, with each step's claim, verdict and deciding sentence in a caption, and the compounds the hypothesis names inside the modelled interior labelled in the spaces it puts them in; products of steps that fail or are undefined are marked *claimed*. Mechanisms the hypothesis leaves unspecified are drawn as dashed, labelled placeholders. The inspector, with the deciding numbers of each step and space, comes with the next plan. A fixed notice reads: *Animation of the claim. Not a simulation result.*
 - **Provenance**: every generated file under `results/` and `viewer/data/` carries a manifest with the commit, the ledger digest and library versions. Tests fail if a committed result was generated from a different ledger than the one in the tree (the field package's results stay valid while the ledger lines it reads are unchanged); they recompute the verdicts of every package but the field solvers and the numbers of the four fast ones, the verdict table and the viewer's claims, and compare the three summary figures and the figure under `docs/figures/` byte for byte with a fresh render.
 
 <details>
@@ -248,7 +251,7 @@ python3 -m http.server 8765 --directory viewer
 
 Then open http://localhost:8765/. three.js 0.170.0 loads from the jsDelivr CDN, so the page needs a network connection and a browser with WebGL 2; nothing is installed.
 
-![The viewer inside the masonry on step S13: the Grand Gallery full of water, drawn as a lit schematic through dark glass, with the gas labelled in the King's Chamber and the caption's verdict below](docs/figures/viewer-interior.jpg)
+![The viewer inside the masonry on step S13: the Grand Gallery being drained from full, drawn as a lit schematic through dark glass, with the gas labelled in the King's Chamber and the caption's verdict below](docs/figures/viewer-interior.jpg)
 
 The page is one full-screen scene. From outside, the pyramid stands on a plain sand plateau under a sky. On the steps that act inside the stone, the masonry turns to dark glass and the passages and chambers show through it as a lit schematic; the plateau fades, and the sky behind the glass darkens, only while the camera is inside the masonry. *Play the claimed cycle* flies in from far outside, then rides a camera path through each of the 31 claimed steps: water rises and falls in the spaces the claim names, gases light up the chambers they pass through, and a storm sky appears only on the two steps whose claim states a storm (S05 and S06), with the lightning strike on the top in S06. The water and gases in each space carry the formulas of the compounds the hypothesis names for them and take those compounds' colours; a product of a step whose verdict is fail or undefined is drawn hatched and labelled *(claimed)*, and the calcium sulfate coat of S23 is drawn as a faint film with its edges outlined. Mechanisms the hypothesis leaves unspecified (the pump, the valves, the reservoir, the drains) are dashed, labelled boxes. A caption gives each step's claim as stated, its verdict and the sentence that decides it, above a strip of 31 ticks coloured by verdict. A fixed notice reads: *Animation of the claim. Not a simulation result.*
 
@@ -263,7 +266,7 @@ The page is one full-screen scene. From outside, the pyramid stands on a plain s
 | I | the inspector (next plan; does nothing yet) |
 | pointer on the scene | orbit; this pauses the ride, and *Resume ride* rejoins it |
 
-Deep links: `#S16` opens that step; `?t=34.3` opens the tour paused that many seconds in (the images on this page are captured that way, in a headless browser at 1600 x 900); any other fragment opens the prologue. `?quality=low`, `?quality=medium` or `?quality=high` fixes the rendering tier (pixel ratio, shadows, bloom, gas particles); without it the page times two seconds of frames and picks one. A tier set from the browser console with `viewer.store.set({quality: 'high'})` is remembered in that browser. With the system setting for reduced motion, steps cut instead of flying. `viewer.state()` in the console summarises what the scene shows.
+Deep links: `#S16` opens that step; `?t=34.3` opens the tour paused that many seconds in, counted from the start of the prologue, held to the tour's length and overriding a step fragment (the two viewer images on this page are captured that way, in a headless browser at 1600 x 900); any other fragment opens the prologue. `?quality=low`, `?quality=medium` or `?quality=high` fixes the rendering tier (pixel ratio, shadows, bloom, gas particles); without it the page times two seconds of frames and picks one. A tier set from the browser console with `viewer.store.set({quality: 'high'})` is remembered in that browser. With the system setting for reduced motion, steps cut instead of flying. `viewer.state()` in the console summarises what the scene shows.
 
 The inspector (step and space cards with the deciding numbers, layers, a cutaway, the chemistry legend and the reaction equations), Results mode for the process model's output, the phone layout polish, and a public URL come with the next plan ([design](docs/superpowers/specs/2026-10-10-cinematic-viewer-design.md)).
 
@@ -292,7 +295,7 @@ Open-source tools only: numpy, scipy, Gmsh and three.js today, MEEP and FEniCSx 
 
 If you use this test, its ledger or its results, cite the repository ([CITATION.cff](CITATION.cff)):
 
-> Jannatabaadi, M. (2026). *Was the Great Pyramid a sulfuric-acid plant? A quantitative test* (version 1.0) [software]. https://github.com/hadijannat/pyramid-acid-plant-test
+> Jannatabaadi, M. (2026). *Was the Great Pyramid a sulfuric-acid plant? A quantitative test* [software]. https://github.com/hadijannat/pyramid-acid-plant-test
 
 Licensed under the [MIT License](LICENSE). The cited sources keep their own rights; transcripts of the source videos are not redistributed.
 
