@@ -1,7 +1,7 @@
 {
   "case": "em",
-  "timestamp": "2026-10-12T04:35:47+00:00",
-  "commit": "af2ae1fe3264bbed1a294dc51581c6af5468f65c",
+  "timestamp": "2026-10-12T04:42:51+00:00",
+  "commit": "7a9884199b6a74a3de4b9a8a10a7eda97dcd7181",
   "ledger": "047e50229caf4b6b69e88337948e08553d335c0a5065bafca5ff57a91659d08e",
   "python": "3.12.12",
   "versions": {
@@ -124,5 +124,6 @@
     "R2 dda 2.5 m": 751.711207151413,
     "R2 fdtd 2.5 m": 325.34848713874817,
     "R3 fdtd 2.5 m": 192.8655230998993
-  }
+  },
+  "cache_inputs": "526821e862278d085d2a6d3b83928c43eaa519c5e69603d8404471b4237edfce"
 }
