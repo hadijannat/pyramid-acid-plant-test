@@ -1,7 +1,7 @@
 {
   "case": "em",
-  "timestamp": "2026-10-12T04:42:51+00:00",
-  "commit": "7a9884199b6a74a3de4b9a8a10a7eda97dcd7181",
+  "timestamp": "2026-10-12T05:11:43+00:00",
+  "commit": "63328030d6f34d2ba39654c390168c5d0bf81dbb",
   "ledger": "047e50229caf4b6b69e88337948e08553d335c0a5065bafca5ff57a91659d08e",
   "python": "3.12.12",
   "versions": {
@@ -22,7 +22,7 @@
     "The ground is the masonry's material; V2 keeps the study's outer pyramid; the V3 apexes are the surveyed pyramid whole and cut at the present top, with the study's chambers.",
     "V4 is the truncated surveyed pyramid with the surveyed King's and Queen's Chambers and Grand Gallery, a granite shell of emx.granite_shell, permittivity em.limestone_eps.",
     "The band maximum of a metric is its largest value on the 5 m wavelength grid.",
-    "A verdict rests only on runs at a cell where that solver's benchmark sphere is within 2 percent of the exact one across the band; the next coarser cell is the resolution check and a claim is conditional when it falls on the other side.",
+    "A verdict rests only on runs at a cell where that solver's benchmark sphere is within 2 percent of the exact one across the band; the next coarser cell is the resolution check and a claim is conditional when it falls on the other side: that run can move a word to conditional only, never to pass or fail.",
     "Where both solvers decide a part (R1 against its control) and fall on different sides, the part is conditional.",
     "The convergence and reproduction gates compare the pyramid's extinction at the coarse cell and its half, where the sphere is outside the benchmark limit; only the deciding runs were repeated at the finer cells."
   ],
@@ -125,5 +125,5 @@
     "R2 fdtd 2.5 m": 325.34848713874817,
     "R3 fdtd 2.5 m": 192.8655230998993
   },
-  "cache_inputs": "526821e862278d085d2a6d3b83928c43eaa519c5e69603d8404471b4237edfce"
+  "cache_inputs": "6e9db4ab82122d1d12041b56360f839db890890aed9d301e7238d2fc873df317"
 }
