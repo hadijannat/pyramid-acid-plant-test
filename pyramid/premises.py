@@ -210,25 +210,43 @@ def _e25(ledger, r):
     stone, thin, thick = record.value, record.low, record.high
     claim_low, claim_high = CLAIMED_STONE
 
-    def fits(thickness):  # closed, and "about" the claim's 3 to 5 in
-        return thickness > 0 and claim_low - ABOUT <= thickness <= claim_high + ABOUT
+    def decided(about: float) -> str:  # closed, and "about" the claim's 3 to 5 in
+        def fits(thickness):
+            return thickness > 0 and claim_low - about <= thickness <= claim_high + about
 
-    status = simkit.three_way(fits(thin) and fits(thick), thick > 0 and thin <= claim_high + ABOUT
-                              and thick >= claim_low - ABOUT)
+        return simkit.three_way(fits(thin) and fits(thick), thick > 0 and thin <= claim_high + about
+                                and thick >= claim_low - about)
+
+    status = decided(ABOUT)
+    # Two judgement calls. The half inch read into "about" is one, and the basis says whether it moves the word.
+    # The other decides it: the thickness rests on one witness (Smyth) quoted twice at second hand, which 01 check
+    # 11 grades "two secondary routes, one primary witness", and the rule counts that as what the survey record
+    # shows. Held to rest on a secondary source it would be conditional, by the documentary rule of the simulations
+    # design, section 2. The closure itself is in Petrie, section 44, re-read in its online edition in 06 (the
+    # parameter table and check 19) and read in 01 only as quoted in Thomas's paper (check 11).
+    about = ("a reading of 'about' that decides nothing here" if decided(0.0) == status
+             else "a judgement call on 'about' that decides the word here")
     outcome = {
-        "pass": "the whole range carried for the record lies within the claimed thickness, read to half an inch "
-                "either side (a judgement call on 'about')",
-        "conditional": "only part of the range carried for the record lies within the claimed thickness, read to "
-                       "half an inch either side (a judgement call on 'about')",
-        "fail": "no part of the range carried for the record lies within the claimed thickness, read to half an "
-                "inch either side (a judgement call on 'about')",
+        "pass": "So the whole range carried for the record lies within the claimed thickness",
+        "conditional": "So only part of the range carried for the record lies within the claimed thickness",
+        "fail": "So no part of the range carried for the record lies within the claimed thickness",
     }[status]
+    # The low end the ledger carries is no measurement where it is the claim's own 3 in.
+    carried = (f"The record is the {1000 * stone:.0f} mm alone: the {1000 * thin:.0f} mm at the low end of the range "
+               f"the ledger carries ({1000 * thin:.0f} to {1000 * thick:.0f} mm) is the claim's own figure, and no "
+               "source was found for 3 in."
+               if thin < stone and math.isclose(thin, claim_low) else
+               f"The ledger carries {1000 * thin:.0f} to {1000 * thick:.0f} mm for the record; no source was found "
+               "for 3 in.")
     return status, (
         f"The survey record has each Queen's Chamber shaft mouth closed by a plate of the wall stone left uncut "
-        f"until both were cut through in 1872: {1000 * stone:.0f} mm ({stone / INCH:.1f} in) on one witness, quoted "
-        f"twice at second hand, and Petrie describes the plate without a thickness. The claim's 3 to 5 in is "
-        f"{1000 * claim_low:.0f} to {1000 * claim_high:.0f} mm and the ledger carries {1000 * thin:.0f} to "
-        f"{1000 * thick:.0f} mm, so {outcome}; no source was found for 3 in."
+        f"until both were cut through in 1872. Petrie describes the plate without a thickness (his section 44, "
+        f"re-read in its online edition in 06 and read in 01 as quoted by a later author). The thickness, "
+        f"{1000 * stone:.0f} mm "
+        f"({stone / INCH:.1f} in), comes from one witness, quoted twice at second hand. Counting that as what the "
+        "survey record shows is a judgement call, and it decides the word: held to rest on a secondary source, the "
+        f"claim would be conditional. The claim's 3 to 5 in is {1000 * claim_low:.0f} to {1000 * claim_high:.0f} mm. "
+        f"{carried} {outcome}, read to half an inch either side, {about}."
     )
 
 
@@ -295,6 +313,8 @@ ASSUMPTIONS = [
     "Comparable size for the Big Void is tested on its length, the only dimension the muon paper states, within a "
     "factor of ten; the assumed section and volume carried in the ledger decide nothing.",
     "About 3 to 5 in is read to half an inch either side, the precision of a figure quoted in whole inches.",
+    "E25: one witness quoted twice at second hand is counted as the survey record of the thickness, a judgement call "
+    "that decides pass against conditional; the closure itself is in the direct survey, which gives no thickness.",
 ]
 
 

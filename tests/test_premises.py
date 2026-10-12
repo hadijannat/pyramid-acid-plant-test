@@ -154,7 +154,16 @@ VERDICTS = [
     ("E12", "conditional", ("between 0.0 and 5.1 mm", "0.0021 m2 at most", "0.030 m2", "3 pairs of slots")),
     ("S15", "conditional", ("0.0021 m2 at most", "about 0.002 m2", "0.018 m2", "8 times")),
     ("E15", "pass", ("30.8 m below the pavement", "16.41 m long", "16.41 m (16.28 to 16.54 m")),
-    ("E25", "pass", ("127 mm (5.0 in)", "76 to 127 mm", "no source was found for 3 in")),
+    ("E25", "pass", ("127 mm (5.0 in)", "76 to 127 mm", "no source was found for 3 in",
+                     "Petrie describes the plate without a thickness (his section 44, re-read in its online edition "
+                     "in 06 and read in 01 as quoted by a later author).",
+                     "comes from one witness, quoted twice at second hand. Counting that as what the survey record "
+                     "shows is a judgement call, and it decides the word: held to rest on a secondary source, the "
+                     "claim would be conditional.",
+                     "The record is the 127 mm alone: the 76 mm at the low end of the range the ledger carries (76 "
+                     "to 127 mm) is the claim's own figure, and no source was found for 3 in. So the whole range "
+                     "carried for the record lies within the claimed thickness, read to half an inch either side, a "
+                     "reading of 'about' that decides nothing here.")),
     ("E32", "pass", ("at least 30 m long", "0.64 of the Gallery's 46.7 m (0.64 to 0.86", "14.7 m above",
                      "(9.6 to 19.8 m)", "factor of 10", "factor of two")),
 ]
@@ -211,12 +220,20 @@ def test_e25_compares_the_recorded_stone_with_the_claimed_3_to_5_inches(led):
     # A foot of stone is not about 3 to 5 in.
     status, basis = altered(led, {"qcs.stone_left": (0.30, 0.30, 0.30)})["E25"]
     assert status == "fail" and "300 mm (11.8 in)" in basis and "no part of the range" in basis
+    # a range that is all record has no end that is the claim's own, and the basis does not say it has
+    assert "The ledger carries 300 to 300 mm for the record" in basis and "the claim's own figure" not in basis
     # A range that reaches down to an open mouth, or up to twice the claim, holds at one end only.
     assert altered(led, {"qcs.stone_left": (0.127, 0.0, 0.127)})["E25"][0] == "conditional"
     assert altered(led, {"qcs.stone_left": (0.127, 0.127, 0.25)})["E25"][0] == "conditional"
-    # "About" is half an inch: 5.4 in passes, 5.6 in does not.
-    assert altered(led, {"qcs.stone_left": (5.4 * 0.0254,) * 3})["E25"][0] == "pass"
+    # "About" is half an inch: 5.4 in passes, 5.6 in does not. On the ledger as it stands the half inch decides
+    # nothing (76 to 127 mm lies inside 76 to 127 mm), and the basis says so; at 5.4 in it decides the word.
+    assert "a reading of 'about' that decides nothing here" in altered(led, {})["E25"][1]
+    status, basis = altered(led, {"qcs.stone_left": (5.4 * 0.0254,) * 3})["E25"]
+    assert status == "pass" and "a judgement call on 'about' that decides the word here" in basis
     assert altered(led, {"qcs.stone_left": (5.6 * 0.0254,) * 3})["E25"][0] == "fail"
+    # the low end the ledger carries is the claim's own 3 in, which is why the basis sets it apart from the record
+    assert led.rng("qcs.stone_left")[0] == pytest.approx(3 * 0.0254) and led.q("qcs.stone_left") == pytest.approx(0.127)
+    assert "the hypothesis says 3 to 5 in" in led.quantities["qcs.stone_left"].note
 
 
 def test_e32_needs_the_void_above_the_gallery_over_it_and_of_comparable_length(led):
