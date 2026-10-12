@@ -130,7 +130,7 @@ Each step carries `path`, one to four keyframes of `position` and `target` in th
 
 ### 5.2 Prologue
 
-`cycle.yaml` gains a `prologue`: a path and a duration (6 s) for a flight from far outside to the entrance face. It carries no claim; its caption is the project title and the notice. The page does not autoplay: the camera drifts slowly on the prologue's first keyframe until the visitor presses *Play the claimed cycle*.
+`cycle.yaml` gains a `prologue`: a path and a duration (6 s) for a flight from far outside to the entrance face. It carries no claim; its caption is the project title and the notice. The page does not autoplay: the camera drifts slowly on the prologue's first keyframe until the visitor presses *Play the claimed cycle*. The drift is a sway of a few degrees to either side of that pose (amended 2026-10-12 after the final review: an unbounded turn left the camera far from the path, and Play whipped it back).
 
 ### 5.3 Captions and progress
 

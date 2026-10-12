@@ -1028,7 +1028,7 @@ def main() -> None:
         "results": [asdict(result) for result in results.values()],
         "verdicts": {claim: {"status": status, "basis": basis} for claim, (status, basis) in decided.items()},
     }
-    (out_dir / "tier0.json").write_text(json.dumps(payload, indent=2) + "\n")
+    (out_dir / "tier0.json").write_text(json.dumps(payload, indent=2, allow_nan=False) + "\n")
     write_manifest(out_dir, "tier0", ledger)
 
 

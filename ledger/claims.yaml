@@ -11,7 +11,7 @@
   piece: 5
   criterion: "Pass if a geologically defensible hydrogen sulfide flux can supply the chemistry model's minimum feed; fail if the required flux exceeds active-seep analogues by orders of magnitude (07 section 4.4)."
   status: pending
-  depends_on: [chem.molar_mass_h2s, chem.molar_mass_h2so4]
+  depends_on: [chem.molar_mass_h2s, chem.molar_mass_h2so4, site.atm_pressure, kc.volume, chem.temperature, rx.cycle_time, rx.h2s_cave_air]
   spaces: []
 - id: S02
   statement: "Hydrogen sulfide is turned into sulfur dioxide in three unnamed steps inside the satellite pyramids."
@@ -31,7 +31,7 @@
   piece: 4
   criterion: "Pass if sulfur dioxide remains in the King's Chamber between delivery and draw with the air shafts open (00 section 7 item 5)."
   status: pending
-  depends_on: [kc.volume, kcs.north.width, kcs.south.width, kcs.mouth_height]
+  depends_on: [kc.volume, kcs.north.width, kcs.south.width, kcs.mouth_height, flow.so2_diffusivity, flow.wind_speed, flow.wind_pressure_coefficient_difference, flow.delivery_to_draw_interval, kcs.north.height, kcs.north.length, kcs.south.height, kcs.south.length, hydro.air_density, kcs.exit.z, kc.floor.z, site.atm_pressure, chem.molar_mass_so2, chem.temperature, hydro.kcs_north_loss_coefficient, hydro.kcs_south_loss_coefficient, ante.groove_connected_area, flow.slab_leak_area, flow.discharge_coefficient, kc.length, kc.width, kc.height]
   spaces: [kings_chamber, kc_shaft_north, kc_shaft_south]
 - id: S04
   statement: "Ground currents, concentrated by ore deposits and iron veins, enter from below and build a positive electric field at the flat top."
@@ -41,7 +41,7 @@
   piece: 2
   criterion: "Pass only if a direct-current conduction model with a far field of 1e-7 to 2e-2 V/m gives a non-negligible field or charge at the summit or in the granite (04 section 5.3)."
   status: pending
-  depends_on: [em.telluric_field_storm, em.telluric_field_extreme, em.limestone_resistivity, pyr.base_side]
+  depends_on: [em.telluric_field_storm, em.telluric_field_extreme, em.limestone_resistivity, pyr.base_side, plateau.host_resistivity, em.granite_conductivity, elec.granite_shell_thickness, pyr.height_original, pyr.height_present, kc.west_wall.x, kc.east_wall.x, kc.south_wall.y, kc.north_wall.y, kc.floor.z, kc.ceiling.z, em.granite_piezo_d, em.piezo_thickness, em.pulse_rise_time, ac.air_impedance, ac.gas_solid_intensity, ante.leaf_thickness, ac.drive_frequency, ac.reference_pressure]
   spaces: []
 - id: S05
   statement: "Operators wait for a storm, warned by wind-driven whistle formations in the western field."
@@ -61,7 +61,7 @@
   piece: 2
   criterion: "Pass if the peak field in the granite exceeds what the piezoelectric model needs to reach the acoustic threshold; fail if the interior field is screened to the conduction value of order kV/m or less (04 section 5.2)."
   status: pending
-  depends_on: [em.stroke_current_median, em.stroke_current_max, em.limestone_resistivity, em.granite_eps, em.granite_conductivity, em.lightning_frequency, em.storm_field]
+  depends_on: [em.stroke_current_median, em.stroke_current_max, em.limestone_resistivity, em.granite_eps, em.granite_conductivity, em.lightning_frequency, em.storm_field, plateau.host_resistivity, elec.granite_shell_thickness, pyr.base_side, pyr.height_original, pyr.height_present, kc.west_wall.x, kc.east_wall.x, kc.south_wall.y, kc.north_wall.y, kc.floor.z, kc.ceiling.z, em.granite_piezo_d, em.piezo_thickness, em.pulse_rise_time, ac.air_impedance, ac.gas_solid_intensity, em.air_breakdown_field, em.mu0, em.eps0, em.limestone_eps, ante.leaf_thickness, ac.drive_frequency, ac.reference_pressure, em.piezo_field_lightning]
   spaces: [kings_chamber, antechamber]
 - id: S07
   statement: "The field drives the inverse piezoelectric effect in the granite's quartz, giving ultrasound that the antechamber's upper cavity focuses and amplifies."
@@ -81,7 +81,7 @@
   piece: 3
   criterion: "Pass requires an explicitly assumed reservoir, because the evidence-based boundary has no water at base level; report the level and volume it must have (02 section 5.5 item 1)."
   status: pending
-  depends_on: [site.base_elevation_asl, hydro.ok_flood_peak_asl, hydro.modern_water_table_asl, dp.entrance.z]
+  depends_on: [site.base_elevation_asl, hydro.ok_flood_peak_asl, hydro.modern_water_table_asl, dp.entrance.z, dp.south_end.z, gg.roof_top.z, gg.volume, qc.volume, qc.niche.volume, qp.volume, ap.volume, ws.volume, sub.volume, dp.angle, dp.width, dp.height, flow.fill_time, sub.roof_centre.z, sub.floor_depth_pit, pit.original_bottom.z, hydro.perched_water_asl]
   spaces: [subterranean_chamber, descending_passage]
 - id: S09
   statement: "Blocked by the dead-end south passage and the lower valve, the water rises in the well shaft until it stands at the reservoir's level."
@@ -131,7 +131,7 @@
   piece: 3
   criterion: "Pass if, with the gallery filled, water stays out of the King's Chamber while gas can still pass the antechamber, and a drain route is stated (02 section 5.5 item 6)."
   status: pending
-  depends_on: [gg.volume, gg.roof_top.z, gg.south_end.z, ante.floor.z, kc.floor.z]
+  depends_on: [gg.volume, gg.roof_top.z, gg.south_end.z, ante.floor.z, kc.floor.z, hydro.water_density, ante.slab_clearance, ante.slab_width, ante.groove_connected_area, flow.discharge_coefficient, kcs.mouth_height, kc.length, kc.width, ante.length, ante.width, ante.passage_to_kc.length, ante.low_passage.width, kc.volume, kcs.north.width, kcs.north.height, kcs.south.width, kcs.south.height, hydro.kcs_north_loss_coefficient, hydro.kcs_south_loss_coefficient, site.atm_pressure, chem.molar_mass_so2, chem.temperature, kc.height]
   spaces: [grand_gallery, antechamber, kings_chamber]
 - id: S14
   statement: "The falling water draws outside air down the King's Chamber shafts into the chamber."
@@ -141,7 +141,7 @@
   piece: 3
   criterion: "Pass if, for a stated drain rate and realistic leak areas, most of the replacement gas comes down the shafts; report the pressure difference (02 section 5.5 item 7)."
   status: pending
-  depends_on: [kcs.north.width, kcs.north.height, kcs.south.width, kcs.south.height, kcs.north.length, kcs.south.length, hydro.kcs_north_loss_coefficient, hydro.kcs_south_loss_coefficient, hydro.air_density, hydro.drain_time, gg.volume]
+  depends_on: [kcs.north.width, kcs.north.height, kcs.south.width, kcs.south.height, kcs.north.length, kcs.south.length, hydro.kcs_north_loss_coefficient, hydro.kcs_south_loss_coefficient, hydro.air_density, hydro.drain_time, gg.volume, ante.floor.z, ante.groove_connected_area, ante.low_passage.height, ante.low_passage.width, flow.discharge_coefficient, flow.joint_path_length, flow.slab_leak_area, gg.angle, gg.first_lap_height, gg.floor_length, gg.height, gg.laps, gg.overhang, gg.ramp_height, gg.slot_width, gg.south_end.z, gg.width, hydro.air_kinematic_viscosity, hydro.joint_aperture, hydro.joint_length, hydro.vapour_pressure, hydro.water_density, rc.davison.height, rc.davison.length, rc.davison.width, site.atm_pressure, ante.slot_count]
   spaces: [kc_shaft_north, kc_shaft_south, kings_chamber, grand_gallery]
 - id: S15
   statement: "The same suction pulls sulfur dioxide and air from the King's Chamber through the four grooves, past the three slabs, into the antechamber."
@@ -151,7 +151,7 @@
   piece: 3
   criterion: "Pass only if a connected duct from the King's Chamber to the Gallery exists in the as-surveyed geometry with the slabs down; the blind-groove case fails and the connected case allows at most about 0.002 m2 (01 premise P3)."
   status: pending
-  depends_on: [ante.groove_count, ante.groove_width, ante.groove_depth, ante.groove_connected_area, ante.slab_clearance, ante.slot_count]
+  depends_on: [ante.groove_count, ante.groove_width, ante.groove_depth, ante.groove_connected_area, ante.slab_clearance, ante.slot_count, ante.groove_residual_depth, ante.slot_width, ante.slab_thickness, ante.slab_width]
   spaces: [kings_chamber, antechamber]
 - id: S16
   statement: "In the antechamber, ultrasound from the granite makes sulfur dioxide react with oxygen from the air to give sulfur trioxide."
@@ -171,7 +171,7 @@
   piece: 3
   criterion: "Pass if, with the openings as surveyed, more than 90 percent of the displaced volume is drawn through the antechamber path rather than through other openings (01 premise P4)."
   status: pending
-  depends_on: [gg.volume, ante.groove_connected_area, ws.upper_side, rc.davison_passage.width, rc.davison_passage.height, ap.width, ap.height]
+  depends_on: [gg.volume, ante.groove_connected_area, ws.upper_side, rc.davison_passage.width, rc.davison_passage.height, ap.width, ap.height, ante.floor.z, ante.low_passage.height, ante.low_passage.width, ap.angle, ap.end.z, flow.discharge_coefficient, flow.joint_path_length, flow.slab_leak_area, gg.angle, gg.first_lap_height, gg.floor_length, gg.height, gg.laps, gg.north_end.z, gg.overhang, gg.ramp_height, gg.slot_width, gg.south_end.z, gg.width, hydro.air_density, hydro.air_kinematic_viscosity, hydro.drain_time, hydro.joint_aperture, hydro.joint_length, hydro.kcs_north_loss_coefficient, hydro.kcs_south_loss_coefficient, hydro.vapour_pressure, hydro.water_density, kcs.north.height, kcs.north.width, kcs.south.height, kcs.south.width, qp.floor_north.z, qp.height_north, qp.width, rc.davison.height, rc.davison.length, rc.davison.width, site.atm_pressure, ws.top.z]
   spaces: [antechamber, grand_gallery]
 - id: S18
   statement: "The pump is worked again and the gallery level is raised slowly, again in four activations, bringing the gases into contact with water."
@@ -191,7 +191,7 @@
   piece: 4
   criterion: "Pass if at least 90 percent of the sulfur is captured into the liquid in any oxidation state within the cycle; fail below 50 percent (03 section 4.4)."
   status: pending
-  depends_on: [chem.henry_so2, chem.pka1_so2, chem.pka2_so2]
+  depends_on: [chem.henry_so2, chem.pka1_so2, chem.pka2_so2, gg.slot_width, gg.ramp_height, gg.width, gg.first_lap_height, gg.height, gg.overhang, gg.laps, gg.angle, gg.volume, chem.temperature, chem.kl_surface, rx.kg_gas, rx.cycle_time, site.atm_pressure, kc.volume, flow.fill_time]
   spaces: [grand_gallery]
 - id: S20
   statement: "Sulfurous acid is oxidised quickly by air to dilute sulfuric acid."
@@ -221,7 +221,7 @@
   piece: 4
   criterion: "Pass if gas uptake keeps pace with the rising water so that no gas is forced back through the grooves (00 section 7 item 9)."
   status: pending
-  depends_on: [chem.henry_so2, ante.groove_connected_area, gg.volume]
+  depends_on: [chem.henry_so2, ante.groove_connected_area, gg.volume, kc.volume, chem.o2_fraction, chem.henry_o2, rx.henry_n2, chem.temperature, gg.slot_width, gg.ramp_height, gg.width, gg.first_lap_height, gg.height, gg.overhang, gg.laps, gg.angle, chem.kl_surface, rx.kg_gas, rx.cycle_time]
   spaces: [grand_gallery, antechamber, kings_chamber]
 - id: S23
   statement: "Acid attacks the limestone walls of the gallery and Queen's Chamber, forming a calcium sulfate layer that stops further attack and re-forms where it chips off."
@@ -231,7 +231,7 @@
   piece: 4
   criterion: "Pass if a calcium sulfate layer forms and persists over ten fill and drain cycles with fresh water and limits wall loss to a rate compatible with the surviving surfaces; fail if it is stripped each cycle (03 section 4.4; 00 section 7 item 11)."
   status: pending
-  depends_on: [chem.gypsum_h_diffusivity, chem.gypsum_solubility, chem.gypsum_log_k, gg.wall_area]
+  depends_on: [chem.gypsum_h_diffusivity, chem.gypsum_solubility, chem.gypsum_log_k, gg.wall_area, site.atm_pressure, kc.volume, chem.temperature, gg.volume, chem.gypsum_molar_volume, rx.cycle_time, hydro.water_density, rx.ion_diffusivity, rx.fresh_dwell, chem.ka2_sulfuric, chem.calcite_molar_volume]
   spaces: [grand_gallery, queens_chamber]
 - id: S24
   statement: "Offered as speculation: heat from the gallery reaction is removed by a water-filled chamber in the Big Void above the gallery."
@@ -323,7 +323,7 @@
   piece: 5
   criterion: "Pass if an opened source gives a measured hydrogen sulfide flux, composition or source pressure under the plateau that meets the chemistry model's minimum feed; fail if the required flux exceeds active-seep analogues by orders of magnitude (07 section 4.4)."
   status: pending
-  depends_on: [chem.molar_mass_h2s, chem.molar_mass_h2so4]
+  depends_on: [chem.molar_mass_h2s, chem.molar_mass_h2so4, site.atm_pressure, kc.volume, chem.temperature, rx.cycle_time, rx.h2s_cave_air]
   spaces: []
 - id: E02
   statement: "That paper's X-ray fluorescence analyses found metal compounds matching samples from the plateau's iron deposits."
@@ -423,7 +423,7 @@
   piece: 1
   criterion: "Geometric premise: pass for a shaft only if a survey shows its outer end running level through the casing; carried as the kc_shaft_ends_level variant, and the shaft exits must fall on the casing plane at Z = 80 +/- 1 m in either case (01 fidelity criterion)."
   status: pending
-  depends_on: [kcs.level_end_length, kcs.north.angle, kcs.south.angle, kcs.exit.z]
+  depends_on: [kcs.level_end_length, kcs.north.angle, kcs.south.angle, kcs.exit.z, pyr.base_side, pyr.height_original, kc.floor.z, kcs.mouth_height, kcs.north.height, kcs.south.height, kcs.horizontal_length, kc.north_wall.y, kc.south_wall.y]
   spaces: [kc_shaft_north, kc_shaft_south]
 - id: E12
   statement: "The antechamber held three granite slabs and has four grooves on its south wall."
@@ -433,7 +433,7 @@
   piece: 1
   criterion: "Geometric premise: pass for the grooves as a gas path only if a connected duct exists in the as-surveyed geometry; the blind-groove case fails (01 premise P3)."
   status: pending
-  depends_on: [ante.slot_count, ante.slot_width, ante.slab_width, ante.groove_count, ante.groove_depth, ante.groove_connected_area]
+  depends_on: [ante.slot_count, ante.slot_width, ante.slab_width, ante.groove_count, ante.groove_depth, ante.groove_connected_area, ante.groove_width, ante.groove_residual_depth]
   spaces: [antechamber]
 - id: E13
   statement: "The antechamber's upper cavity has the most striking acoustics in the pyramid."
@@ -443,7 +443,7 @@
   piece: 2
   criterion: "Rank the modal quality factor and decay time of the antechamber, King's Chamber and Grand Gallery in an audio-band model; pass if the antechamber ranks first (05 section 5.5 item 4)."
   status: pending
-  depends_on: [ante.length, ante.width, ante.height, kc.length, kc.width, kc.height, ac.sound_speed_air]
+  depends_on: [ante.length, ante.width, ante.height, kc.length, kc.width, kc.height, ac.sound_speed_air, ante.volume, ante.surface_area, gg.floor_length, gg.width, gg.height, gg.volume, gg.wall_area, ac.wall_absorption, ac.absorption_13khz, ac.link_frequency, ante.low_passage.width, ante.low_passage.height]
   spaces: [antechamber, kings_chamber, grand_gallery]
 - id: E14
   statement: "An external reservoir fed the Subterranean Chamber and check valves existed there, after Cadman's ram-pump model."
@@ -463,7 +463,7 @@
   piece: 1
   criterion: "Geometric premise: pass if the surveyed passage ends blind in rock with no outlet (01 claim 6)."
   status: pending
-  depends_on: [sp.length, sp.south_end.y]
+  depends_on: [sp.length, sp.south_end.y, sp.north_end.x, sp.north_end.y, sp.north_end.z, sp.south_end.x, sp.south_end.z]
   spaces: [south_passage]
 - id: E16
   statement: "One-way valves sat at the base of the shaft, after a drawing by an unnamed German engineering team."
@@ -503,7 +503,7 @@
   piece: 1
   criterion: "As modelled, pass if the band-maximum volume-mean field-intensity ratio in the King's Chamber in case R1 is at least twice that of its control; under realism, pass if in case V4 the ratio is at least 2 and at least twice its control across 6.7e-4 to 3.3e-3 S/m, fail if it is below 2 at 6.7e-4 S/m, otherwise conditional (spec section 6)."
   status: pending
-  depends_on: [paper.height, paper.base_side, paper.eps_real, paper.eps_imag, paper.wavelength_min, paper.wavelength_max, paper.kc.centre.z, paper.peak1.wavelength, paper.peak2.wavelength, paper.ground_peak.wavelength, em.limestone_resistivity]
+  depends_on: [paper.height, paper.base_side, paper.eps_real, paper.eps_imag, paper.wavelength_min, paper.wavelength_max, paper.kc.centre.z, paper.peak1.wavelength, paper.peak2.wavelength, paper.ground_peak.wavelength, em.limestone_resistivity, em.granite_conductivity, em.granite_eps, em.limestone_eps, emx.cell_coarse, emx.granite_shell, emx.sphere_radius, gg.height, gg.north_end.x, gg.north_end.y, gg.north_end.z, gg.roof_width, gg.south_end.x, gg.south_end.y, gg.south_end.z, gg.width, kc.ceiling.z, kc.east_wall.x, kc.floor.z, kc.north_wall.y, kc.south_wall.y, kc.west_wall.x, pyr.base_side, pyr.height_original, pyr.height_present, qc.east_wall.x, qc.floor.z, qc.north_wall.y, qc.ridge_height, qc.wall_height, qc.west_wall.x, qc.width_ns]
   spaces: [paper_kings_chamber, paper_queens_chamber, paper_lower_chamber, kings_chamber]
 - id: E20
   statement: "The speaker's reading of that study: the field excludes the tip, so the flat top is functional and there never was a capstone."
@@ -513,7 +513,7 @@
   piece: 1
   criterion: "Pass only if the band-maximum summit metric, the volume mean of the field-intensity ratio in the masonry between Z 132.4 m and 137.4 m, for the apex truncated at 137.4 m is at least twice that for the apex pointed at 146.71 m in the on-ground case (spec section 6)."
   status: pending
-  depends_on: [pyr.height_present, pyr.height_original, paper.height, pyr.base_side, pyr.face_slope]
+  depends_on: [pyr.height_present, pyr.height_original, paper.height, pyr.base_side, pyr.face_slope, emx.cell_coarse, emx.summit_depth, paper.eps_imag, paper.eps_real, paper.wavelength_max, paper.wavelength_min]
   spaces: []
 - id: E21
   statement: "Telluric currents concentrate over ore deposits, and the pyramids were sited for that."
@@ -523,7 +523,7 @@
   piece: 2
   criterion: "Pass only if a direct-current conduction model with conductive sheets for the ore bodies gives a non-negligible field or charge at the summit or in the granite (04 section 5.3)."
   status: pending
-  depends_on: [em.telluric_field_storm, em.telluric_field_extreme, plateau.host_resistivity, plateau.hematite_resistivity_specular]
+  depends_on: [em.telluric_field_storm, em.telluric_field_extreme, plateau.host_resistivity, plateau.hematite_resistivity_specular, em.limestone_resistivity, pyr.base_side, em.granite_conductivity, elec.granite_shell_thickness, pyr.height_original, pyr.height_present, kc.west_wall.x, kc.east_wall.x, kc.south_wall.y, kc.north_wall.y, kc.floor.z, kc.ceiling.z, elec.ore_sheet_thickness, elec.ore_sheet_depth, plateau.vein_leakage_length, em.granite_piezo_d, em.piezo_thickness, em.pulse_rise_time, ac.air_impedance, ac.gas_solid_intensity, ante.leaf_thickness, ac.drive_frequency, ac.reference_pressure]
   spaces: []
 - id: E22
   statement: "Red granite has a dielectric constant of 9 and stores electric field better than limestone."
@@ -633,7 +633,7 @@
   piece: 1
   criterion: "Geometric premise: pass if a published void of comparable size lies above the Gallery; its use as a heat exchanger is judged separately by the thermal criterion for the masonry between them (01 premise P5)."
   status: pending
-  depends_on: [bv.length, bv.centre.z, bv.section_area, gg.roof_top.z]
+  depends_on: [bv.length, bv.centre.z, bv.section_area, gg.roof_top.z, gg.roof_length_sloping, bv.south_end.y, bv.incline_angle, gg.south_end.y, gg.north_end.y]
   spaces: [big_void, grand_gallery]
 - id: E33
   statement: "Sodium chloride deposits cover the inside of the central pyramid's main chamber."

@@ -29,9 +29,9 @@
    },
    {
     "position": [
-     300,
-     60,
-     -275
+     339,
+     59,
+     -303
     ],
     "target": [
      0,
@@ -49,9 +49,9 @@
    "path": [
     {
      "position": [
-      372,
-      112,
-      143
+      409,
+      116,
+      157
      ],
      "target": [
       0,
@@ -113,7 +113,7 @@
      "name": "sulfur dioxide",
      "phase": "gas",
      "colour": "#d9c24a",
-     "status": "plain"
+     "status": "claimed"
     }
    ],
    "reaction": {
@@ -152,7 +152,7 @@
      "name": "sulfur dioxide",
      "phase": "gas",
      "colour": "#d9c24a",
-     "status": "plain"
+     "status": "claimed"
     }
    ],
    "actors": [
@@ -168,7 +168,7 @@
        "name": "sulfur dioxide",
        "phase": "gas",
        "colour": "#d9c24a",
-       "status": "plain"
+       "status": "claimed"
       }
      ]
     },
@@ -224,7 +224,7 @@
        "name": "sulfur dioxide",
        "phase": "gas",
        "colour": "#d9c24a",
-       "status": "plain"
+       "status": "claimed"
       }
      ]
     }
@@ -237,9 +237,9 @@
    "path": [
     {
      "position": [
-      378,
-      112,
-      71
+      418,
+      116,
+      79
      ],
      "target": [
       0,
@@ -266,7 +266,7 @@
        "name": "sulfur dioxide",
        "phase": "gas",
        "colour": "#d9c24a",
-       "status": "plain"
+       "status": "claimed"
       }
      ]
     }
@@ -315,7 +315,7 @@
        "name": "sulfur dioxide",
        "phase": "gas",
        "colour": "#d9c24a",
-       "status": "plain"
+       "status": "claimed"
       }
      ]
     }
@@ -357,7 +357,7 @@
        "name": "sulfur dioxide",
        "phase": "gas",
        "colour": "#d9c24a",
-       "status": "plain"
+       "status": "claimed"
       }
      ]
     }
@@ -441,7 +441,7 @@
        "name": "sulfur dioxide",
        "phase": "gas",
        "colour": "#d9c24a",
-       "status": "plain"
+       "status": "claimed"
       }
      ]
     }
@@ -583,7 +583,7 @@
        "name": "sulfur dioxide",
        "phase": "gas",
        "colour": "#d9c24a",
-       "status": "plain"
+       "status": "claimed"
       }
      ]
     }
@@ -799,7 +799,7 @@
        "name": "sulfur dioxide",
        "phase": "gas",
        "colour": "#d9c24a",
-       "status": "plain"
+       "status": "claimed"
       }
      ]
     }
@@ -1015,7 +1015,7 @@
        "name": "sulfur dioxide",
        "phase": "gas",
        "colour": "#d9c24a",
-       "status": "plain"
+       "status": "claimed"
       }
      ]
     }
@@ -1231,7 +1231,7 @@
        "name": "sulfur dioxide",
        "phase": "gas",
        "colour": "#d9c24a",
-       "status": "plain"
+       "status": "claimed"
       }
      ]
     }
@@ -1266,7 +1266,7 @@
      "name": "sulfur dioxide",
      "phase": "gas",
      "colour": "#d9c24a",
-     "status": "plain"
+     "status": "claimed"
     }
    ],
    "actors": [
@@ -1436,7 +1436,7 @@
        "name": "sulfur dioxide",
        "phase": "gas",
        "colour": "#d9c24a",
-       "status": "plain"
+       "status": "claimed"
       }
      ]
     }
@@ -1641,7 +1641,7 @@
        "name": "sulfur dioxide",
        "phase": "gas",
        "colour": "#d9c24a",
-       "status": "plain"
+       "status": "claimed"
       }
      ]
     },
@@ -1708,7 +1708,7 @@
      "name": "sulfur dioxide",
      "phase": "gas",
      "colour": "#d9c24a",
-     "status": "plain"
+     "status": "claimed"
     },
     {
      "id": "air",
@@ -1887,7 +1887,7 @@
        "name": "sulfur dioxide",
        "phase": "gas",
        "colour": "#d9c24a",
-       "status": "plain"
+       "status": "claimed"
       }
      ]
     },
@@ -1954,7 +1954,7 @@
      "name": "sulfur dioxide",
      "phase": "gas",
      "colour": "#d9c24a",
-     "status": "plain"
+     "status": "claimed"
     },
     {
      "id": "air",
@@ -2145,7 +2145,7 @@
        "name": "sulfur dioxide",
        "phase": "gas",
        "colour": "#d9c24a",
-       "status": "plain"
+       "status": "claimed"
       }
      ]
     },
@@ -2236,7 +2236,7 @@
      "name": "sulfur dioxide",
      "phase": "gas",
      "colour": "#d9c24a",
-     "status": "plain"
+     "status": "claimed"
     },
     {
      "id": "air",
@@ -2714,7 +2714,7 @@
      "name": "sulfur dioxide",
      "phase": "gas",
      "colour": "#d9c24a",
-     "status": "plain"
+     "status": "claimed"
     },
     {
      "id": "water",
@@ -2730,7 +2730,7 @@
      "name": "sulfurous acid",
      "phase": "liquid",
      "colour": "#4f9fd0",
-     "status": "plain"
+     "status": "conditional"
     }
    ],
    "reaction": {
@@ -2879,7 +2879,7 @@
        "name": "sulfurous acid",
        "phase": "liquid",
        "colour": "#4f9fd0",
-       "status": "plain"
+       "status": "conditional"
       },
       {
        "id": "water",
@@ -2903,7 +2903,7 @@
        "name": "sulfur dioxide",
        "phase": "gas",
        "colour": "#d9c24a",
-       "status": "plain"
+       "status": "claimed"
       }
      ]
     }
@@ -2938,7 +2938,7 @@
      "name": "sulfurous acid",
      "phase": "liquid",
      "colour": "#4f9fd0",
-     "status": "plain"
+     "status": "conditional"
     },
     {
      "id": "air",
@@ -3386,7 +3386,7 @@
      "name": "sulfur dioxide",
      "phase": "gas",
      "colour": "#d9c24a",
-     "status": "plain"
+     "status": "claimed"
     },
     {
      "id": "so3",
@@ -3597,7 +3597,7 @@
      "name": "calcium sulfate",
      "phase": "solid",
      "colour": "#efe6cf",
-     "status": "plain"
+     "status": "conditional"
     }
    ],
    "reaction": {

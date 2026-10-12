@@ -1,0 +1,367 @@
+{
+  "counts": {
+    "pass": 6,
+    "fail": 26,
+    "conditional": 25,
+    "undefined": 9,
+    "pending": 0,
+    "not_testable": 5
+  },
+  "verdicts": {
+    "S01": {
+      "status": "undefined",
+      "basis": "The plateau geology file (07) gives no flux for any seep or spring, so a required flux has nothing to be set against at any cycle time: its one analogue is a concentration, read from an abstract, at which one batch is the sulfide in 5.3 million m3 of cave air (60 ppmv in active sulfuric-acid caves). One full batch needs 13319 mol of hydrogen sulfide, 454 kg, a mole for each mole of sulfur dioxide in the King's Chamber, which is 0.15 mol/s and 166 t a year at one batch every 24 h, and 0.00041 to 3.8 mol/s over the cycle times taken; the hypothesis states no cycle rate either, so the required flux is itself undefined (07 section 4.4).",
+      "source": "chem"
+    },
+    "S02": {
+      "status": "undefined",
+      "basis": "Not specified by the hypothesis: the transcripts assign the conversion of hydrogen sulfide to sulfur dioxide to three steps in the satellite pyramids and name none of them, so no mass balance can be written, and the criterion holds the claim undefined until they are named. The patent cited for three steps covers the whole route from hydrogen sulfide to sulfuric acid, not this conversion.",
+      "source": "evidence"
+    },
+    "S03": {
+      "status": "conditional",
+      "basis": "With its shafts open a King's Chamber of pure sulfur dioxide loses half its charge by diffusion in 361 (271 to 460) years, and no wind below 29 (23 to 43) m/s can drive a through-flow, because the gas, 2.2 times as dense as air, would have to be lifted up the leeward shaft against 516 (472 to 551) Pa. The same weight carries it out of an opening at the chamber's floor while no water stands beyond it and the Gallery is open to the air, which the hypothesis does not say for the time before the fill: through the 202 cm2 of grooves and one slab's clearance in the antechamber, the gas path of the hypothesis, half the charge is gone in about 69 minutes (41 at the fastest, never with the path shut). In the 30 m/s at the top of the assumed wind range the half-time falls to 15 minutes, and to 11 with the floor opening draining at its fastest as well, against the interval between delivery and draw, which the hypothesis does not state and which is taken as 10 minutes to 30 days; a charge diluted to a tenth is held only below 9 m/s, and below the wind that lifts it the model loses gas up the shafts by diffusion alone, which is a limit of the model. Remaining is read as half the charge still being there at the draw (a judgement call), and the hypothesis states neither the composition of the charge nor what keeps it in.",
+      "source": "flow"
+    },
+    "S04": {
+      "status": "fail",
+      "basis": "In a steady conduction model of the pyramid on bedrock, a far field of 1e-07 to 2e-02 V/m leaves 0.58 of itself (0.14 to 0.62 over the ranges of the inputs) in the masonry at chamber level and 0.036 (0.008 to 0.039) at the summit, and puts 2.2 (0.4 to 2.2) times itself in the King's Chamber granite at the peak: 0.04 V/m at the most, which is 8.8 orders of magnitude below the 2.7e+07 V/m at which Tier 0's single-pulse piezoelectric chain, a field applied across 1 m of granite within the 5 microsecond rise of a stroke, first reaches a documented acoustic effect with every input at its generous end, the line this rule takes for non-negligible as a judgement call; a charge held by such a field is short by the same factor. Tier 0's S07 chain, a sustained drive of 1 MHz across the antechamber's granite leaf for which no source is proposed, reaches the same effect at 2.1e+06 V/m with every input at its generous end, and the field is 7.7 orders of magnitude below that too.",
+      "source": "electro"
+    },
+    "S05": {
+      "status": "not_testable",
+      "basis": "No test exists: the criterion holds this as a documented constraint with no computed verdict. Nothing about the formations was found outside the speaker's own videos: no location, no dimensions and no acoustic measurement.",
+      "source": "evidence"
+    },
+    "S06": {
+      "status": "fail",
+      "basis": "A stroke of 30 kA entering at the summit and spreading by steady conduction puts 4.3 kV/m in the King's Chamber granite at the peak (1.7 kV/m as a volume mean), 7.3 times the even-spreading conduction value, and 88 kV/m at the favourable corner of the ranges, the 200 kA design maximum in the most resistive masonry measured (884 V/m at the least). Tier 0's single-pulse piezoelectric chain, a field applied across 1 m of granite within the 5 microsecond rise of a stroke, needs 2.7e+07 V/m with every input at its generous end to reach a documented acoustic effect, 303 times the 88 kV/m of that corner and 8.9 times the 3e+06 V/m at which air breaks down. Tier 0's S07 chain, a sustained drive of 1 MHz across the antechamber's granite leaf for which no source is proposed, reaches the same effect at 2.1e+06 V/m with every input at its generous end, 23 times that corner and below the breakdown field; a return stroke is a single pulse (04 claim C6), so the claim is held to the pulse chain. The criterion's fail clause, a field screened to the conduction value of order kV/m or less, is read as the field staying below the pulse chain's need at the favourable end, the order kV/m being 04's own estimate of the conduction value (0.07 to 11 kV/m by even spreading): a judgement call. In this model the field in the granite is the conduction value by construction. A core of 5e+04 ohm m, 34 times the most resistive masonry measured in place, would bring that peak to the breakdown field, which caps it below the pulse chain's need; the sustained chain's need lies under that cap. The chamber lies 1.5 skin depths (0.3 to 5.9) inside the nearest face, and induction, left out here, lowers the field there further.",
+      "source": "electro"
+    },
+    "S07": {
+      "status": "fail",
+      "basis": "The granite leaf driven at the air-breakdown field radiates 76 dB, and 158 dB with every input at its generous end, against the 190 dB needed to cavitate a wet film.",
+      "source": "tier0"
+    },
+    "S08": {
+      "status": "conditional",
+      "basis": "The highest water documented at Khufu or beside it, the Old Kingdom flood peak or today's water table, stands 15 (10 to 18) m below the foot of the Descending Passage; the chamber's deepest floor lies 1.9 m and the pit's original bottom up to 5.1 m lower than that foot, still above that water. Perched water at 22 to 48 m above sea level is interpreted from geophysics toward Menkaure and none is reported at Khufu, so it is not counted. No documented water therefore reaches the Subterranean Chamber, and the step holds only for a reservoir that is assumed: the hypothesis names one without level, volume or inlet, and nothing on site attests it. It must stand at pavement level or above and enter by a conduit that no survey shows, or 17.0 m above the pavement to use the entrance, the only surveyed opening; to fill the Gallery by communicating vessels alone it must stand 51.5 m above the pavement, 112 (109 to 114) m above sea level. One fill takes 866 (808 to 924) m3, an inflow of 0.24 m3/s if it takes 1 h, after 385 (284 to 536) m3 to prime the Subterranean Chamber and the Descending Passage up to the pavement.",
+      "source": "flow"
+    },
+    "S09": {
+      "status": "conditional",
+      "basis": "No reservoir or inlet is evidenced on site, so the step is conditional on the reservoir of S08; water standing at the level of a pavement-level reservoir stops 21.7 m below the top of the well shaft and 51.5 m below the Gallery roof, a head that the pump of S10 must supply.",
+      "source": "tier0"
+    },
+    "S10": {
+      "status": "undefined",
+      "basis": "The hypothesis names no actuator or seal for the pump, which must push with 0.43 to 1.01 MN depending on its position and hold 0.80 MPa with the Gallery full.",
+      "source": "tier0"
+    },
+    "S11": {
+      "status": "fail",
+      "basis": "The suction margin of a pump at the foot of the Descending Passage is -5.9 m at the Old Kingdom flood peak and -0.4 m at the most favourable documented levels, against the 0 m it needs to draw.",
+      "source": "tier0"
+    },
+    "S12": {
+      "status": "conditional",
+      "basis": "Filling the Gallery alone takes 4.3 strokes (3.9 to 4.7 over the ranges of the inputs) if a stroke sweeps the whole Descending Passage, 5.9 (5.4 to 6.4) if it sweeps the part below the Ascending Passage junction and 6.7 (6.2 to 7.3) if it sweeps the part below the pavement, against the 4 claimed, and the hypothesis fixes no stroke.",
+      "source": "tier0"
+    },
+    "S13": {
+      "status": "fail",
+      "basis": "With the Gallery full to its roof the water stands 8.5 (8.3 to 8.6) m above the antechamber floor and presses with 83 kPa, so an opening that passes gas passes water: past slabs as loose as the surviving fragment 0.16 (0.14 to 0.26) m3/s enter and the water stands at the King's Chamber shaft mouths after 6 (4 to 7) minutes, through the 20 cm2 of the grooves alone after 1.0 h, and with the path shut no gas passes either. Holding the water back would take 83 kPa of gas pressure, which the open shafts release in 53 s, and with the shafts shut the water still rises 2.2 m or more in the chamber. Water stays out only if the fill stops at the antechamber floor, 43.0 m above the pavement, and the hypothesis states no drain route.",
+      "source": "flow"
+    },
+    "S14": {
+      "status": "conditional",
+      "basis": "The antechamber opening lies 7.4 m under the surface of the full Gallery, and until 13.2 (12.7 to 13.3) percent of the Gallery has drained gas enters it only where the suction exceeds the water standing over it, 72 kPa at the start; where the path past the slabs is open, that water runs through it into the King's Chamber meanwhile, which S13 judges. Draining the Gallery in 1 h through 202 cm2 of grooves and one slab's clearance, with masonry joints of 0.51 mm leaking along a path of 1.0 m, 60 percent of the replacement gas comes down the King's Chamber shafts; the pressure difference is 195 Pa at the start, when the joints alone supply the pocket, and 60 Pa once the opening is clear. Over drain times of 10 minutes to 6 h, joints of 0.05 to 0.51 mm and joint paths of 0.3 to 3.0 m the share runs from 20 to 100 percent with that path open, and from 0 percent if the path is shut, as blind grooves and seated slabs would leave it; the pressure difference runs from 1 Pa to 99 kPa, the most a water column can pull. Through the grooves alone the share is 11 percent, through the three slabs' clearances one after another, which pass what 108 cm2 passes, 44 percent, and with no slab in the passage 78 percent. More than half comes down the shafts with the joints tighter than 0.64 mm, or the drain slower than 30 minutes; the hypothesis states neither a drain rate nor how the Gallery is made gas-tight.",
+      "source": "flow"
+    },
+    "S15": {
+      "status": "conditional",
+      "basis": "With the slabs down, the duct the claim names from the King's Chamber to the Gallery is the grooves, and the criterion tests them: it fails the blind case and allows the connected one about 0.002 m2. Petrie's depths for the 4 grooves in the south wall run out to between 0.0 and 5.1 mm at the top of the doorway, where the stone is broken away, so a connected duct exists only in the reading that lets them reach the doorway, and the blind reading, which is Petrie's own, has none: the connected area is 0.0021 m2 at most (4 grooves 0.105 m wide) against 0.030 m2 for grooves of the full 71 mm, which the measured taper rules out. The clearance round one slab, 0.018 m2 from the one surviving fragment, is 8 times the grooves at their most, so the grooves would not be the only way past the slabs.",
+      "source": "premises"
+    },
+    "S16": {
+      "status": "fail",
+      "basis": "At the collision limit, sulfur dioxide lasts 2.8e+17 s (8.8e+09 years) against oxygen with no catalyst, so a pass of 10 min to 6 h converts a fraction of 9e-14 at most and 2e-15 at the least.",
+      "source": "tier0"
+    },
+    "S17": {
+      "status": "conditional",
+      "basis": "Of the Gallery's five surveyed openings the Ascending Passage, the Queen's passage and the well shaft meet it at its foot and stay under water until 0.7 percent of it or less is left, and Davison's passage ends in a closed chamber. The antechamber opening lies 7.4 m under the surface of the full Gallery, and until 13.2 (12.7 to 13.3) percent of the Gallery has drained gas enters it only where the suction exceeds the water standing over it, 72 kPa at the start. With gas-tight masonry nothing else can enter, so 100.0 (99.9 to 100.0) percent of the displaced volume is drawn through the antechamber passage as surveyed, with no slab in it. Counting gas that leaks in through 1350 m of masonry joints of 0.05 to 0.51 mm, from air-filled masonry at outside pressure 0.3 to 3.0 m behind the Gallery's face, a leak that is assumed and that 01 leaves open for the syringe, the share is 78 (38 to 100) percent over drain times of 10 minutes to 6 h and passes 90 percent with joints tighter than 0.11 (0.04 to 0.24) mm or somewhat wider, the model letting neither the pocket's gas thin nor Davison's chamber lend. Counting that leak against 'the openings as surveyed', though no survey lists a joint as an opening, is a judgement call: with the surveyed openings alone the claim would pass. That the status follows the passage as surveyed, with no slab in it, is a second one: with the slabs of the hypothesis down the two shares are 100.0 and 60 percent through 202 cm2 of grooves and one slab's clearance, and nothing if that path is shut, which takes blind grooves, the question of S15, and slabs seated tight as well, which no claim decides.",
+      "source": "flow"
+    },
+    "S18": {
+      "status": "conditional",
+      "basis": "Filling the Gallery alone takes 4.3 strokes (3.9 to 4.7 over the ranges of the inputs) if a stroke sweeps the whole Descending Passage, 5.9 (5.4 to 6.4) if it sweeps the part below the Ascending Passage junction and 6.7 (6.2 to 7.3) if it sweeps the part below the pavement, against the 4 claimed, and the hypothesis fixes no stroke.",
+      "source": "tier0"
+    },
+    "S19": {
+      "status": "conditional",
+      "basis": "With the Gallery half full and a cycle of 24 h (the hypothesis states none; 1 h to 1 yr is taken as its range), 87 percent of the sulfur dioxide crosses the level surface into the water (0.1 to 97 percent over the ranges of the inputs), which over those ranges is neither always at the 90 percent from which the criterion passes the claim nor always under the 50 percent below which it fails it. The water could hold 98 percent at equilibrium, so the rate decides. It depends on the cycle time, on whether the gas over the water stands still or convects (gas-side coefficient 0.003 to 10 mm/s, assumed) and on the film on the water's side of the surface (liquid-film coefficient 0.001 to 0.01 mm/s, assumed with no source), none of which the hypothesis gives; the 87 percent is for a gas-side coefficient of 1.5 mm/s and a liquid-film coefficient of 0.01 mm/s. At those two coefficients the share passes 50 percent after 7.8 h and passes 90 percent after 28 h, with a time constant of 10.7 h toward the 96.9 percent that the water holds by Henry's law alone, without the dissociation counted in the 98 percent; in a cycle of 24 h it runs from 2 to 94 percent over the ranges of the other inputs, the two coefficients among them, so stating a cycle of that length would not settle the claim without them. The model gives the gas the whole cycle over the half-full Gallery, though it stands over the water only until the water has risen (S18): in a contact of the 1 h that the ledger carries for one fill, a time the hypothesis does not state either, the share is 9 percent (0.014 to 94 percent over fills of 10 minutes to 24 h and the ranges of the other inputs).",
+      "source": "chem"
+    },
+    "S20": {
+      "status": "fail",
+      "basis": "In one day, taken as the cycle because the hypothesis states none, the oxygen dissolved in the Gallery water and the oxygen crossing its still surface can oxidise 2.5 percent of a full batch (2.1 to 2.8 percent over the ranges of the inputs), below the 5 percent under which the criterion fails the claim and the 50 percent from which it passes it; a still surface would need 27 days (22 to 302 days over the ranges of the inputs) to bring the yield to 5 percent, and the hypothesis describes no aeration.",
+      "source": "tier0"
+    },
+    "S21": {
+      "status": "pass",
+      "basis": "If the first of the 4 claimed fills took the whole heat of the largest batch, it would warm by 7.3 K and leave a margin of 72.7 K below boiling (62.3 K at the least), so nothing boils over with or without the dilute-acid step.",
+      "source": "tier0"
+    },
+    "S22": {
+      "status": "fail",
+      "basis": "Emptying the whole Gallery draws 573 m3 of gas into it and the King's Chamber holds 320 m3, so at least 44 percent of the gas over the water is outside air, come down the shafts of S14 or in through the masonry joints (39 percent at the least). Its nitrogen hardly dissolves: if all the sulfur dioxide dissolved, the oxidation used every mole of oxygen it could and the water arrived free of dissolved gas, the rising water would still push 33 percent of the gas back (29 to 37 percent over the ranges of the inputs), and 54 percent of a mixture that carries the oxygen for all its sulfur. Nothing is pushed back only if air is under 2.0 percent of the gas (2.4 percent at most), which brings oxygen for 0.8 percent of the sulfur, while S14 to S17 carry air into the Gallery; the hypothesis states no gas fraction, and the whole Gallery is taken as emptied because S18 raises the water again in the four activations with which S12 fills it. Taking the least air that emptying the whole Gallery admits, not a gas without air, as the end most favourable to the hypothesis is a judgement call.",
+      "source": "chem"
+    },
+    "S23": {
+      "status": "conditional",
+      "basis": "Fresh water lets bare limestone neutralise 41 percent of the strongest batch before gypsum can form (Tier 0), and the layer that then grows by acid diffusing through it reaches 3.7 micrometres in a cycle of 24 h (the hypothesis states none; 1 h to 1 yr is taken as its range) (0.1 to 74 micrometres over the ranges of the inputs). One fill of fresh water can dissolve 0.63 mm of gypsum, 173 times that layer (7.7 times at the least); even the most gypsum a whole batch can lay down is 55 percent of what one fill dissolves (76 percent at most), so a fill that comes to saturation strips it; every cycle then starts on bare stone, which loses up to 0.21 mm per cycle and 2.1 mm in ten in bringing each batch to saturation (1.6 to 4.9 mm over the ranges of the inputs). A fill that stands still strips the layer a bare wall grows in one cycle by diffusion alone only if it stands at least 0.1 times as long as the acid stood (0.19 times at most). The hypothesis does not state that time; over the range taken, 1.9e-05 to 1 of the acid's, a still fill dissolves 0.0099 to 23 times that layer, and 0.65 times at the 0.042 the ledger takes as its value. The acid of the next batch does not strip it: still acid dissolves it from outside while it grows from beneath and leaves at most 49 percent of it (7 to 61 percent), about 26 percent once the batch's bisulfate is counted (4 to 35 percent). So whether the layer lasts depends on how long the fresh water stands against the wall and on how it moves, neither of which the hypothesis states.",
+      "source": "chem"
+    },
+    "S24": {
+      "status": "fail",
+      "basis": "The largest possible batch warms the Gallery water by 1.8 K (2.0 K at most), below the 5 K at which a heat exchanger would start to matter.",
+      "source": "tier0"
+    },
+    "S25": {
+      "status": "fail",
+      "basis": "A slab driven at the air-breakdown field emits 50 dB and the path to the north slab loses 101 dB at 13 kHz, so the signal arrives at -51 dB (-55 dB at the least), against the 10 dB needed above a 0 dB noise floor.",
+      "source": "tier0"
+    },
+    "S26": {
+      "status": "undefined",
+      "basis": "Not specified by the hypothesis: the transcripts name no outlet, no driver and no destination for the liquid said to leave through the Queen's Chamber, and the criterion holds the claim undefined until they are named. The chamber's two shafts were closed at the chamber by about 127 mm of uncut wall stone until 1872, and the southern one is closed again by a slab 63.6 m up, so they are dead-end ducts; no other outlet is surveyed.",
+      "source": "evidence"
+    },
+    "S27": {
+      "status": "fail",
+      "basis": "Hydrogen chloride stands at 1.2e-07 atm over the dilute acid and salt mixture, and at 1.5e-07 atm over saturated brine, against the 1e-05 atm below which the criterion fails the claim.",
+      "source": "tier0"
+    },
+    "S28": {
+      "status": "conditional",
+      "basis": "A vein must conduct 2.7e+05 times better than the rock to carry current 100 m; the best measured specular hematite reaches 3.3e+04 times in 100 ohm m rock and 1.0e+06 times in the most resistive 3000 ohm m rock, earthy red hematite reaches 4.2e-02 times at most, and no Giza vein has been measured.",
+      "source": "tier0"
+    },
+    "S29": {
+      "status": "conditional",
+      "basis": "A vein must conduct 2.7e+05 times better than the rock to carry current 100 m; the best measured specular hematite reaches 3.3e+04 times in 100 ohm m rock and 1.0e+06 times in the most resistive 3000 ohm m rock, earthy red hematite reaches 4.2e-02 times at most, and no Giza vein has been measured.",
+      "source": "tier0"
+    },
+    "S30": {
+      "status": "conditional",
+      "basis": "Pure sulfur dioxide at one atmosphere caps the product at 0.023 mol/L (0.026 mol/L at most), or 0.012 mol/L if its oxygen comes with the same draw of air, below the 0.05 mol/L pass line at any gas fraction; the ceiling scales with the sulfur dioxide fraction of the chamber gas, so the product stays above the 0.005 mol/L fail line only if that fraction is at least 22 percent (19 percent with every input at its favourable end), and the hypothesis states no gas fraction.",
+      "source": "tier0"
+    },
+    "S31": {
+      "status": "undefined",
+      "basis": "Direct strikes come at most 0.12 times per year, one every 8 years, and the hypothesis states no cycle rate to compare this with.",
+      "source": "tier0"
+    },
+    "E01": {
+      "status": "undefined",
+      "basis": "No opened source gives a measured hydrogen sulfide flux, composition or source pressure under the plateau: the plateau geology file (07) read the cited paper in full, and it measured no gas and reports no present-day seepage, so the passing clause is not met. The failing clause cannot be evaluated either. The plateau geology file (07) gives no flux for any seep or spring, so a required flux has nothing to be set against at any cycle time: its one analogue is a concentration, read from an abstract, at which one batch is the sulfide in 5.3 million m3 of cave air. One full batch needs 13319 mol of hydrogen sulfide, 454 kg, a mole for each mole of sulfur dioxide in the King's Chamber, which is 0.15 mol/s and 166 t a year at one batch every 24 h, and 0.00041 to 3.8 mol/s over the cycle times taken; the hypothesis states no cycle rate either, so the required flux is itself undefined (07 section 4.4).",
+      "source": "chem"
+    },
+    "E02": {
+      "status": "fail",
+      "basis": "No evidence found: no match between the two datasets was found. Both were read in full; the research file calls the claim weak and does not call it contradicted. The cited paper analysed one sulfate nodule and one host mudstone by X-ray fluorescence; of the ten elements the speaker names for the iron deposits it reports four, all common trace elements, and none of cerium, neodymium, silver, gold, platinum or tin. The iron-deposit data are 16 samples from Khafre's boat pits, in a report that is not peer-reviewed. The one level the files give for both, thorium, is 139 ppm in the paper's nodule and 0.25 to 1.36 ppm in the pit samples.",
+      "source": "evidence"
+    },
+    "E03": {
+      "status": "fail",
+      "basis": "No evidence found: no survey of a Giza cave shows cave forms cut in iron ore. The one study of Giza cave deposits that was read in full describes a mudstone exposure on the west side of the plateau and reports iron and manganese oxide as a minor part of gypsum and fracture fills (0.65 and 6.19 percent iron oxide by weight in its two samples), and the research file finds no ore body documented at Giza: the plateau is carbonate rock with minor oxide fills. That exposure is not the Tomb of the Birds; the research files read no survey of that cave and record no search for one. The paper the claim cites concerns iron-ore caves at other sites, which the criterion sets aside, and no research file opened it.",
+      "source": "evidence"
+    },
+    "E04": {
+      "status": "conditional",
+      "basis": "Partly supported: mineral evidence of sulfuric-acid cave formation is published for the plateau, but not for the sites named. One paper, read in full, argues it from natroalunite, replacive gypsum and related minerals at a single exposure at Darb El Fayum on the west side, in a mudstone unit it lists apart from the formation the pyramids stand on. That exposure is not the trial passages, the Tomb of the Birds or any cave the speaker names, and no sulfur isotopes were measured. Likeness in photographs is not evidence.",
+      "source": "evidence"
+    },
+    "E05": {
+      "status": "not_testable",
+      "basis": "No test exists: the claim is an analogy between a planned off-world sulfuric-acid process and the pyramid, which the criterion records without a test. No research file opened the cited paper, so nothing is asserted here about what it says.",
+      "source": "evidence"
+    },
+    "E06": {
+      "status": "undefined",
+      "basis": "No evidence found: the transcripts call sulfur mining near the Suez Canal well documented but attribute it to no source and garble the place names, so there is nothing to check, and the research files hold no dated archaeological source for Old Kingdom sulfur mining. The claim belongs to the sulfur-burning version of the hypothesis, which the speaker has replaced.",
+      "source": "evidence"
+    },
+    "E07": {
+      "status": "fail",
+      "basis": "Contradicted: the patent does describe three steps with heat exchangers, but none of them can run as the hypothesis needs. Its claims were re-read at source (US 9,108,846): the first step burns hydrogen sulfide at 900 C or more, or oxidises it over a catalyst from 200 C; the second runs at 390 to 430 C, over a vanadium catalyst by the patent's description; the third cools the gas to 60 to 120 C. No step runs at ambient temperature without a catalyst, and the hypothesis supplies neither heat nor catalyst. The three steps are the whole route from hydrogen sulfide to acid, not three stages of making sulfur dioxide.",
+      "source": "evidence"
+    },
+    "E08": {
+      "status": "fail",
+      "basis": "No evidence found: no source opened, of any date, describes an original lined shaft in the King's Chamber floor. Petrie's survey records only that the floor had been dug under at its west end, below the coffer, which is an excavation in masonry about 43 m above the ground. The research files name no survey older than that digging which records a shaft; the hole is known from the speaker's photographs and a video.",
+      "source": "evidence"
+    },
+    "E09": {
+      "status": "fail",
+      "basis": "No evidence found: no conduit is surveyed between the ground and the King's Chamber floor, which lies about 43 m above the pavement in masonry. The only feature recorded under the floor is the excavation at its west end, and the speaker himself says the connection is not known.",
+      "source": "evidence"
+    },
+    "E10": {
+      "status": "pass",
+      "basis": "Supported: for the southern shaft. Vyse's narrative of 1837 has a large stone removed from the southern channel about 7 ft inside the surface on 29 May, after which air rushed into the chamber. It was read as OCR text by one route; a paper of 1964, read on the page, reports the same. The northern channel had already been forced open, so the record covers one shaft, which is what the criterion asks for.",
+      "source": "evidence"
+    },
+    "E11": {
+      "status": "conditional",
+      "basis": "A level outer end is on record for one shaft only: one survey party of 1837 to 1839, known here through a later citation of its unread plate, drew the last 3.0 m of the southern channel level, in core masonry, while the 1881 survey found the incline continuing to that mouth; the northern outlet was forced open before any survey and its level end is only presumed, and the casing is gone at both, so no survey can show a run through it. Carried to the casing plane at the surveyed slopes, the shafts come out at Z = 80.3 m in the north (78.8 to 81.3 m over the ranges of the inputs) and 80.9 m in the south (79.5 to 81.7 m), and with a level last 3.0 m at 79.0 m (77.6 to 80.0 m) and 79.1 m (77.8 to 79.9 m): 4 of the 4 lie inside the criterion's 80 +/- 1 m at the surveyed values and 0 of the 4 over the whole of their ranges.",
+      "source": "premises"
+    },
+    "E12": {
+      "status": "conditional",
+      "basis": "Petrie's depths for the 4 grooves in the south wall run out to between 0.0 and 5.1 mm at the top of the doorway, where the stone is broken away, so a connected duct exists only in the reading that lets them reach the doorway, and the blind reading, which is Petrie's own, has none: the connected area is 0.0021 m2 at most (4 grooves 0.105 m wide) against 0.030 m2 for grooves of the full 71 mm, which the measured taper rules out. The 3 pairs of slots for the slabs and the 4 grooves themselves are on record.",
+      "source": "premises"
+    },
+    "E13": {
+      "status": "fail",
+      "basis": "As hard-walled boxes with one assumed wall absorption, the three rooms decay at 45 Hz in: antechamber 3.3 s, King's Chamber 8.8 s, Grand Gallery 4.6 s; the quality factors of their lowest modes (45.2, 16.4, 3.6 Hz) are: antechamber 69, King's Chamber 66, Grand Gallery 8. The antechamber ranks last of three in decay time, with 0.38 of the longest other (0.27 to 0.52 over the ranges of the inputs), and first in modal quality factor, with 1.05 of the highest other (0.73 to 1.42). It is never first in decay time, so it does not rank first in both, the reading this rule takes of the criterion as a judgement call; the decay times go as volume over wall area, whatever the absorption the rooms share. With the passage mouths open it falls to 0.13 of the longest decay and 0.35 of the highest quality factor. No acoustic measurement of the antechamber exists to check the model.",
+      "source": "electro"
+    },
+    "E14": {
+      "status": "fail",
+      "basis": "A ram at the foot of the Descending Passage delivers 22 percent of its drive water to the Gallery roof, so one Gallery fill spills 2022 m3 (1259 m3 at the least) into a chamber of 300 m3 (450 m3 at most) that has no outfall.",
+      "source": "tier0"
+    },
+    "E15": {
+      "status": "pass",
+      "basis": "The survey record has the south passage end blind in rock, 30.8 m below the pavement, with no opening at its south end: Petrie's stations make it 16.41 m long and his coordinates for its two ends 16.41 m (16.28 to 16.54 m over their stated errors), and a second survey, read on the page, gives the same length and the same blind end.",
+      "source": "premises"
+    },
+    "E16": {
+      "status": "fail",
+      "basis": "No evidence found: the surveys of the Subterranean Chamber and its pit that were read record no valve seat, hinge socket, fitting or valve part, and the drawing by a German engineering team that the claim rests on could not be identified.",
+      "source": "evidence"
+    },
+    "E17": {
+      "status": "fail",
+      "basis": "The pit as it stood before 1837 had a clearance of 11.4 m over the Old Kingdom flood peak (5.4 m at the least), so it reached no documented water table, while the shaft sunk in 1837 and 1838 has a clearance of 2.9 m over today's water table (-2.4 to 6.5 m over the ranges of the inputs), so modern groundwater cannot be excluded as the cause of wet fill.",
+      "source": "tier0"
+    },
+    "E18": {
+      "status": "conditional",
+      "basis": "The strongest airborne ultrasound engineered, 172 dB, speeds a dry-gas reaction 2.2 times if its barrier is the 150 kJ/mol of the direct gas reaction and 1.5 times if it is 100 kJ/mol, so the doubling the criterion asks for is met only at the higher barrier, and over the ranges of the inputs the gain runs from 1.4 to 2.3 times.",
+      "source": "tier0"
+    },
+    "E19": {
+      "status": "fail",
+      "basis": "As modelled (not met): the band-maximum volume-mean intensity ratio in the King's Chamber of case R1 is 9.21 against 6.94 in its control cube (1.33 times) in the time-domain solver at a 1 m cell; 10.44 against 7.66 in its control cube (1.36 times) in the dipole solver at a 1.67 m cell; at the next coarser cell, which decides nothing: 10.12 against 7.51 in its control cube (1.35 times) in the time-domain solver at a 1.67 m cell; 10.80 against 7.75 in its control cube (1.39 times) in the dipole solver at a 2.5 m cell; the criterion asks for at least 2 times the control. Under realism (fail): in case V4 the ratio is in the time-domain solver at a 1 m cell 0.026 at 6.7e-04 S/m against 0.018 in its control, 0.00087 at 1.5e-03 S/m against 0.00046 in its control, 1.7e-05 at 3.3e-03 S/m against 7e-06 in its control, 0.021 at 6.7e-04 S/m (permittivity 5), 0.031 at 6.7e-04 S/m (permittivity 9); at the next coarser cell, which decides nothing: in the time-domain solver at a 1.67 m cell 0.025 at 6.7e-04 S/m against 0.017 in its control, 1.8e-05 at 3.3e-03 S/m against 8.3e-06 in its control; the criterion asks for at least 2 and at least 2 times the control across the measured conductivity range, and fails the claim if the ratio is below 2 at the low end of that range. Each part is decided by the runs at the cells where the solver's benchmark sphere is within 2% of the exact one, and is conditional if those runs and the next coarser cell fall on different sides. The spec gives no rule for joining the two parts: the claim fails when the realism part fails, passes when both pass, and is conditional otherwise. Not varied: the as-modelled part is case R1, which the criterion names, at the study's permittivity of 5 (its range is 4 to 6), so it is settled at that value only, and R1's maximum lies at the short end of the band, 200 m, so a resonance just below the band could enter it at a higher permittivity; V4 has a granite shell of 1.5 m (range 1 to 3 m), a granite permittivity of 6 (3.5 to 24) and a granite conductivity of 1e-08 S/m (up to 1e-04); the shell is metres thick against a skin depth of 24 to 32 m in the masonry at 6.7e-04 S/m.",
+      "source": "em"
+    },
+    "E20": {
+      "status": "fail",
+      "basis": "On ground, with the wave from above, the band-maximum volume mean of the intensity ratio in the top masonry is 0.37 for the apex cut at the present top against 0.34 for the pointed apex (1.08 times) in the time-domain solver at a 1 m cell; at the next coarser cell, which decides nothing: 0.37 for the apex cut at the present top against 0.34 for the pointed apex (1.08 times; 0.24 for the study's apex) in the time-domain solver at a 1.67 m cell. The criterion passes the claim only if the truncated apex gives at least 2 times the pointed one; the runs at the cell where the solver's benchmark sphere is within 2% of the exact one decide. Not varied: both apexes are run at the study's permittivity of 5 + 0.1i and in the time-domain solver alone, the one of the two that carries a ground.",
+      "source": "em"
+    },
+    "E21": {
+      "status": "fail",
+      "basis": "With two vertical sheets of the most conductive hematite measured (0.003 ohm m) in line with the far field and ending at the base, the conduction model puts 2.3 times the far field in the King's Chamber granite or at the summit (0.4 to 4.2 over sheets 0.1 to 10 m thick, 10 to 300 m deep and up to 500 m long, all assumed), against 2.2 without sheets: 0.08 V/m at the most, which is 8.5 orders of magnitude below the 2.7e+07 V/m at which Tier 0's single-pulse piezoelectric chain, a field applied across 1 m of granite within the 5 microsecond rise of a stroke, first reaches a documented acoustic effect with every input at its generous end, the line this rule takes for non-negligible as a judgement call; a charge held by such a field is short by the same factor. Tier 0's S07 chain, a sustained drive of 1 MHz across the antechamber's granite leaf for which no source is proposed, reaches the same effect at 2.1e+06 V/m with every input at its generous end, and the field is 7.4 orders of magnitude below that too. Sheets would have to gather the far field over 1.3e+09 m to offer the pulse chain its voltage.",
+      "source": "electro"
+    },
+    "E22": {
+      "status": "fail",
+      "basis": "Charge in the granite relaxes in 5.3 ms in the driest measured case (21 ms at most) and in the limestone in 31 ns, against a storm field that changes over seconds.",
+      "source": "tier0"
+    },
+    "E23": {
+      "status": "not_testable",
+      "basis": "No test exists: the claim is the speaker's own earlier hypothesis about the Serapeum boxes, an analogy that the criterion records without a test in this project. The research files did not assess the Serapeum.",
+      "source": "evidence"
+    },
+    "E24": {
+      "status": "not_testable",
+      "basis": "No test exists: the criterion holds this as a documented constraint with no computed verdict. The formations are known only from the speaker's own site videos; no location, dimensions or acoustic measurement was found, so there is no geometry to model.",
+      "source": "evidence"
+    },
+    "E25": {
+      "status": "pass",
+      "basis": "The survey record has each Queen's Chamber shaft mouth closed by a plate of the wall stone left uncut until both were cut through in 1872. Petrie describes the plate without a thickness (his section 44, re-read in its online edition in 06 and read in 01 as quoted by Thomas). The thickness, 127 mm (5.0 in), comes from one witness, quoted twice at second hand. Counting that as what the survey record shows is a judgement call, and it decides the word: held to rest on a secondary source, the claim would be conditional. The claim's 3 to 5 in is 76 to 127 mm. The record is the 127 mm alone: the 76 mm at the low end of the range the ledger carries (76 to 127 mm) is the claim's own figure, and no source was found for 3 in. So the whole range carried for the record lies within the claimed thickness, read to half an inch either side, a reading of 'about' that decides nothing here.",
+      "source": "premises"
+    },
+    "E26": {
+      "status": "pass",
+      "basis": "Supported: a letter of 27 November 1978 from the Arizona Bureau of Geology and Mineral Technology (sample no. 56411) ranks the sample as mostly calcite with some halite and gypsum, which are the three phases named. The letter was read as OCR text of its reproduction in a later book. It is qualitative: it gives no method, no quantities, no sampler and no sampling position.",
+      "source": "evidence"
+    },
+    "E27": {
+      "status": "fail",
+      "basis": "Contradicted: the example the criterion names, no sodium chloride in the wetted zone, is the opposite of what was read, and nothing else that the acid model predicts and the salt model cannot has been found. Sodium chloride is present in the Queen's Chamber, which the hypothesis fills: the 1978 letter lists some halite, and a laboratory study of 2026, read by two routes, identifies the efflorescence there as halite. The same study has efflorescence on the west wall and ceiling growing visibly between 2022 and 2024 (read by one extraction route only), which shows a present-day process, and the chamber was cleaned in 1995 to 1997 without surviving documentation, so today's surface need not match the crust before the cleaning. The 1978 letter is older than that cleaning; who took its sample, when and from what height is not stated. The test, as the criterion words it, is of the surface as sampled. No height-resolved salt map exists. The research file calls the inference from missing calcium chloride weak, since calcium chloride takes up water from the air and would not last as a crust (general knowledge there, not sourced).",
+      "source": "evidence"
+    },
+    "E28": {
+      "status": "conditional",
+      "basis": "Partly supported: a salt crust on the Grand Gallery walls is documented for the 1990s, when twelve months were spent cleaning it off in 1998, but its composition was never published, an account of 1910 records no salt in the Gallery, and Petrie does not describe its walls. A crust limit at one level in the Queen's Chamber and the Gallery, which the criterion asks for, has not been looked for: no height-resolved salt map exists. The one height-resolved datum, Petrie's note that the two lower laps of the Queen's Chamber niche were salted and the three upper ones not, is not what a complete fill predicts, and the study of 2026 found no gypsum crust in that chamber.",
+      "source": "evidence"
+    },
+    "E29": {
+      "status": "conditional",
+      "basis": "Bare limestone neutralises 41 percent of the strongest possible batch (32 to 77 percent over the input ranges) before gypsum saturates and can coat it, so 59 percent of the acid survives one cycle, and more only where a coat is already in place.",
+      "source": "tier0"
+    },
+    "E30": {
+      "status": "conditional",
+      "basis": "No evidence found: no published description or survey of pitting in the Queen's Chamber was found. Petrie and the Edgars describe salt incrustation and fine joints there, not pits, and the pits are the speaker's own observation. The test the criterion names, which tells a gypsum rind on etched calcite from efflorescence on tooled stone, has not been made: the study of 2026 sampled efflorescence and loose material only, and found halite and no gypsum crust. Pitting is a normal result of salt crystallising in porous limestone.",
+      "source": "evidence"
+    },
+    "E31": {
+      "status": "undefined",
+      "basis": "No evidence found: the quartz claim is attributed to no source, and the research files found no matched mineralogy of Tura limestone and Giza bedrock. The one compositional source opened, an author's summary of a study of 1984, pools six Tura and Mokattam quarry sites at 0.5 to 2.5 percent quartz and 96 to 99 percent calcite, which cannot show one richer than the other. That the slab is Tura limestone and its pins copper are judgements by eye, from polish and colour; neither was assayed.",
+      "source": "evidence"
+    },
+    "E32": {
+      "status": "pass",
+      "basis": "The muon paper of 2017 gives a void at least 30 m long, 0.64 of the Gallery's 46.7 m (0.64 to 0.86 over the 30 to 40 m carried for it), with its centre 14.7 m above the top of the Gallery roof (9.6 to 19.8 m) and its south end within 5 m of the pyramid's centre, over the Gallery in plan. Taking comparable as within a factor of 10 in the one dimension published, the order of magnitude that 01 allows (a judgement call), a published void of comparable size lies above the Gallery (it also holds within a factor of two). The section is inferred from the muon excess and not measured, and shape, inclination and the number of voids are open; the heat-exchanger use is judged separately.",
+      "source": "premises"
+    },
+    "E33": {
+      "status": "conditional",
+      "basis": "Partly supported: salt is documented in Khafre's burial chamber, but no analysis of it was found. Salt residue was cleaned from the chamber walls in 2003 to 2004, on a news report that was not re-checked, and Petrie, re-read at source, noted a good deal of crystallised salt inside the coffer. Sodium chloride is plausible, since halite is native to the bedrock the chamber is cut in, and for the same reason it would not show an acid process.",
+      "source": "evidence"
+    },
+    "E34": {
+      "status": "undefined",
+      "basis": "No evidence found: no analysis is attributed in the transcripts, so there is no source to check, and the research files hold none. The research file lists the Red Pyramid's claimed function as not assessed, with no evidence found in its domain.",
+      "source": "evidence"
+    },
+    "E35": {
+      "status": "conditional",
+      "basis": "Partly supported: the cited article does say both things, but neither condition of the criterion is met in full. The article, read in full, calls the features veins of vitrification, grants that iron-rich hydrothermal deposits may occur as well, and reports no sampling and no analysis, so there are no laboratory data for vitrified vein material; nobody has published that analysis. The lightning is in the Inventory Stela, an object of the 26th Dynasty: the translations attributed to Maspero and to Daressy have one great tree struck at the Place of the Sycamore, in an abraded passage whose reading is doubted, and Breasted's partial translation has no lightning at all. All three were seen as quoted on secondary pages, not in a primary edition. The passage records one strike, not how often lightning struck.",
+      "source": "evidence"
+    },
+    "E36": {
+      "status": "fail",
+      "basis": "No evidence found: the sample analyses were located and read in full, and they do not report what the claim says. The report, by an independent group and not peer-reviewed, covers 16 samples of iron-stained material from four of Khafre's boat pits and one control sample, not veins across the plateau, and it has no word for fulgurite, glass or sphere. Lanthanum, cerium and neodymium exceed the control in 3, 4 and 5 of the 16 samples, with medians about half the control, and thorium is below it in all 16; nickel, cobalt, vanadium, zinc and uranium are above it, as is usual for iron and manganese oxide fills. No fulgurite, vitrified rock or microspherule from Giza is documented in any source found.",
+      "source": "evidence"
+    },
+    "E37": {
+      "status": "conditional",
+      "basis": "No evidence found: no four-point measurement along a Giza vein has been made, so the test the criterion names cannot be applied. Measured dry hematite spans the whole range: earthy red material is more resistive than the limestone, and the best specular sample gives a contrast of about 3e4 in 100 ohm m rock, above the criterion's fail line of 1e3 and below the 2.7e5 derived for a 100 m link. Observers describe the Giza fills as red, ochreous or dull black, the resistive end. Veins in the Osiris Shaft are reported from personal observation, and those in the two pyramids rest on the speaker's photographs. The research file expects a fail and says a measurement is needed.",
+      "source": "evidence"
+    },
+    "E38": {
+      "status": "conditional",
+      "basis": "A vein must conduct 2.7e+05 times better than the rock to carry current 100 m; the best measured specular hematite reaches 3.3e+04 times in 100 ohm m rock and 1.0e+06 times in the most resistive 3000 ohm m rock, earthy red hematite reaches 4.2e-02 times at most, and no Giza vein has been measured.",
+      "source": "tier0"
+    },
+    "E39": {
+      "status": "conditional",
+      "basis": "Partly supported: chloride in Khafre's pits is supported, exclusivity is not, and the test the criterion names has not been made. The analyses behind the claim, an independent group's report that is not peer-reviewed and was read in full, cover Khafre's pits only: chlorine reaches 26.7 percent by weight, with gypsum named in almost every phase description, barite and celestine imaged and sulfur up to 5 percent, so chloride only is contradicted there. No analysis of Khufu's pits was found. No survey of the pit walls for retreat, gypsum crust or tool marks was found, which is what the criterion asks for. Khufu's two southern pits were found sealed over dismantled boats, on secondary accounts.",
+      "source": "evidence"
+    },
+    "E40": {
+      "status": "not_testable",
+      "basis": "No test exists: the criterion holds this as a documented constraint with no computed verdict. The basis is an unnamed acquaintance speaking on a tour. No survey, excavation report or publication describing such a tunnel was found, and the cavities known at the Sphinx are a few metres long, on secondary pages that were not opened.",
+      "source": "evidence"
+    }
+  }
+}

@@ -48,7 +48,7 @@ export function mountCinematic(root, { store, cycle, claims, player, ride, rende
   const ticks = steps.map(step => {
     const status = claims.claims[step.id].status;
     const tick = el('span', `tick status-${status}`);
-    tick.title = `${step.id} ${step.title} (${status})`;
+    tick.title = `${step.id} ${step.title} (${status.replace('_', ' ')})`;
     strip.append(tick);
     return tick;
   });
@@ -104,8 +104,9 @@ export function mountCinematic(root, { store, cycle, claims, player, ride, rende
     verdict.hidden = !step;
     if (step) {
       badge.className = `badge status-${claim.status}`;
-      badge.textContent = claim.status;
+      badge.textContent = claim.status.replace('_', ' ');   // "not_testable" reads "not testable"
       basis.textContent = claim.basis;
+      basis.title = claim.basis;   // the card clamps a long basis to two lines; the whole of it is one hover away
     }
     ticks.forEach((tick, i) => tick.classList.toggle('current', i === stepIndex));
     strip.setAttribute('aria-valuenow', String(stepIndex + 1));
@@ -128,11 +129,38 @@ export function mountCinematic(root, { store, cycle, claims, player, ride, rende
   function fitInset() {
     const height = card.offsetHeight;   // 0 while #hud is hidden
     rendererApi.setInset(height ? height + CARD_GUTTER : 0);
+    root.style.setProperty('--card-height', `${height ? height + CARD_GUTTER : 0}px`);   // the Play button centres above it
   }
-  const cardObserver = new ResizeObserver(fitInset);   // the caption's height changes with each step
+  const cardObserver = new ResizeObserver(fitInset);   // the card's height changes with the stage's width
   cardObserver.observe(card);
+  // One height for every step at this width. The card's height sets the scene's frame, so a card that grew and
+  // shrank with its text moved the picture at every step, also while the camera held still. Each step is laid
+  // out once and the card keeps the tallest height; the resume button, which comes and goes, is counted in.
+  function levelCard() {
+    card.style.minHeight = '';
+    if (!card.offsetHeight) return;   // #hud is hidden: levelled when it shows again
+    const resumeHidden = resumeButton.hidden;
+    resumeButton.hidden = false;
+    caption.setAttribute('aria-live', 'off');   // 32 layouts are not 32 announcements
+    let tallest = 0;
+    for (let i = -1; i < steps.length; i++) {
+      renderStep({ stepIndex: i });
+      tallest = Math.max(tallest, card.offsetHeight);
+    }
+    resumeButton.hidden = resumeHidden;
+    renderStep(store.get());
+    caption.setAttribute('aria-live', 'polite');
+    card.style.minHeight = `${tallest}px`;
+  }
+  let levelling = 0;   // one levelling per frame, however many resize events a drag of the window's edge sends
+  const relevel = () => {
+    cancelAnimationFrame(levelling);
+    levelling = requestAnimationFrame(levelCard);
+  };
+  window.addEventListener('resize', relevel);
   function renderHud({ hud }) {
     root.classList.toggle('hidden', !hud.visible);
+    levelCard();
     fitInset();   // at once, not on the observer's next frame
   }
 
@@ -175,7 +203,10 @@ export function mountCinematic(root, { store, cycle, claims, player, ride, rende
       unsubscribe();
       cardObserver.disconnect();
       rendererApi.setInset(0);
+      root.style.removeProperty('--card-height');
       window.removeEventListener('keydown', onKey);
+      window.removeEventListener('resize', relevel);
+      cancelAnimationFrame(levelling);
       root.replaceChildren();
       root.classList.remove('hidden');
     },

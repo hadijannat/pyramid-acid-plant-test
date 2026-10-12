@@ -12,6 +12,7 @@ from pyramid.geometry.model import level_volume_curve
 from pyramid.ledger import Ledger, LedgerError, load
 from pyramid.screening import Result
 from pyramid.species import Species, load_species, species_payload
+from pyramid.verdicts import merged, stale
 
 NOTICE = "Animation of the claim. Not a simulation result."
 CYCLE_FILE = REPO_ROOT / "ledger" / "cycle.yaml"
@@ -58,7 +59,9 @@ def _finite(x: float) -> float | None:
 
 
 def claims_payload(ledger: Ledger, results: dict[str, Result],
-                   verdicts: dict[str, tuple[str, str]]) -> dict:
+                   verdicts: dict[str, tuple[str, str]], source: dict[str, str] | None = None) -> dict:
+    """source: {claim: 'tier0' | a package of pyramid.verdicts.PACKAGES | 'none'}, which decided each claim."""
+    source = source or {}
     claims = []
     for claim in ledger.claims.values():
         status, basis = verdicts.get(claim.id, (claim.status, ""))
@@ -73,6 +76,7 @@ def claims_payload(ledger: Ledger, results: dict[str, Result],
             "criterion": claim.criterion,
             "status": status,
             "basis": basis,
+            "source": source.get(claim.id, "none"),
             # a result belongs to a claim when the claim depends on every quantity the result reads
             "numbers": [
                 {"label": result.label, "value": _finite(result.value), "low": _finite(result.low),
@@ -139,8 +143,10 @@ def cycle_payload(ledger: Ledger, curves: dict[str, list[tuple[float, float]]],
 
 def main() -> None:
     led = load()
-    results = screening.all_results(led)
-    decided = screening.verdicts(led, results)
+    # Tier 0 and every simulation package whose results are committed (pyramid.verdicts refuses an overruling)
+    if old := stale(led):   # their verdicts would go out under this ledger's digest
+        raise LedgerError(f"results of {', '.join(old)} were generated from another ledger: run those packages first")
+    results, decided, source = merged(led)
     species = load_species(step_ids=set(led.claims))
     wet = sorted({
         actor["space"]
@@ -159,7 +165,7 @@ def main() -> None:
 
     # the marking rule reads the verdict word alone; the basis sentence goes to claims.json
     statuses = {claim: status for claim, (status, _) in decided.items()}
-    for name, payload in (("claims.json", claims_payload(led, results, decided)),
+    for name, payload in (("claims.json", claims_payload(led, results, decided, source)),
                           ("cycle.json", cycle_payload(led, curves, species, statuses))):
         (OUT_DIR / name).write_text(json.dumps(payload, indent=1, allow_nan=False) + "\n")
     provenance.write_manifest(OUT_DIR, "viewer", led)

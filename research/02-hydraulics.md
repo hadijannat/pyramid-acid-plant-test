@@ -421,7 +421,7 @@ A result favourable to the hypothesis would be: tests 2 to 7 passing with bounda
 
 ## 7. Sources
 
-- [S1] Local transcripts (auto-generated). History Drops part 1 (youtube.com/watch?v=_Afl9FvO03k), part 2 (youtube.com/watch?v=W14V4jNsCRQ); Danny Jones, "New Scans Expose An Unfortunate Secret Under the Pyramids | Geoffrey Drumm" (youtube.com/watch?v=BcGhafq4UY4), 00:36:30-00:56:40, 01:14:28-01:25:13, 02:41:43-02:43:42. Files under /Users/aeroshariati/Pyramid/youtube-transcript/.
+- [S1] Local transcripts (auto-generated). History Drops part 1 (youtube.com/watch?v=_Afl9FvO03k), part 2 (youtube.com/watch?v=W14V4jNsCRQ); Danny Jones, "New Scans Expose An Unfortunate Secret Under the Pyramids | Geoffrey Drumm" (youtube.com/watch?v=BcGhafq4UY4), 00:36:30-00:56:40, 01:14:28-01:25:13, 02:41:43-02:43:42. Files under youtube-transcript/ (local, not redistributed).
 - [S2] W. M. Flinders Petrie (1883), *The Pyramids and Temples of Gizeh*, ch. 6 (outside) and ch. 7 (inside), online transcription: https://www.ronaldbirdsall.com/gizeh/petrie/c6.html and https://www.ronaldbirdsall.com/gizeh/petrie/c7.html
 - [S3] M. Lehner (2014), "On the Waterfront: Canals and Harbors in the Time of Giza Pyramid-Building", AERAGRAM 15(1-2), pp. 14-23 (also p. 2 figure). https://aeraweb.org/wp-content/uploads/2022/08/aeragram15_1-2.pdf (page images read directly)
 - [S4] Sharafeldin, Essa, Youssef, Karsli, Diab, Sayil (2019), "Shallow geophysical techniques to investigate the groundwater table at the Great Pyramids of Giza, Egypt", Geosci. Instrum. Method. Data Syst. 8, 29-43. https://gi.copernicus.org/articles/8/29/2019/

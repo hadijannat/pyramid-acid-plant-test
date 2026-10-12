@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from pyramid import REPO_ROOT, screening
+from pyramid import REPO_ROOT, verdicts
 from pyramid.ledger import STATUSES, LedgerError, load
 from pyramid.species import SPECIES_FILE, Species, load_species, species_payload, species_status
 
@@ -65,7 +65,7 @@ def test_produced_by_is_checked_against_the_steps_only_when_they_are_given(tmp_p
 
 
 MARKING = [("fail", "claimed"), ("undefined", "claimed"), ("conditional", "conditional"),
-           ("pass", "plain"), ("pending", "plain")]
+           ("pass", "plain"), ("pending", "plain"), ("not_testable", "plain")]
 
 
 def test_the_marking_cases_cover_every_verdict_word():
@@ -92,10 +92,13 @@ def test_the_payload_is_the_table_entry_without_produced_by_plus_the_status():
     }
 
 
-def test_with_the_screening_as_it_stands_the_products_of_failed_steps_are_marked_claimed():
-    """S16, S20 and S27 fail in the Tier 0 screening; update this set when a verdict changes."""
+def test_with_the_verdicts_as_they_stand_the_products_of_failed_and_undefined_steps_are_marked_claimed():
+    """The marking the viewer ships, from Tier 0 and the packages: S02 is undefined, S16, S20 and S27 fail, S19 and
+    S23 are conditional. Update these sets when a verdict changes."""
     led = load()
-    statuses = {claim: status for claim, (status, _) in screening.verdicts(led, screening.all_results(led)).items()}
+    statuses = {claim: status for claim, (status, _) in verdicts.merged(led)[1].items()}
     marked = {key: species_status(entry, statuses) for key, entry in load_species(step_ids=set(led.claims)).items()}
-    assert {key for key, status in marked.items() if status != "plain"} == {"so3", "sulfuric_acid", "hydrogen_chloride"}
-    assert {marked[key] for key in ("so3", "sulfuric_acid", "hydrogen_chloride")} == {"claimed"}
+    assert {key for key, status in marked.items() if status == "claimed"} == {
+        "so2", "so3", "sulfuric_acid", "hydrogen_chloride"}
+    assert {key for key, status in marked.items() if status == "conditional"} == {"sulfurous_acid", "calcium_sulfate"}
+    assert {key for key, status in marked.items() if status == "plain"} == {"h2s", "air", "water"}

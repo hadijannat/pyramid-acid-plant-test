@@ -1,0 +1,16 @@
+{
+  "case": "summary",
+  "timestamp": "2026-10-12T12:04:31+00:00",
+  "commit": "64a1c03fbbb2f980ef84fe38b234c4bc66a4a567",
+  "ledger": "d45f97327cec62761b63a229cd38bb9576fc53ff02e76675f362458da580bda7",
+  "python": "3.12.12",
+  "versions": {
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "pyyaml": "6.0.3",
+    "gmsh": "4.15.2",
+    "trimesh": "5.1.1",
+    "matplotlib": "3.11.2",
+    "pytest": "9.1.1"
+  }
+}

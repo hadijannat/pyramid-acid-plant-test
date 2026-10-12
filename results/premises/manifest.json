@@ -1,0 +1,25 @@
+{
+  "case": "premises",
+  "timestamp": "2026-10-12T11:37:00+00:00",
+  "commit": "5dc5d367ad9f3fb6f3c527da7a65f371ccd65884",
+  "ledger": "d45f97327cec62761b63a229cd38bb9576fc53ff02e76675f362458da580bda7",
+  "python": "3.12.12",
+  "versions": {
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "pyyaml": "6.0.3",
+    "gmsh": "4.15.2",
+    "trimesh": "5.1.1",
+    "matplotlib": "3.11.2",
+    "pytest": "9.1.1"
+  },
+  "assumptions": [
+    "A King's Chamber shaft is a level run from the chamber wall, one straight incline at the surveyed mean slope and, in the level-end reading, a level last stretch, met with the plane of the original casing.",
+    "The two readings of a disputed feature (the level outer end of the southern shaft, the grooves reaching the doorway) are the two ends of the three-way rule; the reading of the direct survey is the unfavourable end.",
+    "An antechamber groove is rectangular at its residual depth, which overstates a half-round groove.",
+    "The clearance round a portcullis slab is the slot width less the thickness of the one surviving fragment.",
+    "Comparable size for the Big Void is tested on its length, the only dimension the muon paper states, within a factor of ten; the assumed section and volume carried in the ledger decide nothing.",
+    "About 3 to 5 in is read to half an inch either side, the precision of a figure quoted in whole inches.",
+    "E25: one witness quoted twice at second hand is counted as the survey record of the thickness, a judgement call that decides pass against conditional; the closure itself is in the direct survey, which gives no thickness."
+  ]
+}

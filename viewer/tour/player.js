@@ -99,7 +99,9 @@ export function createPlayer({ store, cycle, actors, ride, claims }) {
   }
 
   function goto(i) {   // -1 the prologue, 0..30 a step; anything else is ignored
-    if (Number.isInteger(i) && i >= -1 && i < entries.length - 1) seek(starts[i + 1]);
+    if (!(Number.isInteger(i) && i >= -1 && i < entries.length - 1)) return;
+    if (i === index && !playing) index = null;   // a paused jump to the entry already shown re-enters it: the camera returns to its first keyframe
+    seek(starts[i + 1]);
   }
 
   function gotoId(id) {

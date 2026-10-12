@@ -1,0 +1,113 @@
+{
+  "results": [],
+  "verdicts": {
+    "S02": {
+      "status": "undefined",
+      "basis": "Not specified by the hypothesis: the transcripts assign the conversion of hydrogen sulfide to sulfur dioxide to three steps in the satellite pyramids and name none of them, so no mass balance can be written, and the criterion holds the claim undefined until they are named. The patent cited for three steps covers the whole route from hydrogen sulfide to sulfuric acid, not this conversion."
+    },
+    "S26": {
+      "status": "undefined",
+      "basis": "Not specified by the hypothesis: the transcripts name no outlet, no driver and no destination for the liquid said to leave through the Queen's Chamber, and the criterion holds the claim undefined until they are named. The chamber's two shafts were closed at the chamber by about 127 mm of uncut wall stone until 1872, and the southern one is closed again by a slab 63.6 m up, so they are dead-end ducts; no other outlet is surveyed."
+    },
+    "S05": {
+      "status": "not_testable",
+      "basis": "No test exists: the criterion holds this as a documented constraint with no computed verdict. Nothing about the formations was found outside the speaker's own videos: no location, no dimensions and no acoustic measurement."
+    },
+    "E05": {
+      "status": "not_testable",
+      "basis": "No test exists: the claim is an analogy between a planned off-world sulfuric-acid process and the pyramid, which the criterion records without a test. No research file opened the cited paper, so nothing is asserted here about what it says."
+    },
+    "E23": {
+      "status": "not_testable",
+      "basis": "No test exists: the claim is the speaker's own earlier hypothesis about the Serapeum boxes, an analogy that the criterion records without a test in this project. The research files did not assess the Serapeum."
+    },
+    "E24": {
+      "status": "not_testable",
+      "basis": "No test exists: the criterion holds this as a documented constraint with no computed verdict. The formations are known only from the speaker's own site videos; no location, dimensions or acoustic measurement was found, so there is no geometry to model."
+    },
+    "E40": {
+      "status": "not_testable",
+      "basis": "No test exists: the criterion holds this as a documented constraint with no computed verdict. The basis is an unnamed acquaintance speaking on a tour. No survey, excavation report or publication describing such a tunnel was found, and the cavities known at the Sphinx are a few metres long, on secondary pages that were not opened."
+    },
+    "E02": {
+      "status": "fail",
+      "basis": "No evidence found: no match between the two datasets was found. Both were read in full; the research file calls the claim weak and does not call it contradicted. The cited paper analysed one sulfate nodule and one host mudstone by X-ray fluorescence; of the ten elements the speaker names for the iron deposits it reports four, all common trace elements, and none of cerium, neodymium, silver, gold, platinum or tin. The iron-deposit data are 16 samples from Khafre's boat pits, in a report that is not peer-reviewed. The one level the files give for both, thorium, is 139 ppm in the paper's nodule and 0.25 to 1.36 ppm in the pit samples."
+    },
+    "E03": {
+      "status": "fail",
+      "basis": "No evidence found: no survey of a Giza cave shows cave forms cut in iron ore. The one study of Giza cave deposits that was read in full describes a mudstone exposure on the west side of the plateau and reports iron and manganese oxide as a minor part of gypsum and fracture fills (0.65 and 6.19 percent iron oxide by weight in its two samples), and the research file finds no ore body documented at Giza: the plateau is carbonate rock with minor oxide fills. That exposure is not the Tomb of the Birds; the research files read no survey of that cave and record no search for one. The paper the claim cites concerns iron-ore caves at other sites, which the criterion sets aside, and no research file opened it."
+    },
+    "E04": {
+      "status": "conditional",
+      "basis": "Partly supported: mineral evidence of sulfuric-acid cave formation is published for the plateau, but not for the sites named. One paper, read in full, argues it from natroalunite, replacive gypsum and related minerals at a single exposure at Darb El Fayum on the west side, in a mudstone unit it lists apart from the formation the pyramids stand on. That exposure is not the trial passages, the Tomb of the Birds or any cave the speaker names, and no sulfur isotopes were measured. Likeness in photographs is not evidence."
+    },
+    "E06": {
+      "status": "undefined",
+      "basis": "No evidence found: the transcripts call sulfur mining near the Suez Canal well documented but attribute it to no source and garble the place names, so there is nothing to check, and the research files hold no dated archaeological source for Old Kingdom sulfur mining. The claim belongs to the sulfur-burning version of the hypothesis, which the speaker has replaced."
+    },
+    "E07": {
+      "status": "fail",
+      "basis": "Contradicted: the patent does describe three steps with heat exchangers, but none of them can run as the hypothesis needs. Its claims were re-read at source (US 9,108,846): the first step burns hydrogen sulfide at 900 C or more, or oxidises it over a catalyst from 200 C; the second runs at 390 to 430 C, over a vanadium catalyst by the patent's description; the third cools the gas to 60 to 120 C. No step runs at ambient temperature without a catalyst, and the hypothesis supplies neither heat nor catalyst. The three steps are the whole route from hydrogen sulfide to acid, not three stages of making sulfur dioxide."
+    },
+    "E08": {
+      "status": "fail",
+      "basis": "No evidence found: no source opened, of any date, describes an original lined shaft in the King's Chamber floor. Petrie's survey records only that the floor had been dug under at its west end, below the coffer, which is an excavation in masonry about 43 m above the ground. The research files name no survey older than that digging which records a shaft; the hole is known from the speaker's photographs and a video."
+    },
+    "E09": {
+      "status": "fail",
+      "basis": "No evidence found: no conduit is surveyed between the ground and the King's Chamber floor, which lies about 43 m above the pavement in masonry. The only feature recorded under the floor is the excavation at its west end, and the speaker himself says the connection is not known."
+    },
+    "E10": {
+      "status": "pass",
+      "basis": "Supported: for the southern shaft. Vyse's narrative of 1837 has a large stone removed from the southern channel about 7 ft inside the surface on 29 May, after which air rushed into the chamber. It was read as OCR text by one route; a paper of 1964, read on the page, reports the same. The northern channel had already been forced open, so the record covers one shaft, which is what the criterion asks for."
+    },
+    "E16": {
+      "status": "fail",
+      "basis": "No evidence found: the surveys of the Subterranean Chamber and its pit that were read record no valve seat, hinge socket, fitting or valve part, and the drawing by a German engineering team that the claim rests on could not be identified."
+    },
+    "E26": {
+      "status": "pass",
+      "basis": "Supported: a letter of 27 November 1978 from the Arizona Bureau of Geology and Mineral Technology (sample no. 56411) ranks the sample as mostly calcite with some halite and gypsum, which are the three phases named. The letter was read as OCR text of its reproduction in a later book. It is qualitative: it gives no method, no quantities, no sampler and no sampling position."
+    },
+    "E27": {
+      "status": "fail",
+      "basis": "Contradicted: the example the criterion names, no sodium chloride in the wetted zone, is the opposite of what was read, and nothing else that the acid model predicts and the salt model cannot has been found. Sodium chloride is present in the Queen's Chamber, which the hypothesis fills: the 1978 letter lists some halite, and a laboratory study of 2026, read by two routes, identifies the efflorescence there as halite. The same study has efflorescence on the west wall and ceiling growing visibly between 2022 and 2024 (read by one extraction route only), which shows a present-day process, and the chamber was cleaned in 1995 to 1997 without surviving documentation, so today's surface need not match the crust before the cleaning. The 1978 letter is older than that cleaning; who took its sample, when and from what height is not stated. The test, as the criterion words it, is of the surface as sampled. No height-resolved salt map exists. The research file calls the inference from missing calcium chloride weak, since calcium chloride takes up water from the air and would not last as a crust (general knowledge there, not sourced)."
+    },
+    "E28": {
+      "status": "conditional",
+      "basis": "Partly supported: a salt crust on the Grand Gallery walls is documented for the 1990s, when twelve months were spent cleaning it off in 1998, but its composition was never published, an account of 1910 records no salt in the Gallery, and Petrie does not describe its walls. A crust limit at one level in the Queen's Chamber and the Gallery, which the criterion asks for, has not been looked for: no height-resolved salt map exists. The one height-resolved datum, Petrie's note that the two lower laps of the Queen's Chamber niche were salted and the three upper ones not, is not what a complete fill predicts, and the study of 2026 found no gypsum crust in that chamber."
+    },
+    "E30": {
+      "status": "conditional",
+      "basis": "No evidence found: no published description or survey of pitting in the Queen's Chamber was found. Petrie and the Edgars describe salt incrustation and fine joints there, not pits, and the pits are the speaker's own observation. The test the criterion names, which tells a gypsum rind on etched calcite from efflorescence on tooled stone, has not been made: the study of 2026 sampled efflorescence and loose material only, and found halite and no gypsum crust. Pitting is a normal result of salt crystallising in porous limestone."
+    },
+    "E31": {
+      "status": "undefined",
+      "basis": "No evidence found: the quartz claim is attributed to no source, and the research files found no matched mineralogy of Tura limestone and Giza bedrock. The one compositional source opened, an author's summary of a study of 1984, pools six Tura and Mokattam quarry sites at 0.5 to 2.5 percent quartz and 96 to 99 percent calcite, which cannot show one richer than the other. That the slab is Tura limestone and its pins copper are judgements by eye, from polish and colour; neither was assayed."
+    },
+    "E33": {
+      "status": "conditional",
+      "basis": "Partly supported: salt is documented in Khafre's burial chamber, but no analysis of it was found. Salt residue was cleaned from the chamber walls in 2003 to 2004, on a news report that was not re-checked, and Petrie, re-read at source, noted a good deal of crystallised salt inside the coffer. Sodium chloride is plausible, since halite is native to the bedrock the chamber is cut in, and for the same reason it would not show an acid process."
+    },
+    "E34": {
+      "status": "undefined",
+      "basis": "No evidence found: no analysis is attributed in the transcripts, so there is no source to check, and the research files hold none. The research file lists the Red Pyramid's claimed function as not assessed, with no evidence found in its domain."
+    },
+    "E35": {
+      "status": "conditional",
+      "basis": "Partly supported: the cited article does say both things, but neither condition of the criterion is met in full. The article, read in full, calls the features veins of vitrification, grants that iron-rich hydrothermal deposits may occur as well, and reports no sampling and no analysis, so there are no laboratory data for vitrified vein material; nobody has published that analysis. The lightning is in the Inventory Stela, an object of the 26th Dynasty: the translations attributed to Maspero and to Daressy have one great tree struck at the Place of the Sycamore, in an abraded passage whose reading is doubted, and Breasted's partial translation has no lightning at all. All three were seen as quoted on secondary pages, not in a primary edition. The passage records one strike, not how often lightning struck."
+    },
+    "E36": {
+      "status": "fail",
+      "basis": "No evidence found: the sample analyses were located and read in full, and they do not report what the claim says. The report, by an independent group and not peer-reviewed, covers 16 samples of iron-stained material from four of Khafre's boat pits and one control sample, not veins across the plateau, and it has no word for fulgurite, glass or sphere. Lanthanum, cerium and neodymium exceed the control in 3, 4 and 5 of the 16 samples, with medians about half the control, and thorium is below it in all 16; nickel, cobalt, vanadium, zinc and uranium are above it, as is usual for iron and manganese oxide fills. No fulgurite, vitrified rock or microspherule from Giza is documented in any source found."
+    },
+    "E37": {
+      "status": "conditional",
+      "basis": "No evidence found: no four-point measurement along a Giza vein has been made, so the test the criterion names cannot be applied. Measured dry hematite spans the whole range: earthy red material is more resistive than the limestone, and the best specular sample gives a contrast of about 3e4 in 100 ohm m rock, above the criterion's fail line of 1e3 and below the 2.7e5 derived for a 100 m link. Observers describe the Giza fills as red, ochreous or dull black, the resistive end. Veins in the Osiris Shaft are reported from personal observation, and those in the two pyramids rest on the speaker's photographs. The research file expects a fail and says a measurement is needed."
+    },
+    "E39": {
+      "status": "conditional",
+      "basis": "Partly supported: chloride in Khafre's pits is supported, exclusivity is not, and the test the criterion names has not been made. The analyses behind the claim, an independent group's report that is not peer-reviewed and was read in full, cover Khafre's pits only: chlorine reaches 26.7 percent by weight, with gypsum named in almost every phase description, barite and celestine imaged and sulfur up to 5 percent, so chloride only is contradicted there. No analysis of Khufu's pits was found. No survey of the pit walls for retreat, gypsum crust or tool marks was found, which is what the criterion asks for. Khufu's two southern pits were found sealed over dismantled boats, on secondary accounts."
+    }
+  }
+}

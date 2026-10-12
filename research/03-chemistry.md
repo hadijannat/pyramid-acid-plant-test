@@ -349,7 +349,7 @@ Opened in this session unless marked otherwise.
 34. Connick R. E. et al. (1995) Inorg. Chem. 34, 4543. doi:10.1021/ic00122a009. NOT opened; rate law not found.
 35. Cantera community wiki listing SOx sub-mechanisms (charlesreid1.com/wiki/Cantera/Mechanisms/SOx). NOT opened; search snippet only.
 36. Goodreads quote page attributed to C. Dunn, The Giza Power Plant, on the 1978 salt analysis. NOT opened (403); search snippet only.
-37. Local transcripts: clip 1 (`history-drops/...-podcast-pyramid-history-ancient/transcript.md`), clip 2 (`history-drops/...-podcast-science-history-ancient/transcript.md`), full episode (`danny-jones/new-scans-expose-an-unfortunate-secret-under-the-pyramids-geoffrey-drumm/transcript.md`, 00:00-01:37), all under `/Users/aeroshariati/Pyramid/youtube-transcript/`.
+37. Local transcripts: clip 1 (`history-drops/...-podcast-pyramid-history-ancient/transcript.md`), clip 2 (`history-drops/...-podcast-science-history-ancient/transcript.md`), full episode (`danny-jones/new-scans-expose-an-unfortunate-secret-under-the-pyramids-geoffrey-drumm/transcript.md`, 00:00-01:37), all under `youtube-transcript/`.
 
 Sources added in the verification pass of 2026-10-10 (all opened that day unless marked):
 
@@ -367,7 +367,7 @@ Sources added in the verification pass of 2026-10-10 (all opened that day unless
 49. Adams J. W., Rodriguez D., Cox R. A. (2005) The uptake of SO2 on Saharan dust: a flow tube study. Atmos. Chem. Phys. 5, 2679-2689. doi:10.5194/acp-5-2679-2005 (abstract page).
 50. Baltrusaitis J., Cwiertny D., Grassian V. (2007) Adsorption of sulfur dioxide on hematite and goethite particle surfaces. Phys. Chem. Chem. Phys. 9(41), 5542-5554. Abstract at https://baltrusaitislab.lehigh.edu/publications/adsorption-sulfur-dioxide-hematite-and-goethite-particle-surfaces
 51. Spiker E., Hosker R., Weintraub V., Sherwood S. (1995) Laboratory study of SO2 dry deposition on limestone and marble: effects of humidity and surface variables. Water, Air, and Soil Pollution 85(4), 2679-2685. doi:10.1007/BF01186239. Abstract at https://pubs.usgs.gov/publication/70018824
-52. Verification arithmetic: `verify03.py` and `gyp.py`, Python standard library only, kept outside the project in the session scratchpad (`/private/tmp/claude-501/-Users-aeroshariati-Pyramid/4a93d66c-12de-49a2-8aa6-a84a56de75a2/scratchpad/chem/`). The scratchpad is temporary; the working is reproduced in the verification section so the numbers do not depend on it.
+52. Verification arithmetic: `verify03.py` and `gyp.py`, Python standard library only, throwaway scripts not kept in the project; the working is reproduced in the verification section so the numbers do not depend on them.
 
 ---
 

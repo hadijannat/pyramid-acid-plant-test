@@ -1,0 +1,38 @@
+{
+  "case": "chem",
+  "timestamp": "2026-10-12T12:04:15+00:00",
+  "commit": "64a1c03fbbb2f980ef84fe38b234c4bc66a4a567",
+  "ledger": "d45f97327cec62761b63a229cd38bb9576fc53ff02e76675f362458da580bda7",
+  "python": "3.12.12",
+  "versions": {
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "pyyaml": "6.0.3",
+    "gmsh": "4.15.2",
+    "trimesh": "5.1.1",
+    "matplotlib": "3.11.2",
+    "pytest": "9.1.1"
+  },
+  "assumptions": [
+    "The batch is Tier 0's largest: one King's Chamber of pure sulfur dioxide at one atmosphere per cycle.",
+    "The hypothesis states no cycle time; one day is taken, as Tier 0 does for S20, with a range of one hour to one year.",
+    "S19: the Gallery is half full, the mean of the rise, with mixed gas above mixed water and a gas film and a liquid film in series at the level surface.",
+    "S19: the water takes the undissociated gas in proportion to its pressure; dissociation enters the equilibrium share only, and sulfur dioxide carried out with displaced air is not deducted.",
+    "S19: the gas-side coefficient runs from diffusion through still gas to natural convection; no source gives it.",
+    "S19: the gas is given the whole cycle over the half-full Gallery, as if the rise lasted that long; the share for a contact of the ledger's fill time, which is shorter, is given beside it.",
+    "S22: emptying the whole Gallery draws one Gallery volume of gas, of which the King's Chamber can supply only its own volume; the rest is outside air, come down the shafts of S14 or in through the masonry joints.",
+    "S22: the rising water is credited with all the sulfur dioxide, every mole of oxygen the oxidation can use, and nitrogen and oxygen up to their solubility in water that arrives free of dissolved gas.",
+    "S23: each cycle starts with fresh water; bare limestone neutralises acid until gypsum saturates, then a layer grows only as fast as acid diffuses through it, with the measured diffusivity of the ledger.",
+    "S23: the fresh water of the next cycle dissolves gypsum up to its solubility if it comes to saturation, and at the least what diffusion alone carries into still water in the time it stands, which the hypothesis does not state; the ledger takes its drain time over its cycle time, with a range from the shortest drain in the longest cycle to a dwell equal to the acid's.",
+    "S23: the acid of the next batch thins a layer and cannot strip it, because the layer grows from beneath as it dissolves outside; counting all the batch's sulfate as free thins it least, and the share left with the ledger's bisulfate constant is given beside it.",
+    "S01 and E01: one mole of hydrogen sulfide per mole of sulfur dioxide, with no loss in the conversion.",
+    "The oxidation follows the ledger's iron law and stops when the dissolved oxygen is used up; concentrations stand for activities."
+  ],
+  "depends_on": {
+    "S01": [],
+    "S19": [],
+    "S22": [],
+    "S23": [],
+    "E01": []
+  }
+}

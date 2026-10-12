@@ -288,7 +288,7 @@ None of these needs two-way coupling at CFD time-steps; steady or slowly varying
 1. Aigner, T. (1983). A Pliocene cliff-line around the Giza Pyramids Plateau, Egypt. *Palaeogeogr. Palaeoclimatol. Palaeoecol.* 42, 313–322. https://publikationen.uni-tuebingen.de/xmlui/handle/10900/49278 (PDF read in full)
 2. El Aref, M. M. & Refai, E. (1987). Paleokarst processes in the Eocene limestones of the Pyramids Plateau, Giza, Egypt. *J. African Earth Sci.* https://doi.org/10.1016/0899-5362(87)90079-0 (abstract only)
 3. Badawy, H. S. (2021; online 2020). Development of sulfuric acid speleogenetic deposits within cavernous Middle Eocene beds: inference on hydrocarbon gas seepages, Giza Pyramids Plateau, Egypt. *Acta Geologica Sinica (Engl. Ed.)* 95, 946–961. https://doi.org/10.1111/1755-6724.14512 (abstract only)
-4. Transcripts in `/Users/aeroshariati/Pyramid/youtube-transcript/` (three files named in the task).
+4. Transcripts in `youtube-transcript/` (three files named in the task).
 5. Hawass, Z. (2007). The discovery of the Osiris Shaft at Giza. In Hawass & Richards (eds.), *The Archaeology and Art of Ancient Egypt: Essays in Honor of David B. O'Connor*, vol. I, 379–397. ASAE Cahier 36. https://giza.fas.harvard.edu/pubdocs/476/full/ (PDF read in full)
 6. Schoch, R. M. & Ulissey, C. (2023). The Giza Pyramids cap ancient lightning strikes (web article, 4–7 Oct 2023). https://robertschoch.com/giza_pyramids_cap_ancient_lightning_strikes.html
 7. Seyfzadeh, M. & Schoch, R. (2019). Major geological fissure through prehistoric lion monument at Giza… *Archaeological Discovery* 7, 211–256. https://doi.org/10.4236/ad.2019.74011
@@ -371,7 +371,7 @@ Not re-checked on this pass (flags unchanged): Aigner 1983 [1], Hawass 2007 [5],
 - Second-route check on the dilute-acid conductivities, needed because the table copy [31] has flattened columns. Dividing each conductivity by the solution's normality gives equivalent conductances of 238, 233, 223 and 201 S·cm²/equiv for 0.5, 1, 2 and 5 wt % H2SO4, and 329, 338 and 331 for 0.5, 1 and 2 wt % HCl. These fall in the ranges expected for the two acids at 0.1 to 1 N (about 200–250 and 330–390; these expected ranges are recalled Kohlrausch-type values, not opened this session) and the sulfuric series declines smoothly with concentration as it should. The 5 wt % value (21.1 S/m) also joins smoothly to the directly read 15 wt % value of 55.6 S/m in [9]. So the positional reading of the copy is very unlikely to be off by a column. The grade stays "secondary copy": replace with a primary table before publication.
 - ISIDA rare earths, 16 pit samples (ppm): La 3.28–77.02, median 16.95, control 33.95; Ce 8.43–207.49, median 40.30, control 72.08; Nd 4.41–160.36, median 21.38, control 35.93; Th 0.25–1.36, median 0.57, control 4.54.
 - Helwan to the Giza pyramids: great-circle distance about 24 km from approximate coordinates (29.85 N, 31.33 E and 29.979 N, 31.134 E); the coordinates are mine, not from a source.
-- Script: `/private/tmp/claude-501/-Users-aeroshariati-Pyramid/4a93d66c-12de-49a2-8aa6-a84a56de75a2/scratchpad/verify07.py` (standard library only; temporary location).
+- Script: `verify07.py`, a throwaway script not kept in the project (standard library only).
 
 ### Verdict changes
 

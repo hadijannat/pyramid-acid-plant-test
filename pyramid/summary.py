@@ -1,0 +1,158 @@
+"""The verdict on every claim, from Tier 0 and the simulation packages: results/summary/.
+
+verdicts.md and verdicts.json are the table, verdict-map.svg is one tile per claim, and report.md gives the
+claims, their deciding numbers, the figures and the assumptions, grouped by what decided them.
+"""
+import json
+from collections import Counter
+from pathlib import Path
+
+import matplotlib
+
+from pyramid import screening
+from pyramid.ledger import STATUSES, Ledger, LedgerError, load
+from pyramid.provenance import write_manifest
+from pyramid.simkit import RESULTS, read_results
+from pyramid.verdicts import PACKAGES, merged, stale
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt  # noqa: E402
+
+OUT_DIR = RESULTS / "summary"
+# The viewer's verdict colours (viewer/style.css) and a mark, so that a tile does not rest on colour alone.
+MARKS = {"pass": ("#56b884", "✓"), "fail": ("#e0655f", "✗"), "conditional": ("#e3aa45", "~"),
+         "undefined": ("#8f949c", "?"), "pending": ("#7f9db8", "…"), "not_testable": ("#6f6a7c", "–")}
+DECIDERS = {
+    "tier0": "Tier 0 screening: closed-form bounds computed from the ledger",
+    "premises": "Geometric premises: the survey record against each criterion",
+    "evidence": "Documentary checks: what the research files found in the sources",
+    "flow": "Water and gas movement: reduced hydraulic and gas-network models",
+    "chem": "Chemistry and feed: gas transfer, oxidation, wall attack and the feed",
+    "electro": "Ground current, lightning, the piezoelectric chain and room acoustics",
+    "em": "The 2018 electromagnetic study: two full-wave field solvers",
+    "none": "Not yet decided",
+}
+WORDS = """\
+- `pass`: the criterion holds even at the end of each input's range least favourable to the hypothesis; for a \
+documentary claim, a source that was read meets it.
+- `fail`: it fails even at the most favourable end; for a documentary claim, a source that would show it was read \
+and does not, or contradicts it.
+- `conditional`: the outcome differs between the ends of a range the ledger carries, and the basis names the input \
+on which it turns; for a documentary claim, it is partly met, or rests on a secondary source or on a measurement \
+nobody has made.
+- `undefined`: the criterion cannot be evaluated without an input the hypothesis does not state, or the claim names \
+no source that could be checked.
+- `not testable`: the claim's own criterion says no computation or document can decide it.
+- `pending`: not yet decided.
+"""
+
+
+def table(ledger: Ledger, verdicts: dict[str, tuple[str, str]], source: dict[str, str]) -> str:
+    rows = "".join(
+        f"| {claim.id} | {claim.statement} | {verdicts[claim.id][0]} | {source[claim.id]} | {verdicts[claim.id][1]} |\n"
+        for claim in ledger.claims.values()
+    )
+    return "| Claim | Statement | Status | Decided by | Basis |\n|---|---|---|---|---|\n" + rows
+
+
+def counts(verdicts: dict[str, tuple[str, str]]) -> dict[str, int]:
+    """How many claims carry each verdict word, in the vocabulary's order."""
+    tally = Counter(status for status, _ in verdicts.values())
+    return {status: tally[status] for status in STATUSES}
+
+
+def headline(tally: dict[str, int]) -> str:
+    return ", ".join(f"{n} {status.replace('_', ' ')}" for status, n in tally.items())
+
+
+def verdict_map(ledger: Ledger, verdicts: dict[str, tuple[str, str]], path: Path, columns: int = 20) -> None:
+    """One tile per claim, coloured and marked by its verdict: the process steps above the evidence claims."""
+    plt.rcParams["svg.hashsalt"] = "pyramid"   # the same verdicts give the same file, byte for byte
+    fig, ax = plt.subplots(figsize=(11, 4.2))
+    y = 0.0
+
+    def tile(x, y, status, size=0.94):
+        ax.add_patch(plt.Rectangle((x, y), size, size, color=MARKS[status][0], linewidth=0))
+
+    for title, letter in (("Process steps as claimed", "S"), ("Evidence claims", "E")):
+        ids = [claim for claim in ledger.claims if claim.startswith(letter)]
+        ax.text(0, y + 0.3, title, fontsize=10, color="#14161a", va="center")
+        y += 0.7
+        for n, claim in enumerate(ids):
+            status = verdicts[claim][0]
+            x, row = n % columns, y + n // columns
+            ink = "white" if status == "not_testable" else "#14161a"   # the one colour too dark for dark ink
+            tile(x, row, status)
+            ax.text(x + 0.47, row + 0.34, claim, ha="center", va="center", fontsize=8, color=ink, weight="bold")
+            ax.text(x + 0.47, row + 0.70, MARKS[status][1], ha="center", va="center", fontsize=8, color=ink)
+        y += -(-len(ids) // columns) + 0.4
+    x = 0.0
+    for status, n in counts(verdicts).items():
+        if n:
+            tile(x, y + 0.1, status, 0.5)
+            ax.text(x + 0.25, y + 0.36, MARKS[status][1], ha="center", va="center", fontsize=8,
+                    color="white" if status == "not_testable" else "#14161a")
+            ax.text(x + 0.65, y + 0.36, f"{n} {status.replace('_', ' ')}", fontsize=9, color="#14161a", va="center")
+            x += 3.3
+    ax.set_xlim(0, columns)
+    ax.set_ylim(y + 0.9, -0.1)   # y runs down the page
+    ax.set_aspect("equal")
+    ax.axis("off")
+    fig.savefig(path, metadata={"Date": None}, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+
+
+def report(ledger: Ledger, verdicts: dict[str, tuple[str, str]], source: dict[str, str], root: Path = RESULTS) -> str:
+    """The claims, deciding numbers, figures and assumptions of each decider, as markdown beside the verdict map."""
+    text = ("# Results\n\nGenerated by `uv run python -m pyramid.summary`. Do not edit by hand.\n\n"
+            f"{len(ledger.claims)} claims: {headline(counts(verdicts))}.\n\n![One tile per claim, coloured and "
+            f"marked by its verdict](verdict-map.svg)\n\n{WORDS}\n")
+    for decider, about in DECIDERS.items():
+        decided = [claim for claim in ledger.claims.values() if source[claim.id] == decider]
+        if not decided:
+            continue
+        stored = read_results(decider, root) if decider in PACKAGES else None
+        results = screening.all_results(ledger) if decider == "tier0" else stored[0] if stored else {}
+        assumptions = stored[2].get("assumptions", []) if stored else []
+        tally = Counter(verdicts[claim.id][0] for claim in decided)
+        text += f"\n## {about}\n\n{len(decided)} claims: {headline({s: tally[s] for s in STATUSES if tally[s]})}.\n\n"
+        for figure in sorted((root / decider / "figures").glob("*.png")):
+            text += f"![{figure.stem}](../{decider}/figures/{figure.name})\n\n"
+        text += "| Claim | Statement | Status | Basis |\n|---|---|---|---|\n" + "".join(
+            f"| {claim.id} | {claim.statement} | {verdicts[claim.id][0]} | {verdicts[claim.id][1]} |\n"
+            for claim in decided)
+        if results:
+            text += (f"\n<details><summary>{len(results)} computed quantities. Low and high are the ends over the "
+                     "ledger's ranges where the package varied its inputs; they repeat the value where it ran one "
+                     f"case</summary>\n\n{screening.table_markdown(results)}\n</details>\n")
+        if assumptions:
+            text += (f"\n<details><summary>{len(assumptions)} modelling assumptions</summary>\n\n"
+                     + "".join(f"- {line}\n" for line in assumptions) + "\n</details>\n")
+    return text
+
+
+def main() -> None:
+    ledger = load()
+    if old := stale(ledger):   # their verdicts would go out under this ledger's digest
+        raise LedgerError(f"results of {', '.join(old)} were generated from other sources: run those packages first")
+    _, verdicts, source = merged(ledger)
+    tally = counts(verdicts)
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    (OUT_DIR / "verdicts.md").write_text(
+        "# Verdicts\n\nGenerated by `uv run python -m pyramid.summary`. Do not edit by hand.\n\n"
+        + headline(tally) + ".\n\n" + table(ledger, verdicts, source)
+    )
+    payload = {
+        "counts": tally,
+        "verdicts": {claim: {"status": status, "basis": basis, "source": source[claim]}
+                     for claim, (status, basis) in verdicts.items()},
+    }
+    (OUT_DIR / "verdicts.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False) + "\n")
+    verdict_map(ledger, verdicts, OUT_DIR / "verdict-map.svg")
+    (OUT_DIR / "report.md").write_text(report(ledger, verdicts, source))
+    write_manifest(OUT_DIR, "summary", ledger)
+    print(", ".join(f"{n} {status}" for status, n in tally.items()))
+
+
+if __name__ == "__main__":
+    main()

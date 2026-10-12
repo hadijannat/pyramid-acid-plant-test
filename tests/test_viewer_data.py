@@ -68,8 +68,8 @@ def test_claims_payload_has_the_three_contract_keys_and_a_viewer_manifest():
     assert {"commit", "versions"} <= set(payload["manifest"])
 
 
-def test_a_decided_claim_carries_its_verdict_basis_and_numbers():
-    payload = viewer_data.claims_payload(tiny_ledger(), RESULTS, VERDICTS)
+def test_a_decided_claim_carries_its_verdict_basis_source_and_numbers():
+    payload = viewer_data.claims_payload(tiny_ledger(), RESULTS, VERDICTS, {"S12": "tier0"})
     assert payload["claims"][0] == {
         "id": "S12",
         "statement": "Four activations fill the Grand Gallery.",
@@ -80,6 +80,7 @@ def test_a_decided_claim_carries_its_verdict_basis_and_numbers():
         "criterion": "Pass if the stroke count is within 25 percent of 4.",
         "status": "conditional",
         "basis": "4.3 strokes if the whole passage is swept and nothing else is filled",
+        "source": "tier0",
         "numbers": [
             {"label": "Strokes to fill the gallery", "value": 4.305, "low": 3.845, "high": 4.793, "unit": "1"},
         ],
@@ -142,9 +143,22 @@ def test_real_claims_payload_covers_all_71_claims_and_is_strict_json():
     grotto = {quantity["id"]: quantity for quantity in payload["spaces"]["grotto"]["quantities"]}
     side = grotto["grotto.plan_side"]
     assert side["verified"] is False and side["note"].startswith("assumed for the model")
-    # a claim with a verdict shows the figure the verdict was reached on
+    # a claim with a computed verdict shows the figure the verdict was reached on
     for claim in payload["claims"]:
         assert claim["status"] == "pending" or claim["numbers"], claim["id"]
+
+
+def test_the_committed_claims_show_who_decided_each_and_a_figure_under_every_computed_verdict():
+    """The evidence register and the untestable claims rest on documents, so they alone carry no number."""
+    from pyramid.verdicts import PACKAGES, merged
+    led = load()
+    results, decided, source = merged(led)
+    payload = viewer_data.claims_payload(led, results, decided, source)
+    for claim in payload["claims"]:
+        assert claim["source"] in ("tier0", "none", *PACKAGES), claim["id"]
+        assert (claim["source"] == "none") == (claim["status"] == "pending"), claim["id"]
+        documentary = claim["source"] == "evidence" or claim["status"] == "not_testable"
+        assert claim["status"] == "pending" or documentary or claim["numbers"], claim["id"]
 
 
 STEP_IDS = [f"S{i:02d}" for i in range(1, 32)]
