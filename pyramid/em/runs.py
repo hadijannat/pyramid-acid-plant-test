@@ -13,6 +13,7 @@ check: they decide nothing, and a claim is conditional when they fall on the oth
 convergence and reproduction gates compare the pyramid's extinction between cells and with the study, and stay at
 the coarse cell and its half, where the sphere is outside the limit: the ruling repeats the deciding runs only.
 """
+import hashlib
 import multiprocessing
 import time
 from pathlib import Path
@@ -20,7 +21,7 @@ from pathlib import Path
 import numpy as np
 
 from pyramid.em import cases, dda, fdtd, keep, metrics, mie, shapes
-from pyramid.ledger import load
+from pyramid.ledger import LedgerError, load
 from pyramid.screening import Result
 from pyramid.simkit import RESULTS
 
@@ -33,6 +34,24 @@ SPHERE = {"dda": ("coarse", "production", "fine"), "fdtd": ("coarse", "productio
 DECIDING = {"dda": "fine", "fdtd": "benchmark"}       # the cell of each solver's deciding runs
 COMPARED = {"dda": "production", "fdtd": "fine"}      # the next coarser cell: the resolution check
 SOLVER = {"dda": "dipole", "fdtd": "time-domain"}
+READS = ("paper.", "em.", "emx.", "pyr.", "kc.", "qc.", "gg.")    # every ledger id the package reads begins so
+
+
+def stamp(ledger) -> str:
+    """Tie the cache to the ledger lines the runs can read; a cache made for other values is refused, not reused.
+
+    A task's file name carries its case, solver, cell and part and none of the values behind them, so without
+    this an edited permittivity would be answered from the runs of the old one. Returns the digest.
+    """
+    lines = sorted((id, x.value, x.low, x.high) for id, x in ledger.quantities.items() if id.startswith(READS))
+    digest, mark = hashlib.sha256(repr(lines).encode()).hexdigest(), CACHE / "inputs.sha256"
+    CACHE.mkdir(parents=True, exist_ok=True)
+    if not mark.exists():
+        mark.write_text(digest + "\n")
+    elif mark.read_text().strip() != digest:
+        raise LedgerError(f"{CACHE} holds runs made for other ledger values (ids beginning {', '.join(READS)}): "
+                          "move it aside and repeat `python -m pyramid.em --certified`")
+    return digest
 
 # The ledger ids behind the deciding numbers. The viewer shows a number under a claim when the claim depends on
 # every id the number reads, so these are also what the claims' depends_on must hold.

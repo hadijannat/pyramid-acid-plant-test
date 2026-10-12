@@ -22,6 +22,25 @@ def cache(tmp_path, monkeypatch):
     return tmp_path
 
 
+def test_the_cache_is_refused_once_a_ledger_value_the_runs_read_has_changed(cache):
+    import dataclasses
+    import re
+    from pathlib import Path
+
+    from pyramid.ledger import LedgerError
+
+    source = "".join(f.read_text() for f in Path(runs.__file__).parent.glob("*.py"))
+    read = set(re.findall(r'(?:q|rng)\(f?"([a-z]+\.|\{key\})', source))
+    assert read - {"{key}"} == {p for p in runs.READS} and "{key}" in read   # {key} is one of the study's chambers, paper.kc and so on
+    digest = runs.stamp(LEDGER)
+    assert runs.stamp(LEDGER) == digest == (cache / "inputs.sha256").read_text().strip()
+    other = dataclasses.replace(LEDGER.quantities["dp.width"], value=LEDGER.q("dp.width") * 1.01)
+    assert runs.stamp(dataclasses.replace(LEDGER, quantities={**LEDGER.quantities, "dp.width": other})) == digest
+    edited = dataclasses.replace(LEDGER.quantities["em.limestone_eps"], value=LEDGER.q("em.limestone_eps") * 1.01)
+    with pytest.raises(LedgerError, match="runs made for other ledger values"):
+        runs.stamp(dataclasses.replace(LEDGER, quantities={**LEDGER.quantities, "em.limestone_eps": edited}))
+
+
 def study(wavelengths):
     """A spectrum with the study's two free-space maxima."""
     return 9e4 * np.exp(-((wavelengths - 333.0) / 45) ** 2) + 13e4 * np.exp(-((wavelengths - 230.0) / 22) ** 2)

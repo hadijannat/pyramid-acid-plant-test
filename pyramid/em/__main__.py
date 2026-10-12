@@ -157,7 +157,7 @@ def main(argv=None) -> int:
     parser.add_argument("--cell", choices=("coarse", "production", "fine", "benchmark"))
     args = parser.parse_args(argv)
     ledger, deadline = load(), time.time() + args.seconds
-    runs.CACHE.mkdir(parents=True, exist_ok=True)
+    inputs = runs.stamp(ledger)                                # refuses a cache made for other ledger values
     for name in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "VECLIB_MAXIMUM_THREADS"):
         os.environ[name] = "1"                                 # the pool is the parallelism
 
@@ -204,7 +204,7 @@ def main(argv=None) -> int:
     if not args.quick:
         out_dir = write_results("em", ledger, summary["results"], summary["verdicts"],
                                 {"assumptions": runs.ASSUMPTIONS, "gates": summary["gates"], "notes": summary["notes"],
-                                 "cells_m": runs.cells(ledger.q), "run_seconds": summary["runs"]})
+                                 "cells_m": runs.cells(ledger.q), "run_seconds": summary["runs"], "cache_inputs": inputs})
         figures(ledger, summary, out_dir / "figures")
     return 0
 
