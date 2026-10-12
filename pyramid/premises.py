@@ -241,7 +241,7 @@ def _e25(ledger, r):
     return status, (
         f"The survey record has each Queen's Chamber shaft mouth closed by a plate of the wall stone left uncut "
         f"until both were cut through in 1872. Petrie describes the plate without a thickness (his section 44, "
-        f"re-read in its online edition in 06 and read in 01 as quoted by a later author). The thickness, "
+        f"re-read in its online edition in 06 and read in 01 as quoted by Thomas). The thickness, "
         f"{1000 * stone:.0f} mm "
         f"({stone / INCH:.1f} in), comes from one witness, quoted twice at second hand. Counting that as what the "
         "survey record shows is a judgement call, and it decides the word: held to rest on a secondary source, the "

@@ -156,7 +156,7 @@ VERDICTS = [
     ("E15", "pass", ("30.8 m below the pavement", "16.41 m long", "16.41 m (16.28 to 16.54 m")),
     ("E25", "pass", ("127 mm (5.0 in)", "76 to 127 mm", "no source was found for 3 in",
                      "Petrie describes the plate without a thickness (his section 44, re-read in its online edition "
-                     "in 06 and read in 01 as quoted by a later author).",
+                     "in 06 and read in 01 as quoted by Thomas).",
                      "comes from one witness, quoted twice at second hand. Counting that as what the survey record "
                      "shows is a judgement call, and it decides the word: held to rest on a secondary source, the "
                      "claim would be conditional.",
