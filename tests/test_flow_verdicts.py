@@ -69,7 +69,9 @@ def test_s03_sets_the_half_time_against_the_interval(led):
         "half the charge is gone in about 69 minutes (41 at the fastest, never with the path shut)",
         "In the 30 m/s at the top of the assumed wind range the half-time falls to 15 minutes, and to 11 with the "
         "floor opening draining at its fastest as well, against", "10 minutes to 30 days", "held only below 9 m/s",
-        "by diffusion alone, which is a limit of the model", "does not state")
+        "by diffusion alone, which is a limit of the model", "does not state",
+        "Remaining is read as half the charge still being there at the draw (a judgement call), and the hypothesis "
+        "states neither the composition of the charge nor what keeps it in.")
     # the assumption that goes with it names the share of the charge below the shaft mouths: 0.9144 / 5.8445
     assert f"at most the {100 * led.q('kcs.mouth_height') / led.q('kc.height'):.0f} percent" in flow.ASSUMPTIONS[-1]
 
@@ -90,7 +92,8 @@ def test_s03_sets_the_half_time_against_the_interval(led):
     shut = {"ante.groove_connected_area": (0.0, 0.0, 0.0), "flow.slab_leak_area": (0.0, 0.0, 0.0)}
     status, basis = judge(led, calm | shut)["S03"]
     assert status == "pass"
-    has(basis, "Even in a wind of 20 m/s the half-time is", "days or more")
+    has(basis, "Even in a wind of 20 m/s the half-time is", "days or more",
+        "Remaining is read as half the charge still being there at the draw (a judgement call).")
     assert "falls to" not in basis and "gone in about" not in basis
     assert judge(led, shut)["S03"][0] == "conditional"
 
@@ -158,7 +161,9 @@ def test_s14_asks_for_more_than_half_down_the_shafts(led):
     # 51.50 - 42.99 - 1.11 = 7.40 m of water over the opening's top, 998.2 x 9.80665 x 7.40 = 72.4 kPa;
     # 0.69 x (1 - 0.132) = 0.60 and 0.89 x (1 - 0.132) = 0.78: the steady shares less the part displaced under water
     has(basis, "antechamber opening lies 7.4 m under the surface of the full Gallery",
-        "until 13.2 (12.7 to 13.3) percent of the Gallery has drained", "72 kPa at the start",
+        "until 13.2 (12.7 to 13.3) percent of the Gallery has drained",
+        "72 kPa at the start; where the path past the slabs is open, that water runs through it into the King's "
+        "Chamber meanwhile, which S13 judges. Draining the Gallery",
         "in 1 h through 202 cm2 of grooves and one slab's clearance",
         "joints of 0.51 mm leaking along a path of 1.0 m, 60 percent",
         "195 Pa at the start, when the joints alone supply the pocket, and 60 Pa once the opening is clear",
@@ -198,10 +203,17 @@ def test_s17_asks_for_nine_tenths_through_the_antechamber_passage_as_surveyed(le
         "at outside pressure 0.3 to 3.0 m behind the Gallery's face, a leak that is assumed",
         "the share is 78 (38 to 100) percent over drain times of 10 minutes to 6 h",
         "tighter than 0.11 (0.04 to 0.24) mm or somewhat wider, the model letting neither the pocket's gas thin nor "
-        "Davison's chamber lend", "the two shares are 100.0 and 60 percent through 202 cm2",
-        "nothing if that path is shut, which is the question of S15")
+        "Davison's chamber lend. Counting that leak against 'the openings as surveyed', though no survey lists a "
+        "joint as an opening, is a judgement call: with the surveyed openings alone the claim would pass. That the "
+        "status follows the passage as surveyed, with no slab in it, is a second one: with the slabs of the "
+        "hypothesis down the two shares are 100.0 and 60 percent through 202 cm2",
+        "nothing if that path is shut, which takes blind grooves, the question of S15, and slabs seated tight as "
+        "well, which no claim decides.")
+    # the first call is what decides the word: the gas-tight share alone is over nine tenths at every corner
+    tight = flow.all_results(led)["flow.antechamber_share"]
+    assert simkit.three_way(tight.low > 0.9, tight.high > 0.9) == "pass" and tight.low == pytest.approx(0.999, abs=5e-4)
 
-    # whether the slabs' path is open or shut does not move the verdict: that is S15's question
+    # whether the slabs' path is open or shut does not move the verdict: S15 judges the grooves, no claim the slabs
     shut = {"ante.groove_connected_area": (0.0, 0.0, 0.0), "flow.slab_leak_area": (0.0, 0.0, 0.0)}
     status, basis = judge(led, shut)["S17"]
     assert status == "conditional"
@@ -224,7 +236,11 @@ def test_s17_asks_for_nine_tenths_through_the_antechamber_passage_as_surveyed(le
 
     # it fails only if less than nine tenths passed the antechamber even with gas-tight masonry
     lost = {"value": 0.6, "low": 0.5, "high": 0.7}
-    assert judge(led, antechamber_share=lost, slabs_absent_share=lost)["S17"][0] == "fail"
+    status, basis = judge(led, antechamber_share=lost, slabs_absent_share=lost)["S17"]
+    assert status == "fail" and "with the surveyed openings alone the claim would fail" in basis
+    # and where the surveyed openings alone leave it open, the basis does not say it would pass
+    part = {"value": 0.95, "low": 0.85, "high": 1.0}
+    assert "alone the claim would stay conditional" in judge(led, antechamber_share=part)["S17"][1]
 
 
 def test_production_writes_results_that_merge_with_tier0(led, tmp_path, capsys):
