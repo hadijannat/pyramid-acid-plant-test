@@ -16,12 +16,12 @@ surface and the mean inverse for the part across it, and the off-diagonal part o
 conductivity across a surface is taken to first order in the loss tangent; the absorbing layers are graded for
 air, also where they hold ground; the ground is the masonry's material and fills everything below z = 0.
 
-Accuracy: first order in the cell, set by the slanted surfaces. The benchmark sphere is 6.7, 3.6 and 1.5
-percent off Mie at its worst wavelength at cells of 5, 2.5 and 1 m. This is not an effect of the sphere's narrow
-lines: over the wavelengths where the exact spectrum varies slowly the error is 5.5, 3.0 and 1.2 percent, an
-error of the whole short half of the band. The 2 percent benchmark is met at 1 m only, so the runs that decide
-a claim are at 1 m (runs.DECIDING) and the coarser ones are a resolution check; the pyramid's peak extinction
-changes by 0.2 percent between 5 and 2.5 m.
+Accuracy: first order in the cell, set by the slanted surfaces. The benchmark sphere is 6.7, 3.6, 2.5 and 1.5
+percent off Mie at its worst wavelength at cells of 5, 2.5, 1.667 and 1 m. This is not an effect of the sphere's
+narrow lines: over the wavelengths where the exact spectrum varies slowly the error is 5.5, 3.0, 2.1 and 1.2
+percent, an error of the whole short half of the band. The 2 percent benchmark is met at 1 m only, so the runs
+that decide a claim are at 1 m (runs.DECIDING) and the coarser ones are a resolution check; the pyramid's peak
+extinction changes by 0.2 percent between 5 and 2.5 m.
 
 Extinction is the scattered power through the outer box plus the power absorbed inside the inner box, over the
 incident intensity in air. On ground the inner box is closed at z = 0, so it counts the loss in the body above
