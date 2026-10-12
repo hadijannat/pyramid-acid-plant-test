@@ -195,7 +195,7 @@ def _s19(ledger, r):
     still_open = low < passes_from and high >= fails_below
     turning = (
         f" At those two coefficients the share {crosses(fails_below)} and {crosses(passes_from)}, with a time "
-        f"constant of {_hours(transfer.time_constant(k, area, half, half, m))} toward the "
+        f"constant of {transfer.time_constant(k, area, half, half, m) / HOUR:.1f} h toward the "   # three figures: the two times follow from it
         f"{100 * transfer.equilibrium_share(half, half, m):.1f} percent that the water holds by Henry's law alone, "
         f"without the dissociation counted in the {100 * held.value:.0f} percent; in a cycle of {_hours(cycle)} it "
         f"runs from {_percent(low)} to {_percent(high)} percent over the ranges of the other inputs, the two "

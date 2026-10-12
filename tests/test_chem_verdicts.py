@@ -120,7 +120,7 @@ def test_s19_follows_the_capture_against_the_90_and_50_percent_lines(led):
                  "liquid-film coefficient of 0.01 mm/s.",
                  # the values at which the outcome turns, and what a stated cycle would leave open
                  "At those two coefficients the share passes 50 percent after 7.8 h and passes 90 percent after 28 h, "
-                 "with a time constant of 11 h toward the 96.9 percent that the water holds by Henry's law alone, "
+                 "with a time constant of 10.7 h toward the 96.9 percent that the water holds by Henry's law alone, "
                  "without the dissociation counted in the 98 percent; in a cycle of 24 h it runs from 2 to 94 percent "
                  "over the ranges of the other inputs, the two coefficients among them, so stating a cycle of that "
                  "length would not settle the claim without them.",

@@ -47,7 +47,7 @@ def _conductivity_sweep(ledger, results, out_dir):
     ax.axhline(needed.low, color="black", label="needed by the single-pulse chain, generous end")
     ax.axhline(results["electro.needed_field_sustained"].low, color="black", linestyle="--",
                label="needed by the sustained chain of S07, generous end")
-    ax.axhline(needed.value, color="black", linestyle=":", label="needed by the chain, bulk coefficient")
+    ax.axhline(needed.value, color="black", linestyle=":", label="needed by the single-pulse chain, bulk coefficient")
     ax.axhline(breakdown, color="grey", linestyle="-.", label="air breakdown")
     low, high = ledger.rng("em.limestone_resistivity")
     ax.axvspan(1 / high, 1 / low, color="tab:green", alpha=0.2, label="masonry measured in place")

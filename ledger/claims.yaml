@@ -61,7 +61,7 @@
   piece: 2
   criterion: "Pass if the peak field in the granite exceeds what the piezoelectric model needs to reach the acoustic threshold; fail if the interior field is screened to the conduction value of order kV/m or less (04 section 5.2)."
   status: pending
-  depends_on: [em.stroke_current_median, em.stroke_current_max, em.limestone_resistivity, em.granite_eps, em.granite_conductivity, em.lightning_frequency, em.storm_field, plateau.host_resistivity, elec.granite_shell_thickness, pyr.base_side, pyr.height_original, pyr.height_present, kc.west_wall.x, kc.east_wall.x, kc.south_wall.y, kc.north_wall.y, kc.floor.z, kc.ceiling.z, em.granite_piezo_d, em.piezo_thickness, em.pulse_rise_time, ac.air_impedance, ac.gas_solid_intensity, em.air_breakdown_field, em.mu0, em.eps0, em.limestone_eps, ante.leaf_thickness, ac.drive_frequency, ac.reference_pressure]
+  depends_on: [em.stroke_current_median, em.stroke_current_max, em.limestone_resistivity, em.granite_eps, em.granite_conductivity, em.lightning_frequency, em.storm_field, plateau.host_resistivity, elec.granite_shell_thickness, pyr.base_side, pyr.height_original, pyr.height_present, kc.west_wall.x, kc.east_wall.x, kc.south_wall.y, kc.north_wall.y, kc.floor.z, kc.ceiling.z, em.granite_piezo_d, em.piezo_thickness, em.pulse_rise_time, ac.air_impedance, ac.gas_solid_intensity, em.air_breakdown_field, em.mu0, em.eps0, em.limestone_eps, ante.leaf_thickness, ac.drive_frequency, ac.reference_pressure, em.piezo_field_lightning]
   spaces: [kings_chamber, antechamber]
 - id: S07
   statement: "The field drives the inverse piezoelectric effect in the granite's quartz, giving ultrasound that the antechamber's upper cavity focuses and amplifies."
@@ -191,7 +191,7 @@
   piece: 4
   criterion: "Pass if at least 90 percent of the sulfur is captured into the liquid in any oxidation state within the cycle; fail below 50 percent (03 section 4.4)."
   status: pending
-  depends_on: [chem.henry_so2, chem.pka1_so2, chem.pka2_so2, gg.slot_width, gg.ramp_height, gg.width, gg.first_lap_height, gg.height, gg.overhang, gg.laps, gg.angle, gg.volume, chem.temperature, chem.kl_surface, rx.kg_gas, rx.cycle_time, site.atm_pressure, kc.volume]
+  depends_on: [chem.henry_so2, chem.pka1_so2, chem.pka2_so2, gg.slot_width, gg.ramp_height, gg.width, gg.first_lap_height, gg.height, gg.overhang, gg.laps, gg.angle, gg.volume, chem.temperature, chem.kl_surface, rx.kg_gas, rx.cycle_time, site.atm_pressure, kc.volume, flow.fill_time]
   spaces: [grand_gallery]
 - id: S20
   statement: "Sulfurous acid is oxidised quickly by air to dilute sulfuric acid."
