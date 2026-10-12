@@ -78,7 +78,7 @@ def _pushback(q, results, out: Path) -> dict:
     least = results["chem.least_air"]
     ax.axvspan(100 * least.low, 100 * least.high, color="C1", alpha=0.2)
     marks = ((aqueous.air_without_pushback(q), "nothing pushed back below this"),
-             (least.value, "least air of a full stroke"),
+             (least.value, "least air with the whole Gallery emptied"),
              (aqueous.stoichiometric_air(q), "oxygen for all the sulfur"))
     for at, text in marks:
         ax.axvline(100 * at, color="0.4", linestyle="--", linewidth=0.8)

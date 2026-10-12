@@ -44,7 +44,9 @@ def _conductivity_sweep(ledger, results, out_dir):
                   label=f"peak, {current / 1e3:.0f} kA")
         ax.loglog(1 / resistivity, [current * row["granite_mean"] for row in rows], color=colour, linestyle="--",
                   label=f"volume mean, {current / 1e3:.0f} kA")
-    ax.axhline(needed.low, color="black", label="needed by the chain, most generous")
+    ax.axhline(needed.low, color="black", label="needed by the single-pulse chain, generous end")
+    ax.axhline(results["electro.needed_field_sustained"].low, color="black", linestyle="--",
+               label="needed by the sustained chain of S07, generous end")
     ax.axhline(needed.value, color="black", linestyle=":", label="needed by the chain, bulk coefficient")
     ax.axhline(breakdown, color="grey", linestyle="-.", label="air breakdown")
     low, high = ledger.rng("em.limestone_resistivity")

@@ -41,7 +41,7 @@
   piece: 2
   criterion: "Pass only if a direct-current conduction model with a far field of 1e-7 to 2e-2 V/m gives a non-negligible field or charge at the summit or in the granite (04 section 5.3)."
   status: pending
-  depends_on: [em.telluric_field_storm, em.telluric_field_extreme, em.limestone_resistivity, pyr.base_side, plateau.host_resistivity, em.granite_conductivity, elec.granite_shell_thickness, pyr.height_original, pyr.height_present, kc.west_wall.x, kc.east_wall.x, kc.south_wall.y, kc.north_wall.y, kc.floor.z, kc.ceiling.z, em.granite_piezo_d, em.piezo_thickness, em.pulse_rise_time, ac.air_impedance, ac.gas_solid_intensity]
+  depends_on: [em.telluric_field_storm, em.telluric_field_extreme, em.limestone_resistivity, pyr.base_side, plateau.host_resistivity, em.granite_conductivity, elec.granite_shell_thickness, pyr.height_original, pyr.height_present, kc.west_wall.x, kc.east_wall.x, kc.south_wall.y, kc.north_wall.y, kc.floor.z, kc.ceiling.z, em.granite_piezo_d, em.piezo_thickness, em.pulse_rise_time, ac.air_impedance, ac.gas_solid_intensity, ante.leaf_thickness, ac.drive_frequency, ac.reference_pressure]
   spaces: []
 - id: S05
   statement: "Operators wait for a storm, warned by wind-driven whistle formations in the western field."
@@ -61,7 +61,7 @@
   piece: 2
   criterion: "Pass if the peak field in the granite exceeds what the piezoelectric model needs to reach the acoustic threshold; fail if the interior field is screened to the conduction value of order kV/m or less (04 section 5.2)."
   status: pending
-  depends_on: [em.stroke_current_median, em.stroke_current_max, em.limestone_resistivity, em.granite_eps, em.granite_conductivity, em.lightning_frequency, em.storm_field, plateau.host_resistivity, elec.granite_shell_thickness, pyr.base_side, pyr.height_original, pyr.height_present, kc.west_wall.x, kc.east_wall.x, kc.south_wall.y, kc.north_wall.y, kc.floor.z, kc.ceiling.z, em.granite_piezo_d, em.piezo_thickness, em.pulse_rise_time, ac.air_impedance, ac.gas_solid_intensity, em.air_breakdown_field, em.mu0, em.eps0, em.limestone_eps]
+  depends_on: [em.stroke_current_median, em.stroke_current_max, em.limestone_resistivity, em.granite_eps, em.granite_conductivity, em.lightning_frequency, em.storm_field, plateau.host_resistivity, elec.granite_shell_thickness, pyr.base_side, pyr.height_original, pyr.height_present, kc.west_wall.x, kc.east_wall.x, kc.south_wall.y, kc.north_wall.y, kc.floor.z, kc.ceiling.z, em.granite_piezo_d, em.piezo_thickness, em.pulse_rise_time, ac.air_impedance, ac.gas_solid_intensity, em.air_breakdown_field, em.mu0, em.eps0, em.limestone_eps, ante.leaf_thickness, ac.drive_frequency, ac.reference_pressure]
   spaces: [kings_chamber, antechamber]
 - id: S07
   statement: "The field drives the inverse piezoelectric effect in the granite's quartz, giving ultrasound that the antechamber's upper cavity focuses and amplifies."
@@ -523,7 +523,7 @@
   piece: 2
   criterion: "Pass only if a direct-current conduction model with conductive sheets for the ore bodies gives a non-negligible field or charge at the summit or in the granite (04 section 5.3)."
   status: pending
-  depends_on: [em.telluric_field_storm, em.telluric_field_extreme, plateau.host_resistivity, plateau.hematite_resistivity_specular, em.limestone_resistivity, pyr.base_side, em.granite_conductivity, elec.granite_shell_thickness, pyr.height_original, pyr.height_present, kc.west_wall.x, kc.east_wall.x, kc.south_wall.y, kc.north_wall.y, kc.floor.z, kc.ceiling.z, elec.ore_sheet_thickness, elec.ore_sheet_depth, plateau.vein_leakage_length, em.granite_piezo_d, em.piezo_thickness, em.pulse_rise_time, ac.air_impedance, ac.gas_solid_intensity]
+  depends_on: [em.telluric_field_storm, em.telluric_field_extreme, plateau.host_resistivity, plateau.hematite_resistivity_specular, em.limestone_resistivity, pyr.base_side, em.granite_conductivity, elec.granite_shell_thickness, pyr.height_original, pyr.height_present, kc.west_wall.x, kc.east_wall.x, kc.south_wall.y, kc.north_wall.y, kc.floor.z, kc.ceiling.z, elec.ore_sheet_thickness, elec.ore_sheet_depth, plateau.vein_leakage_length, em.granite_piezo_d, em.piezo_thickness, em.pulse_rise_time, ac.air_impedance, ac.gas_solid_intensity, ante.leaf_thickness, ac.drive_frequency, ac.reference_pressure]
   spaces: []
 - id: E22
   statement: "Red granite has a dielectric constant of 9 and stores electric field better than limestone."
