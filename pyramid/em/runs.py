@@ -4,13 +4,22 @@ A task is (case, solver, cell, part): the dipole solver's wavelengths are split 
 time-domain case with the study's constant imaginary permittivity takes three runs at three conductivities.
 Every finished task is a file in results/em/cache/. This is a module of its own because a process pool cannot
 find functions that live in a package's __main__.
+
+Which runs decide (the controller's ruling of 2026-10-12 on the benchmark gate). The sphere is judged against Mie
+for each solver at every cell a run of that solver uses (SPHERE). A verdict rests only on runs at a cell where
+that solver's sphere is within 2 percent across the band: a third of the coarse cell for the dipole solver and a
+fifth for the time-domain solver (DECIDING). The runs at the next coarser cell (COMPARED) are the resolution
+check: they decide nothing, and a claim is conditional when they fall on the other side of its criterion. The
+convergence and reproduction gates compare the pyramid's extinction between cells and with the study, and stay at
+the coarse cell and its half, where the sphere is outside the limit: the ruling repeats the deciding runs only.
 """
+import multiprocessing
 import time
 from pathlib import Path
 
 import numpy as np
 
-from pyramid.em import cases, dda, fdtd, metrics, mie, shapes
+from pyramid.em import cases, dda, fdtd, keep, metrics, mie, shapes
 from pyramid.ledger import load
 from pyramid.screening import Result
 from pyramid.simkit import RESULTS
@@ -19,6 +28,11 @@ CACHE = RESULTS / "em" / "cache"
 CHUNKS = 9            # the dipole solver's wavelengths are split into this many runs of neighbours
 GROUPS = 3            # time-domain runs per case with the study's constant imaginary permittivity
 FLUX_LIMIT = 2.0      # below this cell size (m) a time-domain run of a pyramid keeps only the chamber and summit sums
+CHECKPOINT = 240.0    # seconds between the states a time-domain run leaves behind: the most a killed run loses
+SPHERE = {"dda": ("coarse", "production", "fine"), "fdtd": ("coarse", "production", "fine", "benchmark")}
+DECIDING = {"dda": "fine", "fdtd": "benchmark"}       # the cell of each solver's deciding runs
+COMPARED = {"dda": "production", "fdtd": "fine"}      # the next coarser cell: the resolution check
+SOLVER = {"dda": "dipole", "fdtd": "time-domain"}
 
 # The ledger ids behind the deciding numbers. The viewer shows a number under a claim when the claim depends on
 # every id the number reads, so these are also what the claims' depends_on must hold.
@@ -45,6 +59,9 @@ ASSUMPTIONS = [
     "The ground is the masonry's material; V2 keeps the study's outer pyramid; the V3 apexes are the surveyed pyramid whole and cut at the present top, with the study's chambers.",
     "V4 is the truncated surveyed pyramid with the surveyed King's and Queen's Chambers and Grand Gallery, a granite shell of emx.granite_shell, permittivity em.limestone_eps.",
     "The band maximum of a metric is its largest value on the 5 m wavelength grid.",
+    "A verdict rests only on runs at a cell where that solver's benchmark sphere is within 2 percent of the exact one across the band; the next coarser cell is the resolution check and a claim is conditional when it falls on the other side.",
+    "Where both solvers decide a part (R1 against its control) and fall on different sides, the part is conditional.",
+    "The convergence and reproduction gates compare the pyramid's extinction at the coarse cell and its half, where the sphere is outside the benchmark limit; only the deciding runs were repeated at the finer cells.",
 ]
 
 
@@ -62,12 +79,23 @@ def parts(case, solver) -> int:
     return CHUNKS if solver == "dda" else GROUPS if case.eps_imag is not None else 1
 
 
+def deciding(ledger) -> dict:
+    """The cases E19 and E20 are decided on, per solver: each is run at that solver's deciding cell."""
+    low, middle, high = cases.measured_conductivities(ledger)
+    v4 = [f"{prefix}V4.sig{sigma:.1e}" for sigma in (low, middle, high) for prefix in ("", "C0.")]
+    v4 += [f"V4.eps{eps:g}.sig{low:.1e}" for eps in ledger.rng("em.limestone_eps")]
+    return {"dda": ["R1", "C0.R1"], "fdtd": ["R1", "C0.R1", "V3.truncated.ground", "V3.pointed.ground"] + v4}
+
+
 def plan(ledger, stage: str) -> list[tuple]:
     """The tasks of a stage: (case, solver, cell, part)."""
     size, table = cells(ledger.q), cases.table(ledger)
     want = []
     if stage == "quick":
         want = [("B0", s, size["coarse"]) for s in cases.SOLVERS] + [("R1", s, size["coarse"]) for s in cases.SOLVERS]
+    elif stage == "certified":         # the deciding runs, and the sphere at the cell the time-domain ones are compared with
+        want += [(name, solver, size[DECIDING[solver]]) for solver, names in deciding(ledger).items() for name in names]
+        want += [("B0", "fdtd", size["fine"])]
     elif stage == "gates":
         want += [("B0", "dda", size[c]) for c in ("coarse", "production", "fine")]
         want += [("B0", "fdtd", size[c]) for c in ("coarse", "production", "benchmark")]
@@ -85,13 +113,28 @@ def plan(ledger, stage: str) -> list[tuple]:
 
 
 def work(job) -> tuple:
-    """Run one task to its cache file (module level: the pool pickles it). Returns (task, finished, seconds)."""
+    """Run one task to its cache file (module level: the pool pickles it). Returns (task, finished, seconds).
+
+    Safe to stop and to kill: the cache file appears whole or not at all, a time-domain run leaves its state every
+    CHECKPOINT seconds and a dipole run after every wavelength, and the next call goes on from there. A task that
+    finds the clock past its deadline does not start, and one whose calling process has died stops at its next state.
+    """
     task, deadline = job
     name, solver, cell, part = task
-    began, ledger = time.time(), load()
+    began, target = time.time(), path(task)
+    if began > deadline or target.exists():
+        return task, target.exists(), 0.0
+    state, clock, caller = target.with_suffix(".state.npz"), target.with_suffix(".time.npy"), multiprocessing.parent_process()
+    before = float(np.load(clock)) if clock.exists() else 0.0     # what earlier calls spent on this task
+
+    def saved():                                                  # a state was written: keep the time spent beside it
+        keep(clock, lambda handle: np.save(handle, before + time.time() - began))
+        if caller is not None and not caller.is_alive():          # an orphaned worker would double the next call's load
+            raise SystemExit(f"{target.name}: the calling process is gone")
+
+    ledger = load()
     q, case = ledger.q, cases.table(ledger)[name]
     wavelengths, model = cases.wavelengths(q), shapes.build(case, q, cell)
-    target, state = path(task), path(task).with_suffix(".state.npz")
     if solver == "dda":
         chunk = np.array_split(wavelengths, CHUNKS)[part]
 
@@ -100,7 +143,7 @@ def work(job) -> tuple:
             return masonry, q("em.granite_eps") + 1j * cases.loss(q("em.granite_conductivity"), w, q)
 
         out = dda.spectrum(model, chunk, permittivity, case.direction,
-                           np.complex64 if cell < FLUX_LIMIT else np.complex128, state, deadline)
+                           np.complex64 if cell < FLUX_LIMIT else np.complex128, state, deadline, saved)
     else:
         if case.eps_imag is not None:
             low, high = wavelengths.min(), wavelengths.max()
@@ -108,16 +151,16 @@ def work(job) -> tuple:
         else:
             sigma = case.sigma
         out = fdtd.run(model, case, q, wavelengths, sigma, state, deadline - time.time(),
-                       flux=cell >= FLUX_LIMIT or case.body == "sphere")       # the benchmark is all cross-sections
+                       flux=cell >= FLUX_LIMIT or case.body == "sphere",       # the benchmark is all cross-sections
+                       every=CHECKPOINT, saved=saved)
         if out is not None:
             out["sigma"] = np.array(sigma)
     if out is not None:
-        out["seconds"] = np.array(time.time() - began + (float(np.load(target.with_suffix(".time.npy"))) if target.with_suffix(".time.npy").exists() else 0.0))
-        target.with_suffix(".time.npy").unlink(missing_ok=True)
-        np.savez(target, **out)
+        out["seconds"] = np.array(before + time.time() - began)
+        keep(target, lambda handle: np.savez(handle, **out))
+        clock.unlink(missing_ok=True)
     else:
-        spent = time.time() - began + (float(np.load(target.with_suffix(".time.npy"))) if target.with_suffix(".time.npy").exists() else 0.0)
-        np.save(target.with_suffix(".time.npy"), spent)
+        keep(clock, lambda handle: np.save(handle, before + time.time() - began))
     return task, out is not None, time.time() - began
 
 
@@ -150,7 +193,7 @@ def band_max(result: dict, key: str) -> float:
 
 def evaluate(ledger) -> dict:
     """Gates, numbers and verdicts from what is cached."""
-    q, size, table = ledger.q, cells(ledger.q), cases.table(ledger)
+    q, size = ledger.q, cells(ledger.q)
     got = lambda name, solver, cell: collect(ledger, name, solver, size[cell])        # noqa: E731
     wavelengths = cases.wavelengths(q)
     exact = mie.cross_sections(q("emx.sphere_radius"), q("paper.eps_real") + 1j * q("paper.eps_imag"), wavelengths)[0]
@@ -160,34 +203,25 @@ def evaluate(ledger) -> dict:
         results[id] = Result(f"em.{id}", label, float(value), float(min(low, value)), float(max(high, value)), unit, formula, inputs)
 
     study = STUDY[2:]
-    # --- benchmark ---
-    b0, table_b0 = {}, []
+    # --- benchmark: the sphere at every cell a run of each solver uses ---
+    rows, unjudged = [], []
     fine_grid = np.arange(wavelengths.min(), wavelengths.max() + 0.5, 1.0)
     sphere = mie.cross_sections(q("emx.sphere_radius"), q("paper.eps_real") + 1j * q("paper.eps_imag"), fine_grid)[0]
     slope = np.gradient(np.log(sphere), np.log(fine_grid))             # how steep the exact spectrum is
-    for solver, sizes in (("dda", ("coarse", "production", "fine")), ("fdtd", ("coarse", "production", "benchmark"))):
-        for cell in sizes:
-            r = got("B0", solver, cell)
-            if r is None:
-                continue
-            runs[f"B0 {solver} {size[cell]:.3g} m"] = r["seconds"]
-            deviation = r["extinction"] / np.interp(r["wavelengths"], wavelengths, exact) - 1
-            worst = int(np.argmax(np.abs(deviation)))
-            steep = abs(float(np.interp(r["wavelengths"][worst], fine_grid, slope)))
-            table_b0.append(f"{solver} at {size[cell]:.3g} m: worst {deviation[worst]:+.2%} at {r['wavelengths'][worst]:.0f} m "
-                            f"(the exact spectrum changes {steep:.0f} percent per percent of wavelength there), "
-                            f"rms {np.sqrt(np.mean(deviation**2)):.2%}, {np.mean(np.abs(deviation) <= metrics.BENCHMARK):.0%} of the "
-                            f"wavelengths within the limit")
-            b0[solver] = (r, deviation, size[cell])            # the finest cell run of each solver stands for it
-    if set(b0) == set(cases.SOLVERS):
-        gate = metrics.benchmark_gate(np.ones(1), {s: 1 + np.max(np.abs(d)) for s, (_, d, _) in b0.items()})
-        gate["numbers"] = "; ".join(table_b0) + f" (limit {metrics.BENCHMARK:.0%}, judged at each solver's finest cell)"
-        gates.append(gate)
-        for solver, (_, deviation, cell) in b0.items():
-            add(f"b0_deviation_{solver}", f"B0: worst deviation of the {solver} extinction from Mie", np.max(np.abs(deviation)),
-                0, np.max(np.abs(deviation)), "1", f"max |sigma_ext / Mie - 1| over the band, cell {cell:.3g} m", study + ("emx.sphere_radius",))
-    else:
-        gates.append({"gate": "benchmark: B0 against Mie", "passed": False, "numbers": "not computed: " + "; ".join(table_b0)})
+    wanted = [(solver, cell) for solver, sizes in SPHERE.items() for cell in sizes]
+    for solver, cell in wanted:
+        r = got("B0", solver, cell)
+        if r is None:
+            unjudged.append(lacking(ledger, "B0", solver, size[cell]))
+            continue
+        runs[f"B0 {solver} {size[cell]:.3g} m"] = r["seconds"]
+        row = metrics.sphere_row(solver, size[cell], r["wavelengths"], r["extinction"],
+                                 np.interp(r["wavelengths"], wavelengths, exact), np.interp(r["wavelengths"], fine_grid, slope))
+        rows.append(row)
+        add(f"b0_deviation_{solver}_{size[cell]:.3g}".replace(".", "p"),
+            f"B0: worst deviation of the {solver} extinction from Mie at a {size[cell]:.3g} m cell", row["worst"], 0, row["worst"],
+            "1", "max |sigma_ext / Mie - 1| over the band", study + ("emx.sphere_radius",))
+    gates.append(metrics.benchmark_gate(rows, [(s, size[c]) for s, c in wanted], {s: size[c] for s, c in DECIDING.items()}))
 
     # --- convergence and reproduction ---
     r1 = {(solver, cell): got("R1", solver, cell) for solver in cases.SOLVERS for cell in ("coarse", "production")}
@@ -229,6 +263,13 @@ def evaluate(ledger) -> dict:
             "largest scattered plus absorbed power over incident intensity", geometry)
         add("r3_peak_extinction", "R3: on-ground extinction maximum (fdtd)", ground[1], ground[1], ground[1], "m2",
             "largest scattered plus absorbed power over incident intensity", geometry)
+        finer = got("R1", "dda", DECIDING["dda"])              # the same maxima at the dipole solver's deciding cell, for
+        for n, (at, value) in enumerate([] if finer is None else metrics.peaks(finer["wavelengths"], finer["extinction"]), 1):
+            tag = f"dda_{size[DECIDING['dda']]:.3g}".replace(".", "p")      # information: the gates stay at the cells above
+            add(f"r1_peak{n}_wavelength_{tag}", f"R1: extinction maximum {n} (dda, {size[DECIDING['dda']]:.3g} m cell), wavelength",
+                at, at, at, "m", "local maximum of the extinction spectrum", geometry)
+            add(f"r1_peak{n}_extinction_{tag}", f"R1: extinction maximum {n} (dda, {size[DECIDING['dda']]:.3g} m cell)", value, value,
+                value, "m2", "extinction cross-section at that maximum", geometry)
         for key, r in list(r1.items()) + [((s, "R2"), v) for s, v in r2.items()] + [(("fdtd", "R3"), r3)]:
             runs[f"{'R1' if key[1] in size else key[1]} {key[0]} {size.get(key[1], size['production']):.3g} m"] = r["seconds"]
     else:
@@ -244,56 +285,93 @@ def evaluate(ledger) -> dict:
             break
     verdicts = {}
     if all(g["passed"] for g in gates):
-        verdicts, missing = decide(ledger, got, add, runs)
+        verdicts, missing = decide(ledger, got, add, unjudged)
         notes += missing
     return {"results": results, "gates": gates, "verdicts": verdicts, "notes": notes, "runs": runs}
 
 
-def decide(ledger, got, add, runs):
-    """E19 and E20 from the variant runs, once the gates have passed."""
+def lacking(ledger, name: str, solver: str, cell: float) -> str:
+    """How the notes name a case whose runs are not all cached."""
+    count = parts(cases.table(ledger)[name], solver)
+    gone = sum(not path((name, solver, cell, part)).exists() for part in range(count))
+    return f"{name} {solver} {cell:.3g} m ({gone} of {count} parts)"
+
+
+def unswept(ledger) -> str:
+    """The ranges the E19 runs did not carry, as a sentence for the basis."""
+    q, rng = ledger.q, ledger.rng
+    low, band = cases.measured_conductivities(ledger)[0], cases.wavelengths(q)
+    skin = band / (2 * np.pi * np.sqrt(q("em.limestone_eps") + 1j * cases.loss(low, band, q)).imag)   # the field falls to 1/e
+    return (f" Not varied: as modelled is evaluated at the study's permittivity of {q('paper.eps_real'):g} (its range is "
+            f"{rng('paper.eps_real')[0]:g} to {rng('paper.eps_real')[1]:g}); V4 has a granite shell of {q('emx.granite_shell'):g} m "
+            f"(range {rng('emx.granite_shell')[0]:g} to {rng('emx.granite_shell')[1]:g} m), a granite permittivity of "
+            f"{q('em.granite_eps'):g} ({rng('em.granite_eps')[0]:g} to {rng('em.granite_eps')[1]:g}) and a granite conductivity of "
+            f"{q('em.granite_conductivity'):.0e} S/m (up to {rng('em.granite_conductivity')[1]:.0e}); the shell is metres thick "
+            f"against a skin depth of {skin.min():.0f} to {skin.max():.0f} m in the masonry at {low:.1e} S/m.")
+
+
+def decide(ledger, got, add, unjudged):
+    """E19 and E20 from the deciding runs and the cell they are compared with, once the gates have passed.
+
+    Every row is also a number in the results, with its role in the label: the runs at the deciding cell, the next
+    coarser cell (the resolution check), and for the time-domain solver the cell above that, for information.
+    """
+    q, size = ledger.q, cells(ledger.q)
     low, middle, high = cases.measured_conductivities(ledger)
-    size = cells(ledger.q)
-    need = lambda name, cell: got(name, "fdtd", cell)                              # noqa: E731
     kings = lambda r: band_max(r, "mean.kings")                                      # noqa: E731
-    modelled, realism, summit, missing = [], [], [], []
-    for cell in ("production", "fine"):
-        r1, c0 = need("R1", cell), need("C0.R1", cell)
-        if r1 is not None and c0 is not None:
-            modelled.append((size[cell], kings(r1), kings(c0)))
-        rows = []
-        for sigma in ((low, middle, high) if cell == "production" else (low, high)):
-            v4, c0 = need(f"V4.sig{sigma:.1e}", cell), need(f"C0.V4.sig{sigma:.1e}", cell)
-            if v4 is not None and c0 is not None:
-                rows.append(("", sigma, kings(v4), kings(c0)))
-        if cell == "production":
-            for eps in ledger.rng("em.limestone_eps"):
-                v4 = need(f"V4.eps{eps:g}.sig{low:.1e}", cell)
+    missing = {"E19": list(unjudged), "E20": list(unjudged)}
+    said = {True: "decides", False: "resolution check, decides nothing", None: "for information, decides nothing"}
+
+    def need(claim, name, solver, cell, role):
+        r = got(name, solver, cell)
+        if r is None and role is not None:                    # a run for information is not waited for
+            missing[claim].append(lacking(ledger, name, solver, size[cell]))
+        return r
+
+    modelled, realism, summit = [], [], []
+    for solver in cases.SOLVERS[::-1]:                        # the time-domain solver first: it decides both parts
+        for cell in SPHERE[solver][:0:-1]:                    # finest first; the coarse cell has no variant runs
+            role = True if cell == DECIDING[solver] else False if cell == COMPARED[solver] else None
+            where, tag = f"the {SOLVER[solver]} solver at a {size[cell]:.3g} m cell", f"{solver}_{size[cell]:.3g}".replace(".", "p")
+            label = f"{SOLVER[solver]} solver, {size[cell]:.3g} m cell ({said[role]})"
+            r1, c0 = need("E19", "R1", solver, cell, role), need("E19", "C0.R1", solver, cell, role)
+            if r1 is not None and c0 is not None:
+                ratio = kings(r1) / kings(c0)
+                add(f"e19_r1_over_control_{tag}", f"R1 over its control, King's Chamber volume mean, {label}", ratio, ratio, ratio,
+                    "1", "band maximum in R1 over band maximum in the cube", E19_MODELLED)
+                if role is not None:
+                    modelled.append((where, kings(r1), kings(c0), role))
+            if solver != "fdtd":                              # the cases with ground belong to the time-domain solver
+                continue
+            rows = []
+            for sigma in ((low, high) if role is False else (low, middle, high)):
+                v4, c0 = need("E19", f"V4.sig{sigma:.1e}", solver, cell, role), need("E19", f"C0.V4.sig{sigma:.1e}", solver, cell, role)
+                if v4 is not None and c0 is not None:
+                    rows.append(("", sigma, kings(v4), kings(c0)))
+            for eps in (() if role is False else ledger.rng("em.limestone_eps")):
+                v4 = need("E19", f"V4.eps{eps:g}.sig{low:.1e}", solver, cell, role)
                 if v4 is not None:
                     rows.append((f"permittivity {eps:g}", low, kings(v4), None))
-        if rows:
-            realism.append((size[cell], rows))
-        cut, whole, own = need("V3.truncated.ground", cell), need("V3.pointed.ground", cell), need("R3", cell)
-        if cut is not None and whole is not None and own is not None:
-            summit.append((size[cell], band_max(cut, "mean.summit"), band_max(whole, "mean.summit"), band_max(own, "mean.summit")))
-    verdicts = {}
-    if len(modelled) == 2 and len(realism) == 2 and len(realism[0][1]) == 5 and len(realism[1][1]) == 2:
-        verdicts["E19"] = metrics.e19(modelled, realism)
-        for cell, r1, c0 in modelled:
-            add(f"e19_r1_over_control_{cell:.3g}".replace(".", "p"), f"R1 over its control, King's Chamber volume mean, {cell:.3g} m cell",
-                r1 / c0, r1 / c0, r1 / c0, "1", "band maximum in R1 over band maximum in the cube", E19_MODELLED)
-        for cell, rows in realism:
-            for label, sigma, v4, c0 in rows:
-                add(f"e19_v4_{label.replace(' ', '_') or 'eps7'}_{sigma:.1e}_{cell:.3g}".replace(".", "p").replace("-", "m"),
-                    f"V4 King's Chamber volume mean at {sigma:.1e} S/m {label}, {cell:.3g} m cell", v4, v4, v4, "1",
+            own_eps = f"eps{q('em.limestone_eps'):g}"
+            for name, sigma, v4, _ in rows:
+                add(f"e19_v4_{name.replace(' ', '_') or own_eps}_{sigma:.1e}_{tag}".replace(".", "p").replace("-", "m"),
+                    f"V4 King's Chamber volume mean at {sigma:.1e} S/m {name}, {label}", v4, v4, v4, "1",
                     "band maximum of the volume mean of |E|^2 / |E0|^2", E19_REALISM)
-    else:
-        missing.append("E19 is undecided: its runs are not all cached.")
-    if len(summit) == 2:
-        verdicts["E20"] = metrics.e20(summit)
-        for cell, cut, whole, own in summit:
-            add(f"e20_summit_ratio_{cell:.3g}".replace(".", "p"), f"Summit metric, truncated over pointed apex, on ground, {cell:.3g} m cell",
-                cut / whole, cut / whole, cut / whole, "1", "band maximum for the apex cut at the present top over the pointed apex",
-                E20_SUMMIT)
-    else:
-        missing.append("E20 is undecided: its runs are not all cached.")
-    return verdicts, missing
+            if role is not None:
+                realism.append((where, rows, role))
+            cut, whole = need("E20", "V3.truncated.ground", solver, cell, role), need("E20", "V3.pointed.ground", solver, cell, role)
+            own = got("R3", solver, cell)                     # the study's own apex, for reference where it was run
+            if cut is not None and whole is not None:
+                cut, whole = band_max(cut, "mean.summit"), band_max(whole, "mean.summit")
+                add(f"e20_summit_ratio_{tag}", f"Summit metric, truncated over pointed apex, on ground, {label}", cut / whole,
+                    cut / whole, cut / whole, "1", "band maximum for the apex cut at the present top over the pointed apex", E20_SUMMIT)
+                if role is not None:
+                    summit.append((where, cut, whole, None if own is None else band_max(own, "mean.summit"), role))
+    verdicts, notes = {}, []
+    for claim, rule in (("E19", lambda: metrics.e19(modelled, realism, unswept(ledger))), ("E20", lambda: metrics.e20(summit))):
+        if missing[claim]:
+            notes.append(f"{claim} is undecided: these runs are not cached: " + ", ".join(dict.fromkeys(missing[claim]))
+                         + ". They are computed by python -m pyramid.em --certified.")
+        else:
+            verdicts[claim] = rule()
+    return verdicts, notes

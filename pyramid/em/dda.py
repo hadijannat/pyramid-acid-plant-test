@@ -13,8 +13,10 @@ half-space Green's tensor here: cases with ground belong to the time-domain solv
 
 Accuracy: the error falls a little faster than the cell size (the surface cells set it). The benchmark sphere,
 whose resonance lines are sharp at this permittivity, is 9.4, 2.8 and 1.5 percent off Mie at its worst
-wavelength at cells of 5, 2.5 and 1.667 m, so the 2 percent benchmark is met at the fine cell only; the
-pyramid's smooth spectrum changes by 0.02 percent at its peak between 5 and 2.5 m.
+wavelength (205 m, on a line) at cells of 5, 2.5 and 1.667 m, and 4.5, 0.9 and 0.4 percent over the wavelengths
+where the exact spectrum varies slowly. The 2 percent benchmark is met at the fine cell only, so the runs that
+decide a claim are at that cell (runs.DECIDING) and the coarser ones are a resolution check; the pyramid's
+smooth spectrum changes by 0.02 percent at its peak between 5 and 2.5 m.
 """
 import time
 
@@ -22,7 +24,7 @@ import numpy as np
 from scipy import fft
 from scipy.sparse.linalg import LinearOperator, gmres
 
-from pyramid.em import metrics
+from pyramid.em import keep, metrics
 
 B1, B2, B3 = -1.891531, 0.1648469, -1.7700004     # coefficients of the lattice dispersion relation
 TOLERANCE = 1e-5                                  # relative residual of the linear solve
@@ -161,22 +163,21 @@ def region_metrics(model, field: np.ndarray, mixing, eps_masonry) -> dict:
 
 
 def spectrum(model, wavelengths, permittivity, direction: int, dtype=np.complex128, partial=None,
-             deadline: float = np.inf) -> dict | None:
+             deadline: float = np.inf, saved=lambda: None) -> dict | None:
     """The solver over a run of wavelengths, each started from its neighbour's solution.
 
     permittivity(wavelength) gives (masonry, granite). Returns arrays over the wavelengths: extinction and
     absorption (m2), region means and maxima, the axial section, the number of products. With a `partial` path
-    the rows done so far are kept there when the clock passes `deadline` (None is returned) and picked up again.
+    the rows done so far are kept there after every wavelength (and `saved` called), so a run that is stopped
+    when the clock passes `deadline` (None is returned), or killed, is picked up again where it was.
     """
     lattice, start, rows = Lattice(model, dtype), None, []
     names = [f"{kind}.{name}" for name in model.regions for kind in ("mean", "max")]
     if partial is not None and partial.exists():
-        with np.load(partial, allow_pickle=True) as kept:
+        with np.load(partial, allow_pickle=True) as kept:     # this solver's own rows, written a few lines below
             start, rows = kept["driving"], list(kept["rows"])
     for wavelength in wavelengths[len(rows):]:
         if time.time() > deadline:
-            if rows:
-                np.savez(partial, driving=start, rows=np.array(rows + [None], dtype=object)[:-1])
             return None
         eps_masonry, eps_granite = permittivity(wavelength)
         solved = solve(lattice, eps_masonry, eps_granite, wavelength, direction, start)
@@ -187,6 +188,9 @@ def spectrum(model, wavelengths, permittivity, direction: int, dtype=np.complex1
                      "section": section(model, np.sum(np.abs(solved["field"]) ** 2, axis=0)).astype(np.float32)}
                     | {f"mean.{name}": value[0] for name, value in found.items()}
                     | {f"max.{name}": value[1] for name, value in found.items()})
+        if partial is not None:
+            keep(partial, lambda handle: np.savez(handle, driving=start, rows=np.array(rows + [None], dtype=object)[:-1]))
+            saved()
     if partial is not None:
         partial.unlink(missing_ok=True)
     out = {key: np.array([row[key] for row in rows]) for key in ("extinction", "absorption", "products", "section", *names)}

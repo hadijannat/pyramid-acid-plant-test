@@ -7,10 +7,18 @@ maximum; the normalised root-mean-square difference of two spectra is the RMS of
 of their mean; a free-space peak of the study is matched to the nearest local maximum of the computed spectrum;
 E19 has two parts and the spec gives no rule for joining them, so the claim fails when the realism part fails,
 passes when both parts pass, and is conditional otherwise.
+
+The benchmark is judged per solver and per cell (the controller's ruling of 2026-10-12): a verdict rests only on
+runs at a cell where that solver's sphere is within 2 percent of the exact one across the band. Runs at the next
+coarser cell are the resolution check: they decide nothing, and a part is conditional when they fall on the other
+side of the criterion's comparison. Where both solvers decide a part (R1 against its control, in free space) and
+they fall on different sides, the part is conditional as well: a judgement call.
 """
 import numpy as np
 
 BENCHMARK = 0.02       # B0 against Mie, across the band (spec section 6)
+SLOW = 2.0             # percent of extinction per percent of wavelength: below it the exact spectrum is off its narrow
+#                        lines. A judgement call, to tell a line that is slightly displaced from an error everywhere.
 CONVERGENCE = 0.03     # change of the R1 peak extinction on halving the cell
 PEAK_FREE = 0.05       # free-space peak wavelengths
 PEAK_GROUND = 0.10     # the on-ground maximum's wavelength
@@ -99,12 +107,48 @@ def interpolate_loss(values, losses, target: float) -> np.ndarray:
 
 # --- the gates ----------------------------------------------------------------------------------------------
 
-def benchmark_gate(exact, by_solver: dict) -> dict:
-    """B0 within 2 percent of the Mie extinction at every wavelength of the band, in both solvers."""
-    worst = {solver: float(np.max(np.abs(np.asarray(ext) / np.asarray(exact) - 1))) for solver, ext in by_solver.items()}
-    return {"gate": "benchmark: B0 against Mie", "passed": all(w <= BENCHMARK for w in worst.values()),
-            "numbers": "; ".join(f"{solver} worst deviation {w:.2%}" for solver, w in worst.items())
-                       + f" (limit {BENCHMARK:.0%})"}
+def sphere_row(solver: str, cell: float, wavelengths, extinction, exact, slope) -> dict:
+    """One sphere run against Mie: its worst deviation, the worst off the narrow lines, whether it is within the limit.
+
+    slope is d ln(extinction) / d ln(wavelength) of the exact spectrum at the run's wavelengths.
+    """
+    wavelengths, slope = np.asarray(wavelengths, float), np.abs(np.asarray(slope, float))
+    deviation = np.asarray(extinction, float) / np.asarray(exact, float) - 1
+    worst, slow = int(np.argmax(np.abs(deviation))), slope < SLOW
+    text = (f"{solver} at {cell:.3g} m: worst {deviation[worst]:+.2%} at {wavelengths[worst]:.0f} m (the exact spectrum "
+            f"changes {slope[worst]:.0f} percent per percent of wavelength there)")
+    if slow.any():
+        smooth = int(np.argmax(np.where(slow, np.abs(deviation), -1.0)))
+        text += (f", {deviation[smooth]:+.2%} at {wavelengths[smooth]:.0f} m at worst over the {int(slow.sum())} wavelengths "
+                 f"where it changes less than {SLOW:g}")
+    text += (f", rms {np.sqrt(np.mean(deviation**2)):.2%}, {np.mean(np.abs(deviation) <= BENCHMARK):.0%} of the wavelengths "
+             f"within the limit")
+    return {"solver": solver, "cell_m": float(cell), "worst": float(abs(deviation[worst])),
+            "passed": bool(abs(deviation[worst]) <= BENCHMARK), "numbers": text}
+
+
+def benchmark_gate(rows: list[dict], wanted: list[tuple], deciding: dict) -> dict:
+    """B0 within 2 percent of the Mie extinction at every wavelength of the band, judged per solver and per cell.
+
+    rows: a sphere_row per sphere run; wanted: (solver, cell) for every cell a run of that solver uses; deciding:
+    {solver: the cell its deciding runs use}. The gate passes when both solvers are within the limit at their
+    deciding cells. Where a solver is outside the limit, the runs at that cell are a convergence comparison.
+    """
+    at = {(row["solver"], row["cell_m"]): row for row in rows}
+    said = []
+    for key in wanted:
+        if key not in at:
+            said.append(f"{key[0]} at {key[1]:.3g} m: not run")
+        elif at[key]["passed"]:
+            said.append(at[key]["numbers"] + ": within the limit")
+        else:
+            said.append(at[key]["numbers"] + ": outside the limit, so the runs at this cell are a convergence comparison "
+                                             "and decide nothing")
+    cells = ", ".join(f"{solver} {cell:.3g} m" for solver, cell in deciding.items())
+    return {"gate": "benchmark: B0 against Mie", "passed": all(key in at and at[key]["passed"] for key in deciding.items()),
+            "numbers": "; ".join(said) + f" (limit {BENCHMARK:.0%}, judged at every cell a run uses; the deciding runs "
+                                         f"are at {cells})",
+            "cells": [{key: row[key] for key in ("solver", "cell_m", "worst", "passed")} for row in rows]}
 
 
 def convergence_gate(by_solver: dict) -> dict:
@@ -159,8 +203,14 @@ def reproduction_gate(free: dict, ground: tuple | None, targets: dict, agreement
 # --- the rules ----------------------------------------------------------------------------------------------
 
 def _agree(statuses: list[str]) -> str:
-    """One status if every cell size gives it; conditional if the cell sizes fall on different sides."""
+    """One status if the deciding runs and the next coarser cell give it; conditional if they fall on different sides."""
     return statuses[0] if len(set(statuses)) == 1 else "conditional"
+
+
+def _said(entries: list[tuple], text) -> str:
+    """The deciding runs first, then the cell they are compared with: the last item of an entry says which it is."""
+    first, second = ("; ".join(text(e) for e in entries if e[-1] == decides) for decides in (True, False))
+    return first + (f"; at the next coarser cell, which decides nothing: {second}" if second else "")
 
 
 def crossing(rows: list[tuple[float, float]], level: float = FACTOR) -> float | None:
@@ -173,17 +223,19 @@ def crossing(rows: list[tuple[float, float]], level: float = FACTOR) -> float | 
     return None
 
 
-def e19(modelled: list[tuple], realism: list[tuple]) -> tuple[str, str]:
+def e19(modelled: list[tuple], realism: list[tuple], unswept: str = "") -> tuple[str, str]:
     """E19 from the band-maximum volume-mean ratios in the King's Chamber.
 
-    modelled: one (cell, R1, its control) per cell size.
-    realism: one (cell, rows) per cell size, rows being (label, conductivity, V4, its control or None).
-    A row without a label is V4 as defined and needs its control; a labelled row is V4 at another permittivity
-    of the ledger's range, run without a control: it must reach 2 for a pass and stay below 2 for a fail.
+    modelled: (where, R1, its control, decides) per solver and cell.
+    realism: (where, rows, decides) per cell, rows being (label, conductivity, V4, its control or None).
+    `decides` is True for the runs at a cell where the solver's sphere is within the benchmark limit and False for
+    the next coarser cell. A row without a label is V4 as defined and needs its control; a labelled row is V4 at
+    another permittivity of the ledger's range, run without a control: it must reach 2 for a pass and stay below 2
+    for a fail. `unswept` is a sentence on the ranges that were not carried, added to the basis.
     """
-    part_a = _agree(["pass" if r1 >= FACTOR * c0 else "fail" for _, r1, c0 in modelled])
+    part_a = _agree(["pass" if r1 >= FACTOR * c0 else "fail" for _, r1, c0, _ in modelled])
     part_b = []
-    for _, rows in realism:
+    for _, rows, _ in realism:
         lowest = min(sigma for _, sigma, _, _ in rows)
         if all(v4 < FACTOR for _, sigma, v4, _ in rows if sigma == lowest):
             part_b.append("fail")
@@ -195,32 +247,36 @@ def e19(modelled: list[tuple], realism: list[tuple]) -> tuple[str, str]:
     part_b = _agree(part_b)
     status = "fail" if part_b == "fail" else "pass" if part_a == part_b == "pass" else "conditional"
 
-    said_a = "; ".join(f"{r1:.2f} against {c0:.2f} in its control cube ({r1 / c0:.2f} times) at a {cell:.3g} m cell"
-                       for cell, r1, c0 in modelled)
-    said_b = "; ".join(
-        f"at a {cell:.3g} m cell " + ", ".join(
-            f"{v4:.2g} at {sigma:.1e} S/m{'' if not label else ' (' + label + ')'}"
-            + ("" if c0 is None else f" against {c0:.2g} in its control") for label, sigma, v4, c0 in rows)
-        for cell, rows in realism)
-    drop = [crossing([(sigma, v4) for label, sigma, v4, _ in rows if not label]) for _, rows in realism]
-    said_drop = "".join(f" It drops below {FACTOR:g} at about {d:.1e} S/m." for d in drop[:1] if d is not None)
+    said_a = _said(modelled, lambda e: f"{e[1]:.2f} against {e[2]:.2f} in its control cube ({e[1] / e[2]:.2f} times) in {e[0]}")
+    said_b = _said(realism, lambda e: f"in {e[0]} " + ", ".join(
+        f"{v4:.2g} at {sigma:.1e} S/m{'' if not label else ' (' + label + ')'}"
+        + ("" if c0 is None else f" against {c0:.2g} in its control") for label, sigma, v4, c0 in e[1]))
+    deciding = [rows for _, rows, decides in realism if decides] or [rows for _, rows, _ in realism]
+    drop = crossing([(sigma, v4) for label, sigma, v4, _ in deciding[0] if not label])
+    said_drop = "" if drop is None else f" It drops below {FACTOR:g} at about {drop:.1e} S/m."
     basis = (f"As modelled ({part_a}): the band-maximum volume-mean intensity ratio in the King's Chamber of case R1 is "
              f"{said_a}; the criterion asks for at least {FACTOR:g} times the control. Under realism ({part_b}): in case "
              f"V4 the ratio is {said_b}; the criterion asks for at least {FACTOR:g} and at least {FACTOR:g} times the "
              f"control across the measured conductivity range, and fails the claim if the ratio is below {FACTOR:g} at "
-             f"the low end of that range.{said_drop} The spec gives no rule for joining the two parts: the claim fails "
-             f"when the realism part fails, passes when both pass, and is conditional otherwise.")
+             f"the low end of that range.{said_drop} Each part is decided by the runs at the cells where the solver's "
+             f"benchmark sphere is within {BENCHMARK:.0%} of the exact one, and is conditional if those runs and the next "
+             f"coarser cell fall on different sides. The spec gives no rule for joining the two parts: the claim fails "
+             f"when the realism part fails, passes when both pass, and is conditional otherwise.{unswept}")
     return status, basis
 
 
 def e20(summit: list[tuple]) -> tuple[str, str]:
-    """E20 from the band-maximum summit metric on ground: one (cell, truncated, pointed, the study's apex) per cell size."""
-    status = _agree(["pass" if cut >= FACTOR * whole else "fail" for _, cut, whole, _ in summit])
-    said = "; ".join(f"{cut:.2f} for the apex cut at the present top against {whole:.2f} for the pointed apex "
-                     f"({cut / whole:.2f} times; {study:.2f} for the study's apex) at a {cell:.3g} m cell"
-                     for cell, cut, whole, study in summit)
+    """E20 from the band-maximum summit metric on ground.
+
+    summit: (where, truncated, pointed, the study's apex or None, decides) per cell; `decides` as in e19.
+    """
+    status = _agree(["pass" if cut >= FACTOR * whole else "fail" for _, cut, whole, _, _ in summit])
+    said = _said(summit, lambda e: (
+        f"{e[1]:.2f} for the apex cut at the present top against {e[2]:.2f} for the pointed apex ({e[1] / e[2]:.2f} times"
+        + ("" if e[3] is None else f"; {e[3]:.2f} for the study's apex") + f") in {e[0]}"))
     basis = (f"On ground, with the wave from above, the band-maximum volume mean of the intensity ratio in the top "
              f"masonry is {said}. The criterion passes the claim only if the truncated apex gives at least {FACTOR:g} "
-             f"times the pointed one"
-             + (", and the two cell sizes fall on different sides of that." if status == "conditional" else "."))
+             f"times the pointed one; the runs at the cell where the solver's benchmark sphere is within {BENCHMARK:.0%} "
+             f"of the exact one decide"
+             + (", and they and the next coarser cell fall on different sides of that." if status == "conditional" else "."))
     return status, basis

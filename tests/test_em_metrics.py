@@ -50,11 +50,30 @@ def test_three_constant_conductivity_runs_recover_the_constant_imaginary_permitt
         metrics.interpolate_loss(runs[:1], losses[:1], 0.1)
 
 
-def test_benchmark_and_convergence_gates():
-    exact = np.array([1.0, 2.0, 3.0])
-    assert metrics.benchmark_gate(exact, {"dda": exact * 1.019, "fdtd": exact * 0.99})["passed"]
-    failed = metrics.benchmark_gate(exact, {"dda": exact * 1.019, "fdtd": exact * [1, 1, 0.97]})
-    assert not failed["passed"] and "3.00%" in failed["numbers"]
+def test_the_benchmark_is_judged_per_solver_and_cell_and_passes_only_on_the_deciding_cells():
+    band, exact = np.array([200.0, 300.0, 400.0]), np.array([1.0, 2.0, 3.0])
+    slope = np.array([15.0, -1.0, 0.5])                          # the first wavelength sits on a narrow line
+    row = lambda solver, cell, factors: metrics.sphere_row(solver, cell, band, exact * factors, exact, slope)   # noqa: E731
+    rows = [row("dda", 2.5, [1.027, 0.991, 1.0]), row("dda", 1.667, [1.019, 0.996, 1.0]),
+            row("fdtd", 2.5, [1.03, 1.0303, 1.02]), row("fdtd", 1.0, [1.015, 1.012, 1.0])]
+    assert [r["passed"] for r in rows] == [False, True, False, True]
+    assert rows[0]["worst"] == pytest.approx(0.027) and "worst +2.70% at 200 m" in rows[0]["numbers"]
+    assert "-0.90% at 300 m at worst over the 2 wavelengths where it changes less than 2" in rows[0]["numbers"]
+    assert "worst +3.03% at 300 m" in rows[2]["numbers"]         # not on a line: an error of the whole spectrum
+    wanted = [("dda", 2.5), ("dda", 1.667), ("fdtd", 2.5), ("fdtd", 1.667), ("fdtd", 1.0)]
+    gate = metrics.benchmark_gate(rows, wanted, {"dda": 1.667, "fdtd": 1.0})
+    assert gate["passed"]                                        # within the limit where the runs decide
+    assert "fdtd at 2.5 m: worst +3.03%" in gate["numbers"] and "decide nothing" in gate["numbers"]
+    assert "fdtd at 1.67 m: not run" in gate["numbers"] and "dda 1.67 m, fdtd 1 m" in gate["numbers"]
+    assert [(c["solver"], c["cell_m"], c["passed"]) for c in gate["cells"]] == [
+        ("dda", 2.5, False), ("dda", 1.667, True), ("fdtd", 2.5, False), ("fdtd", 1.0, True)]
+    # the case that occurred: the sphere within the limit only at a finer cell than the runs that decide
+    assert not metrics.benchmark_gate(rows, wanted, {"dda": 2.5, "fdtd": 2.5})["passed"]
+    assert not metrics.benchmark_gate(rows, wanted, {"dda": 1.667, "fdtd": 2.5})["passed"]
+    assert not metrics.benchmark_gate(rows[:3], wanted, {"dda": 1.667, "fdtd": 1.0})["passed"]   # a deciding sphere not run
+
+
+def test_convergence_gate():
     assert metrics.convergence_gate({"dda": (1.00e5, 1.02e5), "fdtd": (1.0e5, 0.98e5)})["passed"]
     assert not metrics.convergence_gate({"dda": (1.00e5, 1.02e5), "fdtd": (1.0e5, 1.04e5)})["passed"]
 
@@ -70,37 +89,46 @@ def test_reproduction_gate_checks_wavelengths_values_and_agreement():
     assert not metrics.reproduction_gate({"dda": []}, None, targets, {})[0]["passed"]   # no peak, no ground run
 
 
+FINE, NEXT = "the solver at its deciding cell", "the solver at the next coarser cell"
+
+
 def test_e19_runs_through_its_statuses():
     low, high = 6.7e-4, 3.3e-3
-    holds = [(2.5, 9.0, 3.0), (1.667, 8.0, 3.5)]                 # R1 at least twice its control at both cells
-    fails_real = [(2.5, [("", low, 0.4, 0.3), ("", high, 0.01, 0.02)]), (1.667, [("", low, 0.5, 0.3), ("", high, 0.01, 0.02)])]
-    status, basis = metrics.e19(holds, fails_real)
-    assert status == "fail" and "0.4" in basis and "9.00" in basis
-    passes_real = [(2.5, [("", low, 9.0, 2.0), ("", high, 5.0, 2.0)]), (1.667, [("", low, 8.0, 2.0), ("", high, 4.5, 2.0)])]
+    holds = [(FINE, 9.0, 3.0, True), (NEXT, 8.0, 3.5, False)]    # R1 at least twice its control at both cells
+    fails_real = [(FINE, [("", low, 0.4, 0.3), ("", high, 0.01, 0.02)], True),
+                  (NEXT, [("", low, 0.5, 0.3), ("", high, 0.01, 0.02)], False)]
+    status, basis = metrics.e19(holds, fails_real, " Not varied: the shell.")
+    assert status == "fail" and "0.4" in basis and "9.00" in basis and basis.endswith(" Not varied: the shell.")
+    assert f"9.00 against 3.00 in its control cube (3.00 times) in {FINE}; at the next coarser cell, which decides nothing: 8.00" in basis
+    passes_real = [(FINE, [("", low, 9.0, 2.0), ("", high, 5.0, 2.0)], True), (NEXT, [("", low, 8.0, 2.0), ("", high, 4.5, 2.0)], False)]
     assert metrics.e19(holds, passes_real)[0] == "pass"
-    drops = [(2.5, [("", low, 4.0, 1.0), ("", high, 1.0, 0.4)])]                 # at least 2 at the low end only
+    drops = [(FINE, [("", low, 4.0, 1.0), ("", high, 1.0, 0.4)], True)]          # at least 2 at the low end only
     status, basis = metrics.e19(holds, drops)
     assert status == "conditional" and "drops below 2 at about 1.5e-03" in basis
-    weak_control = [(2.5, [("", low, 4.0, 3.0), ("", high, 3.0, 2.5)])]          # above 2, but not twice the control
+    weak_control = [(FINE, [("", low, 4.0, 3.0), ("", high, 3.0, 2.5)], True)]   # above 2, but not twice the control
     assert metrics.e19(holds, weak_control)[0] == "conditional"
-    not_modelled = [(2.5, 4.0, 3.0), (1.667, 4.0, 3.0)]
+    not_modelled = [(FINE, 4.0, 3.0, True), (NEXT, 4.0, 3.0, False)]
     assert metrics.e19(not_modelled, passes_real)[0] == "conditional"            # the parts disagree
     assert metrics.e19(not_modelled, fails_real)[0] == "fail"
-    split = [(2.5, 7.0, 3.0), (1.667, 5.0, 3.0)]                 # the two cell sizes fall on different sides of twice
+    split = [(FINE, 7.0, 3.0, True), (NEXT, 5.0, 3.0, False)]    # the deciding cell says twice, the next coarser does not
     assert metrics.e19(split, passes_real)[0] == "conditional"
-    split_real = [(2.5, [("", low, 2.2, 0.5)]), (1.667, [("", low, 1.8, 0.5)])]  # and of the value 2
+    solvers = [("one solver", 7.0, 3.0, True), ("the other", 5.0, 3.0, True)]    # two deciding runs on different sides
+    assert metrics.e19(solvers, passes_real)[0] == "conditional"
+    split_real = [(FINE, [("", low, 2.2, 0.5)], True), (NEXT, [("", low, 1.8, 0.5)], False)]   # and of the value 2
     assert metrics.e19(holds, split_real)[0] == "conditional"
-    other_eps = [(2.5, [("", low, 0.4, 0.3), ("eps 9", low, 2.4, None)])]        # fails only if every permittivity fails
+    other_eps = [(FINE, [("", low, 0.4, 0.3), ("eps 9", low, 2.4, None)], True)]  # fails only if every permittivity fails
     assert metrics.e19(holds, other_eps)[0] == "conditional"
-    all_eps = [(2.5, [("", low, 9.0, 2.0), ("", high, 5.0, 2.0), ("eps 5", low, 8.0, None), ("eps 9", low, 7.0, None)])]
+    all_eps = [(FINE, [("", low, 9.0, 2.0), ("", high, 5.0, 2.0), ("eps 5", low, 8.0, None), ("eps 9", low, 7.0, None)], True)]
     assert metrics.e19(holds, all_eps)[0] == "pass"              # the other permittivities need no control to pass
-    weak_eps = [(2.5, [("", low, 9.0, 2.0), ("", high, 5.0, 2.0), ("eps 9", low, 1.5, None)])]
+    weak_eps = [(FINE, [("", low, 9.0, 2.0), ("", high, 5.0, 2.0), ("eps 9", low, 1.5, None)], True)]
     assert metrics.e19(holds, weak_eps)[0] == "conditional"
 
 
 def test_e20_runs_through_its_statuses():
-    status, basis = metrics.e20([(2.5, 1.2, 1.0, 1.1), (1.667, 1.3, 1.0, 1.1)])
-    assert status == "fail" and "1.20" in basis and "1.30 times" in basis
-    assert metrics.e20([(2.5, 2.4, 1.0, 1.1), (1.667, 2.1, 1.0, 1.1)])[0] == "pass"
-    status, basis = metrics.e20([(2.5, 2.4, 1.0, 1.1), (1.667, 1.9, 1.0, 1.1)])
-    assert status == "conditional" and "different sides" in basis
+    status, basis = metrics.e20([(FINE, 1.2, 1.0, None, True), (NEXT, 1.3, 1.0, 1.1, False)])
+    assert status == "fail" and "1.30 times; 1.10 for the study's apex" in basis
+    assert f"(1.20 times) in {FINE}; at the next coarser cell, which decides nothing:" in basis   # no study apex at that cell
+    assert metrics.e20([(FINE, 2.4, 1.0, 1.1, True), (NEXT, 2.1, 1.0, 1.1, False)])[0] == "pass"
+    for cut in ((2.4, 1.9), (1.9, 2.4)):                         # either way round: the two cells on different sides
+        status, basis = metrics.e20([(FINE, cut[0], 1.0, 1.1, True), (NEXT, cut[1], 1.0, 1.1, False)])
+        assert status == "conditional" and "different sides" in basis

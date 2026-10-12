@@ -71,6 +71,28 @@ def test_absorbing_layers_reflect_below_minus_40_db():
     assert np.all(reflected < 0.01), reflected                    # -40 dB in amplitude
 
 
+def test_absorbing_layers_that_hold_ground_reflect_below_minus_40_db():
+    # every case with ground ends its ground in layers that are graded for air: the same test with the source two
+    # cells below z = 0, at the study's loss (the weakest loss of any case with ground, so the hardest for the layers)
+    records = []
+    for cells in (6, 26):                                        # measured: 1.1e-4 (-79 dB) against a box of 26, 30 or 46
+        run = solver(empty(True, cells, 10.0), cases.conductivity(Q("paper.eps_imag"), 346.0, Q), ground=True, dtype=np.float32)
+        for line in run.lines:
+            line["cb"][:] = 0.0                                  # no plane wave
+        centre, below = run.n[0] // 2, run.k0 - 2
+        probes = [(centre, centre, below - 8), (centre + 9, centre + 9, below - 7), (centre + 9, centre, below + 6)]
+        assert all(run.model.masonry[p] == 1 for p in probes[:2]) and run.model.masonry[probes[2]] == 0   # ground, ground, air
+        record = []
+        for _ in range(400):                                     # the wave is slower in the ground: longer than in air
+            run.one_step()
+            run.e[2][centre, centre, below] += run.pulse(run.step * run.dt)
+            record.append([run.e[2][p] for p in probes])
+        records.append(np.array(record))
+    small, large = records
+    reflected = np.abs(small - large).max(axis=0) / np.abs(large).max(axis=0)
+    assert np.all(reflected < 0.01), reflected                    # -40 dB in amplitude
+
+
 def test_a_half_space_reflects_as_fresnel_says_and_the_grid_reproduces_it():
     sigma = cases.conductivity(0.1, 346.0, Q)
     run = solver(empty(True), sigma, ground=True)

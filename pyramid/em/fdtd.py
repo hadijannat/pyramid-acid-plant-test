@@ -17,8 +17,11 @@ conductivity across a surface is taken to first order in the loss tangent; the a
 air, also where they hold ground; the ground is the masonry's material and fills everything below z = 0.
 
 Accuracy: first order in the cell, set by the slanted surfaces. The benchmark sphere is 6.7, 3.6 and 1.5
-percent off Mie at its worst wavelength at cells of 5, 2.5 and 1 m, so the 2 percent benchmark is met at 1 m
-only; the pyramid's peak extinction changes by 0.2 percent between 5 and 2.5 m.
+percent off Mie at its worst wavelength at cells of 5, 2.5 and 1 m. This is not an effect of the sphere's narrow
+lines: over the wavelengths where the exact spectrum varies slowly the error is 5.5, 3.0 and 1.2 percent, an
+error of the whole short half of the band. The 2 percent benchmark is met at 1 m only, so the runs that decide
+a claim are at 1 m (runs.DECIDING) and the coarser ones are a resolution check; the pyramid's peak extinction
+changes by 0.2 percent between 5 and 2.5 m.
 
 Extinction is the scattered power through the outer box plus the power absorbed inside the inner box, over the
 incident intensity in air. On ground the inner box is closed at z = 0, so it counts the loss in the body above
@@ -30,7 +33,7 @@ from pathlib import Path
 
 import numpy as np
 
-from pyramid.em import metrics
+from pyramid.em import keep, metrics
 from pyramid.em.cases import constants
 
 COURANT = 0.99 / np.sqrt(3)          # time step over the cell's light-crossing time
@@ -296,7 +299,7 @@ class Run:
         state |= {f"sum.{key}": value for key, value in self.sums.items()}
         for i, line in enumerate(self.lines):
             state |= {f"line{i}.e": line["e"], f"line{i}.h": line["h"]}
-        np.savez(path, counters=np.array([self.step, self.peak, self.quiet]), **state)
+        keep(path, lambda handle: np.savez(handle, counters=np.array([self.step, self.peak, self.quiet]), **state))
 
     def load(self, path: Path):
         with np.load(path) as state:
@@ -391,16 +394,22 @@ class Run:
 
 
 def run(model, case, q, wavelengths, sigma: float, checkpoint: Path | None = None, seconds: float = np.inf,
-        dtype=np.float32, flux: bool = True, layers: int = LAYERS) -> dict | None:
-    """One run of a case at one conductivity; None if the time allowed ran out (the state is then in `checkpoint`)."""
+        dtype=np.float32, flux: bool = True, layers: int = LAYERS, every: float = np.inf, saved=lambda: None) -> dict | None:
+    """One run of a case at one conductivity; None if the time allowed ran out (the state is then in `checkpoint`).
+
+    The state is also written every `every` seconds, and `saved` called, so a run that is killed resumes from there.
+    """
     speed, impedance = constants(q)
     solver = Run(model, case.eps, sigma, q("em.granite_eps"), q("em.granite_conductivity"), case.ground, case.direction,
                  wavelengths, speed, impedance, dtype, flux, layers)
     if checkpoint is not None and checkpoint.exists():
         solver.load(checkpoint)
-    if solver.advance(seconds):
-        if checkpoint is not None:
-            checkpoint.unlink(missing_ok=True)
-        return solver.results()
-    solver.save(checkpoint)
-    return None
+    stop = time.time() + seconds
+    while not solver.advance(min(every, stop - time.time())):
+        solver.save(checkpoint)
+        saved()
+        if time.time() >= stop:
+            return None
+    if checkpoint is not None:
+        checkpoint.unlink(missing_ok=True)
+    return solver.results()
