@@ -1,6 +1,6 @@
 # Was the Great Pyramid a sulfuric-acid plant? A quantitative test
 
-[![tests](https://img.shields.io/badge/tests-497%20passed%20%C2%B7%201%20xfail-2ea44f)](#reproduce-everything)
+[![tests](https://img.shields.io/badge/tests-508%20passed%20%C2%B7%201%20xfail-2ea44f)](#reproduce-everything)
 [![python](https://img.shields.io/badge/python-3.12-3776ab)](pyproject.toml)
 [![solvers](https://img.shields.io/badge/solvers-open%20source%20only-555)](#roadmap)
 [![claim status](https://img.shields.io/badge/claims%20decided-71%20of%2071-orange)](results/summary/report.md)
