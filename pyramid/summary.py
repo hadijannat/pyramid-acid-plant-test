@@ -36,7 +36,7 @@ DECIDERS = {
 SHORT = {   # the deciders as the figures name them
     "tier0": "Tier 0 screening\nhand calculations", "premises": "Geometric premises\nthe survey record",
     "evidence": "Documentary register\nthe sources read", "flow": "Water and gas\nreduced models",
-    "chem": "Chemistry and feed\nreduced models", "electro": "Conduction and acoustics\nfinite-volume solver",
+    "chem": "Chemistry and feed\nreduced models", "electro": "Conduction and acoustics\nreduced models",
     "em": "The 2018 field study\ntwo full-wave solvers",
 }
 INK = "#14161a"
@@ -123,8 +123,11 @@ def decided_by(verdicts: dict[str, tuple[str, str]], source: dict[str, str], pat
     """Stacked bars of the verdicts by what decided them, in the order the packages are read."""
     plt.rcParams["svg.hashsalt"] = "pyramid"
     present = [s for s in STATUSES if any(status == s for status, _ in verdicts.values())]
-    fig, ax = plt.subplots(figsize=(9, 3.6))
-    for row, (key, label) in enumerate(SHORT.items()):
+    rows = [(key, SHORT.get(key, about)) for key, about in DECIDERS.items() if key in source.values()]   # none: pending
+    totals = Counter(source.values())
+    assert sum(totals[key] for key, _ in rows) == len(verdicts), "every claim is decided by one of the deciders"
+    fig, ax = plt.subplots(figsize=(9, 0.5 * len(rows) + 0.4))
+    for row, (key, label) in enumerate(rows):
         tally = Counter(status for claim, (status, _) in verdicts.items() if source[claim] == key)
         x = 0
         for status in present:
@@ -134,8 +137,8 @@ def decided_by(verdicts: dict[str, tuple[str, str]], source: dict[str, str], pat
                 x += n
         ax.text(x + 0.4, row, str(x), va="center", fontsize=9, color="#555")
         ax.text(-0.5, row, label, ha="right", va="center", fontsize=9, color=INK, linespacing=1.15)
-    ax.set_xlim(0, 30)
-    ax.set_ylim(len(SHORT) - 0.4, -0.6)
+    ax.set_xlim(0, max(totals.values()) + 3)   # room for the total at the end of the longest bar
+    ax.set_ylim(len(rows) - 0.4, -0.6)
     ax.axis("off")
     _legend(ax, present, loc="lower right", ncol=len(present), bbox_to_anchor=(1.0, -0.02))
     ax.set_title(f"What decided the {len(verdicts)} claims", fontsize=11, loc="left", color=INK)
@@ -174,12 +177,14 @@ def cycle_elevation(ledger: Ledger, verdicts: dict[str, tuple[str, str]], path: 
                     ha="center", va="center", color=_ink(status),
                     bbox=dict(boxstyle="round,pad=0.22,rounding_size=0.3", fc=MARKS[status][0], ec="none"))
 
-    fig, ax = plt.subplots(figsize=(13, 7.2))
-    elevation.draw(ax, trimesh.load(elevation.GLB), labels)
-    for space, (tx, ty), *_ in (value for value in labels.values()):
+    assert set(at_space) <= {space for space, *_ in labels.values()}, "a step's first space has no label"
+    fig, ax = plt.subplots(figsize=(13, 9))
+    _, targets = elevation.draw(ax, trimesh.load(elevation.GLB), labels)
+    for text, (space, (tx, ty), *_) in labels.items():
         ids = at_space.get(space, [])
-        for i, claim in enumerate(ids):   # a row of chips under the label, 20 pt per chip, centred on it
-            chip((tx, ty), (i - (len(ids) - 1) / 2) * 20, -11, claim)
+        side = 11 if targets[text][1] < ty else -11   # the row of chips on the side away from the label's leader
+        for i, claim in enumerate(ids):   # 20 pt per chip, centred on the label
+            chip((tx, ty), (i - (len(ids) - 1) / 2) * 20, side, claim)
     ax.text(132, 138, "Outside the modelled interior", fontsize=9, color=INK, ha="right", va="center")
     for i, claim in enumerate(outside):
         chip((132, 138), -(len(outside) - 1 - i) * 20 - 6, -12, claim)

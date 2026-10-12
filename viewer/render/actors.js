@@ -266,7 +266,7 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
 
     // In the claim cycle a field actor never has a solver result: say so at the masonry's centre, draw nothing.
     field() {
-      keep(scene, tag('Solver result pending', 'pending-label')).position.copy(model.masonryBounds.getCenter(new THREE.Vector3()));
+      keep(scene, tag('Field picture: in the report, not yet in the viewer', 'pending-label')).position.copy(model.masonryBounds.getCenter(new THREE.Vector3()));
     },
 
     // The calcium sulfate layer of S23: a faint film and the edges of the coated space, in that species' colour.

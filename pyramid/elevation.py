@@ -47,8 +47,11 @@ def project(mesh: trimesh.Trimesh) -> np.ndarray:
     return np.stack([-v[:, :, 2], v[:, :, 1]], axis=-1)
 
 
-def draw(ax, scene, labels: dict = LABELS) -> dict:
-    """The bedrock, the masonry, the spaces and their labels on `ax`; returns the spaces' meshes by name."""
+def draw(ax, scene, labels: dict = LABELS) -> tuple[dict, dict]:
+    """The bedrock, the masonry, the spaces and their labels on `ax`.
+
+    Returns the spaces' meshes by name and, for each label, the point its leader runs to.
+    """
     spaces = {k: g for k, g in scene.geometry.items() if k not in ("masonry", "bedrock")}
     assert len(spaces) == 19, sorted(spaces)
     # Masonry and bedrock are convex in this projection, so their hulls are their silhouettes.
@@ -60,14 +63,15 @@ def draw(ax, scene, labels: dict = LABELS) -> dict:
         # A stroke in the fill colour keeps the 0.2 m shafts visible at page scale.
         ax.add_collection(PolyCollection(project(g), facecolors="#1f6fb2", edgecolors="#1f6fb2", linewidths=1.0))
 
+    targets = {}
     for text, (space, (tx, ty), *hint) in labels.items():
         pts = project(spaces[space]).reshape(-1, 2)
         near = np.array(hint[0]) if hint else (pts.min(0) + pts.max(0)) / 2
-        target = pts[np.argmin(((pts - near) ** 2).sum(1))]
+        target = targets[text] = pts[np.argmin(((pts - near) ** 2).sum(1))]
         ax.annotate(text, xy=target, xytext=(tx, ty), fontsize=9, color="#333",
                     ha="center", va="center",
                     arrowprops=dict(arrowstyle="-", color="#777", lw=0.7, shrinkB=2))
-    return spaces
+    return spaces, targets
 
 
 def frame(ax) -> None:

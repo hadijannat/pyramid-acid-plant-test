@@ -184,7 +184,7 @@ A Claim / Results switch with a case picker listing `manifest.cases`. In results
 - actors read `results/<case>/levels.json` and `composition.json`: water level per space over model time, liquid coloured by its dominant species and labelled with mole fractions, gas spaces labelled with mole fractions; the model's clock replaces the claimed durations, and the progress strip shows model time;
 - where a step's claimed level differs from the computed one, the claimed level is drawn as an outline over the computed fill;
 - the results panel plots, for each claim in `series.json`, the quantity its criterion names against time, with the median, the 5 to 95 percent band, the criterion lines, the verdict and the undefined inputs it depends on; SVG drawn by `hud/plots.js`, no library;
-- a field case draws its slices from its `case.json` at the stated extent with the stated caption; a slice without an extent is not drawn; a step with no slice in the case shows "Solver result pending";
+- a field case draws its slices from its `case.json` at the stated extent with the stated caption; a slice without an extent is not drawn; a step with no slice in the case shows "Field picture: in the report, not yet in the viewer" (until 2026-10-12 "Field picture: in the report, not yet in the viewer"; renamed once the field solvers had run and their pictures were in the report but not in the viewer);
 - the notice reads "Simulation result: <case label>" with the case's commit and ledger digest one click away.
 
 The viewer side ships complete against the contract of section 7.3 and a committed fixture case, so it is finished before the model exists; the picker labels the fixture "fixture, not a result".
@@ -193,7 +193,7 @@ The viewer side ships complete against the contract of section 7.3 and a committ
 
 ### 7.1 `cycle.yaml` and `cycle.json`
 
-Additions: `prologue: {path, duration}`; per step `path` (1 to 4 keyframes), `scene` (`interior`, `weather`), `species` (list of ids), optional `reaction` (`equation`, `timestamp`, `note`); actors: `gas` and `water` carry `species` instead of `color`; new actor type `coat` with `space`. The single `camera` of plan A is removed; its pose becomes the first keyframe, and plan A's tests of the `camera` key are rewritten for `path`. `viewer_data.py` converts every keyframe and placeholder position to viewer coordinates and attaches each species' `status` from the producing step's verdict. Every other existing key keeps its meaning. The `field` actor stays in the claim cycle and, in claim mode, always draws the "Solver result pending" label: a solver's slice is a result and belongs to a field case (section 7.3).
+Additions: `prologue: {path, duration}`; per step `path` (1 to 4 keyframes), `scene` (`interior`, `weather`), `species` (list of ids), optional `reaction` (`equation`, `timestamp`, `note`); actors: `gas` and `water` carry `species` instead of `color`; new actor type `coat` with `space`. The single `camera` of plan A is removed; its pose becomes the first keyframe, and plan A's tests of the `camera` key are rewritten for `path`. `viewer_data.py` converts every keyframe and placeholder position to viewer coordinates and attaches each species' `status` from the producing step's verdict. Every other existing key keeps its meaning. The `field` actor stays in the claim cycle and, in claim mode, always draws the "Field picture: in the report, not yet in the viewer" label: a solver's slice is a result and belongs to a field case (section 7.3).
 
 ### 7.2 `species.yaml`
 
