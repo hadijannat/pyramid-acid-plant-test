@@ -45,17 +45,26 @@ def figures(ledger, summary: dict, out_dir: Path):
     meta = {"Software": None, "Creation Time": None}
     eps = q("paper.eps_real") + 1j * q("paper.eps_imag")
     fine_grid = np.arange(q("paper.wavelength_min"), q("paper.wavelength_max") + 0.5, 1.0)
-    fig, ax = plt.subplots(figsize=(7, 4))
+    fig, (ax, below) = plt.subplots(2, 1, figsize=(7, 6.5), sharex=True)
     ax.plot(fine_grid, mie.cross_sections(q("emx.sphere_radius"), eps, fine_grid)[0] / 1e6, "k-", lw=1, label="Mie")
     for solver, marker in (("dda", "o"), ("fdtd", "s")):
-        for cell in runs.SPHERE[solver]:                            # every cell the sphere was run at
+        for cell in runs.SPHERE[solver]:                       # every cell the sphere was run at
             r = runs.collect(ledger, "B0", solver, size[cell])
-            if r is not None:
-                ax.plot(r["wavelengths"], r["extinction"] / 1e6, marker, ms=2 + runs.SPHERE[solver].index(cell),
-                        mfc=None if cell == runs.DECIDING[solver] else "none", label=f"{solver}, {size[cell]:.3g} m cell")
-    ax.set(xlabel="wavelength, m", ylabel="extinction, km2",
-           title=f"B0: sphere of radius {q('emx.sphere_radius'):g} m, {eps.real:g} + {eps.imag:g}i (filled: the deciding cell)")
+            if r is None:
+                continue
+            decides = cell == runs.DECIDING[solver]
+            label = f"{solver}, {size[cell]:.3g} m cell" + (" (the deciding runs' cell)" if decides else "")
+            if decides:
+                ax.plot(r["wavelengths"], r["extinction"] / 1e6, marker, ms=3, mfc="none", label=label)
+            exact = mie.cross_sections(q("emx.sphere_radius"), eps, r["wavelengths"])[0]
+            below.plot(r["wavelengths"], 100 * (r["extinction"] / exact - 1), marker + ("-" if decides else ":"), ms=2, lw=0.8,
+                       label=label)
+    for limit in (-metrics.BENCHMARK, metrics.BENCHMARK):
+        below.axhline(100 * limit, color="k", lw=0.5)
+    ax.set(ylabel="extinction, km2", title=f"B0: sphere of radius {q('emx.sphere_radius'):g} m, {eps.real:g} + {eps.imag:g}i")
+    below.set(xlabel="wavelength, m", ylabel=f"deviation from Mie, percent (limit {metrics.BENCHMARK:.0%})")
     ax.legend(fontsize=7)
+    below.legend(fontsize=6, ncol=2)
     fig.savefig(out_dir / "b0_extinction.png", dpi=130, bbox_inches="tight", metadata=meta)
     plt.close(fig)
 
@@ -169,6 +178,10 @@ def main(argv=None) -> int:
                       f"{seconds:.0f} s", flush=True)
 
     if args.certified:                                         # the long runs, and nothing else
+        # macOS keeps the freed blocks of a run's start-up arrays: a 1 m worker then holds 4 to 5.2 GB in place of
+        # 1.5 to 1.6 GB (measured), at 8 workers more than this machine has. Without that cache a step takes about
+        # 40 percent longer; MallocLargeCache=1 in the environment keeps it. The results do not depend on it.
+        os.environ.setdefault("MallocLargeCache", "0")
         run("certified")
         left = missing("certified", chosen=False)
         print(f"certified: {len(left)} of {len(runs.plan(ledger, 'certified'))} tasks are not cached"

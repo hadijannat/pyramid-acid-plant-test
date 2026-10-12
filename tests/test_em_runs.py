@@ -1,4 +1,6 @@
 """The task plan, the cache and the path from cached runs to gates and verdicts, on made-up spectra."""
+import os
+
 import numpy as np
 import pytest
 
@@ -218,7 +220,9 @@ def test_certified_runs_only_what_is_missing_and_says_when_all_is_cached(cache, 
 
     monkeypatch.setattr(runs, "work", worker)
     monkeypatch.setattr(entry, "write_results", lambda *a, **k: pytest.fail("--certified writes no summary"))
+    monkeypatch.delenv("MallocLargeCache", raising=False)
     assert entry.main(["--certified", "--workers", "1"]) == 1    # interrupted: 3 of the 36 missing ones are done
+    assert os.environ["MallocLargeCache"] == "0"                 # what the workers inherit: no 5 GB each at a 1 m cell
     assert set(ran) == set(plan[5:]) and len(ran) == len(plan) - 5
     out = capsys.readouterr().out
     assert f"[1/{len(plan) - 5}] done" in out and f"{len(plan) - 8} of {len(plan)} tasks are not cached" in out
