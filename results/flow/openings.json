@@ -1,0 +1,42 @@
+[
+ {
+  "name": "Ascending Passage",
+  "level": 21.656,
+  "height": 1.3371549791670283,
+  "area": 1.26939924,
+  "leads_to": "the Descending Passage and the entrance, past the granite plugs",
+  "at_the_foot": true
+ },
+ {
+  "name": "Queen's passage",
+  "level": 21.7068,
+  "height": 1.17,
+  "area": 1.2285,
+  "leads_to": "the Queen's Chamber, whose shafts are blind",
+  "at_the_foot": true
+ },
+ {
+  "name": "well shaft mouth",
+  "level": 21.7,
+  "height": 0.71,
+  "area": 0.5041,
+  "leads_to": "the Descending Passage and the entrance",
+  "at_the_foot": true
+ },
+ {
+  "name": "antechamber passage",
+  "level": 42.992,
+  "height": 1.11,
+  "area": 1.1672760000000002,
+  "leads_to": "the King's Chamber and its two shafts to the outside",
+  "at_the_foot": false
+ },
+ {
+  "name": "Davison's passage",
+  "level": 50.7538,
+  "height": 0.7468,
+  "area": 0.49886240000000004,
+  "leads_to": "Davison's chamber, a closed space",
+  "at_the_foot": false
+ }
+]

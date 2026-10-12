@@ -1,8 +1,8 @@
 {
   "case": "premises",
-  "timestamp": "2026-10-12T02:29:33+00:00",
-  "commit": "adabf9c9815657d864244fd72b7ec7e53d1cf0dd",
-  "ledger": "e2fd8b0861a3ca63a797c46a8956944aa2463740340537ec4bec909218694406",
+  "timestamp": "2026-10-12T03:49:05+00:00",
+  "commit": "2a3777c081f5fba3f3581113a4767c5de4b8194f",
+  "ledger": "43dbdcf6465304488232bfa47fc079150e3d2fc332f399869ae53d13756488da",
   "python": "3.12.12",
   "versions": {
     "numpy": "2.5.3",

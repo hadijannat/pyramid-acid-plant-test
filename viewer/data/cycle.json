@@ -2730,7 +2730,7 @@
      "name": "sulfurous acid",
      "phase": "liquid",
      "colour": "#4f9fd0",
-     "status": "plain"
+     "status": "conditional"
     }
    ],
    "reaction": {
@@ -2879,7 +2879,7 @@
        "name": "sulfurous acid",
        "phase": "liquid",
        "colour": "#4f9fd0",
-       "status": "plain"
+       "status": "conditional"
       },
       {
        "id": "water",
@@ -2938,7 +2938,7 @@
      "name": "sulfurous acid",
      "phase": "liquid",
      "colour": "#4f9fd0",
-     "status": "plain"
+     "status": "conditional"
     },
     {
      "id": "air",
@@ -3597,7 +3597,7 @@
      "name": "calcium sulfate",
      "phase": "solid",
      "colour": "#efe6cf",
-     "status": "plain"
+     "status": "conditional"
     }
    ],
    "reaction": {

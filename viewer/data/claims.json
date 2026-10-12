@@ -1,9 +1,9 @@
 {
  "manifest": {
   "case": "viewer",
-  "timestamp": "2026-10-12T02:31:17+00:00",
-  "commit": "adabf9c9815657d864244fd72b7ec7e53d1cf0dd",
-  "ledger": "e2fd8b0861a3ca63a797c46a8956944aa2463740340537ec4bec909218694406",
+  "timestamp": "2026-10-12T03:52:37+00:00",
+  "commit": "2a3777c081f5fba3f3581113a4767c5de4b8194f",
+  "ledger": "43dbdcf6465304488232bfa47fc079150e3d2fc332f399869ae53d13756488da",
   "python": "3.12.12",
   "versions": {
    "numpy": "2.5.3",
@@ -24,10 +24,53 @@
    "tier": 2,
    "piece": 5,
    "criterion": "Pass if a geologically defensible hydrogen sulfide flux can supply the chemistry model's minimum feed; fail if the required flux exceeds active-seep analogues by orders of magnitude (07 section 4.4).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 5.",
-   "source": "none",
-   "numbers": [],
+   "status": "undefined",
+   "basis": "One full batch needs 13319 mol of hydrogen sulfide, 454 kg, a mole for each mole of sulfur dioxide in the King's Chamber, which is 0.15 mol/s and 166 t a year at one batch every 24 h, and 0.00041 to 3.8 mol/s over the cycle times taken; the hypothesis states no cycle rate, so the required flux is undefined (07 section 4.4). 07 gives no flux for any seep or spring to set against it: its one analogue is a concentration, read from an abstract, at which one batch is the sulfide in 5.3 million m3 of cave air (60 ppmv in active sulfuric-acid caves).",
+   "source": "chem",
+   "numbers": [
+    {
+     "label": "Sulfur dioxide the King's Chamber holds if filled with the pure gas",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
+    },
+    {
+     "label": "Hydrogen sulfide one full batch needs",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
+    },
+    {
+     "label": "Mass of the hydrogen sulfide one full batch needs",
+     "value": 453.925543606368,
+     "low": 436.7598956987454,
+     "high": 464.10822084101653,
+     "unit": "kg"
+    },
+    {
+     "label": "Hydrogen sulfide flux for one full batch per cycle",
+     "value": 0.15415985521755998,
+     "low": 0.00040610580776255777,
+     "high": 3.7828330467610245,
+     "unit": "mol/s"
+    },
+    {
+     "label": "Hydrogen sulfide for a year of full batches",
+     "value": 165796.3048022259,
+     "low": 436.7598956987454,
+     "high": 4068372.6638923506,
+     "unit": "kg"
+    },
+    {
+     "label": "Cave air at the analogue's ceiling that holds the sulfur of one batch",
+     "value": 5339999.999999999,
+     "low": 5313333.333333333,
+     "high": 5366666.666666667,
+     "unit": "m3"
+    }
+   ],
    "spaces": []
   },
   {
@@ -52,10 +95,60 @@
    "tier": 2,
    "piece": 4,
    "criterion": "Pass if sulfur dioxide remains in the King's Chamber between delivery and draw with the air shafts open (00 section 7 item 5).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 4.",
-   "source": "none",
-   "numbers": [],
+   "status": "conditional",
+   "basis": "With its shafts open a King's Chamber of pure sulfur dioxide loses half its charge by diffusion in 361 (271 to 460) years, and no wind below 29 (23 to 43) m/s can drive a through-flow, because the gas, 2.2 times as dense as air, would have to be lifted up the leeward shaft against 516 (472 to 551) Pa. The same weight carries it out of an opening at the chamber's floor while no water stands beyond it and the Gallery is open to the air, which the hypothesis does not say for the time before the fill: through the 202 cm2 of grooves and one slab's clearance in the antechamber, the gas path of the hypothesis, half the charge is gone in about 69 minutes (41 at the fastest, never with the path shut). In the 30 m/s at the top of the assumed wind range the half-time falls to 15 minutes, and to 11 with the floor opening draining at its fastest as well, against the interval between delivery and draw, which the hypothesis does not state and which is taken as 10 minutes to 30 days; a charge diluted to a tenth is held only below 9 m/s, and below the wind that lifts it the model loses gas up the shafts by diffusion alone, which is a limit of the model. Remaining is read as half the charge still being there at the draw, and the hypothesis states neither the composition of the charge nor what keeps it in.",
+   "source": "flow",
+   "numbers": [
+    {
+     "label": "Sulfur dioxide the King's Chamber holds if filled with the pure gas",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
+    },
+    {
+     "label": "Density of sulfur dioxide against air",
+     "value": 2.2118362742700874,
+     "low": 2.138874497121148,
+     "high": 2.257716940765633,
+     "unit": "1"
+    },
+    {
+     "label": "Pressure difference needed to lift pure sulfur dioxide up a King's Chamber shaft to its outlet",
+     "value": 516.3687387156505,
+     "low": 471.5245451413386,
+     "high": 550.9445252381009,
+     "unit": "Pa"
+    },
+    {
+     "label": "Wind speed below which no through-flow can lift a chamber of pure sulfur dioxide out",
+     "value": 29.28746113828117,
+     "low": 22.85116137124701,
+     "high": 42.85419175289238,
+     "unit": "m/s"
+    },
+    {
+     "label": "Time for half the sulfur dioxide to leave the King's Chamber by diffusion up its two shafts",
+     "value": 11380387245.310343,
+     "low": 8545054719.372215,
+     "high": 14523701961.783325,
+     "unit": "s"
+    },
+    {
+     "label": "Time for half of a chamber of pure sulfur dioxide to leave by diffusion and wind-driven through-flow",
+     "value": 11380387245.310343,
+     "low": 904.3428941322742,
+     "high": 14523701961.783325,
+     "unit": "s"
+    },
+    {
+     "label": "Hydrogen sulfide one full batch needs",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
+    }
+   ],
    "spaces": [
     "kings_chamber",
     "kc_shaft_north",
@@ -303,10 +396,53 @@
    "tier": 2,
    "piece": 3,
    "criterion": "Pass requires an explicitly assumed reservoir, because the evidence-based boundary has no water at base level; report the level and volume it must have (02 section 5.5 item 1).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 3.",
-   "source": "none",
-   "numbers": [],
+   "status": "conditional",
+   "basis": "The highest water documented at Khufu or beside it, the Old Kingdom flood peak or today's water table, stands 15 (10 to 18) m below the foot of the Descending Passage; the chamber's deepest floor lies 1.9 m and the pit's original bottom up to 5.1 m lower than that foot, still above that water. Perched water at 22 to 48 m above sea level is interpreted from geophysics toward Menkaure and none is reported at Khufu, so it is not counted. No documented water therefore reaches the Subterranean Chamber, and the step holds only for a reservoir that is assumed: the hypothesis names one without level, volume or inlet, and nothing on site attests it. It must stand at pavement level or above and enter by a conduit that no survey shows, or 17.0 m above the pavement to use the entrance, the only surveyed opening; to fill the Gallery by communicating vessels alone it must stand 51.5 m above the pavement, 112 (109 to 114) m above sea level. One fill takes 866 (808 to 924) m3, an inflow of 0.24 m3/s if it takes 1 h, after 385 (284 to 536) m3 to prime the Subterranean Chamber and the Descending Passage up to the pavement.",
+   "source": "flow",
+   "numbers": [
+    {
+     "label": "Strokes to fill the Gallery if a stroke sweeps the passage below pavement level",
+     "value": 6.738963567167098,
+     "low": 6.161529783035644,
+     "high": 7.3338425755295145,
+     "unit": "1"
+    },
+    {
+     "label": "Depth of the highest documented water below the foot of the Descending Passage",
+     "value": 15.002600000000001,
+     "low": 10.4772,
+     "high": 17.528,
+     "unit": "m"
+    },
+    {
+     "label": "Level above sea level that a reservoir must hold to fill the Gallery by communicating vessels alone",
+     "value": 111.5,
+     "low": 109.35,
+     "high": 113.55,
+     "unit": "m"
+    },
+    {
+     "label": "Water one fill takes: the Gallery, the Queen's Chamber and its passage, the Ascending Passage and the well shaft",
+     "value": 865.8,
+     "low": 807.8000000000001,
+     "high": 923.8,
+     "unit": "m3"
+    },
+    {
+     "label": "Water that first fills the Subterranean Chamber and the Descending Passage up to pavement level",
+     "value": 385.0279118278237,
+     "low": 284.3759589365499,
+     "high": 535.5631667076452,
+     "unit": "m3"
+    },
+    {
+     "label": "Inflow that delivers one fill in the fill time",
+     "value": 0.2405,
+     "low": 0.009349537037037038,
+     "high": 1.5396666666666665,
+     "unit": "m3/s"
+    }
+   ],
    "spaces": [
     "subterranean_chamber",
     "descending_passage"
@@ -405,6 +541,13 @@
      "low": 5.43,
      "high": 14.43,
      "unit": "m"
+    },
+    {
+     "label": "Depth of the highest documented water below the foot of the Descending Passage",
+     "value": 15.002600000000001,
+     "low": 10.4772,
+     "high": 17.528,
+     "unit": "m"
     }
    ],
    "spaces": [
@@ -445,6 +588,13 @@
      "low": 6.161529783035644,
      "high": 7.3338425755295145,
      "unit": "1"
+    },
+    {
+     "label": "Water one fill takes: the Gallery, the Queen's Chamber and its passage, the Ascending Passage and the well shaft",
+     "value": 865.8,
+     "low": 807.8000000000001,
+     "high": 923.8,
+     "unit": "m3"
     }
    ],
    "spaces": [
@@ -464,10 +614,88 @@
    "tier": 1,
    "piece": 3,
    "criterion": "Pass if, with the gallery filled, water stays out of the King's Chamber while gas can still pass the antechamber, and a drain route is stated (02 section 5.5 item 6).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 3.",
-   "source": "none",
-   "numbers": [],
+   "status": "fail",
+   "basis": "With the Gallery full to its roof the water stands 8.5 (8.3 to 8.6) m above the antechamber floor and presses with 83 kPa, so an opening that passes gas passes water: past slabs as loose as the surviving fragment 0.16 (0.14 to 0.26) m3/s enter and the water stands at the King's Chamber shaft mouths after 6 (4 to 7) minutes, through the 20 cm2 of the grooves alone after 1.0 h, and with the path shut no gas passes either. Holding the water back would take 83 kPa of gas pressure, which the open shafts release in 53 s, and with the shafts shut the water still rises 2.2 m or more in the chamber. Water stays out only if the fill stops at the antechamber floor, 43.0 m above the pavement, and the hypothesis states no drain route.",
+   "source": "flow",
+   "numbers": [
+    {
+     "label": "King's Chamber volume, floor to ceiling",
+     "value": 320.416169419015,
+     "low": 317.002503781392,
+     "high": 324.003095458416,
+     "unit": "m3"
+    },
+    {
+     "label": "Sulfur dioxide the King's Chamber holds if filled with the pure gas",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
+    },
+    {
+     "label": "Acid strength ceiling set by the sulfur in one King's Chamber of gas",
+     "value": 23.245046231757737,
+     "low": 20.710608660387354,
+     "high": 25.831181654665567,
+     "unit": "mol/m3"
+    },
+    {
+     "label": "Height of the water above the antechamber floor with the Gallery full to its roof",
+     "value": 8.508000000000003,
+     "low": 8.3427,
+     "high": 8.5732,
+     "unit": "m"
+    },
+    {
+     "label": "Gas pressure in the King's Chamber that would hold the water of a full Gallery back",
+     "value": 83284.79523924003,
+     "low": 81666.67386488101,
+     "high": 84074.37178,
+     "unit": "Pa"
+    },
+    {
+     "label": "Water entering towards the King's Chamber past slabs as loose as the surviving fragment, the Gallery full",
+     "value": 0.158779328793855,
+     "low": 0.13930173602611887,
+     "high": 0.26128944339963317,
+     "unit": "m3/s"
+    },
+    {
+     "label": "Time for water to stand at the King's Chamber shaft mouths, slabs as loose as the surviving fragment",
+     "value": 369.6455518135907,
+     "low": 224.07311228327418,
+     "high": 422.37995973218364,
+     "unit": "s"
+    },
+    {
+     "label": "Least depth of water in the King's Chamber if its shafts were shut and its gas were compressed instead",
+     "value": 2.2098048395433203,
+     "low": 2.161544649660782,
+     "high": 2.2445921617908584,
+     "unit": "m"
+    },
+    {
+     "label": "Time for the open shafts to pass one chamber volume of sulfur dioxide under the hold-back pressure",
+     "value": 52.57950863411155,
+     "low": 50.009281340339776,
+     "high": 55.103913597862324,
+     "unit": "s"
+    },
+    {
+     "label": "Least share of air in the gas a full stroke draws into the Gallery",
+     "value": 0.4408376963350785,
+     "low": 0.3892261001517451,
+     "high": 0.48480930833872005,
+     "unit": "1"
+    },
+    {
+     "label": "Hydrogen sulfide one full batch needs",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
+    }
+   ],
    "spaces": [
     "grand_gallery",
     "antechamber",
@@ -482,9 +710,9 @@
    "tier": 2,
    "piece": 3,
    "criterion": "Pass if, for a stated drain rate and realistic leak areas, most of the replacement gas comes down the shafts; report the pressure difference (02 section 5.5 item 7).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 3.",
-   "source": "none",
+   "status": "conditional",
+   "basis": "The antechamber opening lies 7.4 m under the surface of the full Gallery, and until 13.2 (12.7 to 13.3) percent of the Gallery has drained gas enters it only where the suction exceeds the water standing over it, 72 kPa at the start. Draining the Gallery in 1 h through 202 cm2 of grooves and one slab's clearance, with masonry joints of 0.51 mm leaking along a path of 1.0 m, 60 percent of the replacement gas comes down the King's Chamber shafts; the pressure difference is 195 Pa at the start, when the joints alone supply the pocket, and 60 Pa once the opening is clear. Over drain times of 10 minutes to 6 h, joints of 0.05 to 0.51 mm and joint paths of 0.3 to 3.0 m the share runs from 20 to 100 percent with that path open, and from 0 percent if the path is shut, as blind grooves and seated slabs would leave it; the pressure difference runs from 1 Pa to 99 kPa, the most a water column can pull. Through the grooves alone the share is 11 percent, through the three slabs' clearances one after another, which pass what 108 cm2 passes, 44 percent, and with no slab in the passage 78 percent. More than half comes down the shafts with the joints tighter than 0.64 mm, or the drain slower than 30 minutes; the hypothesis states neither a drain rate nor how the Gallery is made gas-tight.",
+   "source": "flow",
    "numbers": [
     {
      "label": "Pressure drop that draws replacement air down both King's Chamber shafts while the Gallery drains",
@@ -492,6 +720,76 @@
      "low": 0.5743028749083946,
      "high": 1130.5033976205514,
      "unit": "Pa"
+    },
+    {
+     "label": "Share of the Gallery displaced before the falling water surface reaches the top of the antechamber opening",
+     "value": 0.13162182594088154,
+     "low": 0.12689123595915447,
+     "high": 0.13306478066306096,
+     "unit": "1"
+    },
+    {
+     "label": "Pressure of the Gallery's gas space below the outside air once the antechamber opening is clear of the water, joints leaking",
+     "value": 60.35279708630429,
+     "low": 1.1144493054644222,
+     "high": 98985.0,
+     "unit": "Pa"
+    },
+    {
+     "label": "Pressure of the Gallery's gas space below the outside air at the start of the draw, the antechamber opening under water, joints leaking",
+     "value": 194.90644843056967,
+     "low": 8.936588301873016,
+     "high": 98985.0,
+     "unit": "Pa"
+    },
+    {
+     "label": "Share of the displaced volume that comes down the King's Chamber shafts and through the antechamber, joints leaking",
+     "value": 0.599734636176456,
+     "low": 0.0,
+     "high": 0.9969374092757959,
+     "unit": "1"
+    },
+    {
+     "label": "Share of the displaced volume drawn through the antechamber passage as surveyed, the masonry gas-tight",
+     "value": 0.9999753556505863,
+     "low": 0.9988284298914571,
+     "high": 0.9999995013665546,
+     "unit": "1"
+    },
+    {
+     "label": "Share drawn through the antechamber passage as surveyed, joints leaking",
+     "value": 0.7770353268673118,
+     "low": 0.37799743988456164,
+     "high": 0.9982617436987687,
+     "unit": "1"
+    },
+    {
+     "label": "Share drawn through the antechamber path with the slabs down, the masonry gas-tight",
+     "value": 0.999878660290153,
+     "low": 0.0,
+     "high": 0.9999987376062223,
+     "unit": "1"
+    },
+    {
+     "label": "Joint aperture at which half the displaced volume still comes down the shafts, the slabs down",
+     "value": 0.0006369426412293822,
+     "low": 0.0,
+     "high": 0.0021761607308488857,
+     "unit": "m"
+    },
+    {
+     "label": "Joint aperture at which nine tenths of the displaced volume still passes the antechamber passage as surveyed",
+     "value": 0.00011292936885593538,
+     "low": 4.101570367968764e-05,
+     "high": 0.000243100561863188,
+     "unit": "m"
+    },
+    {
+     "label": "Depth of water over the Gallery's foot openings that the draw's suction could hold up once the antechamber opening is clear",
+     "value": 0.006165370235170462,
+     "low": 0.0001136422025324063,
+     "high": 10.11186228627732,
+     "unit": "m"
     }
    ],
    "spaces": [
@@ -572,10 +870,95 @@
    "tier": 2,
    "piece": 3,
    "criterion": "Pass if, with the openings as surveyed, more than 90 percent of the displaced volume is drawn through the antechamber path rather than through other openings (01 premise P4).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 3.",
-   "source": "none",
-   "numbers": [],
+   "status": "conditional",
+   "basis": "Of the Gallery's five surveyed openings the Ascending Passage, the Queen's passage and the well shaft meet it at its foot and stay under water until 0.7 percent of it or less is left, and Davison's passage ends in a closed chamber. The antechamber opening lies 7.4 m under the surface of the full Gallery, and until 13.2 (12.7 to 13.3) percent of the Gallery has drained gas enters it only where the suction exceeds the water standing over it, 72 kPa at the start. With gas-tight masonry nothing else can enter, so 100.0 (99.9 to 100.0) percent of the displaced volume is drawn through the antechamber passage as surveyed, with no slab in it. Counting gas that leaks in through 1350 m of masonry joints of 0.05 to 0.51 mm, from air-filled masonry at outside pressure 0.3 to 3.0 m behind the Gallery's face, a leak that is assumed and that 01 leaves open for the syringe, the share is 78 (38 to 100) percent over drain times of 10 minutes to 6 h and passes 90 percent with joints tighter than 0.11 (0.04 to 0.24) mm or somewhat wider, the model letting neither the pocket's gas thin nor Davison's chamber lend. With the slabs of the hypothesis down the two shares are 100.0 and 60 percent through 202 cm2 of grooves and one slab's clearance, and nothing if that path is shut, which is the question of S15.",
+   "source": "flow",
+   "numbers": [
+    {
+     "label": "Pressure drop that draws replacement air down both King's Chamber shafts while the Gallery drains",
+     "value": 25.690054175544628,
+     "low": 0.5743028749083946,
+     "high": 1130.5033976205514,
+     "unit": "Pa"
+    },
+    {
+     "label": "Share of the Gallery displaced before the falling water surface reaches the top of the antechamber opening",
+     "value": 0.13162182594088154,
+     "low": 0.12689123595915447,
+     "high": 0.13306478066306096,
+     "unit": "1"
+    },
+    {
+     "label": "Pressure of the Gallery's gas space below the outside air once the antechamber opening is clear of the water, joints leaking",
+     "value": 60.35279708630429,
+     "low": 1.1144493054644222,
+     "high": 98985.0,
+     "unit": "Pa"
+    },
+    {
+     "label": "Pressure of the Gallery's gas space below the outside air at the start of the draw, the antechamber opening under water, joints leaking",
+     "value": 194.90644843056967,
+     "low": 8.936588301873016,
+     "high": 98985.0,
+     "unit": "Pa"
+    },
+    {
+     "label": "Share of the displaced volume that comes down the King's Chamber shafts and through the antechamber, joints leaking",
+     "value": 0.599734636176456,
+     "low": 0.0,
+     "high": 0.9969374092757959,
+     "unit": "1"
+    },
+    {
+     "label": "Share of the displaced volume drawn through the antechamber passage as surveyed, the masonry gas-tight",
+     "value": 0.9999753556505863,
+     "low": 0.9988284298914571,
+     "high": 0.9999995013665546,
+     "unit": "1"
+    },
+    {
+     "label": "Share drawn through the antechamber passage as surveyed, joints leaking",
+     "value": 0.7770353268673118,
+     "low": 0.37799743988456164,
+     "high": 0.9982617436987687,
+     "unit": "1"
+    },
+    {
+     "label": "Share drawn through the antechamber path with the slabs down, the masonry gas-tight",
+     "value": 0.999878660290153,
+     "low": 0.0,
+     "high": 0.9999987376062223,
+     "unit": "1"
+    },
+    {
+     "label": "Joint aperture at which half the displaced volume still comes down the shafts, the slabs down",
+     "value": 0.0006369426412293822,
+     "low": 0.0,
+     "high": 0.0021761607308488857,
+     "unit": "m"
+    },
+    {
+     "label": "Joint aperture at which nine tenths of the displaced volume still passes the antechamber passage as surveyed",
+     "value": 0.00011292936885593538,
+     "low": 4.101570367968764e-05,
+     "high": 0.000243100561863188,
+     "unit": "m"
+    },
+    {
+     "label": "Depth of water over the Gallery's foot openings that the draw's suction could hold up once the antechamber opening is clear",
+     "value": 0.006165370235170462,
+     "low": 0.0001136422025324063,
+     "high": 10.11186228627732,
+     "unit": "m"
+    },
+    {
+     "label": "Share of the Gallery's volume below the tops of the three openings at its foot, at most",
+     "value": 0.006615243171545277,
+     "low": 0.00598624187994551,
+     "high": 0.007376185429864305,
+     "unit": "1"
+    }
+   ],
    "spaces": [
     "antechamber",
     "grand_gallery"
@@ -628,10 +1011,67 @@
    "tier": 2,
    "piece": 4,
    "criterion": "Pass if at least 90 percent of the sulfur is captured into the liquid in any oxidation state within the cycle; fail below 50 percent (03 section 4.4).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 4.",
-   "source": "none",
-   "numbers": [],
+   "status": "conditional",
+   "basis": "With the Gallery half full and a cycle of 24 h (the hypothesis states none; 1 h to 1 yr is taken as its range), 87 percent of the sulfur dioxide crosses the level surface into the water (0.1 to 97 percent over the ranges of the inputs), which over those ranges is neither always at the 90 percent from which the criterion passes the claim nor always under the 50 percent below which it fails it. The water could hold 98 percent at equilibrium, so the rate decides. It depends on the cycle time, on whether the gas over the water stands still or convects (gas-side coefficient 0.003 to 10 mm/s, assumed) and on the film on the water's side of the surface (liquid-film coefficient 0.001 to 0.01 mm/s, assumed with no source), none of which the hypothesis gives; the 87 percent is for a gas-side coefficient of 1.5 mm/s and a liquid-film coefficient of 0.01 mm/s.",
+   "source": "chem",
+   "numbers": [
+    {
+     "label": "Sulfur dioxide the King's Chamber holds if filled with the pure gas",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
+    },
+    {
+     "label": "Acid strength ceiling set by the sulfur in one King's Chamber of gas",
+     "value": 23.245046231757737,
+     "low": 20.710608660387354,
+     "high": 25.831181654665567,
+     "unit": "mol/m3"
+    },
+    {
+     "label": "Share of the sulfur dioxide that reaches the water of the half-full Gallery in one cycle",
+     "value": 0.8664561054493942,
+     "low": 0.0008487133840724646,
+     "high": 0.9742320773429302,
+     "unit": "1"
+    },
+    {
+     "label": "Share of the largest batch the water of the half-full Gallery holds at equilibrium",
+     "value": 0.9815715391989699,
+     "low": 0.9773767507130706,
+     "high": 0.984948491722115,
+     "unit": "1"
+    },
+    {
+     "label": "Uptake rate of sulfur dioxide over the rate at which a one-cycle fill displaces the gas",
+     "value": 1.08691835293702,
+     "low": 0.00042454371356183786,
+     "high": 611.8363949371086,
+     "unit": "1"
+    },
+    {
+     "label": "Least share of air in the gas a full stroke draws into the Gallery",
+     "value": 0.4408376963350785,
+     "low": 0.3892261001517451,
+     "high": 0.48480930833872005,
+     "unit": "1"
+    },
+    {
+     "label": "Hydrogen sulfide one full batch needs",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
+    },
+    {
+     "label": "Hydrogen sulfide flux for one full batch per cycle",
+     "value": 0.15415985521755998,
+     "low": 0.00040610580776255777,
+     "high": 3.7828330467610245,
+     "unit": "mol/s"
+    }
+   ],
    "spaces": [
     "grand_gallery"
    ]
@@ -682,6 +1122,20 @@
      "low": 0.021461191255279902,
      "high": 0.027692976195211844,
      "unit": "1"
+    },
+    {
+     "label": "Least share of air in the gas a full stroke draws into the Gallery",
+     "value": 0.4408376963350785,
+     "low": 0.3892261001517451,
+     "high": 0.48480930833872005,
+     "unit": "1"
+    },
+    {
+     "label": "Hydrogen sulfide one full batch needs",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
     }
    ],
    "spaces": [
@@ -727,6 +1181,20 @@
      "low": 62.28656346963536,
      "high": 78.65520677615864,
      "unit": "K"
+    },
+    {
+     "label": "Least share of air in the gas a full stroke draws into the Gallery",
+     "value": 0.4408376963350785,
+     "low": 0.3892261001517451,
+     "high": 0.48480930833872005,
+     "unit": "1"
+    },
+    {
+     "label": "Hydrogen sulfide one full batch needs",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
     }
    ],
    "spaces": [
@@ -741,10 +1209,60 @@
    "tier": 2,
    "piece": 4,
    "criterion": "Pass if gas uptake keeps pace with the rising water so that no gas is forced back through the grooves (00 section 7 item 9).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 4.",
-   "source": "none",
-   "numbers": [],
+   "status": "fail",
+   "basis": "A full stroke draws 573 m3 of gas into the Gallery and the King's Chamber holds 320 m3, so at least 44 percent of the gas over the water is the outside air of S14 (39 percent at the least). Its nitrogen hardly dissolves: if all the sulfur dioxide dissolved, the oxidation used every mole of oxygen it could and the water arrived free of dissolved gas, the rising water would still push 33 percent of the gas back (29 to 37 percent over the ranges of the inputs), and 54 percent of a mixture that carries the oxygen for all its sulfur. Nothing is pushed back only if air is under 2.0 percent of the gas (2.4 percent at most), which brings oxygen for 0.8 percent of the sulfur, while S14 to S17 carry air into the Gallery; the hypothesis states no gas fraction and no stroke. Taking the least air of a full stroke, not a gas without air, as the end most favourable to the hypothesis is a judgement call.",
+   "source": "chem",
+   "numbers": [
+    {
+     "label": "Share of the sulfur dioxide that reaches the water of the half-full Gallery in one cycle",
+     "value": 0.8664561054493942,
+     "low": 0.0008487133840724646,
+     "high": 0.9742320773429302,
+     "unit": "1"
+    },
+    {
+     "label": "Uptake rate of sulfur dioxide over the rate at which a one-cycle fill displaces the gas",
+     "value": 1.08691835293702,
+     "low": 0.00042454371356183786,
+     "high": 611.8363949371086,
+     "unit": "1"
+    },
+    {
+     "label": "Least share of air in the gas a full stroke draws into the Gallery",
+     "value": 0.4408376963350785,
+     "low": 0.3892261001517451,
+     "high": 0.48480930833872005,
+     "unit": "1"
+    },
+    {
+     "label": "Share of the gas the rising water must push back, with the least air",
+     "value": 0.3328829367674927,
+     "low": 0.28877926210010424,
+     "high": 0.3691064650618357,
+     "unit": "1"
+    },
+    {
+     "label": "Share of the gas pushed back for the mixture with oxygen for all its sulfur",
+     "value": 0.5414831902459027,
+     "low": 0.5381784823614394,
+     "high": 0.542947159251367,
+     "unit": "1"
+    },
+    {
+     "label": "Largest share of air in the gas for which nothing need be pushed back",
+     "value": 0.01973341199922439,
+     "low": 0.017881458798130967,
+     "high": 0.02391394063232163,
+     "unit": "1"
+    },
+    {
+     "label": "Share of the sulfur that the oxygen of that much air can oxidise",
+     "value": 0.008434745944506758,
+     "low": 0.007628744313540933,
+     "high": 0.010265427959737295,
+     "unit": "1"
+    }
+   ],
    "spaces": [
     "grand_gallery",
     "antechamber",
@@ -759,10 +1277,130 @@
    "tier": 2,
    "piece": 4,
    "criterion": "Pass if a calcium sulfate layer forms and persists over ten fill and drain cycles with fresh water and limits wall loss to a rate compatible with the surviving surfaces; fail if it is stripped each cycle (03 section 4.4; 00 section 7 item 11).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 4.",
-   "source": "none",
-   "numbers": [],
+   "status": "conditional",
+   "basis": "Fresh water lets bare limestone neutralise 41 percent of the strongest batch before gypsum can form (Tier 0), and the layer that then grows by acid diffusing through it reaches 3.7 micrometres in a cycle of 24 h (the hypothesis states none; 1 h to 1 yr is taken as its range) (0.1 to 74 micrometres over the ranges of the inputs). One fill of fresh water can dissolve 0.63 mm of gypsum, 173 times that layer (7.7 times at the least); even the most gypsum a whole batch can lay down is 55 percent of what one fill dissolves (76 percent at most), so a fill that comes to saturation strips it; every cycle then starts on bare stone, which loses up to 0.21 mm per cycle and 2.1 mm in ten in bringing each batch to saturation (1.6 to 4.9 mm over the ranges of the inputs). A fill that stands still strips the layer a bare wall grows in one cycle by diffusion alone only if it stands at least 0.1 times as long as the acid stood (0.19 times at most). The hypothesis does not state that time; over the range taken, 1.9e-05 to 1 of the acid's, a still fill dissolves 0.0099 to 23 times that layer, and 0.65 times at the 0.042 the ledger takes as its value. The acid of the next batch does not strip it: still acid dissolves it from outside while it grows from beneath and leaves at most 49 percent of it (7 to 61 percent), about 26 percent once the batch's bisulfate is counted (4 to 35 percent). So whether the layer lasts depends on how long the fresh water stands against the wall and on how it moves, neither of which the hypothesis states.",
+   "source": "chem",
+   "numbers": [
+    {
+     "label": "Sulfur dioxide the King's Chamber holds if filled with the pure gas",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
+    },
+    {
+     "label": "Acid strength ceiling set by the sulfur in one King's Chamber of gas",
+     "value": 23.245046231757737,
+     "low": 20.710608660387354,
+     "high": 25.831181654665567,
+     "unit": "mol/m3"
+    },
+    {
+     "label": "Share of the strongest batch that bare limestone neutralises before gypsum can coat it",
+     "value": 0.41491278820027744,
+     "low": 0.32268683950713095,
+     "high": 0.7722484601556031,
+     "unit": "1"
+    },
+    {
+     "label": "Least share of air in the gas a full stroke draws into the Gallery",
+     "value": 0.4408376963350785,
+     "low": 0.3892261001517451,
+     "high": 0.48480930833872005,
+     "unit": "1"
+    },
+    {
+     "label": "Gypsum layer that grows in one cycle on a wall bare at its start",
+     "value": 3.671023983471572e-06,
+     "low": 1.3727231374822937e-07,
+     "high": 7.435793928806224e-05,
+     "unit": "m"
+    },
+    {
+     "label": "Gypsum layer one Gallery of fresh water dissolves in coming to saturation",
+     "value": 0.0006340271931,
+     "low": 0.0005716822922832,
+     "high": 0.00105160419,
+     "unit": "m"
+    },
+    {
+     "label": "Gypsum layer a still fill of fresh water dissolves by diffusion alone in its dwell",
+     "value": 2.3699174624713844e-06,
+     "low": 7.838592254593921e-09,
+     "high": 0.000298531151192661,
+     "unit": "m"
+    },
+    {
+     "label": "What a saturating fill dissolves over the layer one cycle grows",
+     "value": 172.711264201663,
+     "low": 7.729750507937363,
+     "high": 7619.58419469418,
+     "unit": "1"
+    },
+    {
+     "label": "What a still fill dissolves over the layer one cycle grows",
+     "value": 0.6455739524289972,
+     "low": 0.009923149706426507,
+     "high": 23.10297387263109,
+     "unit": "1"
+    },
+    {
+     "label": "Dwell of still fresh water, as a share of the acid's, at which it just dissolves the layer one cycle grows",
+     "value": 0.10005621190261885,
+     "low": 0.0018735454199936973,
+     "high": 0.1929543234609808,
+     "unit": "1"
+    },
+    {
+     "label": "Most of a cycle's layer that stands under still acid, which dissolves it outside while it grows beneath: all the batch's sulfate counted as free",
+     "value": 0.49053168171446204,
+     "low": 0.07402017929710526,
+     "high": 0.6100963372174034,
+     "unit": "1"
+    },
+    {
+     "label": "Share of a cycle's layer that stands under still acid once the batch's bisulfate is counted",
+     "value": 0.26492141469690667,
+     "low": 0.038093284708274784,
+     "high": 0.3467998145098502,
+     "unit": "1"
+    },
+    {
+     "label": "Most gypsum a whole batch can lay down over what one fresh fill dissolves",
+     "value": 0.5524641843156171,
+     "low": 0.13794553079051397,
+     "high": 0.7603919473191585,
+     "unit": "1"
+    },
+    {
+     "label": "Limestone lost in a cycle that starts bare and comes to gypsum saturation",
+     "value": 0.0002057569726746237,
+     "low": 0.0001622299994642909,
+     "high": 0.0004895626544772999,
+     "unit": "m"
+    },
+    {
+     "label": "Limestone lost in ten such cycles, every fill stripping the layer",
+     "value": 0.002057569726746237,
+     "low": 0.001622299994642909,
+     "high": 0.0048956265447729986,
+     "unit": "m"
+    },
+    {
+     "label": "Hydrogen sulfide one full batch needs",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
+    },
+    {
+     "label": "Hydrogen sulfide flux for one full batch per cycle",
+     "value": 0.15415985521755998,
+     "low": 0.00040610580776255777,
+     "high": 3.7828330467610245,
+     "unit": "mol/s"
+    }
+   ],
    "spaces": [
     "grand_gallery",
     "queens_chamber"
@@ -807,6 +1445,20 @@
      "low": 9.64,
      "high": 19.839999999999996,
      "unit": "m"
+    },
+    {
+     "label": "Least share of air in the gas a full stroke draws into the Gallery",
+     "value": 0.4408376963350785,
+     "low": 0.3892261001517451,
+     "high": 0.48480930833872005,
+     "unit": "1"
+    },
+    {
+     "label": "Hydrogen sulfide one full batch needs",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
     }
    ],
    "spaces": [
@@ -977,6 +1629,20 @@
      "low": 11.87015752288352,
      "high": 12.488073062856635,
      "unit": "mol/m3"
+    },
+    {
+     "label": "Least share of air in the gas a full stroke draws into the Gallery",
+     "value": 0.4408376963350785,
+     "low": 0.3892261001517451,
+     "high": 0.48480930833872005,
+     "unit": "1"
+    },
+    {
+     "label": "Hydrogen sulfide one full batch needs",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
     }
    ],
    "spaces": [
@@ -1014,10 +1680,53 @@
    "tier": 2,
    "piece": 5,
    "criterion": "Pass if an opened source gives a measured hydrogen sulfide flux, composition or source pressure under the plateau that meets the chemistry model's minimum feed; fail if the required flux exceeds active-seep analogues by orders of magnitude (07 section 4.4).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 5.",
-   "source": "none",
-   "numbers": [],
+   "status": "undefined",
+   "basis": "No opened source gives a measured hydrogen sulfide flux, composition or source pressure under the plateau: 07 read the cited paper in full, and it measured no gas and reports no present-day seepage, so the passing clause is not met. The failing clause cannot be evaluated either: one full batch needs 13319 mol of hydrogen sulfide, 454 kg, a mole for each mole of sulfur dioxide in the King's Chamber, which is 0.15 mol/s and 166 t a year at one batch every 24 h, and 0.00041 to 3.8 mol/s over the cycle times taken; the hypothesis states no cycle rate, so the required flux is undefined (07 section 4.4). 07 gives no flux for any seep or spring to set against it: its one analogue is a concentration, read from an abstract, at which one batch is the sulfide in 5.3 million m3 of cave air.",
+   "source": "chem",
+   "numbers": [
+    {
+     "label": "Sulfur dioxide the King's Chamber holds if filled with the pure gas",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
+    },
+    {
+     "label": "Hydrogen sulfide one full batch needs",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
+    },
+    {
+     "label": "Mass of the hydrogen sulfide one full batch needs",
+     "value": 453.925543606368,
+     "low": 436.7598956987454,
+     "high": 464.10822084101653,
+     "unit": "kg"
+    },
+    {
+     "label": "Hydrogen sulfide flux for one full batch per cycle",
+     "value": 0.15415985521755998,
+     "low": 0.00040610580776255777,
+     "high": 3.7828330467610245,
+     "unit": "mol/s"
+    },
+    {
+     "label": "Hydrogen sulfide for a year of full batches",
+     "value": 165796.3048022259,
+     "low": 436.7598956987454,
+     "high": 4068372.6638923506,
+     "unit": "kg"
+    },
+    {
+     "label": "Cave air at the analogue's ceiling that holds the sulfur of one batch",
+     "value": 5339999.999999999,
+     "low": 5313333.333333333,
+     "high": 5366666.666666667,
+     "unit": "m3"
+    }
+   ],
    "spaces": []
   },
   {
@@ -1747,6 +2456,34 @@
      "low": 0.32268683950713095,
      "high": 0.7722484601556031,
      "unit": "1"
+    },
+    {
+     "label": "Least share of air in the gas a full stroke draws into the Gallery",
+     "value": 0.4408376963350785,
+     "low": 0.3892261001517451,
+     "high": 0.48480930833872005,
+     "unit": "1"
+    },
+    {
+     "label": "Gypsum layer one Gallery of fresh water dissolves in coming to saturation",
+     "value": 0.0006340271931,
+     "low": 0.0005716822922832,
+     "high": 0.00105160419,
+     "unit": "m"
+    },
+    {
+     "label": "Most gypsum a whole batch can lay down over what one fresh fill dissolves",
+     "value": 0.5524641843156171,
+     "low": 0.13794553079051397,
+     "high": 0.7603919473191585,
+     "unit": "1"
+    },
+    {
+     "label": "Hydrogen sulfide one full batch needs",
+     "value": 13319.411490797183,
+     "low": 12815.724639047694,
+     "high": 13618.198968339688,
+     "unit": "mol"
     }
    ],
    "spaces": [

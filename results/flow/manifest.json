@@ -1,0 +1,28 @@
+{
+  "case": "flow",
+  "timestamp": "2026-10-12T03:49:10+00:00",
+  "commit": "2a3777c081f5fba3f3581113a4767c5de4b8194f",
+  "ledger": "43dbdcf6465304488232bfa47fc079150e3d2fc332f399869ae53d13756488da",
+  "python": "3.12.12",
+  "versions": {
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "pyyaml": "6.0.3",
+    "gmsh": "4.15.2",
+    "trimesh": "5.1.1",
+    "matplotlib": "3.11.2",
+    "pytest": "9.1.1"
+  },
+  "assumptions": [
+    "Water moves through an opening by the orifice law, Q = Cd a sqrt(2 g h); vessels are prismatic.",
+    "\"The Gallery filled\" means filled to its roof, as S12 and S13 say; the peak level is not otherwise stated.",
+    "An opening below the falling water surface carries water, not gas. The Ascending Passage, the Queen's passage and the well shaft all meet the Gallery at its foot, so they stay covered until the Gallery is all but empty.",
+    "The antechamber opening lies under the full Gallery's surface too: until the surface has fallen to the opening's top, gas enters there only by the suction in excess of the water standing over it, and from then on freely. The Gallery is its surveyed section carried along the slope; the water that enters the antechamber meanwhile is S13's matter.",
+    "The antechamber path with the slabs down is one opening, the grooves plus the leak round one slab though three stand one after another, in series with the two King's Chamber shafts; the King's Chamber itself is gas-tight apart from these.",
+    "Gas is incompressible air at the ledger's density, moving at a steady rate, the Gallery volume over the drain time; the suction is capped at what a hanging water column can apply (02 section 4.4).",
+    "Masonry joints leak gas as laminar slots, over their whole length from the start of the draw, from air-filled masonry at outside pressure; a gas-tight Gallery is what the tight end of the joint aperture approaches.",
+    "The chamber behind Davison's passage is closed and only gives up the gas its pressure drop releases; what it lends while the suction is high and takes back later is left out.",
+    "Sulfur dioxide fills the King's Chamber pure, as S03 and S13 say, and is well mixed; it leaves by diffusion up the shafts and by a wind-driven through-flow that must lift the dense gas up the leeward shaft. Gusts, the breathing of the chamber with the barometer and temperature differences are not modelled.",
+    "The same charge runs out by its own weight through an opening at the chamber's floor that has no water beyond it, under the head of the gas below the shaft mouths, where the air comes in. S03 counts this for the antechamber path, as an unmixed layer, with the Gallery open to the air; the floor inlet by which the gas arrives is taken as closed, which the hypothesis does not say. With the Gallery closed only an exchange through the one opening is left, hours to more than a day; with water over the opening nothing drains, and S13's water pushes out at most the 16 percent of the charge below the shaft mouths."
+  ]
+}

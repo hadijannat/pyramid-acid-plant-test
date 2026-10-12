@@ -1,0 +1,481 @@
+{
+  "results": [
+    {
+      "id": "chem.capture_share",
+      "label": "Share of the sulfur dioxide that reaches the water of the half-full Gallery in one cycle",
+      "value": 0.8664561054493942,
+      "low": 0.0008487133840724646,
+      "high": 0.9742320773429302,
+      "unit": "1",
+      "formula": "y = (1 - exp(-t / tau)) / (1 + 1 / m); tau = V / (2 K A (1 + 1 / m)); 1 / K = 1 / k_g + 1 / (m k_L); m = H R T; A = S / tan(a)",
+      "inputs": [
+        "gg.slot_width",
+        "gg.ramp_height",
+        "gg.width",
+        "gg.first_lap_height",
+        "gg.height",
+        "gg.overhang",
+        "gg.laps",
+        "gg.angle",
+        "gg.volume",
+        "chem.henry_so2",
+        "chem.temperature",
+        "chem.kl_surface",
+        "rx.kg_gas",
+        "rx.cycle_time"
+      ]
+    },
+    {
+      "id": "chem.capture_equilibrium",
+      "label": "Share of the largest batch the water of the half-full Gallery holds at equilibrium",
+      "value": 0.9815715391989699,
+      "low": 0.9773767507130706,
+      "high": 0.984948491722115,
+      "unit": "1",
+      "formula": "n_gas / V_gas = a0([H+]) c / (H R T), with [H+] from the charge balance of the dissolved sulfur(IV)",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "gg.volume",
+        "chem.henry_so2",
+        "chem.pka1_so2",
+        "chem.pka2_so2"
+      ]
+    },
+    {
+      "id": "chem.uptake_pace",
+      "label": "Uptake rate of sulfur dioxide over the rate at which a one-cycle fill displaces the gas",
+      "value": 1.08691835293702,
+      "low": 0.00042454371356183786,
+      "high": 611.8363949371086,
+      "unit": "1",
+      "formula": "Da = K A t / V_gallery",
+      "inputs": [
+        "gg.slot_width",
+        "gg.ramp_height",
+        "gg.width",
+        "gg.first_lap_height",
+        "gg.height",
+        "gg.overhang",
+        "gg.laps",
+        "gg.angle",
+        "gg.volume",
+        "chem.henry_so2",
+        "chem.temperature",
+        "chem.kl_surface",
+        "rx.kg_gas",
+        "rx.cycle_time"
+      ]
+    },
+    {
+      "id": "chem.oxidation_half_life",
+      "label": "Half-life of dissolved sulfur(IV) under the iron law at the batch's starting pH",
+      "value": 21280.372303975222,
+      "low": 1896.0161983031178,
+      "high": 2364791.023741143,
+      "unit": "s",
+      "formula": "t = ln 2 / (k [Fe(III)] a2([H+])); oxygen permitting",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "gg.volume",
+        "chem.fe_rate_constant",
+        "chem.fe_concentration",
+        "chem.pka1_so2",
+        "chem.pka2_so2"
+      ]
+    },
+    {
+      "id": "chem.least_air",
+      "label": "Least share of air in the gas a full stroke draws into the Gallery",
+      "value": 0.4408376963350785,
+      "low": 0.3892261001517451,
+      "high": 0.48480930833872005,
+      "unit": "1",
+      "formula": "x = 1 - V_chamber / V_gallery",
+      "inputs": [
+        "kc.volume",
+        "gg.volume"
+      ]
+    },
+    {
+      "id": "chem.forced_back_least_air",
+      "label": "Share of the gas the rising water must push back, with the least air",
+      "value": 0.3328829367674927,
+      "low": 0.28877926210010424,
+      "high": 0.3691064650618357,
+      "unit": "1",
+      "formula": "f = x_N2 (1 - H_N2 R T) + leftover O2 less what dissolves; all SO2 dissolved, all usable O2 used",
+      "inputs": [
+        "kc.volume",
+        "gg.volume",
+        "chem.o2_fraction",
+        "chem.henry_o2",
+        "rx.henry_n2",
+        "chem.temperature"
+      ]
+    },
+    {
+      "id": "chem.forced_back_stoichiometric",
+      "label": "Share of the gas pushed back for the mixture with oxygen for all its sulfur",
+      "value": 0.5414831902459027,
+      "low": 0.5381784823614394,
+      "high": 0.542947159251367,
+      "unit": "1",
+      "formula": "as chem.forced_back_least_air with x_air = 1 - 1 / (1 + 0.5 / x_O2)",
+      "inputs": [
+        "chem.o2_fraction",
+        "chem.henry_o2",
+        "rx.henry_n2",
+        "chem.temperature"
+      ]
+    },
+    {
+      "id": "chem.air_without_pushback",
+      "label": "Largest share of air in the gas for which nothing need be pushed back",
+      "value": 0.01973341199922439,
+      "low": 0.017881458798130967,
+      "high": 0.02391394063232163,
+      "unit": "1",
+      "formula": "x = H_N2 R T / (1 - x_O2)",
+      "inputs": [
+        "chem.o2_fraction",
+        "rx.henry_n2",
+        "chem.temperature"
+      ]
+    },
+    {
+      "id": "chem.sulfur_oxidisable_without_pushback",
+      "label": "Share of the sulfur that the oxygen of that much air can oxidise",
+      "value": 0.008434745944506758,
+      "low": 0.007628744313540933,
+      "high": 0.010265427959737295,
+      "unit": "1",
+      "formula": "y = x_O2 x / (0.5 (1 - x))",
+      "inputs": [
+        "chem.o2_fraction",
+        "rx.henry_n2",
+        "chem.temperature"
+      ]
+    },
+    {
+      "id": "chem.gypsum_layer_per_cycle",
+      "label": "Gypsum layer that grows in one cycle on a wall bare at its start",
+      "value": 3.671023983471572e-06,
+      "low": 1.3727231374822937e-07,
+      "high": 7.435793928806224e-05,
+      "unit": "m",
+      "formula": "d = sqrt(Vm D C t); C = 2 n_SO2 / V_gallery",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "gg.volume",
+        "chem.gypsum_h_diffusivity",
+        "chem.gypsum_molar_volume",
+        "rx.cycle_time"
+      ]
+    },
+    {
+      "id": "chem.fill_dissolves",
+      "label": "Gypsum layer one Gallery of fresh water dissolves in coming to saturation",
+      "value": 0.0006340271931,
+      "low": 0.0005716822922832,
+      "high": 0.00105160419,
+      "unit": "m",
+      "formula": "d = s rho V_gallery Vm / A_wall",
+      "inputs": [
+        "chem.gypsum_solubility",
+        "hydro.water_density",
+        "gg.volume",
+        "gg.wall_area",
+        "chem.gypsum_molar_volume"
+      ]
+    },
+    {
+      "id": "chem.still_fill_dissolves",
+      "label": "Gypsum layer a still fill of fresh water dissolves by diffusion alone in its dwell",
+      "value": 2.3699174624713844e-06,
+      "low": 7.838592254593921e-09,
+      "high": 0.000298531151192661,
+      "unit": "m",
+      "formula": "d = 2 s rho sqrt(D_w f t / pi) Vm; f = fresh dwell over acid dwell",
+      "inputs": [
+        "chem.gypsum_solubility",
+        "hydro.water_density",
+        "rx.ion_diffusivity",
+        "rx.cycle_time",
+        "chem.gypsum_molar_volume",
+        "rx.fresh_dwell"
+      ]
+    },
+    {
+      "id": "chem.saturating_margin",
+      "label": "What a saturating fill dissolves over the layer one cycle grows",
+      "value": 172.711264201663,
+      "low": 7.729750507937363,
+      "high": 7619.58419469418,
+      "unit": "1",
+      "formula": "chem.fill_dissolves / chem.gypsum_layer_per_cycle",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "gg.volume",
+        "chem.gypsum_h_diffusivity",
+        "chem.gypsum_molar_volume",
+        "rx.cycle_time",
+        "chem.gypsum_solubility",
+        "hydro.water_density",
+        "gg.wall_area"
+      ]
+    },
+    {
+      "id": "chem.still_margin",
+      "label": "What a still fill dissolves over the layer one cycle grows",
+      "value": 0.6455739524289972,
+      "low": 0.009923149706426507,
+      "high": 23.10297387263109,
+      "unit": "1",
+      "formula": "chem.still_fill_dissolves / chem.gypsum_layer_per_cycle; the cycle time cancels, the fresh dwell f does not",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "gg.volume",
+        "chem.gypsum_h_diffusivity",
+        "chem.gypsum_molar_volume",
+        "rx.cycle_time",
+        "chem.gypsum_solubility",
+        "hydro.water_density",
+        "rx.ion_diffusivity",
+        "rx.fresh_dwell"
+      ]
+    },
+    {
+      "id": "chem.fresh_dwell_to_strip",
+      "label": "Dwell of still fresh water, as a share of the acid's, at which it just dissolves the layer one cycle grows",
+      "value": 0.10005621190261885,
+      "low": 0.0018735454199936973,
+      "high": 0.1929543234609808,
+      "unit": "1",
+      "formula": "f / chem.still_margin^2; f cancels",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "gg.volume",
+        "chem.gypsum_h_diffusivity",
+        "chem.gypsum_molar_volume",
+        "rx.cycle_time",
+        "chem.gypsum_solubility",
+        "hydro.water_density",
+        "rx.ion_diffusivity",
+        "rx.fresh_dwell"
+      ]
+    },
+    {
+      "id": "chem.layer_left_under_acid",
+      "label": "Most of a cycle's layer that stands under still acid, which dissolves it outside while it grows beneath: all the batch's sulfate counted as free",
+      "value": 0.49053168171446204,
+      "low": 0.07402017929710526,
+      "high": 0.6100963372174034,
+      "unit": "1",
+      "formula": "2 / (r + sqrt(r^2 + 4)); r = 2 x sqrt(D_w t / pi) Vm / chem.gypsum_layer_per_cycle; x (c + x) = (s rho)^2; from dd/dt = Vm D C / (2 d) - x Vm sqrt(D_w / (pi t))",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "gg.volume",
+        "chem.gypsum_h_diffusivity",
+        "chem.gypsum_molar_volume",
+        "rx.cycle_time",
+        "chem.gypsum_solubility",
+        "hydro.water_density",
+        "rx.ion_diffusivity"
+      ]
+    },
+    {
+      "id": "chem.layer_left_counting_bisulfate",
+      "label": "Share of a cycle's layer that stands under still acid once the batch's bisulfate is counted",
+      "value": 0.26492141469690667,
+      "low": 0.038093284708274784,
+      "high": 0.3467998145098502,
+      "unit": "1",
+      "formula": "as chem.layer_left_under_acid with x from Ka2 = H+ y / HSO4-; y = (s rho)^2 / x, H+ = c - x + y, HSO4- = c + x - y",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "gg.volume",
+        "chem.gypsum_h_diffusivity",
+        "chem.gypsum_molar_volume",
+        "rx.cycle_time",
+        "chem.gypsum_solubility",
+        "hydro.water_density",
+        "rx.ion_diffusivity",
+        "chem.ka2_sulfuric"
+      ]
+    },
+    {
+      "id": "chem.deposit_over_fill",
+      "label": "Most gypsum a whole batch can lay down over what one fresh fill dissolves",
+      "value": 0.5524641843156171,
+      "low": 0.13794553079051397,
+      "high": 0.7603919473191585,
+      "unit": "1",
+      "formula": "max(0, c / (s rho) - 1): (c - s rho) V_gallery over s rho V_gallery",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "gg.volume",
+        "chem.gypsum_solubility",
+        "hydro.water_density"
+      ]
+    },
+    {
+      "id": "chem.wall_loss_per_cycle",
+      "label": "Limestone lost in a cycle that starts bare and comes to gypsum saturation",
+      "value": 0.0002057569726746237,
+      "low": 0.0001622299994642909,
+      "high": 0.0004895626544772999,
+      "unit": "m",
+      "formula": "w = x c V_gallery Vc / A_wall + d Vc / Vm; x = min(1, (s rho / c)^2)",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "gg.volume",
+        "chem.gypsum_h_diffusivity",
+        "chem.gypsum_molar_volume",
+        "rx.cycle_time",
+        "gg.wall_area",
+        "chem.gypsum_solubility",
+        "hydro.water_density",
+        "chem.calcite_molar_volume"
+      ]
+    },
+    {
+      "id": "chem.wall_loss_ten_cycles",
+      "label": "Limestone lost in ten such cycles, every fill stripping the layer",
+      "value": 0.002057569726746237,
+      "low": 0.001622299994642909,
+      "high": 0.0048956265447729986,
+      "unit": "m",
+      "formula": "10 x chem.wall_loss_per_cycle",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "gg.volume",
+        "chem.gypsum_h_diffusivity",
+        "chem.gypsum_molar_volume",
+        "rx.cycle_time",
+        "gg.wall_area",
+        "chem.gypsum_solubility",
+        "hydro.water_density",
+        "chem.calcite_molar_volume"
+      ]
+    },
+    {
+      "id": "chem.h2s_per_batch",
+      "label": "Hydrogen sulfide one full batch needs",
+      "value": 13319.411490797183,
+      "low": 12815.724639047694,
+      "high": 13618.198968339688,
+      "unit": "mol",
+      "formula": "n = p V / (R T), a mole for each mole of sulfur dioxide",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature"
+      ]
+    },
+    {
+      "id": "chem.h2s_mass_per_batch",
+      "label": "Mass of the hydrogen sulfide one full batch needs",
+      "value": 453.925543606368,
+      "low": 436.7598956987454,
+      "high": 464.10822084101653,
+      "unit": "kg",
+      "formula": "m = n M",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "chem.molar_mass_h2s"
+      ]
+    },
+    {
+      "id": "chem.h2s_flux",
+      "label": "Hydrogen sulfide flux for one full batch per cycle",
+      "value": 0.15415985521755998,
+      "low": 0.00040610580776255777,
+      "high": 3.7828330467610245,
+      "unit": "mol/s",
+      "formula": "F = n / t",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "rx.cycle_time"
+      ]
+    },
+    {
+      "id": "chem.h2s_mass_per_year",
+      "label": "Hydrogen sulfide for a year of full batches",
+      "value": 165796.3048022259,
+      "low": 436.7598956987454,
+      "high": 4068372.6638923506,
+      "unit": "kg",
+      "formula": "m = n M x one year / t",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "chem.molar_mass_h2s",
+        "rx.cycle_time"
+      ]
+    },
+    {
+      "id": "chem.cave_air_per_batch",
+      "label": "Cave air at the analogue's ceiling that holds the sulfur of one batch",
+      "value": 5339999.999999999,
+      "low": 5313333.333333333,
+      "high": 5366666.666666667,
+      "unit": "m3",
+      "formula": "V = V_chamber / x_H2S",
+      "inputs": [
+        "site.atm_pressure",
+        "kc.volume",
+        "chem.temperature",
+        "rx.h2s_cave_air"
+      ]
+    }
+  ],
+  "verdicts": {
+    "S01": {
+      "status": "undefined",
+      "basis": "One full batch needs 13319 mol of hydrogen sulfide, 454 kg, a mole for each mole of sulfur dioxide in the King's Chamber, which is 0.15 mol/s and 166 t a year at one batch every 24 h, and 0.00041 to 3.8 mol/s over the cycle times taken; the hypothesis states no cycle rate, so the required flux is undefined (07 section 4.4). 07 gives no flux for any seep or spring to set against it: its one analogue is a concentration, read from an abstract, at which one batch is the sulfide in 5.3 million m3 of cave air (60 ppmv in active sulfuric-acid caves)."
+    },
+    "E01": {
+      "status": "undefined",
+      "basis": "No opened source gives a measured hydrogen sulfide flux, composition or source pressure under the plateau: 07 read the cited paper in full, and it measured no gas and reports no present-day seepage, so the passing clause is not met. The failing clause cannot be evaluated either: one full batch needs 13319 mol of hydrogen sulfide, 454 kg, a mole for each mole of sulfur dioxide in the King's Chamber, which is 0.15 mol/s and 166 t a year at one batch every 24 h, and 0.00041 to 3.8 mol/s over the cycle times taken; the hypothesis states no cycle rate, so the required flux is undefined (07 section 4.4). 07 gives no flux for any seep or spring to set against it: its one analogue is a concentration, read from an abstract, at which one batch is the sulfide in 5.3 million m3 of cave air."
+    },
+    "S19": {
+      "status": "conditional",
+      "basis": "With the Gallery half full and a cycle of 24 h (the hypothesis states none; 1 h to 1 yr is taken as its range), 87 percent of the sulfur dioxide crosses the level surface into the water (0.1 to 97 percent over the ranges of the inputs), which over those ranges is neither always at the 90 percent from which the criterion passes the claim nor always under the 50 percent below which it fails it. The water could hold 98 percent at equilibrium, so the rate decides. It depends on the cycle time, on whether the gas over the water stands still or convects (gas-side coefficient 0.003 to 10 mm/s, assumed) and on the film on the water's side of the surface (liquid-film coefficient 0.001 to 0.01 mm/s, assumed with no source), none of which the hypothesis gives; the 87 percent is for a gas-side coefficient of 1.5 mm/s and a liquid-film coefficient of 0.01 mm/s."
+    },
+    "S22": {
+      "status": "fail",
+      "basis": "A full stroke draws 573 m3 of gas into the Gallery and the King's Chamber holds 320 m3, so at least 44 percent of the gas over the water is the outside air of S14 (39 percent at the least). Its nitrogen hardly dissolves: if all the sulfur dioxide dissolved, the oxidation used every mole of oxygen it could and the water arrived free of dissolved gas, the rising water would still push 33 percent of the gas back (29 to 37 percent over the ranges of the inputs), and 54 percent of a mixture that carries the oxygen for all its sulfur. Nothing is pushed back only if air is under 2.0 percent of the gas (2.4 percent at most), which brings oxygen for 0.8 percent of the sulfur, while S14 to S17 carry air into the Gallery; the hypothesis states no gas fraction and no stroke. Taking the least air of a full stroke, not a gas without air, as the end most favourable to the hypothesis is a judgement call."
+    },
+    "S23": {
+      "status": "conditional",
+      "basis": "Fresh water lets bare limestone neutralise 41 percent of the strongest batch before gypsum can form (Tier 0), and the layer that then grows by acid diffusing through it reaches 3.7 micrometres in a cycle of 24 h (the hypothesis states none; 1 h to 1 yr is taken as its range) (0.1 to 74 micrometres over the ranges of the inputs). One fill of fresh water can dissolve 0.63 mm of gypsum, 173 times that layer (7.7 times at the least); even the most gypsum a whole batch can lay down is 55 percent of what one fill dissolves (76 percent at most), so a fill that comes to saturation strips it; every cycle then starts on bare stone, which loses up to 0.21 mm per cycle and 2.1 mm in ten in bringing each batch to saturation (1.6 to 4.9 mm over the ranges of the inputs). A fill that stands still strips the layer a bare wall grows in one cycle by diffusion alone only if it stands at least 0.1 times as long as the acid stood (0.19 times at most). The hypothesis does not state that time; over the range taken, 1.9e-05 to 1 of the acid's, a still fill dissolves 0.0099 to 23 times that layer, and 0.65 times at the 0.042 the ledger takes as its value. The acid of the next batch does not strip it: still acid dissolves it from outside while it grows from beneath and leaves at most 49 percent of it (7 to 61 percent), about 26 percent once the batch's bisulfate is counted (4 to 35 percent). So whether the layer lasts depends on how long the fresh water stands against the wall and on how it moves, neither of which the hypothesis states."
+    }
+  }
+}
