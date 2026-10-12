@@ -1,9 +1,9 @@
 {
  "manifest": {
   "case": "viewer",
-  "timestamp": "2026-10-12T05:33:18+00:00",
-  "commit": "f9851eb7d794200fdac4a88419b90b39c95fcc06",
-  "ledger": "65789d95c1dec923392a5a5b0ba69aa1aa88bea46625ef45efbe1078778b7bf5",
+  "timestamp": "2026-10-12T05:44:11+00:00",
+  "commit": "149bd1c23186fafb364599f119b82db1c4d500bc",
+  "ledger": "71439cbdbd50c1e12bef6db2bb6c257726760cbe158004fb7befa6ae41562ead",
   "python": "3.12.12",
   "versions": {
    "numpy": "2.5.3",
@@ -279,6 +279,20 @@
      "low": 9.088380087956361,
      "high": 195.6604173579737,
      "unit": "m"
+    },
+    {
+     "label": "Surface displacement of the granite in a lightning-level field",
+     "value": 1.4e-12,
+     "low": 9.8e-14,
+     "high": 7.910000000000001e-09,
+     "unit": "m"
+    },
+    {
+     "label": "Sound intensity that displacement radiates into air during the stroke's rise",
+     "value": 1.6189600000000003e-11,
+     "low": 7.932903999999997e-14,
+     "high": 0.0005355829360000001,
+     "unit": "W/m2"
     },
     {
      "label": "Sound level from the antechamber's granite leaf driven at the air-breakdown field",
@@ -1033,7 +1047,7 @@
    "piece": 4,
    "criterion": "Pass if at least 90 percent of the sulfur is captured into the liquid in any oxidation state within the cycle; fail below 50 percent (03 section 4.4).",
    "status": "conditional",
-   "basis": "With the Gallery half full and a cycle of 24 h (the hypothesis states none; 1 h to 1 yr is taken as its range), 87 percent of the sulfur dioxide crosses the level surface into the water (0.1 to 97 percent over the ranges of the inputs), which over those ranges is neither always at the 90 percent from which the criterion passes the claim nor always under the 50 percent below which it fails it. The water could hold 98 percent at equilibrium, so the rate decides. It depends on the cycle time, on whether the gas over the water stands still or convects (gas-side coefficient 0.003 to 10 mm/s, assumed) and on the film on the water's side of the surface (liquid-film coefficient 0.001 to 0.01 mm/s, assumed with no source), none of which the hypothesis gives; the 87 percent is for a gas-side coefficient of 1.5 mm/s and a liquid-film coefficient of 0.01 mm/s. At those two coefficients the share passes 50 percent after 7.8 h and passes 90 percent after 28 h, with a time constant of 11 h toward the 96.9 percent that the water holds by Henry's law alone, without the dissociation counted in the 98 percent; in a cycle of 24 h it runs from 2 to 94 percent over the ranges of the other inputs, the two coefficients among them, so stating a cycle of that length would not settle the claim without them. The model gives the gas the whole cycle over the half-full Gallery, though it stands over the water only until the water has risen (S18): in a contact of the 1 h that the ledger carries for one fill, a time the hypothesis does not state either, the share is 9 percent (0.014 to 94 percent over fills of 10 minutes to 24 h and the ranges of the other inputs).",
+   "basis": "With the Gallery half full and a cycle of 24 h (the hypothesis states none; 1 h to 1 yr is taken as its range), 87 percent of the sulfur dioxide crosses the level surface into the water (0.1 to 97 percent over the ranges of the inputs), which over those ranges is neither always at the 90 percent from which the criterion passes the claim nor always under the 50 percent below which it fails it. The water could hold 98 percent at equilibrium, so the rate decides. It depends on the cycle time, on whether the gas over the water stands still or convects (gas-side coefficient 0.003 to 10 mm/s, assumed) and on the film on the water's side of the surface (liquid-film coefficient 0.001 to 0.01 mm/s, assumed with no source), none of which the hypothesis gives; the 87 percent is for a gas-side coefficient of 1.5 mm/s and a liquid-film coefficient of 0.01 mm/s. At those two coefficients the share passes 50 percent after 7.8 h and passes 90 percent after 28 h, with a time constant of 10.7 h toward the 96.9 percent that the water holds by Henry's law alone, without the dissociation counted in the 98 percent; in a cycle of 24 h it runs from 2 to 94 percent over the ranges of the other inputs, the two coefficients among them, so stating a cycle of that length would not settle the claim without them. The model gives the gas the whole cycle over the half-full Gallery, though it stands over the water only until the water has risen (S18): in a contact of the 1 h that the ledger carries for one fill, a time the hypothesis does not state either, the share is 9 percent (0.014 to 94 percent over fills of 10 minutes to 24 h and the ranges of the other inputs).",
    "source": "chem",
    "numbers": [
     {
