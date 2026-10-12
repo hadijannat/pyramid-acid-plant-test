@@ -11,9 +11,10 @@ a field along the surface with the volume mean of the permittivity and a field a
 inverse (shapes.Model.mixing); the wave travels along z and is polarised along x; no ground (there is no
 half-space Green's tensor here: cases with ground belong to the time-domain solver).
 
-Accuracy: the error falls a little faster than the cell size (the surface cells set it). For the benchmark
-sphere, whose resonances are sharp at this permittivity, the worst wavelength found is 7 percent off at a 5 m
-cell and 2.4 percent at 2.5 m, so the benchmark is run at the fine cell.
+Accuracy: the error falls a little faster than the cell size (the surface cells set it). The benchmark sphere,
+whose resonance lines are sharp at this permittivity, is 9.4, 2.8 and 1.5 percent off Mie at its worst
+wavelength at cells of 5, 2.5 and 1.667 m, so the 2 percent benchmark is met at the fine cell only; the
+pyramid's smooth spectrum changes by 0.02 percent at its peak between 5 and 2.5 m.
 """
 import time
 
