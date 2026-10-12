@@ -341,7 +341,7 @@ def _e01(ledger, r):
     # The passing clause is documentary and unmet; the failing clause is the flux comparison of S01.
     return "undefined", (
         "No opened source gives a measured hydrogen sulfide flux, composition or source pressure under the "
-        "plateau: 07 read the cited paper in full, and it measured no gas and reports no present-day seepage, so "
+        "plateau: the plateau geology file (07) read the cited paper in full, and it measured no gas and reports no present-day seepage, so "
         "the passing clause is not met. The failing clause cannot be evaluated either. " + _feed(ledger, r)
     )
 

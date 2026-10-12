@@ -117,9 +117,9 @@ def figures(ledger, summary: dict, out_dir: Path):
             ax.loglog(*zip(*rows), "s--", label=f"{label}, {decides:.3g} m cell (decides)")
         ax.axhline(metrics.FACTOR, color="k", lw=0.5, label=f"the criterion's {metrics.FACTOR:g}")
         ax.axvspan(low, high, color="tab:green", alpha=0.15, label="masonry measured in place")
-        ax.set(xlabel="conductivity of the masonry, S/m", ylabel="King's Chamber, band-maximum volume mean of |E|^2 / |E0|^2",
+        ax.set(xlabel="conductivity of the masonry, S/m", ylabel="King's Chamber, band maximum\nof the volume mean of |E|^2 / |E0|^2",
                title="E19: the intensity in the King's Chamber against the masonry's conductivity")
-        ax.legend(fontsize=7)
+        ax.legend(fontsize=7, loc="lower left")
         save_figure(fig, out_dir / "kings_chamber_against_conductivity.png", dpi=130, bbox_inches="tight")
         plt.close(fig)
         fig, ax = plt.subplots(figsize=(7, 4))

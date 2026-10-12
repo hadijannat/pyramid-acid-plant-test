@@ -209,3 +209,18 @@ def test_e13_ranks_the_three_rooms_in_both_measures(led, conduction, results):
     # and one first in decay time but never in quality factor fails on that measure
     status, basis = with_results(led, results, decay_lead=(2.0, 1.5, 3.0), quality_lead=(0.5, 0.4, 0.9))["E13"]
     assert status == "fail" and "It is never first in modal quality factor" in basis
+
+
+def test_every_electro_rule_reads_only_quantities_its_claim_depends_on(monkeypatch):
+    """As the flow test of the same name: a rule that reads a quantity its claim does not list would quote a figure
+    the viewer cannot show under it."""
+    led = ledger.load()
+    results = simkit.read_results("electro")[0]
+    read = set()
+    q, rng = ledger.Ledger.q, ledger.Ledger.rng
+    monkeypatch.setattr(ledger.Ledger, "q", lambda self, id: (read.add(id), q(self, id))[1])
+    monkeypatch.setattr(ledger.Ledger, "rng", lambda self, id: (read.add(id), rng(self, id))[1])
+    for claim, rule in electro.RULES.items():
+        read.clear()
+        rule(led, results)
+        assert read <= set(led.claims[claim].depends_on), (claim, sorted(read - set(led.claims[claim].depends_on)))

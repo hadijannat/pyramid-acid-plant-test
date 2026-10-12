@@ -335,7 +335,10 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
   }
 
   function update({ u, dt, source }) {
-    if (current && builtOn !== model.root) build(current);   // the reading was swapped: rebuild on the new meshes
+    if (current && builtOn !== model.root) {   // the reading was swapped: rebuild on the new meshes, and sample them ahead
+      build(current);
+      warm();
+    }
     for (const set of updaters) set(u, source);
     if (!store.get().reducedMotion) sway(dt);
     // a label follows its parents' visibility itself, whatever the CSS2D renderer does with hidden parents

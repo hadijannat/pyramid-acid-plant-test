@@ -239,7 +239,7 @@ def main() -> None:
         "verdicts": {claim: {"status": status, "basis": basis, "source": source[claim]}
                      for claim, (status, basis) in verdicts.items()},
     }
-    (OUT_DIR / "verdicts.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n")
+    (OUT_DIR / "verdicts.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False) + "\n")
     verdict_map(ledger, verdicts, OUT_DIR / "verdict-map.svg")
     decided_by(verdicts, source, OUT_DIR / "decided-by.svg")
     cycle_elevation(ledger, verdicts, OUT_DIR / "cycle-elevation.svg")

@@ -57,7 +57,7 @@ STATUSES = ("pass", "fail", "conditional", "undefined", "pending", "not_testable
 
 ## Report contract (every task)
 
-Write `<workspace>/<package>-report.md` (the plan's git-ignored workspace folder): what you built; each benchmark with its expected and computed value; each verdict with the numbers that decide it and how the criterion was applied; every new ledger quantity with its source or its "assumed" flag; the assumptions; the production run time; deviations from this brief; anything you could not decide and why. Then return the structured result your dispatch asks for.
+Write `<package>-report.md` in the folder the dispatch names: what you built; each benchmark with its expected and computed value; each verdict with the numbers that decide it and how the criterion was applied; every new ledger quantity with its source or its "assumed" flag; the assumptions; the production run time; deviations from this brief; anything you could not decide and why. Then return the structured result your dispatch asks for.
 
 ---
 
