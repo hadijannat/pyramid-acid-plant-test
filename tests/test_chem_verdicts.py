@@ -238,20 +238,12 @@ def test_the_package_decides_only_its_five_claims_and_merges_with_tier_0(led, re
     assert source["S20"] == "tier0"  # Tier 0's verdict on the oxidation stands
 
 
-def test_the_viewer_shows_the_numbers_once_the_claims_gain_the_listed_inputs(led, results):
+def test_the_viewer_shows_the_numbers_now_the_claims_hold_the_listed_inputs(led, results):
     from pyramid import viewer_data
 
-    gained = chem.depends_on(led)
-    assert set(gained) == set(chem.RULES)
-    assert gained["S01"] == gained["E01"] == ["site.atm_pressure", "kc.volume", "chem.temperature", "rx.cycle_time",
-                                              "rx.h2s_cave_air"]
-    assert "rx.kg_gas" in gained["S19"] and "chem.henry_so2" not in gained["S19"]  # the claim already names it
-    assert "rx.henry_n2" in gained["S22"]
-    assert {"rx.ion_diffusivity", "rx.fresh_dwell", "chem.ka2_sulfuric"} <= set(gained["S23"])
-    claims = {id: dataclasses.replace(claim, depends_on=claim.depends_on + tuple(gained.get(id, ())))
-              for id, claim in led.claims.items()}
-    decided = chem.verdicts(led, results)
-    payload = viewer_data.claims_payload(dataclasses.replace(led, claims=claims), results, decided)
+    assert chem.depends_on(led) == {claim: [] for claim in chem.RULES}  # claims.yaml holds every input they read
+    assert {"rx.ion_diffusivity", "rx.fresh_dwell", "chem.ka2_sulfuric"} <= set(led.claims["S23"].depends_on)
+    payload = viewer_data.claims_payload(led, results, chem.verdicts(led, results))
     shown = {claim["id"]: {number["label"] for number in claim["numbers"]} for claim in payload["claims"]}
     for claim, ids in chem.SHOWN.items():
         assert {results[id].label for id in ids} <= shown[claim], claim
