@@ -99,6 +99,9 @@ def test_verdicts_come_from_the_cached_variants(cache):
     assert summary["verdicts"]["E20"][0] == "fail" and "1.30 times" in summary["verdicts"]["E20"][1]
     assert summary["results"]["e19_r1_over_control_2p5"].value == pytest.approx(3.0)
     assert {r.id for r in summary["results"].values()} == {f"em.{key}" for key in summary["results"]}
+    for result in summary["results"].values():                  # every number names ledger entries that exist
+        assert result.inputs and all(i in LEDGER.quantities for i in result.inputs), result.id
+    assert set(summary["results"]["e20_summit_ratio_2p5"].inputs) == set(runs.E20_SUMMIT)
 
 
 def test_one_task_of_each_solver_runs_to_its_cache_file(cache):

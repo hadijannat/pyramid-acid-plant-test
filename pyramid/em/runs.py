@@ -20,6 +20,22 @@ CHUNKS = 9            # the dipole solver's wavelengths are split into this many
 GROUPS = 3            # time-domain runs per case with the study's constant imaginary permittivity
 FLUX_LIMIT = 2.0      # below this cell size (m) a time-domain run of a pyramid keeps only the chamber and summit sums
 
+# The ledger ids behind the deciding numbers. The viewer shows a number under a claim when the claim depends on
+# every id the number reads, so these are also what the claims' depends_on must hold.
+STUDY = ("paper.height", "paper.base_side", "paper.eps_real", "paper.eps_imag", "paper.wavelength_min",
+         "paper.wavelength_max", "emx.cell_coarse")
+SURVEYED = ("pyr.base_side", "pyr.height_original", "pyr.height_present")
+CHAMBERS = ("kc.west_wall.x", "kc.east_wall.x", "kc.south_wall.y", "kc.north_wall.y", "kc.floor.z", "kc.ceiling.z",
+            "qc.west_wall.x", "qc.east_wall.x", "qc.north_wall.y", "qc.width_ns", "qc.floor.z", "qc.wall_height",
+            "qc.ridge_height", "gg.south_end.x", "gg.south_end.y", "gg.south_end.z", "gg.north_end.x", "gg.north_end.y",
+            "gg.north_end.z", "gg.width", "gg.roof_width", "gg.height", "emx.granite_shell", "em.granite_eps",
+            "em.granite_conductivity")
+E19_MODELLED = STUDY + ("paper.kc.centre.z",)
+E19_REALISM = SURVEYED + CHAMBERS + ("em.limestone_resistivity", "em.limestone_eps", "paper.wavelength_min",
+                                     "paper.wavelength_max", "emx.cell_coarse")
+E20_SUMMIT = SURVEYED + ("emx.summit_depth", "emx.cell_coarse", "paper.eps_real", "paper.eps_imag",
+                         "paper.wavelength_min", "paper.wavelength_max")
+
 ASSUMPTIONS = [
     "The wave travels along the axis and is polarised east-west; field ratios are over the incident intensity, also on ground.",
     "Chambers are air; the study's chambers are read as pyramid.geometry reads them (length east-west, offset to the south).",
@@ -143,7 +159,7 @@ def evaluate(ledger) -> dict:
     def add(id, label, value, low, high, unit, formula, inputs):
         results[id] = Result(f"em.{id}", label, float(value), float(min(low, value)), float(max(high, value)), unit, formula, inputs)
 
-    study = ("paper.eps_real", "paper.eps_imag", "paper.wavelength_min", "paper.wavelength_max", "emx.cell_coarse")
+    study = STUDY[2:]
     # --- benchmark ---
     b0, table_b0 = {}, []
     fine_grid = np.arange(wavelengths.min(), wavelengths.max() + 0.5, 1.0)
@@ -264,12 +280,12 @@ def decide(ledger, got, add, runs):
         verdicts["E19"] = metrics.e19(modelled, realism)
         for cell, r1, c0 in modelled:
             add(f"e19_r1_over_control_{cell:.3g}".replace(".", "p"), f"R1 over its control, King's Chamber volume mean, {cell:.3g} m cell",
-                r1 / c0, r1 / c0, r1 / c0, "1", "band maximum in R1 over band maximum in the cube", ("paper.kc.centre.z", "emx.cell_coarse"))
+                r1 / c0, r1 / c0, r1 / c0, "1", "band maximum in R1 over band maximum in the cube", E19_MODELLED)
         for cell, rows in realism:
             for label, sigma, v4, c0 in rows:
                 add(f"e19_v4_{label.replace(' ', '_') or 'eps7'}_{sigma:.1e}_{cell:.3g}".replace(".", "p").replace("-", "m"),
                     f"V4 King's Chamber volume mean at {sigma:.1e} S/m {label}, {cell:.3g} m cell", v4, v4, v4, "1",
-                    "band maximum of the volume mean of |E|^2 / |E0|^2", ("em.limestone_resistivity", "em.limestone_eps", "emx.granite_shell"))
+                    "band maximum of the volume mean of |E|^2 / |E0|^2", E19_REALISM)
     else:
         missing.append("E19 is undecided: its runs are not all cached.")
     if len(summit) == 2:
@@ -277,7 +293,7 @@ def decide(ledger, got, add, runs):
         for cell, cut, whole, own in summit:
             add(f"e20_summit_ratio_{cell:.3g}".replace(".", "p"), f"Summit metric, truncated over pointed apex, on ground, {cell:.3g} m cell",
                 cut / whole, cut / whole, cut / whole, "1", "band maximum for the apex cut at the present top over the pointed apex",
-                ("pyr.height_present", "pyr.height_original", "pyr.base_side", "emx.summit_depth"))
+                E20_SUMMIT)
     else:
         missing.append("E20 is undecided: its runs are not all cached.")
     return verdicts, missing
