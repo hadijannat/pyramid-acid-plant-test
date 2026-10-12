@@ -27,7 +27,7 @@ def fake(task, spectrum, kings=1.0, summit=1.0):
     name, solver, cell, part = task
     case, wavelengths = TABLE[name], BAND
     if solver == "dda":
-        wavelengths = np.array_split(BAND[::2] if cell < runs.FLUX_LIMIT else BAND, runs.CHUNKS)[part]
+        wavelengths = np.array_split(BAND, runs.CHUNKS)[part]
     flat = np.ones(len(wavelengths))
     out = {"wavelengths": wavelengths, "extinction": spectrum(wavelengths), "scattering": spectrum(wavelengths),
            "absorption": 0 * flat, "section": np.zeros((len(wavelengths), 2, 2)), "section_extent": np.zeros(4),
@@ -60,6 +60,7 @@ def test_the_plan_keeps_ground_out_of_the_dipole_solver_and_orders_the_stages():
     assert all(not TABLE[name].ground for name, solver, _, _ in gates + variants if solver == "dda")
     assert {t[0] for t in gates} == {"B0", "R1", "R2", "R3"}
     assert ("R1", "fdtd", 2.5, 2) in gates and ("R3", "fdtd", 2.5, 0) in gates and ("B0", "dda", 5 / 3, 8) in gates
+    assert ("B0", "fdtd", 1.0, 0) in gates                      # the sphere's sharp lines need the finest cell
     names = {t[0] for t in variants}
     assert len([n for n in names if n.startswith("V1.")]) == 30 and {"C0.R1", "C0.R3", "V2.R3", "V3.pointed.up"} <= names
     fine = {t[0] for t in variants if t[2] < runs.FLUX_LIMIT}
@@ -72,7 +73,7 @@ def test_a_failed_benchmark_stops_everything(cache):
     fill_gates(b0_fdtd=1.03)
     summary = runs.evaluate(LEDGER)
     assert [g["passed"] for g in summary["gates"]] == [False] * 6
-    assert "fdtd at 2.5 m: worst +3.00%" in summary["gates"][0]["numbers"]
+    assert "fdtd at 1 m: worst +3.00%" in summary["gates"][0]["numbers"]
     assert "not judged" in summary["gates"][1]["numbers"] and "for information" in summary["gates"][1]["numbers"]
     assert summary["verdicts"] == {} and "undecided" in summary["notes"][0]
     assert summary["results"]["b0_deviation_fdtd"].value == pytest.approx(0.03)

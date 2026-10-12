@@ -18,7 +18,7 @@ from pyramid.simkit import RESULTS
 CACHE = RESULTS / "em" / "cache"
 CHUNKS = 9            # the dipole solver's wavelengths are split into this many runs of neighbours
 GROUPS = 3            # time-domain runs per case with the study's constant imaginary permittivity
-FLUX_LIMIT = 2.0      # below this cell size (m) a time-domain run keeps only the chamber and summit sums
+FLUX_LIMIT = 2.0      # below this cell size (m) a time-domain run of a pyramid keeps only the chamber and summit sums
 
 ASSUMPTIONS = [
     "The wave travels along the axis and is polarised east-west; field ratios are over the incident intensity, also on ground.",
@@ -34,7 +34,7 @@ ASSUMPTIONS = [
 
 def cells(q) -> dict:
     coarse = q("emx.cell_coarse")
-    return {"coarse": coarse, "production": coarse / 2, "fine": coarse / 3}
+    return {"coarse": coarse, "production": coarse / 2, "fine": coarse / 3, "benchmark": coarse / 5}
 
 
 def path(task) -> Path:
@@ -54,7 +54,7 @@ def plan(ledger, stage: str) -> list[tuple]:
         want = [("B0", s, size["coarse"]) for s in cases.SOLVERS] + [("R1", s, size["coarse"]) for s in cases.SOLVERS]
     elif stage == "gates":
         want += [("B0", "dda", size[c]) for c in ("coarse", "production", "fine")]
-        want += [("B0", "fdtd", size[c]) for c in ("coarse", "production")]
+        want += [("B0", "fdtd", size[c]) for c in ("coarse", "production", "benchmark")]
         want += [("R1", s, size[c]) for s in cases.SOLVERS for c in ("coarse", "production")]
         want += [("R2", s, size["production"]) for s in cases.SOLVERS] + [("R3", "fdtd", size["production"])]
     else:
@@ -77,8 +77,6 @@ def work(job) -> tuple:
     wavelengths, model = cases.wavelengths(q), shapes.build(case, q, cell)
     target, state = path(task), path(task).with_suffix(".state.npz")
     if solver == "dda":
-        if cell < FLUX_LIMIT:
-            wavelengths = wavelengths[::2]                     # the fine lattice is run on every other wavelength
         chunk = np.array_split(wavelengths, CHUNKS)[part]
 
         def permittivity(w):
@@ -93,7 +91,8 @@ def work(job) -> tuple:
             sigma = cases.conductivity(case.eps_imag, (low, np.sqrt(low * high), high)[part], q)
         else:
             sigma = case.sigma
-        out = fdtd.run(model, case, q, wavelengths, sigma, state, deadline - time.time(), flux=cell >= FLUX_LIMIT)
+        out = fdtd.run(model, case, q, wavelengths, sigma, state, deadline - time.time(),
+                       flux=cell >= FLUX_LIMIT or case.body == "sphere")       # the benchmark is all cross-sections
         if out is not None:
             out["sigma"] = np.array(sigma)
     if out is not None:
@@ -147,7 +146,10 @@ def evaluate(ledger) -> dict:
     study = ("paper.eps_real", "paper.eps_imag", "paper.wavelength_min", "paper.wavelength_max", "emx.cell_coarse")
     # --- benchmark ---
     b0, table_b0 = {}, []
-    for solver, sizes in (("dda", ("coarse", "production", "fine")), ("fdtd", ("coarse", "production", "fine"))):
+    fine_grid = np.arange(wavelengths.min(), wavelengths.max() + 0.5, 1.0)
+    sphere = mie.cross_sections(q("emx.sphere_radius"), q("paper.eps_real") + 1j * q("paper.eps_imag"), fine_grid)[0]
+    slope = np.gradient(np.log(sphere), np.log(fine_grid))             # how steep the exact spectrum is
+    for solver, sizes in (("dda", ("coarse", "production", "fine")), ("fdtd", ("coarse", "production", "benchmark"))):
         for cell in sizes:
             r = got("B0", solver, cell)
             if r is None:
@@ -155,8 +157,11 @@ def evaluate(ledger) -> dict:
             runs[f"B0 {solver} {size[cell]:.3g} m"] = r["seconds"]
             deviation = r["extinction"] / np.interp(r["wavelengths"], wavelengths, exact) - 1
             worst = int(np.argmax(np.abs(deviation)))
-            table_b0.append(f"{solver} at {size[cell]:.3g} m: worst {deviation[worst]:+.2%} at {r['wavelengths'][worst]:.0f} m, "
-                            f"rms {np.sqrt(np.mean(deviation**2)):.2%}")
+            steep = abs(float(np.interp(r["wavelengths"][worst], fine_grid, slope)))
+            table_b0.append(f"{solver} at {size[cell]:.3g} m: worst {deviation[worst]:+.2%} at {r['wavelengths'][worst]:.0f} m "
+                            f"(the exact spectrum changes {steep:.0f} percent per percent of wavelength there), "
+                            f"rms {np.sqrt(np.mean(deviation**2)):.2%}, {np.mean(np.abs(deviation) <= metrics.BENCHMARK):.0%} of the "
+                            f"wavelengths within the limit")
             b0[solver] = (r, deviation, size[cell])            # the finest cell run of each solver stands for it
     if set(b0) == set(cases.SOLVERS):
         gate = metrics.benchmark_gate(np.ones(1), {s: 1 + np.max(np.abs(d)) for s, (_, d, _) in b0.items()})
