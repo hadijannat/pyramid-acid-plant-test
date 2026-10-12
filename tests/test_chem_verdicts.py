@@ -4,7 +4,7 @@ import dataclasses
 import pytest
 
 from pyramid import chem, ledger, simkit, verdicts
-from pyramid.chem import feed
+from pyramid.chem import feed, transfer
 
 
 @pytest.fixture(scope="module")
@@ -91,6 +91,23 @@ def test_headline_numbers(results):
                       "rx.cycle_time": 3600.0}) == pytest.approx(3.70, rel=0.001)
 
 
+def test_the_fresh_dwell_note_gives_what_the_ledgers_fill_time_would_add(led, results):
+    # The ledger carries a fill time (flow.fill_time), and the note of rx.fresh_dwell says so and what the dwell and
+    # the still-fill margin would be with it added: (3600 + 3600) / 86400 = 0.083, and 0.646 x sqrt(0.0833 / 0.0417)
+    # = 0.91, since the margin goes as the square root of the dwell.
+    note, dwell = led.quantities["rx.fresh_dwell"].note, led.q("rx.fresh_dwell")
+    with_fill = (led.q("hydro.drain_time") + led.q("flow.fill_time")) / led.q("rx.cycle_time")
+    margin = results["chem.still_margin"].value
+    assert dwell == pytest.approx(led.q("hydro.drain_time") / led.q("rx.cycle_time"), abs=5e-5)
+    assert "holds no fill time" not in note and "flow.fill_time" in note
+    for text in (f"{led.q('hydro.drain_time') + led.q('flow.fill_time'):.0f} s in {led.q('rx.cycle_time'):.0f} s, "
+                 f"{with_fill:.3f} of the acid's",
+                 f"dissolve {margin * (with_fill / dwell) ** 0.5:.2f} of the layer one cycle grows where it dissolves "
+                 f"{margin:.2f} at this value"):
+        assert text in note, note
+    assert margin * (with_fill / dwell) ** 0.5 < 1  # so the note's "both below the 1" holds
+
+
 def test_s19_follows_the_capture_against_the_90_and_50_percent_lines(led):
     status, basis = with_quantities(led, {})["S19"]
     assert status == "conditional"
@@ -100,8 +117,32 @@ def test_s19_follows_the_capture_against_the_90_and_50_percent_lines(led):
                  "gas-side coefficient 0.003 to 10 mm/s, assumed",
                  "liquid-film coefficient 0.001 to 0.01 mm/s, assumed with no source",
                  "none of which the hypothesis gives; the 87 percent is for a gas-side coefficient of 1.5 mm/s and a "
-                 "liquid-film coefficient of 0.01 mm/s."):
+                 "liquid-film coefficient of 0.01 mm/s.",
+                 # the values at which the outcome turns, and what a stated cycle would leave open
+                 "At those two coefficients the share passes 50 percent after 7.8 h and passes 90 percent after 28 h, "
+                 "with a time constant of 11 h toward the 96.9 percent that the water holds by Henry's law alone, "
+                 "without the dissociation counted in the 98 percent; in a cycle of 24 h it runs from 2 to 94 percent "
+                 "over the ranges of the other inputs, the two coefficients among them, so stating a cycle of that "
+                 "length would not settle the claim without them.",
+                 # the assumption that the rise takes the whole cycle, and the share if it takes the ledger's fill time
+                 "The model gives the gas the whole cycle over the half-full Gallery, though it stands over the water "
+                 "only until the water has risen (S18): in a contact of the 1 h that the ledger carries for one fill, "
+                 "a time the hypothesis does not state either, the share is 9 percent (0.014 to 94 percent over fills "
+                 "of 10 minutes to 24 h and the ranges of the other inputs)."):
         assert text in basis, basis
+    # the numbers in those two sentences are the computed ones
+    q = {i: led.q(i) for i in transfer.CAPTURE}
+    others = tuple(i for i in transfer.CAPTURE if i != "rx.cycle_time")
+    assert [f"{transfer.time_to_capture(q, line) / 3600:.2g}" for line in (0.50, 0.90)] == ["7.8", "28"]
+    _, low, high = simkit.corners(led, others, lambda v: transfer.capture_share(v | {"rx.cycle_time": 86400.0}))
+    assert (low, high) == pytest.approx((0.0202, 0.9430), abs=0.0005) and low < 0.5 and high > 0.9
+    in_rise, least, most = simkit.corners(led, others + ("flow.fill_time",), lambda v: transfer.capture_share(
+        v | {"rx.cycle_time": v["flow.fill_time"]}))
+    assert in_rise == pytest.approx(0.0865, abs=0.0005) and least == pytest.approx(0.000142, rel=0.01)
+    assert most == pytest.approx(high)  # the longest fill is a day, the ledger's cycle
+    # the word does not rest on which of the two times is taken: a cycle no longer than the fill is conditional too
+    hour = with_quantities(led, {"rx.cycle_time": (3600.0, 600.0, 86400.0)})["S19"]
+    assert hour[0] == "conditional" and "9 percent of the sulfur dioxide crosses" in hour[1]
 
     # The liquid film alone moves the share across the 50 percent line, which is why the basis names it: at its
     # slow end, a tenth of the ledger's value, a convecting gas and a one-day cycle give 23 percent, not 87.
@@ -114,24 +155,31 @@ def test_s19_follows_the_capture_against_the_90_and_50_percent_lines(led):
     status, basis = with_quantities(led, stirred)["S19"]
     assert status == "pass"
     assert "(96 percent at the least), at least the 90 percent" in basis and "under the 50 percent" not in basis
+    assert "The model gives the gas the whole cycle" in basis and "At those two coefficients" not in basis
 
     # Still gas for an hour: a tenth of a percent at most.
     status, basis = with_quantities(led, {"rx.kg_gas": fixed(3e-6), "rx.cycle_time": fixed(3600.0)})["S19"]
     assert status == "fail"
     assert "0.1 percent of the sulfur dioxide crosses" in basis and "(0.1 to 0.1 percent" in basis
     assert "below the 50 percent under which" in basis
+    assert "The model gives the gas the whole cycle" in basis and "At those two coefficients" not in basis
 
 
 def test_s22_fails_on_the_nitrogen_and_otherwise_follows_the_pace_of_uptake(led):
     status, basis = with_quantities(led, {})["S22"]
     assert status == "fail"
-    for text in ("draws 573 m3 of gas", "holds 320 m3", "at least 44 percent of the gas over the water is the "
-                 "outside air of S14 (39 percent at the least)", "push 33 percent of the gas back (29 to 37 percent",
+    for text in ("Emptying the whole Gallery draws 573 m3 of gas into it", "holds 320 m3",
+                 "at least 44 percent of the gas over the water is outside air, come down the shafts of S14 or in "
+                 "through the masonry joints (39 percent at the least)",
+                 "push 33 percent of the gas back (29 to 37 percent",
                  "54 percent of a mixture", "under 2.0 percent of the gas (2.4 percent at most)",
                  "oxygen for 0.8 percent of the sulfur, while S14 to S17 carry air into the Gallery",
-                 "states no gas fraction and no stroke. Taking the least air of a full stroke, not a gas without "
-                 "air, as the end most favourable to the hypothesis is a judgement call."):
+                 "states no gas fraction, and the whole Gallery is taken as emptied because S18 raises the water "
+                 "again in the four activations with which S12 fills it. Taking the least air that emptying the whole "
+                 "Gallery admits, not a gas without air, as the end most favourable to the hypothesis is a judgement "
+                 "call."):
         assert text in basis, basis
+    assert "stroke" not in basis  # S12 and S18 keep that word for one activation, a quarter of the Gallery
 
     # Were nitrogen as soluble as the gas space it leaves, nothing would have to go back, and the pace would decide.
     soluble = {"rx.henry_n2": fixed(1e-3)}
@@ -217,9 +265,16 @@ def test_the_feed_claims_are_undefined_whatever_the_cycle_time(led):
                  "0.00041 to 3.8 mol/s over the cycle times taken", "states no cycle rate",
                  "07 gives no flux for any seep or spring", "5.3 million m3 of cave air"):
         assert text in s01 and text in e01, text
-    assert s01.startswith("One full batch needs") and "60 ppmv" in s01
+    # the reason that blocks the comparison at every cycle time leads; the unstated cycle rate follows
+    lead = ("07 gives no flux for any seep or spring, so a required flux has nothing to be set against at any cycle "
+            "time: its one analogue is a concentration, read from an abstract")
+    assert s01.startswith(lead) and "cave air (60 ppmv in active sulfuric-acid caves). One full batch needs" in s01
     assert e01.startswith("No opened source gives a measured hydrogen sulfide flux")
-    assert "the passing clause is not met" in e01
+    assert "the passing clause is not met. The failing clause cannot be evaluated either. " + lead in e01
+    for basis in (s01, e01):
+        assert basis.index("07 gives no flux") < basis.index("states no cycle rate")
+        assert basis.endswith("the hypothesis states no cycle rate either, so the required flux is itself undefined "
+                              "(07 section 4.4).")
     hourly = with_quantities(led, {"rx.cycle_time": fixed(3600.0)})["S01"][1]
     assert "3.7 mol/s and 3979 t a year at one batch every 1 h" in hourly
 

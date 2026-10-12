@@ -5,6 +5,8 @@ its gypsum layer) and feed (hydrogen sulfide) each list their assumptions. Every
 of ledger numbers, evaluated at the ledger values and at every corner of their ranges; each is monotone in each
 input, so the corners are its extremes.
 """
+import math
+
 from pyramid import screening
 from pyramid.chem import aqueous, feed, transfer, walls
 from pyramid.ledger import Ledger
@@ -27,7 +29,7 @@ QUANTITIES = [
      "1", "Da = K A t / V_gallery", transfer.CAPTURE, transfer.uptake_pace),
     ("chem.oxidation_half_life", "Half-life of dissolved sulfur(IV) under the iron law at the batch's starting pH",
      "s", "t = ln 2 / (k [Fe(III)] a2([H+])); oxygen permitting", aqueous.OXIDATION, aqueous.half_life),
-    ("chem.least_air", "Least share of air in the gas a full stroke draws into the Gallery",
+    ("chem.least_air", "Least share of air in the gas that emptying the whole Gallery draws into it",
      "1", "x = 1 - V_chamber / V_gallery", ("kc.volume", "gg.volume"), aqueous.least_air),
     ("chem.forced_back_least_air", "Share of the gas the rising water must push back, with the least air",
      "1", "f = x_N2 (1 - H_N2 R T) + leftover O2 less what dissolves; all SO2 dissolved, all usable O2 used",
@@ -130,11 +132,19 @@ def _percent(share: float) -> str:
     return f"{100 * share:.0f}" if share >= 0.01 else f"{100 * share:.1f}"
 
 
+def _hours(seconds: float) -> str:
+    """A time in hours, to two figures."""
+    return f"{seconds / HOUR:.2g} h" if seconds < 100 * HOUR else f"{seconds / HOUR:.0f} h"
+
+
 def _s19(ledger, r):
     share, held = r["chem.capture_share"], r["chem.capture_equilibrium"]
     # The criterion's lines (03 section 4.4): pass from 90 percent, fail below 50 percent.
-    status = three_way(share.low >= 0.90, share.high >= 0.50)
+    fails_below, passes_from = 0.50, 0.90
+    status = three_way(share.low >= passes_from, share.high >= fails_below)
     (still, stirred), (slow, fast) = ledger.rng("rx.kg_gas"), ledger.rng("chem.kl_surface")
+    q = {i: ledger.q(i) for i in transfer.CAPTURE}
+    others = tuple(i for i in transfer.CAPTURE if i != "rx.cycle_time")
     head = (
         f"With the Gallery half full and {_cycle(ledger)}, {_percent(share.value)} percent of the sulfur dioxide "
         f"crosses the level surface into the water "
@@ -148,18 +158,54 @@ def _s19(ledger, r):
         f"{1e3 * ledger.q('rx.kg_gas'):.3g} mm/s and a liquid-film coefficient of "
         f"{1e3 * ledger.q('chem.kl_surface'):.3g} mm/s."
     )
+    # The model gives the gas the whole cycle. The ledger also carries a time for one fill, which flow takes for the
+    # rise and which is shorter; the share for a contact of that length is given beside the cycle's. No status reads
+    # it: the claim is conditional under either time.
+    rise, (rise_short, rise_long) = ledger.q("flow.fill_time"), ledger.rng("flow.fill_time")
+    in_rise, rise_low, rise_high = corners(
+        ledger, others + ("flow.fill_time",),
+        lambda v: transfer.capture_share(v | {"rx.cycle_time": v["flow.fill_time"]}))
+    contact = (
+        " The model gives the gas the whole cycle over the half-full Gallery, though it stands over the water only "
+        f"until the water has risen (S18): in a contact of the {_hours(rise)} that the ledger carries for one fill, a "
+        f"time the hypothesis does not state either, the share is {_percent(in_rise)} percent ({100 * rise_low:.2g} "
+        f"to {_percent(rise_high)} percent over fills of {rise_short / 60:.0f} minutes to {_hours(rise_long)} and the "
+        "ranges of the other inputs)."
+    )
     if status == "pass":
         return status, head + (
             f"({_percent(share.low)} percent at the least), at least the 90 percent from which the criterion passes "
             "the claim."
-        ) + tail
+        ) + tail + contact
     spread = f"({_percent(share.low)} to {_percent(share.high)} percent over the ranges of the inputs), "
     if status == "fail":
-        return status, head + spread + "below the 50 percent under which the criterion fails the claim." + tail
+        return status, head + spread + (
+            "below the 50 percent under which the criterion fails the claim." + tail + contact)
+    # The value at which the outcome turns (design section 2, ruling of 2026-10-12): the time at which the share
+    # crosses each line at the ledger's two coefficients, and the spread the other inputs leave at the ledger's cycle.
+    k, area, half, m = transfer._vessel(q)
+
+    def crosses(line: float) -> str:
+        after = transfer.time_to_capture(q, line)
+        return (f"passes {100 * line:.0f} percent after {_hours(after)}" if after < math.inf
+                else f"never reaches {100 * line:.0f} percent")
+
+    cycle = ledger.q("rx.cycle_time")
+    _, low, high = corners(ledger, others, lambda v: transfer.capture_share(v | {"rx.cycle_time": cycle}))
+    still_open = low < passes_from and high >= fails_below
+    turning = (
+        f" At those two coefficients the share {crosses(fails_below)} and {crosses(passes_from)}, with a time "
+        f"constant of {_hours(transfer.time_constant(k, area, half, half, m))} toward the "
+        f"{100 * transfer.equilibrium_share(half, half, m):.1f} percent that the water holds by Henry's law alone, "
+        f"without the dissociation counted in the {100 * held.value:.0f} percent; in a cycle of {_hours(cycle)} it "
+        f"runs from {_percent(low)} to {_percent(high)} percent over the ranges of the other inputs, the two "
+        "coefficients among them"
+        + (", so stating a cycle of that length would not settle the claim without them." if still_open else ".")
+    )
     return status, head + spread + (
         "which over those ranges is neither always at the 90 percent from which the criterion passes the claim nor "
         "always under the 50 percent below which it fails it."
-    ) + tail
+    ) + tail + turning + contact
 
 
 def _s22(ledger, r):
@@ -167,17 +213,19 @@ def _s22(ledger, r):
     limit, oxidisable, pace = (r["chem.air_without_pushback"], r["chem.sulfur_oxidisable_without_pushback"],
                                r["chem.uptake_pace"])
     # The criterion as written: uptake keeps pace, so that no gas is forced back. The unfavourable end is the gas
-    # with the most air and the slowest uptake; the favourable end is the least air a full stroke admits.
+    # with the most air and the slowest uptake; the favourable end is the least air that emptying the whole Gallery
+    # admits. "Stroke" is kept for one activation of the pump, a quarter of the Gallery in S12 and S18.
     # Judgement call: the favourable end is not a gas without air, because S14, S15 and S17 put air in it.
     status = three_way(max(least.high, mixture.high) < NOTHING and pace.low >= 1,
                        least.low < NOTHING and pace.high >= 1)
     head = (
-        f"A full stroke draws {ledger.q('gg.volume'):.0f} m3 of gas into the Gallery and the King's Chamber holds "
-        f"{ledger.q('kc.volume'):.0f} m3, so at least {100 * air.value:.0f} percent of the gas over the water is "
-        f"the outside air of S14 ({100 * air.low:.0f} percent at the least). "
+        f"Emptying the whole Gallery draws {ledger.q('gg.volume'):.0f} m3 of gas into it and the King's Chamber "
+        f"holds {ledger.q('kc.volume'):.0f} m3, so at least {100 * air.value:.0f} percent of the gas over the water "
+        "is outside air, come down the shafts of S14 or in through the masonry joints "
+        f"({100 * air.low:.0f} percent at the least). "
     )
-    call = (" Taking the least air of a full stroke, not a gas without air, as the end most favourable to the "
-            "hypothesis is a judgement call.")
+    call = (" Taking the least air that emptying the whole Gallery admits, not a gas without air, as the end most "
+            "favourable to the hypothesis is a judgement call.")
     if status != "fail":
         return status, head + (
             f"Its nitrogen and unused oxygen can dissolve in the rising water, and the sulfur dioxide is taken up at "
@@ -194,8 +242,9 @@ def _s22(ledger, r):
         f"over the ranges of the inputs), and {100 * mixture.value:.0f} percent of a mixture that carries the oxygen "
         f"for all its sulfur. Nothing is pushed back only if air is under {100 * limit.value:.1f} percent of the gas "
         f"({100 * limit.high:.1f} percent at most), which brings oxygen for {100 * oxidisable.value:.1f} percent of "
-        "the sulfur, while S14 to S17 carry air into the Gallery; the hypothesis states no gas fraction and no "
-        "stroke."
+        "the sulfur, while S14 to S17 carry air into the Gallery; the hypothesis states no gas fraction, and the "
+        "whole Gallery is taken as emptied because S18 raises the water again in the four activations with which "
+        "S12 fills it."
     ) + call
 
 
@@ -260,27 +309,31 @@ def _s23(ledger, r):
     )
 
 
-def _feed(ledger, r) -> str:
-    """The numbers both feed claims rest on."""
+def _feed(ledger, r, analogue: str = "") -> str:
+    """The numbers both feed claims rest on; `analogue` is put after the cave air it describes.
+
+    The missing analogue flux leads, because it blocks the comparison at every cycle time. The unstated cycle rate
+    alone, with the cycle carried as a range, would leave a comparison that could be made at each end of it.
+    """
     moles, mass, flux = r["chem.h2s_per_batch"], r["chem.h2s_mass_per_batch"], r["chem.h2s_flux"]
     yearly, air = r["chem.h2s_mass_per_year"], r["chem.cave_air_per_batch"]
     return (
-        f"one full batch needs {moles.value:.0f} mol of hydrogen sulfide, {mass.value:.0f} kg, a mole for each mole "
-        f"of sulfur dioxide in the King's Chamber, which is {flux.value:.2g} mol/s and {yearly.value / 1000:.0f} t a "
-        f"year at one batch every {ledger.q('rx.cycle_time') / HOUR:.0f} h, and {flux.low:.2g} to {flux.high:.2g} "
-        "mol/s over the cycle times taken; the "
-        "hypothesis states no cycle rate, so the required flux is undefined (07 section 4.4). 07 gives no flux for "
-        "any seep or spring to set against it: its one analogue is a concentration, read from an abstract, at "
-        f"which one batch is the sulfide in {air.value / 1e6:.1f} million m3 of cave air"
+        "07 gives no flux for any seep or spring, so a required flux has nothing to be set against at any cycle "
+        "time: its one analogue is a concentration, read from an abstract, at which one batch is the sulfide in "
+        f"{air.value / 1e6:.1f} million m3 of cave air{analogue}. One full batch needs {moles.value:.0f} mol of "
+        f"hydrogen sulfide, {mass.value:.0f} kg, a mole for each mole of sulfur dioxide in the King's Chamber, which "
+        f"is {flux.value:.2g} mol/s and {yearly.value / 1000:.0f} t a year at one batch every "
+        f"{ledger.q('rx.cycle_time') / HOUR:.0f} h, and {flux.low:.2g} to {flux.high:.2g} mol/s over the cycle times "
+        "taken; the hypothesis states no cycle rate either, so the required flux is itself undefined (07 section "
+        "4.4)."
     )
 
 
 def _s01(ledger, r):
-    # Both sides of the criterion's comparison are missing, whatever the numbers: the hypothesis states no cycle
-    # rate (as for S31 in Tier 0) and 07 holds no analogue flux, so the status is fixed.
-    return "undefined", (
-        "O" + _feed(ledger, r)[1:] + f" ({1e6 * ledger.q('rx.h2s_cave_air'):.0f} ppmv in active sulfuric-acid caves)."
-    )
+    # Both sides of the criterion's comparison are missing, whatever the numbers: 07 holds no analogue flux and the
+    # hypothesis states no cycle rate (as for S31 in Tier 0), so the status is fixed.
+    return "undefined", _feed(
+        ledger, r, f" ({1e6 * ledger.q('rx.h2s_cave_air'):.0f} ppmv in active sulfuric-acid caves)")
 
 
 def _e01(ledger, r):
@@ -288,7 +341,7 @@ def _e01(ledger, r):
     return "undefined", (
         "No opened source gives a measured hydrogen sulfide flux, composition or source pressure under the "
         "plateau: 07 read the cited paper in full, and it measured no gas and reports no present-day seepage, so "
-        "the passing clause is not met. The failing clause cannot be evaluated either: " + _feed(ledger, r) + "."
+        "the passing clause is not met. The failing clause cannot be evaluated either. " + _feed(ledger, r)
     )
 
 

@@ -7,6 +7,9 @@ Assumptions:
 - The water takes the undissociated gas in proportion to its pressure (Henry). The dissociation that lets the
   water hold more enters only the equilibrium share (aqueous.capture_at_equilibrium).
 - Sulfur dioxide carried out with the air the rising water displaces (S22) is not deducted from the capture.
+- The gas is given the whole cycle (rx.cycle_time) over the half-full Gallery, as if the rise lasted that long.
+  The gas of S19 stands over the water only until the water has risen, and the ledger's own time for one fill
+  (flow.fill_time) is shorter, so S19's basis also gives the share for a contact of that length.
 """
 import math
 
@@ -73,6 +76,17 @@ def capture_share(q) -> float:
     """Share of the sulfur dioxide that reaches the water of the half-full Gallery within one cycle."""
     k, area, half, m = _vessel(q)
     return float(captured(q["rx.cycle_time"], k, area, half, half, m))
+
+
+def time_to_capture(q, share: float) -> float:
+    """Seconds for the water of the half-full Gallery to take `share` of the gas; inf if it never holds that much.
+
+    The closed form inverted. Its ceiling is equilibrium_share, Henry's law alone, not the larger share that
+    dissociation lets the water hold (aqueous.capture_at_equilibrium).
+    """
+    k, area, half, m = _vessel(q)
+    reach = share / equilibrium_share(half, half, m)
+    return -time_constant(k, area, half, half, m) * math.log1p(-reach) if reach < 1 else math.inf
 
 
 def uptake_pace(q) -> float:
