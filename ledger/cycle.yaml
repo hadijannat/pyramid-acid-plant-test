@@ -17,7 +17,7 @@
 # Keys:
 #   prologue     a flight from far out in the north-east toward the north face, where the entrance
 #                is, before S01: a duration and a path; it carries no claim (display choice). It looks
-#                at the middle of the face and stops 400 m out, so the whole pyramid stays in frame
+#                at the middle of the face and stops 417 m out, so the whole pyramid stays in frame
 #                above the viewer's caption card through the flight.
 #   path         1 to 4 camera keyframes {position, target}. The viewer flies into the first in at
 #                most 1.5 s; a step with one keyframe then holds that framing with a slow orbital
@@ -76,18 +76,21 @@
 # 2026-10-11, after the Task 11 review: the cameras of S01, S02, S04, S05, S10, S12, S18 to S24 and S27 to S31 stand
 # farther back or higher, on the same line of sight, so the subject stays in the free area between the notice and the
 # caption card through the whole hold (the card lifts the frame; a camera authored for the bare frame lost the top).
+# 2026-10-12, after the final review: the caption card keeps one height for every step (264 px on a wide stage, the
+# tallest step's), so the prologue's last keyframe and the cameras of S01 and S05 stand 10 to 13 percent farther back on
+# the same line of sight; replayed at 1280 x 800, 1920 x 969 and 375 x 812 with at least 8 px to spare.
 prologue:
   duration: 6.0
   path:
     - {position: [620, 520, 150], target: [0, 60, 70]}
     - {position: [460, 400, 105], target: [0, 60, 70]}
-    - {position: [300, 275, 60], target: [0, 60, 70]}
+    - {position: [339, 303, 59], target: [0, 60, 70]}
 steps:
   - id: S01
     title: "Hydrogen sulfide rises under the plateau"
     duration: 5.0
     path:
-      - {position: [372, -143, 112], target: [0, 0, 69]}
+      - {position: [409, -157, 116], target: [0, 0, 69]}
     scene: {interior: false, weather: clear}
     species: [h2s]
     actors: []
@@ -124,7 +127,7 @@ steps:
     title: "Operators wait for a storm"
     duration: 4.0
     path:
-      - {position: [378, -71, 112], target: [0, 0, 71]}
+      - {position: [418, -79, 116], target: [0, 0, 71]}
     scene: {interior: false, weather: storm}
     species: []
     actors:

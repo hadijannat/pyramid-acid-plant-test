@@ -150,7 +150,11 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 #hud button:disabled { opacity: 0.45; cursor: default; }
 #hud button:focus-visible, #hud .strip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-#hud .overlay { position: fixed; inset: 0; z-index: 6; display: grid; place-items: center; pointer-events: none; }
+/* the Play button sits in the middle of what the notice and the card leave free, where the scene's centre is */
+#hud .overlay {
+  position: fixed; inset: var(--notice-height) 0 var(--card-height, 0px) 0; z-index: 6;
+  display: grid; place-items: center; pointer-events: none;
+}
 #hud .overlay button {
   pointer-events: auto; padding: 14px 28px; font-size: 18px; border-color: var(--accent); border-radius: 999px;
   background: rgba(21, 23, 26, 0.72);   /* display choice */

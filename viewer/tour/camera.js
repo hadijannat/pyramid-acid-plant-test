@@ -143,7 +143,7 @@ export function createRide(camera, controls, store) {
   function drift(on) {
     on = on && !store.get().reducedMotion;   // reduced motion: the camera holds still
     if (on === Boolean(sway)) return;
-    sway = on ? { position: null, target: null, t: 0 } : null;
+    sway = on && riding ? { position: null, target: null, t: 0 } : null;   // a camera the user holds stays theirs
     glide = !on && riding ? { position: camera.position.clone(), target: controls.target.clone(), k: 0 } : null;
   }
 

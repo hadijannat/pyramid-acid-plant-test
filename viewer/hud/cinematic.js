@@ -129,6 +129,7 @@ export function mountCinematic(root, { store, cycle, claims, player, ride, rende
   function fitInset() {
     const height = card.offsetHeight;   // 0 while #hud is hidden
     rendererApi.setInset(height ? height + CARD_GUTTER : 0);
+    root.style.setProperty('--card-height', `${height ? height + CARD_GUTTER : 0}px`);   // the Play button centres above it
   }
   const cardObserver = new ResizeObserver(fitInset);   // the card's height changes with the stage's width
   cardObserver.observe(card);
@@ -140,6 +141,7 @@ export function mountCinematic(root, { store, cycle, claims, player, ride, rende
     if (!card.offsetHeight) return;   // #hud is hidden: levelled when it shows again
     const resumeHidden = resumeButton.hidden;
     resumeButton.hidden = false;
+    caption.setAttribute('aria-live', 'off');   // 32 layouts are not 32 announcements
     let tallest = 0;
     for (let i = -1; i < steps.length; i++) {
       renderStep({ stepIndex: i });
@@ -147,9 +149,15 @@ export function mountCinematic(root, { store, cycle, claims, player, ride, rende
     }
     resumeButton.hidden = resumeHidden;
     renderStep(store.get());
+    caption.setAttribute('aria-live', 'polite');
     card.style.minHeight = `${tallest}px`;
   }
-  window.addEventListener('resize', levelCard);
+  let levelling = 0;   // one levelling per frame, however many resize events a drag of the window's edge sends
+  const relevel = () => {
+    cancelAnimationFrame(levelling);
+    levelling = requestAnimationFrame(levelCard);
+  };
+  window.addEventListener('resize', relevel);
   function renderHud({ hud }) {
     root.classList.toggle('hidden', !hud.visible);
     levelCard();
@@ -195,8 +203,10 @@ export function mountCinematic(root, { store, cycle, claims, player, ride, rende
       unsubscribe();
       cardObserver.disconnect();
       rendererApi.setInset(0);
+      root.style.removeProperty('--card-height');
       window.removeEventListener('keydown', onKey);
-      window.removeEventListener('resize', levelCard);
+      window.removeEventListener('resize', relevel);
+      cancelAnimationFrame(levelling);
       root.replaceChildren();
       root.classList.remove('hidden');
     },
