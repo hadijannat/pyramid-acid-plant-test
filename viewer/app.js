@@ -135,6 +135,7 @@ async function boot() {
     });
   }
   player.gotoId(url.stepId);   // url was read first at boot, before the player rewrote the hash
+  if (url.t !== null) player.seek(url.t);   // ?t=<seconds>: the tour paused at that moment (how the README's images are made)
   actors.warm();   // the gas clouds of the tour, sampled while the prologue waits, and again if the tier changes
   store.subscribe((state, previous, changed) => { if (changed.has('quality')) actors.warm(); });
   window.addEventListener('hashchange', () => player.gotoId(readUrl(location).stepId));

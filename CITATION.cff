@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this test, its ledger or its results, please cite the repository."
+title: "Was the Great Pyramid a sulfuric-acid plant? A quantitative test"
+type: software
+authors:
+  - family-names: Jannatabaadi
+    given-names: MHadi
+repository-code: "https://github.com/hadijannat/pyramid-acid-plant-test"
+license: MIT
+date-released: "2026-10-12"
+keywords:
+  - Great Pyramid
+  - Giza
+  - hypothesis testing
+  - reproducible research
+  - Mie scattering
+  - FDTD
+  - hydraulics
+  - sulfuric acid
+abstract: >-
+  A neutral, quantitative and reproducible test of the "Land of Chem" hypothesis that the
+  Great Pyramid of Giza ran as a sulfuric-acid plant. The 71 claims of the hypothesis are
+  written down as stated, each with a criterion fixed before computation; every physical
+  number comes from one sourced ledger; hand calculations, the survey record, a register
+  of the documentary evidence, reduced models of flow, chemistry and conduction, and two
+  full-wave field solvers decide the claims, and every result regenerates from the ledger.

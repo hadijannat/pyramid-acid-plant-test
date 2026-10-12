@@ -126,3 +126,17 @@ def test_the_committed_electro_verdicts_and_the_elevation_are_what_the_code_give
     elevation.main(tmp_path / "interior-elevation.svg")
     assert (tmp_path / "interior-elevation.svg").read_bytes() == elevation.OUT.read_bytes(), (
         "run `uv run python -m pyramid.elevation` and commit")
+
+
+def test_the_committed_summary_figures_are_what_the_code_draws_today(tmp_path):
+    from pyramid import summary
+    from pyramid.verdicts import merged
+
+    led = ledger.load()
+    _, decided, source = merged(led)
+    for name, draw in (("verdict-map.svg", lambda p: summary.verdict_map(led, decided, p)),
+                       ("decided-by.svg", lambda p: summary.decided_by(decided, source, p)),
+                       ("cycle-elevation.svg", lambda p: summary.cycle_elevation(led, decided, p))):
+        draw(tmp_path / name)
+        assert (tmp_path / name).read_bytes() == (summary.OUT_DIR / name).read_bytes(), (
+            f"{name} is stale: run `uv run python -m pyramid.summary` on a clean tree and commit")
