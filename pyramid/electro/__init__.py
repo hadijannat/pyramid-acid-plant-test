@@ -1,8 +1,8 @@
 """electro: ground current, lightning, the piezoelectric chain and room acoustics. Decides S04, E21, S06 and E13.
 
 conduction solves steady conduction on a graded grid; sources puts the pyramid, the King's Chamber granite and the
-ore sheets on it for a telluric far field and for a stroke at the summit; piezo runs Tier 0's piezoelectric chain
-backwards to the field the granite would need; rooms ranks three rooms by decay time and modal quality factor.
+ore sheets on it for a telluric far field and for a stroke at the summit; piezo runs Tier 0's two piezoelectric
+chains backwards to the field the granite would need; rooms ranks three rooms by decay time and modal quality factor.
 Each module's docstring lists its assumptions; ASSUMPTIONS collects them for the manifest.
 
 The ranges: every conduction number is taken at the ledger values and at every corner of the ranges of its swept
@@ -38,9 +38,15 @@ ASSUMPTIONS = [
     "ending at the base edges; their thickness, depth and length are assumed and swept.",
     "The telluric far field runs north-south, across the chamber's short side, which gives a resistive body the "
     "larger field.",
-    "The field the granite needs is Tier 0's pulse chain run backwards, with every part of the chain at its most "
-    "generous for the favourable end.",
-    "Non-negligible, in the criteria of S04 and E21, is read as reaching the field that chain needs: a judgement call.",
+    "The field the granite needs is Tier 0's single-pulse chain run backwards, with every input of that chain at its "
+    "generous end for the favourable end. Tier 0's S07 chain, a sustained drive across the antechamber's granite leaf "
+    "for which no source is proposed, needs a lower field at its generous end; its figure is reported beside the "
+    "pulse chain's and decides no status.",
+    "Non-negligible, in the criteria of S04 and E21, is read as reaching the field the pulse chain needs: a judgement "
+    "call.",
+    "The fail clause of S06's criterion, a field screened to the conduction value of order kV/m or less, is read as "
+    "the field staying below the pulse chain's need at the favourable end: a judgement call. The model is a "
+    "conduction model, so its field is the conduction value by construction.",
     "The rooms are hard-walled boxes with Sabine decay from the walls and the air: one assumed wall absorption shared "
     "by the three rooms, and air absorption as frequency squared scaled to the ledger's 13 kHz value; open passage "
     "mouths are a sensitivity case only.",
@@ -135,6 +141,11 @@ def chain_results(ledger: Ledger, conduction: dict[str, Result]) -> dict[str, Re
     gas_solid = simkit.corners(ledger, piezo.GAS_SOLID, piezo.needed_field_gas_solid)
     add("needed_field_gas_solid", "Field in the granite for the weakest documented gas-solid acoustic effect",
         gas_solid, "V/m", f"{chain}; I = 0.30 W/cm2 and up", piezo.GAS_SOLID)
+    add("needed_field_sustained", "Field in the antechamber's granite leaf for the weakest documented gas-solid acoustic "
+        "effect, under a sustained drive",
+        simkit.corners(ledger, piezo.SUSTAINED, piezo.needed_field_sustained), "V/m",
+        "E = sqrt(2 I / Z_air) / (2 pi f d L_leaf), Tier 0's S07 chain inverted; I = 0.30 W/cm2 and up",
+        piezo.SUSTAINED)
     add("needed_field_wet_film", "Field in the granite to cavitate a wet film from the gas side",
         simkit.corners(ledger, piezo.WET_FILM, piezo.needed_field_wet_film), "V/m",
         f"{chain}; I the intensity of Tier 0's required sound level", piezo.WET_FILM)
@@ -219,31 +230,51 @@ def _orders(larger: float, smaller: float) -> float:
     return math.log10(larger / smaller)
 
 
-def _against_the_chain(field: Result, needed: Result, holds_at_best: bool) -> tuple[str, str]:
-    """The three-way status of a telluric field against the chain's need, and the sentence that says so.
+def _pulse_chain(ledger: Ledger) -> str:
+    """What the 2.7e7 V/m belongs to: Tier 0's chain for one pulse, named with the two inputs it has no range for."""
+    return ("Tier 0's single-pulse piezoelectric chain, a field applied across "
+            f"{ledger.q('em.piezo_thickness'):g} m of granite within the {1e6 * ledger.q('em.pulse_rise_time'):g} "
+            "microsecond rise of a stroke,")
+
+
+def _sustained_chain(ledger: Ledger) -> str:
+    """Tier 0's other chain, the one of S07, at the fast end of its assumed drive."""
+    return (f"Tier 0's S07 chain, a sustained drive of {ledger.rng('ac.drive_frequency')[1] / 1e6:g} MHz across the "
+            "antechamber's granite leaf for which no source is proposed,")
+
+
+def _against_the_chain(ledger: Ledger, r, field: Result, holds_at_best: bool) -> tuple[str, str]:
+    """The three-way status of a telluric field against the pulse chain's need, and the sentence that says so.
 
     Judgement call: the criteria of S04 and E21 ask for a "non-negligible" field or charge and give no number. The
-    only use the hypothesis makes of a field in the granite is the piezoelectric chain of S07, so the line is the
-    field at which that chain, as generous as Tier 0 allows, first reaches a documented acoustic effect. A charge is
-    tied to its field by Gauss's law (a surface density of eps0 eps_r E), so the one comparison covers both words.
+    only use the hypothesis makes of a field in the granite is the piezoelectric chain, so the line is the field at
+    which Tier 0's single-pulse chain, with every input at its generous end, first reaches a documented acoustic
+    effect. A charge is tied to its field by Gauss's law (a surface density of eps0 eps_r E), so the one comparison
+    covers both words. Tier 0's S07 chain reaches that effect at a lower field, under a sustained drive that nothing
+    in the hypothesis supplies; the sentence gives its figure beside the line, and the status does not read it.
     """
+    needed, sustained = r["electro.needed_field_gas_solid"], r["electro.needed_field_sustained"]
     status = simkit.three_way(field.low >= needed.high, holds_at_best)
-    line = ("the field at which the piezoelectric chain first reaches a documented acoustic effect, the line this "
-            "rule takes for non-negligible as a judgement call")
+    reaches = f"at which {_pulse_chain(ledger)} first reaches a documented acoustic effect"
+    call = "the line this rule takes for non-negligible as a judgement call"
     if status == "fail":
+        beside = (f"and the field is {_orders(sustained.low, field.high):.1f} orders of magnitude below that too"
+                  if field.high < sustained.low else "which the field reaches at the favourable end")
         return status, (
-            f"is {_orders(needed.low, field.high):.1f} orders of magnitude below the {needed.low:.1e} V/m that is, at "
-            f"its most generous, {line}; a charge held by such a field is short by the same factor.")
+            f"is {_orders(needed.low, field.high):.1f} orders of magnitude below the {needed.low:.1e} V/m {reaches} "
+            f"with every input at its generous end, {call}; a charge held by such a field is short by the same "
+            f"factor. {_sustained_chain(ledger)} reaches the same effect at {sustained.low:.1e} V/m, {beside}.")
     if status == "pass":
-        return status, f"is above the {needed.high:.1e} V/m that is, at its least generous, {line}."
+        return status, (f"is above the {needed.high:.1e} V/m {reaches} with every input at its least generous end, "
+                        f"{call}.")
     return status, (f"is neither always below {needed.low:.1e} V/m nor always above {needed.high:.1e} V/m, the ends "
-                    f"of {line}.")
+                    f"of the field {reaches}, {call}.")
 
 
 def _s04(ledger, r):
     field, needed = r["electro.telluric_field"], r["electro.needed_field_gas_solid"]
     granite, masonry, summit = (r[f"electro.telluric_{part}_ratio"] for part in ("granite", "masonry", "summit"))
-    status, tail = _against_the_chain(field, needed, field.high >= needed.low)
+    status, tail = _against_the_chain(ledger, r, field, field.high >= needed.low)
     return status, (
         f"In a steady conduction model of the pyramid on bedrock, a far field of {FAR_FIELD_QUIET:.0e} to "
         f"{ledger.rng(FAR_FIELDS[1])[1]:.0e} V/m leaves {masonry.value:.2f} of itself ({masonry.low:.2f} to "
@@ -258,7 +289,7 @@ def _e21(ledger, r):
     gather, plain = r["electro.ore_gather_length"], r["electro.telluric_granite_ratio"]
     length = ledger.rng("plateau.vein_leakage_length")[1]
     # holds at best if the drawn sheets reach the line, or if sheets as long as any swept could offer its voltage
-    status, tail = _against_the_chain(field, needed, field.high >= needed.low or length >= gather.low)
+    status, tail = _against_the_chain(ledger, r, field, field.high >= needed.low or length >= gather.low)
     thin, thick = ledger.rng("elec.ore_sheet_thickness")
     shallow, deep = ledger.rng("elec.ore_sheet_depth")
     return status, (
@@ -267,25 +298,30 @@ def _e21(ledger, r):
         f"far field in the King's Chamber granite or at the summit ({ratio.low:.1f} to {ratio.high:.1f} over sheets "
         f"{thin:g} to {thick:g} m thick, {shallow:.0f} to {deep:.0f} m deep and up to {length:.0f} m long, all "
         f"assumed), against {plain.value:.1f} without sheets: {field.high:.2f} V/m at the most, which {tail} Sheets "
-        f"would have to gather the far field over {gather.low:.1e} m to offer the chain its voltage.")
+        f"would have to gather the far field over {gather.low:.1e} m to offer the pulse chain its voltage.")
 
 
 def _s06(ledger, r):
-    peak, mean, needed = (r[f"electro.{name}"] for name in
-                          ("lightning_granite_field", "lightning_granite_mean_field", "needed_field_gas_solid"))
+    peak, mean, needed, sustained = (r[f"electro.{name}"] for name in (
+        "lightning_granite_field", "lightning_granite_mean_field", "needed_field_gas_solid", "needed_field_sustained"))
     multiple, shortfall, skin = (r[f"electro.{name}"] for name in
                                  ("lightning_conduction_multiple", "lightning_shortfall", "chamber_skin_depths"))
     breakdown = ledger.q("em.air_breakdown_field")
     # The criterion: pass if the peak field in the granite exceeds what the chain needs; fail if the interior field is
     # screened to the conduction value of order kV/m or less. The model is a conduction model, so its field is the
-    # conduction value by construction; the three-way rule then fails the claim when even the favourable end (the
-    # design-maximum stroke, the most resistive masonry measured, the most generous chain) stays below the need.
+    # conduction value by construction, and the favourable corner (tens of kV/m) is neither of order kV/m nor above
+    # the need. Judgement call, named in the basis: the fail clause is read as the field staying below the need of
+    # the pulse chain even at the favourable end (the design-maximum stroke, the most resistive masonry measured,
+    # every input of that chain at its generous end). A return stroke is a single pulse (04 claim C6), so the pulse
+    # chain is the one the claim is held to; the S07 chain's lower figure is given beside it.
     # The favourable end is capped at the air-breakdown field, the ledger's ceiling on any field beside a gas-filled
-    # chamber, so the verdict does not turn on how resistive the unmeasured core is taken to be.
+    # chamber, so under the pulse chain the verdict does not turn on how resistive the unmeasured core is taken to
+    # be. The cap lies above what the sustained chain needs, and the basis says so.
     status = simkit.three_way(peak.low >= needed.high, min(peak.high, breakdown) >= needed.low)
     core, measured = r["electro.lightning_breakdown_resistivity"].value, ledger.rng("em.limestone_resistivity")[1]
+    under_cap = "; the sustained chain's need lies under that cap" if sustained.low < breakdown else ""
     capped = (f" A core of {core:.0e} ohm m, {core / measured:.0f} times the most resistive masonry measured in place, "
-              "would bring that peak to the breakdown field, which caps it below the need."
+              f"would bring that peak to the breakdown field, which caps it below the pulse chain's need{under_cap}."
               if needed.low > breakdown else "")
     head = (
         f"A stroke of {ledger.q(STROKES[0]) / 1e3:.0f} kA entering at the summit and spreading by steady conduction "
@@ -298,16 +334,27 @@ def _s06(ledger, r):
     induction = (f" The chamber lies {skin.value:.1f} skin depths ({skin.low:.1f} to {skin.high:.1f}) inside the "
                  "nearest face, and induction, left out here, lowers the field there further.")
     if status == "fail":
+        even_low, even_high = ledger.rng("em.piezo_field_lightning")  # 04's even-spreading estimate
+        beside = (f"{sustained.low / peak.high:.0f} times that corner" if sustained.low > peak.high
+                  else "which that corner reaches")
+        beside += (" and below the breakdown field" if sustained.low < breakdown
+                   else f" and {sustained.low / breakdown:.1f} times the breakdown field")
         return status, head + (
-            f"The piezoelectric chain needs {needed.low:.1e} V/m at its most generous to reach a documented acoustic "
-            f"effect, {shortfall.low:.0f} times more than that and {ceiling}, so the field in the granite is the "
-            "conduction value and no more." + capped + induction)
+            f"{_pulse_chain(ledger)} needs {needed.low:.1e} V/m with every input at its generous end to reach a "
+            f"documented acoustic effect, {shortfall.low:.0f} times the {peak.high / 1e3:.0f} kV/m of that corner and "
+            f"{ceiling}. {_sustained_chain(ledger)} reaches the same effect at {sustained.low:.1e} V/m, {beside}; a "
+            "return stroke is a single pulse (04 claim C6), so the claim is held to the pulse chain. The criterion's "
+            "fail clause, a field screened to the conduction value of order kV/m or less, is read as the field "
+            "staying below the pulse chain's need at the favourable end, the order kV/m being 04's own estimate of "
+            f"the conduction value ({even_low / 1e3:.2f} to {even_high / 1e3:.0f} kV/m by even spreading): a "
+            "judgement call. In this model the field in the granite is the conduction value by construction."
+            + capped + induction)
     if status == "pass":
         return status, head + (
-            f"That exceeds the {needed.high:.1e} V/m that the piezoelectric chain needs at its least generous to "
-            "reach a documented acoustic effect." + induction)
+            f"That exceeds the {needed.high:.1e} V/m that {_pulse_chain(ledger)} needs with every input at its "
+            "least generous end to reach a documented acoustic effect." + induction)
     return status, head + (
-        f"The piezoelectric chain needs {needed.low:.1e} to {needed.high:.1e} V/m to reach a documented acoustic "
+        f"{_pulse_chain(ledger)} needs {needed.low:.1e} to {needed.high:.1e} V/m to reach a documented acoustic "
         f"effect ({ceiling} at the low end), which the field reaches over part of the ranges of the inputs only."
         + induction)
 
