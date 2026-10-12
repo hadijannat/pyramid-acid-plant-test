@@ -157,3 +157,14 @@ def test_the_verdict_colours_of_the_map_are_the_viewers():
     css = dict(re.findall(r"--([a-z-]+): (#[0-9a-f]{6});", (REPO_ROOT / "viewer" / "style.css").read_text()))
     assert {status: colour for status, (colour, _) in summary.MARKS.items()} == {
         status: css[status.replace("_", "-")] for status in summary.MARKS}
+
+
+def test_the_three_summary_figures_render_the_same_bytes_twice(tmp_path):
+    from pyramid import summary
+    _, decided, source = verdicts.merged(LEDGER)
+    for name, draw in (("verdict-map.svg", lambda p: summary.verdict_map(LEDGER, decided, p)),
+                       ("decided-by.svg", lambda p: summary.decided_by(decided, source, p)),
+                       ("cycle-elevation.svg", lambda p: summary.cycle_elevation(LEDGER, decided, p))):
+        draw(tmp_path / ("a-" + name))
+        draw(tmp_path / ("b-" + name))
+        assert (tmp_path / ("a-" + name)).read_bytes() == (tmp_path / ("b-" + name)).read_bytes() != b"", name

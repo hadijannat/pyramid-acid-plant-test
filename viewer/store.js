@@ -85,5 +85,6 @@ export function readUrl(location) {
     mode: query.get('mode') === 'inspector' ? 'inspector' : 'cinematic',
     quality: QUALITIES.includes(quality) ? quality : null,
     nowebgl: query.get('nowebgl') === '1',
+    t: Number.isFinite(parseFloat(query.get('t'))) ? Math.max(0, parseFloat(query.get('t'))) : null,   // seconds into the tour
   };
 }
