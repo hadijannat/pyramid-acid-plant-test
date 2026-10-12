@@ -264,16 +264,16 @@ def test_the_feed_claims_are_undefined_whatever_the_cycle_time(led):
     s01, e01 = with_quantities(led, {})["S01"][1], with_quantities(led, {})["E01"][1]
     for text in ("13319 mol of hydrogen sulfide, 454 kg", "0.15 mol/s and 166 t a year at one batch every 24 h",
                  "0.00041 to 3.8 mol/s over the cycle times taken", "states no cycle rate",
-                 "07 gives no flux for any seep or spring", "5.3 million m3 of cave air"):
+                 "The plateau geology file (07) gives no flux for any seep or spring", "5.3 million m3 of cave air"):
         assert text in s01 and text in e01, text
     # the reason that blocks the comparison at every cycle time leads; the unstated cycle rate follows
-    lead = ("07 gives no flux for any seep or spring, so a required flux has nothing to be set against at any cycle "
+    lead = ("The plateau geology file (07) gives no flux for any seep or spring, so a required flux has nothing to be set against at any cycle "
             "time: its one analogue is a concentration, read from an abstract")
     assert s01.startswith(lead) and "cave air (60 ppmv in active sulfuric-acid caves). One full batch needs" in s01
     assert e01.startswith("No opened source gives a measured hydrogen sulfide flux")
     assert "the passing clause is not met. The failing clause cannot be evaluated either. " + lead in e01
     for basis in (s01, e01):
-        assert basis.index("07 gives no flux") < basis.index("states no cycle rate")
+        assert basis.index("(07) gives no flux") < basis.index("states no cycle rate")
         assert basis.endswith("the hypothesis states no cycle rate either, so the required flux is itself undefined "
                               "(07 section 4.4).")
     hourly = with_quantities(led, {"rx.cycle_time": fixed(3600.0)})["S01"][1]

@@ -343,7 +343,7 @@ def figure(computed: dict[str, Result], out_dir) -> None:
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, 1.3), ncols=2, frameon=False, fontsize=8)
     fig.tight_layout()
     out_dir.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out_dir / "kcs_exits.png", dpi=150, metadata={"Software": None})  # no version, no timestamp
+    simkit.save_figure(fig, out_dir / "kcs_exits.png", dpi=150)
     plt.close(fig)
 
 

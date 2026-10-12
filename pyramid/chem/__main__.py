@@ -13,7 +13,7 @@ from pyramid import chem  # noqa: E402
 from pyramid.chem import aqueous, feed, transfer, walls  # noqa: E402
 from pyramid.ledger import Ledger, load  # noqa: E402
 from pyramid.screening import DAY  # noqa: E402
-from pyramid.simkit import RESULTS, write_results  # noqa: E402
+from pyramid.simkit import save_figure, RESULTS, write_results  # noqa: E402
 
 ASSUMPTIONS = [
     "The batch is Tier 0's largest: one King's Chamber of pure sulfur dioxide at one atmosphere per cycle.",
@@ -47,7 +47,7 @@ ASSUMPTIONS = [
 
 def _save(fig, path: Path) -> None:
     fig.tight_layout()
-    fig.savefig(path, dpi=150, metadata={"Software": None})  # no version or time stamp in the file
+    save_figure(fig, path, dpi=150)
     plt.close(fig)
 
 

@@ -113,3 +113,16 @@ def test_the_verdict_table_and_the_viewers_claims_are_the_merge_of_the_committed
     shown = {claim["id"]: (claim["status"], claim["basis"])
              for claim in json.loads((REPO_ROOT / "viewer" / "data" / "claims.json").read_text())["claims"]}
     assert shown == decided, "run `uv run python -m pyramid.viewer_data` and commit"
+
+
+def test_the_committed_electro_verdicts_and_the_elevation_are_what_the_code_gives_today(tmp_path):
+    """electro's verdicts are pure functions of its committed results, and the elevation is drawn from the
+    committed model: both regenerate in seconds, so both are compared here (pre-merge review, M1 and R1)."""
+    from pyramid import electro, elevation
+    from pyramid.simkit import read_results
+
+    results, decided, _ = read_results("electro")
+    assert electro.verdicts(ledger.load(), results) == decided, "run `uv run python -m pyramid.electro` and commit"
+    elevation.main(tmp_path / "interior-elevation.svg")
+    assert (tmp_path / "interior-elevation.svg").read_bytes() == elevation.OUT.read_bytes(), (
+        "run `uv run python -m pyramid.elevation` and commit")

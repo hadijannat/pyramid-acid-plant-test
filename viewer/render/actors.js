@@ -103,6 +103,7 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
   let builtOn = null;  // the model root it was built on; a reading swap replaces the root
   let perSpace = 0;    // particles in each gas space of the current step
   let clock = 0;       // seconds of sway
+  const samples = new Map();   // 'space|count' -> { geometry, from, to, phase }: a space's cloud, sampled once
   const water = new Map();   // space -> { fraction, level } at the current u
   // One flash light for the whole session: adding and removing a light would recompile every material.
   const flash = new THREE.PointLight(BOLT_HEX, 0, 0, 0);   // distance 0, decay 0: no fall-off
@@ -148,8 +149,14 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
   // chord, so it stays inside. Drawn without the depth test: the opaque walls of its space never hide it.
   // ponytail: candidates are drawn in the bounding box, at most CANDIDATES per particle asked for; a thin slanted
   // shaft fills about one percent of its box and gets fewer particles than asked. Sample along the shaft if that shows.
-  function cloud(space, haze, plane, count, colour) {
-    const solid = solidOf(model.spaces.get(space).geometry);
+  // The points of a space's cloud, sampled once per mesh and count and kept: sampling the Gallery takes about half
+  // a second, which a step change cannot afford (final review, V1); warm() samples ahead of the tour.
+  function sampled(space, count) {
+    const mesh = model.spaces.get(space).geometry;
+    const key = `${space}|${count}`;
+    const kept = samples.get(key);
+    if (kept && kept.geometry === mesh) return kept;
+    const solid = solidOf(mesh);
     const found = [];   // points inside the mesh
     const trial = new THREE.Vector3();
     for (let tries = 0; found.length < count && tries < CANDIDATES * count; tries++) {
@@ -167,6 +174,13 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
       b.toArray(to, 3 * i);
       phase[i] = Math.random() * 2 * Math.PI;
     });
+    const entry = { geometry: mesh, from, to, phase };
+    samples.set(key, entry);
+    return entry;
+  }
+
+  function cloud(space, haze, plane, count, colour) {
+    const { from, to, phase } = sampled(space, count);
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute('position', new THREE.BufferAttribute(from.slice(), 3));
     const material = new THREE.PointsMaterial({
@@ -328,6 +342,25 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
     for (const object of live) if (object.isCSS2DObject) object.visible = shown(object.parent);
   }
 
+  // Sample every gas space of the tour before its step comes, one space per task so that no frame waits for more
+  // than one; a tier without particles has nothing to sample.
+  function warm() {
+    const pending = [];
+    for (const step of cycle.steps) {
+      const hazes = step.actors.filter(actor => actor.type === 'gas').reduce((n, actor) => n + actor.path.length, 0);
+      const count = tiers[store.get().quality].particles && hazes ? Math.floor(PARTICLES / hazes) : 0;
+      if (!count) continue;
+      for (const actor of step.actors) if (actor.type === 'gas') for (const space of actor.path) pending.push([space, count]);
+    }
+    const next = () => {
+      const pair = pending.shift();
+      if (!pair) return;
+      sampled(...pair);
+      setTimeout(next, 0);
+    };
+    setTimeout(next, 0);
+  }
+
   function dispose() {
     clear();
     current = null;
@@ -342,5 +375,5 @@ export function createActors({ scene, model, materials, store, cycle, tiers }) {
     labels: live.filter(object => object.isCSS2DObject && shown(object.parent)).map(object => object.element.textContent),
   });
 
-  return { build, update, dispose, state };
+  return { build, update, dispose, state, warm };
 }

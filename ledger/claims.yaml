@@ -31,7 +31,7 @@
   piece: 4
   criterion: "Pass if sulfur dioxide remains in the King's Chamber between delivery and draw with the air shafts open (00 section 7 item 5)."
   status: pending
-  depends_on: [kc.volume, kcs.north.width, kcs.south.width, kcs.mouth_height, flow.so2_diffusivity, flow.wind_speed, flow.wind_pressure_coefficient_difference, flow.delivery_to_draw_interval, kcs.north.height, kcs.north.length, kcs.south.height, kcs.south.length, hydro.air_density, kcs.exit.z, kc.floor.z, site.atm_pressure, chem.molar_mass_so2, chem.temperature, hydro.kcs_north_loss_coefficient, hydro.kcs_south_loss_coefficient]
+  depends_on: [kc.volume, kcs.north.width, kcs.south.width, kcs.mouth_height, flow.so2_diffusivity, flow.wind_speed, flow.wind_pressure_coefficient_difference, flow.delivery_to_draw_interval, kcs.north.height, kcs.north.length, kcs.south.height, kcs.south.length, hydro.air_density, kcs.exit.z, kc.floor.z, site.atm_pressure, chem.molar_mass_so2, chem.temperature, hydro.kcs_north_loss_coefficient, hydro.kcs_south_loss_coefficient, ante.groove_connected_area, flow.slab_leak_area, flow.discharge_coefficient, kc.length, kc.width, kc.height]
   spaces: [kings_chamber, kc_shaft_north, kc_shaft_south]
 - id: S04
   statement: "Ground currents, concentrated by ore deposits and iron veins, enter from below and build a positive electric field at the flat top."
@@ -81,7 +81,7 @@
   piece: 3
   criterion: "Pass requires an explicitly assumed reservoir, because the evidence-based boundary has no water at base level; report the level and volume it must have (02 section 5.5 item 1)."
   status: pending
-  depends_on: [site.base_elevation_asl, hydro.ok_flood_peak_asl, hydro.modern_water_table_asl, dp.entrance.z, dp.south_end.z, gg.roof_top.z, gg.volume, qc.volume, qc.niche.volume, qp.volume, ap.volume, ws.volume, sub.volume, dp.angle, dp.width, dp.height, flow.fill_time]
+  depends_on: [site.base_elevation_asl, hydro.ok_flood_peak_asl, hydro.modern_water_table_asl, dp.entrance.z, dp.south_end.z, gg.roof_top.z, gg.volume, qc.volume, qc.niche.volume, qp.volume, ap.volume, ws.volume, sub.volume, dp.angle, dp.width, dp.height, flow.fill_time, sub.roof_centre.z, sub.floor_depth_pit, pit.original_bottom.z, hydro.perched_water_asl]
   spaces: [subterranean_chamber, descending_passage]
 - id: S09
   statement: "Blocked by the dead-end south passage and the lower valve, the water rises in the well shaft until it stands at the reservoir's level."
@@ -141,7 +141,7 @@
   piece: 3
   criterion: "Pass if, for a stated drain rate and realistic leak areas, most of the replacement gas comes down the shafts; report the pressure difference (02 section 5.5 item 7)."
   status: pending
-  depends_on: [kcs.north.width, kcs.north.height, kcs.south.width, kcs.south.height, kcs.north.length, kcs.south.length, hydro.kcs_north_loss_coefficient, hydro.kcs_south_loss_coefficient, hydro.air_density, hydro.drain_time, gg.volume, ante.floor.z, ante.groove_connected_area, ante.low_passage.height, ante.low_passage.width, flow.discharge_coefficient, flow.joint_path_length, flow.slab_leak_area, gg.angle, gg.first_lap_height, gg.floor_length, gg.height, gg.laps, gg.overhang, gg.ramp_height, gg.slot_width, gg.south_end.z, gg.width, hydro.air_kinematic_viscosity, hydro.joint_aperture, hydro.joint_length, hydro.vapour_pressure, hydro.water_density, rc.davison.height, rc.davison.length, rc.davison.width, site.atm_pressure]
+  depends_on: [kcs.north.width, kcs.north.height, kcs.south.width, kcs.south.height, kcs.north.length, kcs.south.length, hydro.kcs_north_loss_coefficient, hydro.kcs_south_loss_coefficient, hydro.air_density, hydro.drain_time, gg.volume, ante.floor.z, ante.groove_connected_area, ante.low_passage.height, ante.low_passage.width, flow.discharge_coefficient, flow.joint_path_length, flow.slab_leak_area, gg.angle, gg.first_lap_height, gg.floor_length, gg.height, gg.laps, gg.overhang, gg.ramp_height, gg.slot_width, gg.south_end.z, gg.width, hydro.air_kinematic_viscosity, hydro.joint_aperture, hydro.joint_length, hydro.vapour_pressure, hydro.water_density, rc.davison.height, rc.davison.length, rc.davison.width, site.atm_pressure, ante.slot_count]
   spaces: [kc_shaft_north, kc_shaft_south, kings_chamber, grand_gallery]
 - id: S15
   statement: "The same suction pulls sulfur dioxide and air from the King's Chamber through the four grooves, past the three slabs, into the antechamber."

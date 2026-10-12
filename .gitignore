@@ -16,3 +16,6 @@ results/geometry/
 
 # The field runs behind results/em/: recomputed with `python -m pyramid.em --certified` (hours)
 results/em/cache/
+
+# Local tooling
+skills-lock.json

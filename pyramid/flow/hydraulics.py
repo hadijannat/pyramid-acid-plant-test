@@ -42,6 +42,8 @@ def simulate(areas, levels, links, t_end: float, until=None, steps: int = 200):
         events.terminal = True
     solution = solve_ivp(rate, (0.0, t_end), np.asarray(levels, dtype=float), events=events, rtol=1e-10, atol=1e-12,
                          t_eval=np.linspace(0.0, t_end, steps + 1))
+    if not solution.success:
+        raise RuntimeError(solution.message)
     times, history = solution.t, solution.y.T
     if until is not None and solution.t_events[0].size:  # close the series with the moment the level was reached
         times = np.append(times, solution.t_events[0][0])

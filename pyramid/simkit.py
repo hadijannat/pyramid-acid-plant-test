@@ -53,6 +53,12 @@ def band(values) -> tuple[float, float, float]:
     return float(median), float(low), float(high)
 
 
+def save_figure(fig, path: Path, **kw) -> None:
+    """Write a figure with no library version or time stamp in the file, so a regeneration reproduces it byte for byte."""
+    stamp = {"Date": None} if str(path).endswith(".svg") else {"Software": None, "Creation Time": None}
+    fig.savefig(path, metadata=stamp, **kw)
+
+
 def write_results(package: str, ledger: Ledger, results: dict[str, Result],
                   verdicts: dict[str, tuple[str, str]], extra: dict | None = None, root: Path = RESULTS) -> Path:
     """results/<package>/summary.json and manifest.json. Verdict words and claim ids are checked here."""
@@ -69,7 +75,7 @@ def write_results(package: str, ledger: Ledger, results: dict[str, Result],
         "results": [asdict(result) for result in results.values()],
         "verdicts": {claim: {"status": status, "basis": basis} for claim, (status, basis) in verdicts.items()},
     }
-    (out_dir / "summary.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n")
+    (out_dir / "summary.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False) + "\n")
     write_manifest(out_dir, package, ledger, extra)
     return out_dir
 

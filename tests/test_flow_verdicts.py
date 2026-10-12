@@ -263,3 +263,18 @@ def test_production_writes_results_that_merge_with_tier0(led, tmp_path, capsys):
     case = water["cases"]["grooves and slab clearance"]
     assert case["depth_m"][-1] == pytest.approx(water["chamber_height_m"], rel=1e-6)
     assert results["flow.kc_flood_time"].value < case["time_s"][-1]
+
+
+def test_every_flow_rule_reads_only_quantities_its_claim_depends_on(monkeypatch):
+    """The viewer files a number under a claim when the claim's depends_on holds the number's inputs, so a rule that
+    reads a quantity its claim does not list would quote a figure the viewer cannot show (pre-merge review, I3)."""
+    led = ledger.load()
+    results = flow.all_results(led)
+    read = set()
+    q, rng = ledger.Ledger.q, ledger.Ledger.rng
+    monkeypatch.setattr(ledger.Ledger, "q", lambda self, id: (read.add(id), q(self, id))[1])
+    monkeypatch.setattr(ledger.Ledger, "rng", lambda self, id: (read.add(id), rng(self, id))[1])
+    for claim, rule in flow.RULES.items():
+        read.clear()
+        rule(led, results)
+        assert read <= set(led.claims[claim].depends_on), (claim, sorted(read - set(led.claims[claim].depends_on)))

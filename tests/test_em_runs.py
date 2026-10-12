@@ -286,3 +286,14 @@ def test_the_plain_call_evaluates_and_never_starts_the_certified_runs(cache, mon
     out = capsys.readouterr().out
     assert "E19 is undecided" in out and "E20 is undecided" in out and "PASS benchmark" in out
     assert "results/em is left as it is" in out
+
+
+def test_a_run_that_does_not_ring_down_within_its_cap_raises_instead_of_finishing(monkeypatch):
+    """A capped run is never cached as finished: the fields of the sphere cannot fall to a thousandth of their peak
+    within one period, so the solver must raise rather than return its unsettled sums (pre-merge review, I1)."""
+    from pyramid.em import fdtd, shapes
+
+    monkeypatch.setattr(fdtd, "PERIODS", 1)
+    case = TABLE["B0"]
+    with pytest.raises(RuntimeError, match="had not fallen to 0.001 of their peak within 1 periods"):
+        fdtd.run(shapes.build(case, Q, 10.0), case, Q, BAND, cases.conductivity(case.eps_imag, float(BAND.min()), Q))

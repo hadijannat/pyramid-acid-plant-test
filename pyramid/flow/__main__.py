@@ -18,7 +18,7 @@ from pyramid.screening import YEAR  # noqa: E402
 
 
 def _save(figure, path: Path) -> None:
-    figure.savefig(path, dpi=150, metadata={"Software": None})  # no version or date in the file
+    simkit.save_figure(figure, path, dpi=150)
     plt.close(figure)
 
 

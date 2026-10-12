@@ -272,7 +272,12 @@ class Run:
             self.sums[key] += np.multiply.outer(ph if magnetic else pe, sample)
 
     def advance(self, seconds: float = np.inf) -> bool:
-        """Step until the ring-down is over (True) or the time allowed is used up (False)."""
+        """Step until the ring-down is over (True) or the time allowed is used up (False).
+
+        A run that reaches its cap of PERIODS periods without ringing down raises rather than returning True, so an
+        unsettled run is never cached as finished (every run cached before this check, 2026-10-12, had ended below
+        0.73 of the cap).
+        """
         deadline, check = time.time() + seconds, 50
         hold = int(self.wavelengths.max() / (COURANT * self.cell) / check) + 1
         section = self.volumes["section"]
@@ -290,7 +295,8 @@ class Run:
                     return True
                 if time.time() > deadline:
                     return False
-        return True
+        raise RuntimeError(f"the fields had not fallen to {DECAY:g} of their peak within {PERIODS} periods of the "
+                           f"longest wavelength ({self.last} steps)")
 
     # --- checkpoints ---
     def save(self, path: Path):

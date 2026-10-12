@@ -101,6 +101,8 @@ def oxidise(q, seconds: float, n: int = 200, h: float | None = None, oxygen: boo
     times = np.linspace(0.0, seconds, n)
     start = [_so2_moles(q) / volume, 0.0, saturation, 0.0]
     solution = solve_ivp(rate, (0.0, seconds), start, t_eval=times, method="LSODA", rtol=1e-10, atol=1e-12)
+    if not solution.success:
+        raise RuntimeError(solution.message)
     return {"t": times, "s4": solution.y[0], "s6": solution.y[1], "o2": solution.y[2], "crossed": solution.y[3]}
 
 

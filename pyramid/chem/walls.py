@@ -30,7 +30,7 @@ import numpy as np
 from scipy.integrate import solve_ivp
 from scipy.optimize import brentq
 
-from pyramid.screening import _SO2, _so2_moles
+from pyramid.screening import _SO2, _so2_moles, gypsum_saturation_loss
 
 LAYER = _SO2 + ("gg.volume", "chem.gypsum_h_diffusivity", "chem.gypsum_molar_volume", "rx.cycle_time")
 FILL = ("chem.gypsum_solubility", "hydro.water_density", "gg.volume", "gg.wall_area", "chem.gypsum_molar_volume")
@@ -55,9 +55,8 @@ def _solubility(q) -> float:
 
 
 def saturation_share(q) -> float:
-    """Share of the batch bare limestone neutralises before gypsum saturates: [Ca] = (s rho)^2 / c, as Tier 0."""
-    strength = _strength(q)
-    return min(strength, _solubility(q) ** 2 / strength) / strength
+    """Share of the batch bare limestone neutralises before gypsum saturates: Tier 0's rule itself, not a copy."""
+    return gypsum_saturation_loss(q)
 
 
 def growth_product(q) -> float:

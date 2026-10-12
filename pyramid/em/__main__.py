@@ -30,6 +30,7 @@ from pathlib import Path
 import numpy as np
 
 from pyramid.em import cases, metrics, mie, runs
+from pyramid.simkit import save_figure
 from pyramid.ledger import load
 from pyramid.simkit import write_results
 
@@ -42,7 +43,6 @@ def figures(ledger, summary: dict, out_dir: Path):
 
     q, size = ledger.q, runs.cells(ledger.q)
     out_dir.mkdir(parents=True, exist_ok=True)
-    meta = {"Software": None, "Creation Time": None}
     eps = q("paper.eps_real") + 1j * q("paper.eps_imag")
     fine_grid = np.arange(q("paper.wavelength_min"), q("paper.wavelength_max") + 0.5, 1.0)
     fig, (ax, below) = plt.subplots(2, 1, figsize=(7, 6.5), sharex=True)
@@ -65,7 +65,7 @@ def figures(ledger, summary: dict, out_dir: Path):
     below.set(xlabel="wavelength, m", ylabel=f"deviation from Mie, percent (limit {metrics.BENCHMARK:.0%})")
     ax.legend(fontsize=7)
     below.legend(fontsize=6, ncol=2)
-    fig.savefig(out_dir / "b0_extinction.png", dpi=130, bbox_inches="tight", metadata=meta)
+    save_figure(fig, out_dir / "b0_extinction.png", dpi=130, bbox_inches="tight")
     plt.close(fig)
 
     fig, ax = plt.subplots(figsize=(7, 4))
@@ -79,7 +79,7 @@ def figures(ledger, summary: dict, out_dir: Path):
     ax.plot([], [], "k^", label="study, on ground (read from Fig. 5b)")
     ax.set(xlabel="wavelength, m", ylabel="extinction, km2", title=f"The study's pyramid, {size['production']:.3g} m cell")
     ax.legend(fontsize=7)
-    fig.savefig(out_dir / "reproduction_extinction.png", dpi=130, bbox_inches="tight", metadata=meta)
+    save_figure(fig, out_dir / "reproduction_extinction.png", dpi=130, bbox_inches="tight")
     plt.close(fig)
 
     for name, solver in (("R1", "fdtd"), ("R1", "dda"), ("R3", "fdtd")):
@@ -94,7 +94,7 @@ def figures(ledger, summary: dict, out_dir: Path):
         fig.colorbar(image, label="|E|^2 / |E0|^2")
         ax.set(xlabel="y (north), m", ylabel="z, m", title=f"{name} ({solver}): axial section x = 0 at {r['wavelengths'][at]:.0f} m")
         stem = f"section_{name.lower()}_{solver}"
-        fig.savefig(out_dir / f"{stem}.png", dpi=130, bbox_inches="tight", metadata=meta)
+        save_figure(fig, out_dir / f"{stem}.png", dpi=130, bbox_inches="tight")
         plt.close(fig)
         (out_dir / f"{stem}.json").write_text(json.dumps(
             {"case": name, "solver": solver, "plane": "x = 0", "axes": ["y", "z"], "extent_m": [y0, y1, z0, z1],
@@ -109,15 +109,18 @@ def figures(ledger, summary: dict, out_dir: Path):
         for eps in sorted({c.eps for n, c in table.items() if n.startswith("V1.R1")}):
             rows = sorted((c.sigma, runs.band_max(r, "mean.kings")) for n, c in table.items() if n.startswith(f"V1.R1.eps{eps:g}.")
                           and (r := runs.collect(ledger, n, "fdtd", size["production"])) is not None)
-            ax.loglog(*zip(*rows), "o-", label=f"V1 free space, permittivity {eps:g}, {size['production']:.3g} m cell")
-        for prefix, label in (("", "V4"), ("C0.", "V4's control cube")):
+            ax.loglog(*zip(*rows), "o-", label=f"the study's pyramid in free space (V1), permittivity {eps:g}, "
+                                                f"{size['production']:.3g} m cell: decides nothing")
+        for prefix, label in (("", "the surveyed pyramid on ground (V4)"), ("C0.", "its control cube (C0)")):
             rows = [(s, runs.band_max(r, "mean.kings")) for s in (low, middle, high)
                     if (r := runs.collect(ledger, f"{prefix}V4.sig{s:.1e}", "fdtd", decides)) is not None]
             ax.loglog(*zip(*rows), "s--", label=f"{label}, {decides:.3g} m cell (decides)")
-        ax.axhline(metrics.FACTOR, color="k", lw=0.5)
-        ax.set(xlabel="conductivity, S/m", ylabel="King's Chamber, band-maximum volume mean of |E|^2 / |E0|^2")
+        ax.axhline(metrics.FACTOR, color="k", lw=0.5, label=f"the criterion's {metrics.FACTOR:g}")
+        ax.axvspan(low, high, color="tab:green", alpha=0.15, label="masonry measured in place")
+        ax.set(xlabel="conductivity of the masonry, S/m", ylabel="King's Chamber, band-maximum volume mean of |E|^2 / |E0|^2",
+               title="E19: the intensity in the King's Chamber against the masonry's conductivity")
         ax.legend(fontsize=7)
-        fig.savefig(out_dir / "kings_chamber_against_conductivity.png", dpi=130, bbox_inches="tight", metadata=meta)
+        save_figure(fig, out_dir / "kings_chamber_against_conductivity.png", dpi=130, bbox_inches="tight")
         plt.close(fig)
         fig, ax = plt.subplots(figsize=(7, 4))
         apexes = (("V3.pointed.ground", f"pointed, {q('pyr.height_original'):.2f} m", "C0"),
@@ -131,7 +134,7 @@ def figures(ledger, summary: dict, out_dir: Path):
         ax.set(xlabel="wavelength, m", ylabel="summit metric: volume mean of |E|^2 / |E0|^2",
                title=f"On ground, wave from above (solid: the deciding {decides:.3g} m cell)")
         ax.legend(fontsize=7)
-        fig.savefig(out_dir / "summit_metric.png", dpi=130, bbox_inches="tight", metadata=meta)
+        save_figure(fig, out_dir / "summit_metric.png", dpi=130, bbox_inches="tight")
         plt.close(fig)
 
 

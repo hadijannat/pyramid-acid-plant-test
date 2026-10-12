@@ -3,7 +3,7 @@ import json
 
 import pytest
 
-from pyramid import screening, simkit, verdicts
+from pyramid import REPO_ROOT, screening, simkit, verdicts
 from pyramid.ledger import LedgerError, load
 from pyramid.screening import Result
 
@@ -147,3 +147,13 @@ def test_the_register_and_the_field_inputs_decide_whether_evidence_and_em_are_st
         manifest.write_text(json.dumps({**record, "ledger": "0" * 40, key: "0" * 64}))
         assert verdicts.stale(LEDGER, tmp_path) == [package]
         manifest.write_text(json.dumps(record))
+
+
+def test_the_verdict_colours_of_the_map_are_the_viewers():
+    """summary.MARKS repeats the six colours of viewer/style.css; this keeps the map and the viewer in step."""
+    import re
+
+    from pyramid import summary
+    css = dict(re.findall(r"--([a-z-]+): (#[0-9a-f]{6});", (REPO_ROOT / "viewer" / "style.css").read_text()))
+    assert {status: colour for status, (colour, _) in summary.MARKS.items()} == {
+        status: css[status.replace("_", "-")] for status in summary.MARKS}

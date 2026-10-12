@@ -63,6 +63,8 @@ def integrate(times, k: float, area: float, v_gas: float, v_liquid: float, m: fl
 
     solution = solve_ivp(rate, (0.0, float(times[-1])), [1.0, 0.0], t_eval=times, method="LSODA",
                          rtol=1e-10, atol=1e-13)
+    if not solution.success:
+        raise RuntimeError(solution.message)
     return solution.y[0], solution.y[1]
 
 

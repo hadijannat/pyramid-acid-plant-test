@@ -318,7 +318,8 @@ def _feed(ledger, r, analogue: str = "") -> str:
     moles, mass, flux = r["chem.h2s_per_batch"], r["chem.h2s_mass_per_batch"], r["chem.h2s_flux"]
     yearly, air = r["chem.h2s_mass_per_year"], r["chem.cave_air_per_batch"]
     return (
-        "07 gives no flux for any seep or spring, so a required flux has nothing to be set against at any cycle "
+        "The plateau geology file (07) gives no flux for any seep or spring, so a required flux has nothing to be set "
+        "against at any cycle "
         "time: its one analogue is a concentration, read from an abstract, at which one batch is the sulfide in "
         f"{air.value / 1e6:.1f} million m3 of cave air{analogue}. One full batch needs {moles.value:.0f} mol of "
         f"hydrogen sulfide, {mass.value:.0f} kg, a mole for each mole of sulfur dioxide in the King's Chamber, which "

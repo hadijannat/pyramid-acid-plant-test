@@ -45,7 +45,8 @@ def project(mesh: trimesh.Trimesh) -> np.ndarray:
     return np.stack([-v[:, :, 2], v[:, :, 1]], axis=-1)
 
 
-def main() -> None:
+def main(out: Path = OUT) -> None:
+    plt.rcParams["svg.hashsalt"] = "pyramid"   # the same model gives the same file, byte for byte
     scene = trimesh.load(GLB)
     spaces = {k: g for k, g in scene.geometry.items() if k not in ("masonry", "bedrock")}
     assert len(spaces) == 19, sorted(spaces)
@@ -79,9 +80,9 @@ def main() -> None:
     ax.text(0.99, 0.02, "masonry shown to the present top; spaces projected east-west; from pyramid.geometry via viewer/data/interior.glb",
             transform=ax.transAxes, ha="right", va="bottom", fontsize=7.5, color="#666")
 
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(OUT, bbox_inches="tight", metadata={"Date": None})
-    print("wrote", OUT)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out, bbox_inches="tight", metadata={"Date": None}, facecolor="white")   # white: readable on a dark page
+    print("wrote", out)
 
 
 if __name__ == "__main__":

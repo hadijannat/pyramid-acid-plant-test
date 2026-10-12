@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 
 from pyramid import electro, simkit  # noqa: E402
+from pyramid.simkit import save_figure
 from pyramid.electro import rooms, sources  # noqa: E402
 from pyramid.ledger import load  # noqa: E402
 
@@ -26,7 +27,7 @@ def _section(scene, phi, strength, scale, title, unit, path):
     ax.set(xlim=(-260, 260), ylim=(-160, 140), xlabel="south to north, m", ylabel="height above the pavement, m",
            title=title, aspect="equal")
     fig.colorbar(mesh, ax=ax, label=f"log10 of the field strength in {unit}")
-    fig.savefig(path, dpi=130, bbox_inches="tight")
+    save_figure(fig, path, dpi=130, bbox_inches="tight")
     plt.close(fig)
 
 
@@ -54,7 +55,7 @@ def _conductivity_sweep(ledger, results, out_dir):
     ax.set(xlabel="conductivity of the masonry, S/m", ylabel="field in the King's Chamber granite, V/m",
            title="Field in the granite at the stroke's peak current (steady conduction)")
     ax.legend(fontsize=7)
-    fig.savefig(out_dir / "figures" / "granite_field_against_conductivity.png", dpi=130, bbox_inches="tight")
+    save_figure(fig, out_dir / "figures" / "granite_field_against_conductivity.png", dpi=130, bbox_inches="tight")
     plt.close(fig)
     return {"limestone_resistivity_ohm_m": resistivity.tolist(),
             "granite_peak_v_per_m_per_a": [row["granite_peak"] for row in rows],
@@ -77,7 +78,7 @@ def _decay_figure(ledger, out_dir):
     ax.set(xlabel="frequency, Hz", ylabel="decay time T60, s",
            title="Decay time of the three rooms from walls and air (dots: lowest modes)")
     ax.legend()
-    fig.savefig(out_dir / "figures" / "room_decay_time.png", dpi=130, bbox_inches="tight")
+    save_figure(fig, out_dir / "figures" / "room_decay_time.png", dpi=130, bbox_inches="tight")
     plt.close(fig)
     return series
 

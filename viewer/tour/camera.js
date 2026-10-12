@@ -154,5 +154,9 @@ export function createRide(camera, controls, store) {
   controls.domElement.addEventListener('touchstart', pause, { passive: true });
   controls.domElement.addEventListener('wheel', pause, { passive: true });   // a dolly is the user's too
 
-  return { setPath, update, pause, resume, pose, drift, get riding() { return riding; } };
+  function dispose() {
+    for (const type of ['pointerdown', 'touchstart', 'wheel']) controls.domElement.removeEventListener(type, pause);
+  }
+
+  return { setPath, update, pause, resume, pose, drift, dispose, get riding() { return riding; } };
 }
