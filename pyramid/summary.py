@@ -10,10 +10,10 @@ from pathlib import Path
 import matplotlib
 
 from pyramid import screening
-from pyramid.ledger import STATUSES, Ledger, load
+from pyramid.ledger import STATUSES, Ledger, LedgerError, load
 from pyramid.provenance import write_manifest
 from pyramid.simkit import RESULTS, read_results
-from pyramid.verdicts import PACKAGES, merged
+from pyramid.verdicts import PACKAGES, merged, stale
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
@@ -122,8 +122,9 @@ def report(ledger: Ledger, verdicts: dict[str, tuple[str, str]], source: dict[st
             f"| {claim.id} | {claim.statement} | {verdicts[claim.id][0]} | {verdicts[claim.id][1]} |\n"
             for claim in decided)
         if results:
-            text += (f"\n<details><summary>{len(results)} computed quantities, each with its range over the "
-                     f"ledger's ranges</summary>\n\n{screening.table_markdown(results)}\n</details>\n")
+            text += (f"\n<details><summary>{len(results)} computed quantities. Low and high are the ends over the "
+                     "ledger's ranges where the package varied its inputs; they repeat the value where it ran one "
+                     f"case</summary>\n\n{screening.table_markdown(results)}\n</details>\n")
         if assumptions:
             text += (f"\n<details><summary>{len(assumptions)} modelling assumptions</summary>\n\n"
                      + "".join(f"- {line}\n" for line in assumptions) + "\n</details>\n")
@@ -132,6 +133,8 @@ def report(ledger: Ledger, verdicts: dict[str, tuple[str, str]], source: dict[st
 
 def main() -> None:
     ledger = load()
+    if old := stale(ledger):   # their verdicts would go out under this ledger's digest
+        raise LedgerError(f"results of {', '.join(old)} were generated from other sources: run those packages first")
     _, verdicts, source = merged(ledger)
     tally = counts(verdicts)
     OUT_DIR.mkdir(parents=True, exist_ok=True)

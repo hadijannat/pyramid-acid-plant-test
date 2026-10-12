@@ -1,4 +1,6 @@
 """The shared pieces of the simulation packages, and the merge of their verdicts with Tier 0."""
+import json
+
 import pytest
 
 from pyramid import screening, simkit, verdicts
@@ -126,3 +128,22 @@ def test_stale_names_the_packages_generated_from_another_ledger(tmp_path):
     manifest = tmp_path / "flow" / "manifest.json"
     manifest.write_text(manifest.read_text().replace(LEDGER.digest, "0" * 40))
     assert verdicts.stale(LEDGER, tmp_path) == ["flow"]
+
+
+def test_the_register_and_the_field_inputs_decide_whether_evidence_and_em_are_stale(tmp_path):
+    from pyramid import evidence
+    from pyramid.em import runs
+
+    evidence.main(root=tmp_path)
+    simkit.write_results("em", LEDGER, {}, {}, {"cache_inputs": runs.inputs_digest(LEDGER)}, root=tmp_path)
+    assert verdicts.stale(LEDGER, tmp_path) == []
+    for package, key in (("evidence", "register_sha256"), ("em", "cache_inputs")):
+        manifest = tmp_path / package / "manifest.json"
+        record = json.loads(manifest.read_text())
+        manifest.write_text(json.dumps({**record, "ledger": "0" * 40}))          # another ledger, the same own source
+        assert verdicts.stale(LEDGER, tmp_path) == ([] if package == "em" else ["evidence"])
+        manifest.write_text(json.dumps({**record, key: "0" * 64}))               # this ledger, another own source
+        assert verdicts.stale(LEDGER, tmp_path) == ([] if package == "em" else ["evidence"])
+        manifest.write_text(json.dumps({**record, "ledger": "0" * 40, key: "0" * 64}))
+        assert verdicts.stale(LEDGER, tmp_path) == [package]
+        manifest.write_text(json.dumps(record))

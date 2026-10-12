@@ -41,6 +41,24 @@ def test_the_cache_is_refused_once_a_ledger_value_the_runs_read_has_changed(cach
         runs.stamp(dataclasses.replace(LEDGER, quantities={**LEDGER.quantities, "em.limestone_eps": edited}))
 
 
+def test_the_cache_is_refused_after_a_change_of_the_solvers_or_without_its_mark(cache, monkeypatch):
+    from pyramid.ledger import LedgerError
+
+    digest = runs.stamp(LEDGER)
+    monkeypatch.setattr(runs, "RUNS_VERSION", runs.RUNS_VERSION + 1)
+    assert runs.inputs_digest(LEDGER) != digest
+    with pytest.raises(LedgerError, match="by other solver code"):
+        runs.stamp(LEDGER)
+    monkeypatch.undo()
+    monkeypatch.setattr(runs, "CACHE", cache)
+    (cache / "inputs.sha256").unlink()
+    assert runs.stamp(LEDGER) == digest                      # an empty cache is marked again
+    (cache / "inputs.sha256").unlink()
+    (cache / "R1_dda_5.0000_0.npz").write_bytes(b"")
+    with pytest.raises(LedgerError, match="no inputs.sha256 beside them"):   # nothing says what these runs were made for
+        runs.stamp(LEDGER)
+
+
 def study(wavelengths):
     """A spectrum with the study's two free-space maxima."""
     return 9e4 * np.exp(-((wavelengths - 333.0) / 45) ** 2) + 13e4 * np.exp(-((wavelengths - 230.0) / 22) ** 2)
@@ -158,7 +176,7 @@ def test_verdicts_rest_on_the_runs_at_the_certified_cells(cache):
     summary = runs.evaluate(LEDGER)
     assert [g["passed"] for g in summary["gates"]] == [True] * 6 and summary["notes"] == []
     status, basis = summary["verdicts"]["E19"]
-    assert status == "fail" and "As modelled (pass)" in basis and "Under realism (fail)" in basis
+    assert status == "fail" and "As modelled (met)" in basis and "Under realism (fail)" in basis
     assert "in the time-domain solver at a 1 m cell; 9.00 against 3.00 in its control cube (3.00 times) in the dipole solver at a 1.67 m cell" in basis
     assert "decides nothing: 9.00 against 3.00 in its control cube (3.00 times) in the time-domain solver at a 1.67 m cell" in basis
     assert "4.00 against" not in basis and "(permittivity 9)" in basis
@@ -225,6 +243,7 @@ def test_a_killed_task_goes_on_from_its_last_state_and_ends_as_an_uninterrupted_
 
 
 def test_certified_runs_only_what_is_missing_and_says_when_all_is_cached(cache, monkeypatch, capsys):
+    runs.stamp(LEDGER)   # as the first call on an empty cache marks it
     plan = runs.plan(LEDGER, "certified")
     for task in plan[:5]:
         fake(task, study)
@@ -256,14 +275,14 @@ def test_certified_runs_only_what_is_missing_and_says_when_all_is_cached(cache, 
 
 
 def test_the_plain_call_evaluates_and_never_starts_the_certified_runs(cache, monkeypatch, capsys):
+    runs.stamp(LEDGER)   # as the first call on an empty cache marks it
     fill("gates")
     fill("variants")
     written = {}
     monkeypatch.setattr(runs, "work", lambda job: pytest.fail(f"{job[0]} was started"))
-    monkeypatch.setattr(entry, "write_results", lambda package, ledger, results, verdicts, extra: written.update(
-        package=package, verdicts=verdicts, notes=extra["notes"]) or cache)
+    monkeypatch.setattr(entry, "write_results", lambda *a, **k: written.update(called=True))
     monkeypatch.setattr(entry, "figures", lambda *a: None)
-    assert entry.main([]) == 0
-    assert written["package"] == "em" and written["verdicts"] == {} and len(written["notes"]) == 2
+    assert entry.main([]) == 1 and written == {}             # a summary with no verdict would replace the committed one
     out = capsys.readouterr().out
     assert "E19 is undecided" in out and "E20 is undecided" in out and "PASS benchmark" in out
+    assert "results/em is left as it is" in out

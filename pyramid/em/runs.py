@@ -35,22 +35,31 @@ DECIDING = {"dda": "fine", "fdtd": "benchmark"}       # the cell of each solver'
 COMPARED = {"dda": "production", "fdtd": "fine"}      # the next coarser cell: the resolution check
 SOLVER = {"dda": "dipole", "fdtd": "time-domain"}
 READS = ("paper.", "em.", "emx.", "pyr.", "kc.", "qc.", "gg.")    # every ledger id the package reads begins so
+# ponytail: a number raised by hand, not a hash of the solvers' source, which a reworded comment would change.
+RUNS_VERSION = 1      # raise it with any change to shapes, cases, dda or fdtd that changes a run's numbers
+
+
+def inputs_digest(ledger) -> str:
+    """A digest of what a cached run depends on: every ledger line the package can read, and RUNS_VERSION."""
+    lines = sorted((id, x.value, x.low, x.high) for id, x in ledger.quantities.items() if id.startswith(READS))
+    return hashlib.sha256(repr((RUNS_VERSION, lines)).encode()).hexdigest()
 
 
 def stamp(ledger) -> str:
-    """Tie the cache to the ledger lines the runs can read; a cache made for other values is refused, not reused.
+    """Tie the cache to what its runs depend on; a cache made for anything else is refused, never reused.
 
     A task's file name carries its case, solver, cell and part and none of the values behind them, so without
-    this an edited permittivity would be answered from the runs of the old one. Returns the digest.
+    this an edited permittivity would be answered from the runs of the old one. An empty cache is marked; one
+    that holds runs and no mark is refused too, since nothing says what it was made for. Returns the digest.
     """
-    lines = sorted((id, x.value, x.low, x.high) for id, x in ledger.quantities.items() if id.startswith(READS))
-    digest, mark = hashlib.sha256(repr(lines).encode()).hexdigest(), CACHE / "inputs.sha256"
+    digest, mark = inputs_digest(ledger), CACHE / "inputs.sha256"
     CACHE.mkdir(parents=True, exist_ok=True)
-    if not mark.exists():
+    if not mark.exists() and not any(CACHE.glob("*.npz")):
         mark.write_text(digest + "\n")
-    elif mark.read_text().strip() != digest:
-        raise LedgerError(f"{CACHE} holds runs made for other ledger values (ids beginning {', '.join(READS)}): "
-                          "move it aside and repeat `python -m pyramid.em --certified`")
+    elif not mark.exists() or mark.read_text().strip() != digest:
+        raise LedgerError(f"{CACHE} holds runs made for other ledger values (ids beginning {', '.join(READS)}) or "
+                          "by other solver code, or runs with no inputs.sha256 beside them: move it aside and "
+                          "repeat `python -m pyramid.em --certified`")
     return digest
 
 # The ledger ids behind the deciding numbers. The viewer shows a number under a claim when the claim depends on
@@ -63,6 +72,7 @@ CHAMBERS = ("kc.west_wall.x", "kc.east_wall.x", "kc.south_wall.y", "kc.north_wal
             "qc.ridge_height", "gg.south_end.x", "gg.south_end.y", "gg.south_end.z", "gg.north_end.x", "gg.north_end.y",
             "gg.north_end.z", "gg.width", "gg.roof_width", "gg.height", "emx.granite_shell", "em.granite_eps",
             "em.granite_conductivity")
+CLAIMS = ("E19", "E20")       # the claims this package decides; it writes its results only with a verdict on each
 E19_MODELLED = STUDY + ("paper.kc.centre.z",)
 E19_REALISM = SURVEYED + CHAMBERS + ("em.limestone_resistivity", "em.limestone_eps", "paper.wavelength_min",
                                      "paper.wavelength_max", "emx.cell_coarse")
@@ -78,7 +88,7 @@ ASSUMPTIONS = [
     "The ground is the masonry's material; V2 keeps the study's outer pyramid; the V3 apexes are the surveyed pyramid whole and cut at the present top, with the study's chambers.",
     "V4 is the truncated surveyed pyramid with the surveyed King's and Queen's Chambers and Grand Gallery, a granite shell of emx.granite_shell, permittivity em.limestone_eps.",
     "The band maximum of a metric is its largest value on the 5 m wavelength grid.",
-    "A verdict rests only on runs at a cell where that solver's benchmark sphere is within 2 percent of the exact one across the band; the next coarser cell is the resolution check and a claim is conditional when it falls on the other side.",
+    "A verdict rests only on runs at a cell where that solver's benchmark sphere is within 2 percent of the exact one across the band; the next coarser cell is the resolution check and a claim is conditional when it falls on the other side: that run can move a word to conditional only, never to pass or fail.",
     "Where both solvers decide a part (R1 against its control) and fall on different sides, the part is conditional.",
     "The convergence and reproduction gates compare the pyramid's extinction at the coarse cell and its half, where the sphere is outside the benchmark limit; only the deciding runs were repeated at the finer cells.",
 ]
@@ -238,7 +248,7 @@ def evaluate(ledger) -> dict:
                                  np.interp(r["wavelengths"], wavelengths, exact), np.interp(r["wavelengths"], fine_grid, slope))
         rows.append(row)
         add(f"b0_deviation_{solver}_{size[cell]:.3g}".replace(".", "p"),
-            f"B0: worst deviation of the {solver} extinction from Mie at a {size[cell]:.3g} m cell", row["worst"], 0, row["worst"],
+            f"B0: worst deviation of the {solver} extinction from Mie at a {size[cell]:.3g} m cell", row["worst"], row["worst"], row["worst"],
             "1", "max |sigma_ext / Mie - 1| over the band", study + ("emx.sphere_radius",))
     gates.append(metrics.benchmark_gate(rows, [(s, size[c]) for s, c in wanted], {s: size[c] for s, c in DECIDING.items()}))
 
@@ -316,13 +326,17 @@ def lacking(ledger, name: str, solver: str, cell: float) -> str:
     return f"{name} {solver} {cell:.3g} m ({gone} of {count} parts)"
 
 
-def unswept(ledger) -> str:
-    """The ranges the E19 runs did not carry, as a sentence for the basis."""
+def unswept(ledger, peaks=()) -> str:
+    """The ranges the E19 runs did not carry, as a sentence for the basis. peaks: the wavelengths of R1's maxima."""
     q, rng = ledger.q, ledger.rng
     low, band = cases.measured_conductivities(ledger)[0], cases.wavelengths(q)
     skin = band / (2 * np.pi * np.sqrt(q("em.limestone_eps") + 1j * cases.loss(low, band, q)).imag)   # the field falls to 1/e
-    return (f" Not varied: as modelled is evaluated at the study's permittivity of {q('paper.eps_real'):g} (its range is "
-            f"{rng('paper.eps_real')[0]:g} to {rng('paper.eps_real')[1]:g}); V4 has a granite shell of {q('emx.granite_shell'):g} m "
+    edge = ("" if not peaks or min(peaks) > band.min() else
+            f", and R1's maximum lies at the short end of the band, {band.min():.0f} m, so a resonance just below "
+            "the band could enter it at a higher permittivity")
+    return (f" Not varied: the as-modelled part is case R1, which the criterion names, at the study's permittivity of "
+            f"{q('paper.eps_real'):g} (its range is {rng('paper.eps_real')[0]:g} to {rng('paper.eps_real')[1]:g}), so it "
+            f"is settled at that value only{edge}; V4 has a granite shell of {q('emx.granite_shell'):g} m "
             f"(range {rng('emx.granite_shell')[0]:g} to {rng('emx.granite_shell')[1]:g} m), a granite permittivity of "
             f"{q('em.granite_eps'):g} ({rng('em.granite_eps')[0]:g} to {rng('em.granite_eps')[1]:g}) and a granite conductivity of "
             f"{q('em.granite_conductivity'):.0e} S/m (up to {rng('em.granite_conductivity')[1]:.0e}); the shell is metres thick "
@@ -347,7 +361,7 @@ def decide(ledger, got, add, unjudged):
             missing[claim].append(lacking(ledger, name, solver, size[cell]))
         return r
 
-    modelled, realism, summit = [], [], []
+    modelled, realism, summit, peaks = [], [], [], []
     for solver in cases.SOLVERS[::-1]:                        # the time-domain solver first: it decides both parts
         for cell in SPHERE[solver][:0:-1]:                    # finest first; the coarse cell has no variant runs
             role = True if cell == DECIDING[solver] else False if cell == COMPARED[solver] else None
@@ -360,6 +374,8 @@ def decide(ledger, got, add, unjudged):
                     "1", "band maximum in R1 over band maximum in the cube", E19_MODELLED)
                 if role is not None:
                     modelled.append((where, kings(r1), kings(c0), role))
+                if role:
+                    peaks.append(float(r1["wavelengths"][np.argmax(r1["mean.kings"])]))
             if solver != "fdtd":                              # the cases with ground belong to the time-domain solver
                 continue
             rows = []
@@ -372,9 +388,12 @@ def decide(ledger, got, add, unjudged):
                 if v4 is not None:
                     rows.append((f"permittivity {eps:g}", low, kings(v4), None))
             own_eps = f"eps{q('em.limestone_eps'):g}"
+            spread = [v4 for _, sigma, v4, _ in rows if sigma == low]     # at the low conductivity, every permittivity run
             for name, sigma, v4, _ in rows:
+                # low and high: the ends over the masonry permittivity where it was run, on the row at the ledger's own
+                ends = (min(spread), max(spread)) if not name and sigma == low else (v4, v4)
                 add(f"e19_v4_{name.replace(' ', '_') or own_eps}_{sigma:.1e}_{tag}".replace(".", "p").replace("-", "m"),
-                    f"V4 King's Chamber volume mean at {sigma:.1e} S/m {name}, {label}", v4, v4, v4, "1",
+                    f"V4 King's Chamber volume mean at {sigma:.1e} S/m {name}, {label}", v4, *ends, "1",
                     "band maximum of the volume mean of |E|^2 / |E0|^2", E19_REALISM)
             if role is not None:
                 realism.append((where, rows, role))
@@ -387,7 +406,10 @@ def decide(ledger, got, add, unjudged):
                 if role is not None:
                     summit.append((where, cut, whole, None if own is None else band_max(own, "mean.summit"), role))
     verdicts, notes = {}, []
-    for claim, rule in (("E19", lambda: metrics.e19(modelled, realism, unswept(ledger))), ("E20", lambda: metrics.e20(summit))):
+    rests = (f" Not varied: both apexes are run at the study's permittivity of {q('paper.eps_real'):g} + "
+             f"{q('paper.eps_imag'):g}i and in the time-domain solver alone, the one of the two that carries a ground.")
+    for claim, rule in (("E19", lambda: metrics.e19(modelled, realism, unswept(ledger, peaks))),
+                        ("E20", lambda: metrics.e20(summit, rests))):
         if missing[claim]:
             notes.append(f"{claim} is undecided: these runs are not cached: " + ", ".join(dict.fromkeys(missing[claim]))
                          + ". They are computed by python -m pyramid.em --certified.")

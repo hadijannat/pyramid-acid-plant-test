@@ -202,6 +202,9 @@ def main(argv=None) -> int:
     for note in summary["notes"]:
         print(note)
     if not args.quick:
+        if len(summary["verdicts"]) < len(runs.CLAIMS):        # a summary without a verdict would replace one that has it
+            print("results/em is left as it is: a claim is undecided until its runs are cached", flush=True)
+            return 1
         out_dir = write_results("em", ledger, summary["results"], summary["verdicts"],
                                 {"assumptions": runs.ASSUMPTIONS, "gates": summary["gates"], "notes": summary["notes"],
                                  "cells_m": runs.cells(ledger.q), "run_seconds": summary["runs"], "cache_inputs": inputs})

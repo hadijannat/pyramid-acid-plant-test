@@ -254,7 +254,8 @@ def e19(modelled: list[tuple], realism: list[tuple], unswept: str = "") -> tuple
     deciding = [rows for _, rows, decides in realism if decides] or [rows for _, rows, _ in realism]
     drop = crossing([(sigma, v4) for label, sigma, v4, _ in deciding[0] if not label])
     said_drop = "" if drop is None else f" It drops below {FACTOR:g} at about {drop:.1e} S/m."
-    basis = (f"As modelled ({part_a}): the band-maximum volume-mean intensity ratio in the King's Chamber of case R1 is "
+    met = {"pass": "met", "fail": "not met", "conditional": "conditional"}[part_a]   # this part has no fail clause
+    basis = (f"As modelled ({met}): the band-maximum volume-mean intensity ratio in the King's Chamber of case R1 is "
              f"{said_a}; the criterion asks for at least {FACTOR:g} times the control. Under realism ({part_b}): in case "
              f"V4 the ratio is {said_b}; the criterion asks for at least {FACTOR:g} and at least {FACTOR:g} times the "
              f"control across the measured conductivity range, and fails the claim if the ratio is below {FACTOR:g} at "
@@ -265,10 +266,11 @@ def e19(modelled: list[tuple], realism: list[tuple], unswept: str = "") -> tuple
     return status, basis
 
 
-def e20(summit: list[tuple]) -> tuple[str, str]:
+def e20(summit: list[tuple], unswept: str = "") -> tuple[str, str]:
     """E20 from the band-maximum summit metric on ground.
 
     summit: (where, truncated, pointed, the study's apex or None, decides) per cell; `decides` as in e19.
+    `unswept` is a sentence on what the runs rest on, added to the basis.
     """
     status = _agree(["pass" if cut >= FACTOR * whole else "fail" for _, cut, whole, _, _ in summit])
     said = _said(summit, lambda e: (
@@ -278,5 +280,6 @@ def e20(summit: list[tuple]) -> tuple[str, str]:
              f"masonry is {said}. The criterion passes the claim only if the truncated apex gives at least {FACTOR:g} "
              f"times the pointed one; the runs at the cell where the solver's benchmark sphere is within {BENCHMARK:.0%} "
              f"of the exact one decide"
-             + (", and they and the next coarser cell fall on different sides of that." if status == "conditional" else "."))
+             + (", and they and the next coarser cell fall on different sides of that." if status == "conditional" else ".")
+             + unswept)
     return status, basis
