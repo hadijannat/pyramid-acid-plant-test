@@ -1,0 +1,19 @@
+{
+  "case": "R1",
+  "solver": "fdtd",
+  "plane": "x = 0",
+  "axes": [
+    "y",
+    "z"
+  ],
+  "extent_m": [
+    -122.5,
+    122.5,
+    -7.5,
+    147.5
+  ],
+  "wavelength_m": 230.0,
+  "quantity": "|E|^2 / |E0|^2",
+  "colour_max": 4.730234010507601,
+  "cell_m": 2.5
+}

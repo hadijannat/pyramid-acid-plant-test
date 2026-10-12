@@ -1,0 +1,128 @@
+{
+  "case": "em",
+  "timestamp": "2026-10-12T04:35:47+00:00",
+  "commit": "af2ae1fe3264bbed1a294dc51581c6af5468f65c",
+  "ledger": "047e50229caf4b6b69e88337948e08553d335c0a5065bafca5ff57a91659d08e",
+  "python": "3.12.12",
+  "versions": {
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "pyyaml": "6.0.3",
+    "gmsh": "4.15.2",
+    "trimesh": "5.1.1",
+    "matplotlib": "3.11.2",
+    "pytest": "9.1.1"
+  },
+  "assumptions": [
+    "The wave travels along the axis and is polarised east-west; field ratios are over the incident intensity, also on ground.",
+    "Chambers are air; the study's chambers are read as pyramid.geometry reads them (length east-west, offset to the south).",
+    "A cell cut by a surface answers along the surface with its mean permittivity and across it with its mean inverse permittivity.",
+    "A time-domain run has one conductivity; the study's constant imaginary permittivity is interpolated from three runs.",
+    "Extinction in the time-domain solver is scattered power through a closed box plus power absorbed in the body; on ground the body is what stands above z = 0.",
+    "The ground is the masonry's material; V2 keeps the study's outer pyramid; the V3 apexes are the surveyed pyramid whole and cut at the present top, with the study's chambers.",
+    "V4 is the truncated surveyed pyramid with the surveyed King's and Queen's Chambers and Grand Gallery, a granite shell of emx.granite_shell, permittivity em.limestone_eps.",
+    "The band maximum of a metric is its largest value on the 5 m wavelength grid.",
+    "A verdict rests only on runs at a cell where that solver's benchmark sphere is within 2 percent of the exact one across the band; the next coarser cell is the resolution check and a claim is conditional when it falls on the other side.",
+    "Where both solvers decide a part (R1 against its control) and fall on different sides, the part is conditional.",
+    "The convergence and reproduction gates compare the pyramid's extinction at the coarse cell and its half, where the sphere is outside the benchmark limit; only the deciding runs were repeated at the finer cells."
+  ],
+  "gates": [
+    {
+      "gate": "benchmark: B0 against Mie",
+      "passed": true,
+      "numbers": "dda at 5 m: worst +9.38% at 205 m (the exact spectrum changes 15 percent per percent of wavelength there), -4.50% at 210 m at worst over the 30 wavelengths where it changes less than 2, rms 2.23%, 75% of the wavelengths within the limit: outside the limit, so the runs at this cell are a convergence comparison and decide nothing; dda at 2.5 m: worst +2.77% at 205 m (the exact spectrum changes 15 percent per percent of wavelength there), -0.92% at 210 m at worst over the 30 wavelengths where it changes less than 2, rms 0.78%, 96% of the wavelengths within the limit: outside the limit, so the runs at this cell are a convergence comparison and decide nothing; dda at 1.67 m: worst +1.49% at 205 m (the exact spectrum changes 15 percent per percent of wavelength there), -0.42% at 210 m at worst over the 30 wavelengths where it changes less than 2, rms 0.45%, 100% of the wavelengths within the limit: within the limit; fdtd at 5 m: worst +6.72% at 250 m (the exact spectrum changes 11 percent per percent of wavelength there), +5.53% at 235 m at worst over the 30 wavelengths where it changes less than 2, rms 2.61%, 68% of the wavelengths within the limit: outside the limit, so the runs at this cell are a convergence comparison and decide nothing; fdtd at 2.5 m: worst +3.64% at 250 m (the exact spectrum changes 11 percent per percent of wavelength there), +3.03% at 235 m at worst over the 30 wavelengths where it changes less than 2, rms 1.36%, 84% of the wavelengths within the limit: outside the limit, so the runs at this cell are a convergence comparison and decide nothing; fdtd at 1.67 m: worst +2.48% at 205 m (the exact spectrum changes 15 percent per percent of wavelength there), +2.06% at 235 m at worst over the 30 wavelengths where it changes less than 2, rms 0.92%, 94% of the wavelengths within the limit: outside the limit, so the runs at this cell are a convergence comparison and decide nothing; fdtd at 1 m: worst +1.54% at 205 m (the exact spectrum changes 15 percent per percent of wavelength there), +1.24% at 235 m at worst over the 30 wavelengths where it changes less than 2, rms 0.56%, 100% of the wavelengths within the limit: within the limit (limit 2%, judged at every cell a run uses; the deciding runs are at dda 1.67 m, fdtd 1 m)",
+      "cells": [
+        {
+          "solver": "dda",
+          "cell_m": 5.0,
+          "worst": 0.09375758517262134,
+          "passed": false
+        },
+        {
+          "solver": "dda",
+          "cell_m": 2.5,
+          "worst": 0.02774344697741271,
+          "passed": false
+        },
+        {
+          "solver": "dda",
+          "cell_m": 1.6666666666666667,
+          "worst": 0.014920975818120352,
+          "passed": true
+        },
+        {
+          "solver": "fdtd",
+          "cell_m": 5.0,
+          "worst": 0.06716011691450885,
+          "passed": false
+        },
+        {
+          "solver": "fdtd",
+          "cell_m": 2.5,
+          "worst": 0.03641817814486181,
+          "passed": false
+        },
+        {
+          "solver": "fdtd",
+          "cell_m": 1.6666666666666667,
+          "worst": 0.024788003903477795,
+          "passed": false
+        },
+        {
+          "solver": "fdtd",
+          "cell_m": 1.0,
+          "worst": 0.015357380209845006,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "gate": "convergence: R1 peak extinction on halving the cell",
+      "passed": true,
+      "numbers": "dda 0.1246 to 0.1246 km2 (0.02%); fdtd 0.1241 to 0.1243 km2 (0.20%) (limit 3%)"
+    },
+    {
+      "gate": "reproduction: free-space peak near 333 m, 0.09 km2",
+      "passed": true,
+      "numbers": "dda 336 m (+1.0%), 0.090 km2 (-0.1%); fdtd 336 m (+0.9%), 0.089 km2 (-0.6%) (limits 5% and 20%)"
+    },
+    {
+      "gate": "reproduction: free-space peak near 230 m, 0.13 km2",
+      "passed": true,
+      "numbers": "dda 230 m (-0.0%), 0.125 km2 (-4.2%); fdtd 230 m (-0.0%), 0.124 km2 (-4.4%) (limits 5% and 20%)"
+    },
+    {
+      "gate": "reproduction: on-ground maximum near 250 m, 0.12 km2",
+      "passed": true,
+      "numbers": "fdtd 247 m (-1.2%), 0.104 km2 (-13.7%) (limits 10% and 20%)"
+    },
+    {
+      "gate": "reproduction: the two solvers' extinction spectra agree",
+      "passed": true,
+      "numbers": "R1 0.38%; R2 0.38%; B0 0.64% (limit 10%)"
+    }
+  ],
+  "notes": [],
+  "cells_m": {
+    "coarse": 5.0,
+    "production": 2.5,
+    "fine": 1.6666666666666667,
+    "benchmark": 1.0
+  },
+  "run_seconds": {
+    "B0 dda 5 m": 85.45241165161133,
+    "B0 dda 2.5 m": 1186.6980307102203,
+    "B0 dda 1.67 m": 4637.389888286591,
+    "B0 fdtd 5 m": 117.49764084815979,
+    "B0 fdtd 2.5 m": 839.7371916770935,
+    "B0 fdtd 1.67 m": 1701.2124400138855,
+    "B0 fdtd 1 m": 9651.427395105362,
+    "R1 dda 5 m": 63.95821666717529,
+    "R1 dda 2.5 m": 636.1181552410126,
+    "R1 fdtd 5 m": 44.970826387405396,
+    "R1 fdtd 2.5 m": 319.9519536495209,
+    "R2 dda 2.5 m": 751.711207151413,
+    "R2 fdtd 2.5 m": 325.34848713874817,
+    "R3 fdtd 2.5 m": 192.8655230998993
+  }
+}
