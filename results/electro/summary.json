@@ -273,6 +273,23 @@
       ]
     },
     {
+      "id": "electro.needed_field_sustained",
+      "label": "Field in the antechamber's granite leaf for the weakest documented gas-solid acoustic effect, under a sustained drive",
+      "value": 27197087442.719265,
+      "low": 2068740.38564193,
+      "high": 117111685052.4152,
+      "unit": "V/m",
+      "formula": "E = sqrt(2 I / Z_air) / (2 pi f d L_leaf), Tier 0's S07 chain inverted; I = 0.30 W/cm2 and up",
+      "inputs": [
+        "em.granite_piezo_d",
+        "ante.leaf_thickness",
+        "ac.drive_frequency",
+        "ac.air_impedance",
+        "ac.reference_pressure",
+        "ac.gas_solid_intensity"
+      ]
+    },
+    {
       "id": "electro.needed_field_wet_film",
       "label": "Field in the granite to cavitate a wet film from the gas side",
       "value": 744095968590.685,
@@ -691,15 +708,15 @@
   "verdicts": {
     "S04": {
       "status": "fail",
-      "basis": "In a steady conduction model of the pyramid on bedrock, a far field of 1e-07 to 2e-02 V/m leaves 0.58 of itself (0.14 to 0.62 over the ranges of the inputs) in the masonry at chamber level and 0.036 (0.008 to 0.039) at the summit, and puts 2.2 (0.4 to 2.2) times itself in the King's Chamber granite at the peak: 0.04 V/m at the most, which is 8.8 orders of magnitude below the 2.7e+07 V/m that is, at its most generous, the field at which the piezoelectric chain first reaches a documented acoustic effect, the line this rule takes for non-negligible as a judgement call; a charge held by such a field is short by the same factor."
+      "basis": "In a steady conduction model of the pyramid on bedrock, a far field of 1e-07 to 2e-02 V/m leaves 0.58 of itself (0.14 to 0.62 over the ranges of the inputs) in the masonry at chamber level and 0.036 (0.008 to 0.039) at the summit, and puts 2.2 (0.4 to 2.2) times itself in the King's Chamber granite at the peak: 0.04 V/m at the most, which is 8.8 orders of magnitude below the 2.7e+07 V/m at which Tier 0's single-pulse piezoelectric chain, a field applied across 1 m of granite within the 5 microsecond rise of a stroke, first reaches a documented acoustic effect with every input at its generous end, the line this rule takes for non-negligible as a judgement call; a charge held by such a field is short by the same factor. Tier 0's S07 chain, a sustained drive of 1 MHz across the antechamber's granite leaf for which no source is proposed, reaches the same effect at 2.1e+06 V/m with every input at its generous end, and the field is 7.7 orders of magnitude below that too."
     },
     "E21": {
       "status": "fail",
-      "basis": "With two vertical sheets of the most conductive hematite measured (0.003 ohm m) in line with the far field and ending at the base, the conduction model puts 2.3 times the far field in the King's Chamber granite or at the summit (0.4 to 4.2 over sheets 0.1 to 10 m thick, 10 to 300 m deep and up to 500 m long, all assumed), against 2.2 without sheets: 0.08 V/m at the most, which is 8.5 orders of magnitude below the 2.7e+07 V/m that is, at its most generous, the field at which the piezoelectric chain first reaches a documented acoustic effect, the line this rule takes for non-negligible as a judgement call; a charge held by such a field is short by the same factor. Sheets would have to gather the far field over 1.3e+09 m to offer the chain its voltage."
+      "basis": "With two vertical sheets of the most conductive hematite measured (0.003 ohm m) in line with the far field and ending at the base, the conduction model puts 2.3 times the far field in the King's Chamber granite or at the summit (0.4 to 4.2 over sheets 0.1 to 10 m thick, 10 to 300 m deep and up to 500 m long, all assumed), against 2.2 without sheets: 0.08 V/m at the most, which is 8.5 orders of magnitude below the 2.7e+07 V/m at which Tier 0's single-pulse piezoelectric chain, a field applied across 1 m of granite within the 5 microsecond rise of a stroke, first reaches a documented acoustic effect with every input at its generous end, the line this rule takes for non-negligible as a judgement call; a charge held by such a field is short by the same factor. Tier 0's S07 chain, a sustained drive of 1 MHz across the antechamber's granite leaf for which no source is proposed, reaches the same effect at 2.1e+06 V/m with every input at its generous end, and the field is 7.4 orders of magnitude below that too. Sheets would have to gather the far field over 1.3e+09 m to offer the pulse chain its voltage."
     },
     "S06": {
       "status": "fail",
-      "basis": "A stroke of 30 kA entering at the summit and spreading by steady conduction puts 4.3 kV/m in the King's Chamber granite at the peak (1.7 kV/m as a volume mean), 7.3 times the even-spreading conduction value, and 88 kV/m at the favourable corner of the ranges, the 200 kA design maximum in the most resistive masonry measured (884 V/m at the least). The piezoelectric chain needs 2.7e+07 V/m at its most generous to reach a documented acoustic effect, 303 times more than that and 8.9 times the 3e+06 V/m at which air breaks down, so the field in the granite is the conduction value and no more. A core of 5e+04 ohm m, 34 times the most resistive masonry measured in place, would bring that peak to the breakdown field, which caps it below the need. The chamber lies 1.5 skin depths (0.3 to 5.9) inside the nearest face, and induction, left out here, lowers the field there further."
+      "basis": "A stroke of 30 kA entering at the summit and spreading by steady conduction puts 4.3 kV/m in the King's Chamber granite at the peak (1.7 kV/m as a volume mean), 7.3 times the even-spreading conduction value, and 88 kV/m at the favourable corner of the ranges, the 200 kA design maximum in the most resistive masonry measured (884 V/m at the least). Tier 0's single-pulse piezoelectric chain, a field applied across 1 m of granite within the 5 microsecond rise of a stroke, needs 2.7e+07 V/m with every input at its generous end to reach a documented acoustic effect, 303 times the 88 kV/m of that corner and 8.9 times the 3e+06 V/m at which air breaks down. Tier 0's S07 chain, a sustained drive of 1 MHz across the antechamber's granite leaf for which no source is proposed, reaches the same effect at 2.1e+06 V/m with every input at its generous end, 23 times that corner and below the breakdown field; a return stroke is a single pulse (04 claim C6), so the claim is held to the pulse chain. The criterion's fail clause, a field screened to the conduction value of order kV/m or less, is read as the field staying below the pulse chain's need at the favourable end, the order kV/m being 04's own estimate of the conduction value (0.07 to 11 kV/m by even spreading): a judgement call. In this model the field in the granite is the conduction value by construction. A core of 5e+04 ohm m, 34 times the most resistive masonry measured in place, would bring that peak to the breakdown field, which caps it below the pulse chain's need; the sustained chain's need lies under that cap. The chamber lies 1.5 skin depths (0.3 to 5.9) inside the nearest face, and induction, left out here, lowers the field there further."
     },
     "E13": {
       "status": "fail",

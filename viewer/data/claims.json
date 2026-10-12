@@ -1,9 +1,9 @@
 {
  "manifest": {
   "case": "viewer",
-  "timestamp": "2026-10-12T05:14:25+00:00",
-  "commit": "9c9d5e35ef591abae8f42e3613bd92ceb914be80",
-  "ledger": "047e50229caf4b6b69e88337948e08553d335c0a5065bafca5ff57a91659d08e",
+  "timestamp": "2026-10-12T05:33:18+00:00",
+  "commit": "f9851eb7d794200fdac4a88419b90b39c95fcc06",
+  "ledger": "65789d95c1dec923392a5a5b0ba69aa1aa88bea46625ef45efbe1078778b7bf5",
   "python": "3.12.12",
   "versions": {
    "numpy": "2.5.3",
@@ -25,7 +25,7 @@
    "piece": 5,
    "criterion": "Pass if a geologically defensible hydrogen sulfide flux can supply the chemistry model's minimum feed; fail if the required flux exceeds active-seep analogues by orders of magnitude (07 section 4.4).",
    "status": "undefined",
-   "basis": "One full batch needs 13319 mol of hydrogen sulfide, 454 kg, a mole for each mole of sulfur dioxide in the King's Chamber, which is 0.15 mol/s and 166 t a year at one batch every 24 h, and 0.00041 to 3.8 mol/s over the cycle times taken; the hypothesis states no cycle rate, so the required flux is undefined (07 section 4.4). 07 gives no flux for any seep or spring to set against it: its one analogue is a concentration, read from an abstract, at which one batch is the sulfide in 5.3 million m3 of cave air (60 ppmv in active sulfuric-acid caves).",
+   "basis": "07 gives no flux for any seep or spring, so a required flux has nothing to be set against at any cycle time: its one analogue is a concentration, read from an abstract, at which one batch is the sulfide in 5.3 million m3 of cave air (60 ppmv in active sulfuric-acid caves). One full batch needs 13319 mol of hydrogen sulfide, 454 kg, a mole for each mole of sulfur dioxide in the King's Chamber, which is 0.15 mol/s and 166 t a year at one batch every 24 h, and 0.00041 to 3.8 mol/s over the cycle times taken; the hypothesis states no cycle rate either, so the required flux is itself undefined (07 section 4.4).",
    "source": "chem",
    "numbers": [
     {
@@ -96,7 +96,7 @@
    "piece": 4,
    "criterion": "Pass if sulfur dioxide remains in the King's Chamber between delivery and draw with the air shafts open (00 section 7 item 5).",
    "status": "conditional",
-   "basis": "With its shafts open a King's Chamber of pure sulfur dioxide loses half its charge by diffusion in 361 (271 to 460) years, and no wind below 29 (23 to 43) m/s can drive a through-flow, because the gas, 2.2 times as dense as air, would have to be lifted up the leeward shaft against 516 (472 to 551) Pa. The same weight carries it out of an opening at the chamber's floor while no water stands beyond it and the Gallery is open to the air, which the hypothesis does not say for the time before the fill: through the 202 cm2 of grooves and one slab's clearance in the antechamber, the gas path of the hypothesis, half the charge is gone in about 69 minutes (41 at the fastest, never with the path shut). In the 30 m/s at the top of the assumed wind range the half-time falls to 15 minutes, and to 11 with the floor opening draining at its fastest as well, against the interval between delivery and draw, which the hypothesis does not state and which is taken as 10 minutes to 30 days; a charge diluted to a tenth is held only below 9 m/s, and below the wind that lifts it the model loses gas up the shafts by diffusion alone, which is a limit of the model. Remaining is read as half the charge still being there at the draw, and the hypothesis states neither the composition of the charge nor what keeps it in.",
+   "basis": "With its shafts open a King's Chamber of pure sulfur dioxide loses half its charge by diffusion in 361 (271 to 460) years, and no wind below 29 (23 to 43) m/s can drive a through-flow, because the gas, 2.2 times as dense as air, would have to be lifted up the leeward shaft against 516 (472 to 551) Pa. The same weight carries it out of an opening at the chamber's floor while no water stands beyond it and the Gallery is open to the air, which the hypothesis does not say for the time before the fill: through the 202 cm2 of grooves and one slab's clearance in the antechamber, the gas path of the hypothesis, half the charge is gone in about 69 minutes (41 at the fastest, never with the path shut). In the 30 m/s at the top of the assumed wind range the half-time falls to 15 minutes, and to 11 with the floor opening draining at its fastest as well, against the interval between delivery and draw, which the hypothesis does not state and which is taken as 10 minutes to 30 days; a charge diluted to a tenth is held only below 9 m/s, and below the wind that lifts it the model loses gas up the shafts by diffusion alone, which is a limit of the model. Remaining is read as half the charge still being there at the draw (a judgement call), and the hypothesis states neither the composition of the charge nor what keeps it in.",
    "source": "flow",
    "numbers": [
     {
@@ -164,7 +164,7 @@
    "piece": 2,
    "criterion": "Pass only if a direct-current conduction model with a far field of 1e-7 to 2e-2 V/m gives a non-negligible field or charge at the summit or in the granite (04 section 5.3).",
    "status": "fail",
-   "basis": "In a steady conduction model of the pyramid on bedrock, a far field of 1e-07 to 2e-02 V/m leaves 0.58 of itself (0.14 to 0.62 over the ranges of the inputs) in the masonry at chamber level and 0.036 (0.008 to 0.039) at the summit, and puts 2.2 (0.4 to 2.2) times itself in the King's Chamber granite at the peak: 0.04 V/m at the most, which is 8.8 orders of magnitude below the 2.7e+07 V/m that is, at its most generous, the field at which the piezoelectric chain first reaches a documented acoustic effect, the line this rule takes for non-negligible as a judgement call; a charge held by such a field is short by the same factor.",
+   "basis": "In a steady conduction model of the pyramid on bedrock, a far field of 1e-07 to 2e-02 V/m leaves 0.58 of itself (0.14 to 0.62 over the ranges of the inputs) in the masonry at chamber level and 0.036 (0.008 to 0.039) at the summit, and puts 2.2 (0.4 to 2.2) times itself in the King's Chamber granite at the peak: 0.04 V/m at the most, which is 8.8 orders of magnitude below the 2.7e+07 V/m at which Tier 0's single-pulse piezoelectric chain, a field applied across 1 m of granite within the 5 microsecond rise of a stroke, first reaches a documented acoustic effect with every input at its generous end, the line this rule takes for non-negligible as a judgement call; a charge held by such a field is short by the same factor. Tier 0's S07 chain, a sustained drive of 1 MHz across the antechamber's granite leaf for which no source is proposed, reaches the same effect at 2.1e+06 V/m with every input at its generous end, and the field is 7.7 orders of magnitude below that too.",
    "source": "electro",
    "numbers": [
     {
@@ -217,6 +217,13 @@
      "unit": "V/m"
     },
     {
+     "label": "Field in the antechamber's granite leaf for the weakest documented gas-solid acoustic effect, under a sustained drive",
+     "value": 27197087442.719265,
+     "low": 2068740.38564193,
+     "high": 117111685052.4152,
+     "unit": "V/m"
+    },
+    {
      "label": "Length of ore sheet whose whole telluric voltage would equal what the chain needs",
      "value": 136126465417795.8,
      "low": 1337197972.2303154,
@@ -249,7 +256,7 @@
    "piece": 2,
    "criterion": "Pass if the peak field in the granite exceeds what the piezoelectric model needs to reach the acoustic threshold; fail if the interior field is screened to the conduction value of order kV/m or less (04 section 5.2).",
    "status": "fail",
-   "basis": "A stroke of 30 kA entering at the summit and spreading by steady conduction puts 4.3 kV/m in the King's Chamber granite at the peak (1.7 kV/m as a volume mean), 7.3 times the even-spreading conduction value, and 88 kV/m at the favourable corner of the ranges, the 200 kA design maximum in the most resistive masonry measured (884 V/m at the least). The piezoelectric chain needs 2.7e+07 V/m at its most generous to reach a documented acoustic effect, 303 times more than that and 8.9 times the 3e+06 V/m at which air breaks down, so the field in the granite is the conduction value and no more. A core of 5e+04 ohm m, 34 times the most resistive masonry measured in place, would bring that peak to the breakdown field, which caps it below the need. The chamber lies 1.5 skin depths (0.3 to 5.9) inside the nearest face, and induction, left out here, lowers the field there further.",
+   "basis": "A stroke of 30 kA entering at the summit and spreading by steady conduction puts 4.3 kV/m in the King's Chamber granite at the peak (1.7 kV/m as a volume mean), 7.3 times the even-spreading conduction value, and 88 kV/m at the favourable corner of the ranges, the 200 kA design maximum in the most resistive masonry measured (884 V/m at the least). Tier 0's single-pulse piezoelectric chain, a field applied across 1 m of granite within the 5 microsecond rise of a stroke, needs 2.7e+07 V/m with every input at its generous end to reach a documented acoustic effect, 303 times the 88 kV/m of that corner and 8.9 times the 3e+06 V/m at which air breaks down. Tier 0's S07 chain, a sustained drive of 1 MHz across the antechamber's granite leaf for which no source is proposed, reaches the same effect at 2.1e+06 V/m with every input at its generous end, 23 times that corner and below the breakdown field; a return stroke is a single pulse (04 claim C6), so the claim is held to the pulse chain. The criterion's fail clause, a field screened to the conduction value of order kV/m or less, is read as the field staying below the pulse chain's need at the favourable end, the order kV/m being 04's own estimate of the conduction value (0.07 to 11 kV/m by even spreading): a judgement call. In this model the field in the granite is the conduction value by construction. A core of 5e+04 ohm m, 34 times the most resistive masonry measured in place, would bring that peak to the breakdown field, which caps it below the pulse chain's need; the sustained chain's need lies under that cap. The chamber lies 1.5 skin depths (0.3 to 5.9) inside the nearest face, and induction, left out here, lowers the field there further.",
    "source": "electro",
    "numbers": [
     {
@@ -272,6 +279,13 @@
      "low": 9.088380087956361,
      "high": 195.6604173579737,
      "unit": "m"
+    },
+    {
+     "label": "Sound level from the antechamber's granite leaf driven at the air-breakdown field",
+     "value": 75.7620902930747,
+     "low": 69.44875462406314,
+     "high": 158.29335556315047,
+     "unit": "dB"
     },
     {
      "label": "Peak telluric field in the King's Chamber granite over the far field",
@@ -327,6 +341,13 @@
      "value": 13612646541.779581,
      "low": 26743959.44460631,
      "high": 28336983468.77279,
+     "unit": "V/m"
+    },
+    {
+     "label": "Field in the antechamber's granite leaf for the weakest documented gas-solid acoustic effect, under a sustained drive",
+     "value": 27197087442.719265,
+     "low": 2068740.38564193,
+     "high": 117111685052.4152,
      "unit": "V/m"
     },
     {
@@ -682,7 +703,7 @@
      "unit": "s"
     },
     {
-     "label": "Least share of air in the gas a full stroke draws into the Gallery",
+     "label": "Least share of air in the gas that emptying the whole Gallery draws into it",
      "value": 0.4408376963350785,
      "low": 0.3892261001517451,
      "high": 0.48480930833872005,
@@ -711,7 +732,7 @@
    "piece": 3,
    "criterion": "Pass if, for a stated drain rate and realistic leak areas, most of the replacement gas comes down the shafts; report the pressure difference (02 section 5.5 item 7).",
    "status": "conditional",
-   "basis": "The antechamber opening lies 7.4 m under the surface of the full Gallery, and until 13.2 (12.7 to 13.3) percent of the Gallery has drained gas enters it only where the suction exceeds the water standing over it, 72 kPa at the start. Draining the Gallery in 1 h through 202 cm2 of grooves and one slab's clearance, with masonry joints of 0.51 mm leaking along a path of 1.0 m, 60 percent of the replacement gas comes down the King's Chamber shafts; the pressure difference is 195 Pa at the start, when the joints alone supply the pocket, and 60 Pa once the opening is clear. Over drain times of 10 minutes to 6 h, joints of 0.05 to 0.51 mm and joint paths of 0.3 to 3.0 m the share runs from 20 to 100 percent with that path open, and from 0 percent if the path is shut, as blind grooves and seated slabs would leave it; the pressure difference runs from 1 Pa to 99 kPa, the most a water column can pull. Through the grooves alone the share is 11 percent, through the three slabs' clearances one after another, which pass what 108 cm2 passes, 44 percent, and with no slab in the passage 78 percent. More than half comes down the shafts with the joints tighter than 0.64 mm, or the drain slower than 30 minutes; the hypothesis states neither a drain rate nor how the Gallery is made gas-tight.",
+   "basis": "The antechamber opening lies 7.4 m under the surface of the full Gallery, and until 13.2 (12.7 to 13.3) percent of the Gallery has drained gas enters it only where the suction exceeds the water standing over it, 72 kPa at the start; where the path past the slabs is open, that water runs through it into the King's Chamber meanwhile, which S13 judges. Draining the Gallery in 1 h through 202 cm2 of grooves and one slab's clearance, with masonry joints of 0.51 mm leaking along a path of 1.0 m, 60 percent of the replacement gas comes down the King's Chamber shafts; the pressure difference is 195 Pa at the start, when the joints alone supply the pocket, and 60 Pa once the opening is clear. Over drain times of 10 minutes to 6 h, joints of 0.05 to 0.51 mm and joint paths of 0.3 to 3.0 m the share runs from 20 to 100 percent with that path open, and from 0 percent if the path is shut, as blind grooves and seated slabs would leave it; the pressure difference runs from 1 Pa to 99 kPa, the most a water column can pull. Through the grooves alone the share is 11 percent, through the three slabs' clearances one after another, which pass what 108 cm2 passes, 44 percent, and with no slab in the passage 78 percent. More than half comes down the shafts with the joints tighter than 0.64 mm, or the drain slower than 30 minutes; the hypothesis states neither a drain rate nor how the Gallery is made gas-tight.",
    "source": "flow",
    "numbers": [
     {
@@ -871,7 +892,7 @@
    "piece": 3,
    "criterion": "Pass if, with the openings as surveyed, more than 90 percent of the displaced volume is drawn through the antechamber path rather than through other openings (01 premise P4).",
    "status": "conditional",
-   "basis": "Of the Gallery's five surveyed openings the Ascending Passage, the Queen's passage and the well shaft meet it at its foot and stay under water until 0.7 percent of it or less is left, and Davison's passage ends in a closed chamber. The antechamber opening lies 7.4 m under the surface of the full Gallery, and until 13.2 (12.7 to 13.3) percent of the Gallery has drained gas enters it only where the suction exceeds the water standing over it, 72 kPa at the start. With gas-tight masonry nothing else can enter, so 100.0 (99.9 to 100.0) percent of the displaced volume is drawn through the antechamber passage as surveyed, with no slab in it. Counting gas that leaks in through 1350 m of masonry joints of 0.05 to 0.51 mm, from air-filled masonry at outside pressure 0.3 to 3.0 m behind the Gallery's face, a leak that is assumed and that 01 leaves open for the syringe, the share is 78 (38 to 100) percent over drain times of 10 minutes to 6 h and passes 90 percent with joints tighter than 0.11 (0.04 to 0.24) mm or somewhat wider, the model letting neither the pocket's gas thin nor Davison's chamber lend. With the slabs of the hypothesis down the two shares are 100.0 and 60 percent through 202 cm2 of grooves and one slab's clearance, and nothing if that path is shut, which is the question of S15.",
+   "basis": "Of the Gallery's five surveyed openings the Ascending Passage, the Queen's passage and the well shaft meet it at its foot and stay under water until 0.7 percent of it or less is left, and Davison's passage ends in a closed chamber. The antechamber opening lies 7.4 m under the surface of the full Gallery, and until 13.2 (12.7 to 13.3) percent of the Gallery has drained gas enters it only where the suction exceeds the water standing over it, 72 kPa at the start. With gas-tight masonry nothing else can enter, so 100.0 (99.9 to 100.0) percent of the displaced volume is drawn through the antechamber passage as surveyed, with no slab in it. Counting gas that leaks in through 1350 m of masonry joints of 0.05 to 0.51 mm, from air-filled masonry at outside pressure 0.3 to 3.0 m behind the Gallery's face, a leak that is assumed and that 01 leaves open for the syringe, the share is 78 (38 to 100) percent over drain times of 10 minutes to 6 h and passes 90 percent with joints tighter than 0.11 (0.04 to 0.24) mm or somewhat wider, the model letting neither the pocket's gas thin nor Davison's chamber lend. Counting that leak against 'the openings as surveyed', though no survey lists a joint as an opening, is a judgement call: with the surveyed openings alone the claim would pass. That the status follows the passage as surveyed, with no slab in it, is a second one: with the slabs of the hypothesis down the two shares are 100.0 and 60 percent through 202 cm2 of grooves and one slab's clearance, and nothing if that path is shut, which takes blind grooves, the question of S15, and slabs seated tight as well, which no claim decides.",
    "source": "flow",
    "numbers": [
     {
@@ -1012,7 +1033,7 @@
    "piece": 4,
    "criterion": "Pass if at least 90 percent of the sulfur is captured into the liquid in any oxidation state within the cycle; fail below 50 percent (03 section 4.4).",
    "status": "conditional",
-   "basis": "With the Gallery half full and a cycle of 24 h (the hypothesis states none; 1 h to 1 yr is taken as its range), 87 percent of the sulfur dioxide crosses the level surface into the water (0.1 to 97 percent over the ranges of the inputs), which over those ranges is neither always at the 90 percent from which the criterion passes the claim nor always under the 50 percent below which it fails it. The water could hold 98 percent at equilibrium, so the rate decides. It depends on the cycle time, on whether the gas over the water stands still or convects (gas-side coefficient 0.003 to 10 mm/s, assumed) and on the film on the water's side of the surface (liquid-film coefficient 0.001 to 0.01 mm/s, assumed with no source), none of which the hypothesis gives; the 87 percent is for a gas-side coefficient of 1.5 mm/s and a liquid-film coefficient of 0.01 mm/s.",
+   "basis": "With the Gallery half full and a cycle of 24 h (the hypothesis states none; 1 h to 1 yr is taken as its range), 87 percent of the sulfur dioxide crosses the level surface into the water (0.1 to 97 percent over the ranges of the inputs), which over those ranges is neither always at the 90 percent from which the criterion passes the claim nor always under the 50 percent below which it fails it. The water could hold 98 percent at equilibrium, so the rate decides. It depends on the cycle time, on whether the gas over the water stands still or convects (gas-side coefficient 0.003 to 10 mm/s, assumed) and on the film on the water's side of the surface (liquid-film coefficient 0.001 to 0.01 mm/s, assumed with no source), none of which the hypothesis gives; the 87 percent is for a gas-side coefficient of 1.5 mm/s and a liquid-film coefficient of 0.01 mm/s. At those two coefficients the share passes 50 percent after 7.8 h and passes 90 percent after 28 h, with a time constant of 11 h toward the 96.9 percent that the water holds by Henry's law alone, without the dissociation counted in the 98 percent; in a cycle of 24 h it runs from 2 to 94 percent over the ranges of the other inputs, the two coefficients among them, so stating a cycle of that length would not settle the claim without them. The model gives the gas the whole cycle over the half-full Gallery, though it stands over the water only until the water has risen (S18): in a contact of the 1 h that the ledger carries for one fill, a time the hypothesis does not state either, the share is 9 percent (0.014 to 94 percent over fills of 10 minutes to 24 h and the ranges of the other inputs).",
    "source": "chem",
    "numbers": [
     {
@@ -1051,7 +1072,7 @@
      "unit": "1"
     },
     {
-     "label": "Least share of air in the gas a full stroke draws into the Gallery",
+     "label": "Least share of air in the gas that emptying the whole Gallery draws into it",
      "value": 0.4408376963350785,
      "low": 0.3892261001517451,
      "high": 0.48480930833872005,
@@ -1124,7 +1145,7 @@
      "unit": "1"
     },
     {
-     "label": "Least share of air in the gas a full stroke draws into the Gallery",
+     "label": "Least share of air in the gas that emptying the whole Gallery draws into it",
      "value": 0.4408376963350785,
      "low": 0.3892261001517451,
      "high": 0.48480930833872005,
@@ -1183,7 +1204,7 @@
      "unit": "K"
     },
     {
-     "label": "Least share of air in the gas a full stroke draws into the Gallery",
+     "label": "Least share of air in the gas that emptying the whole Gallery draws into it",
      "value": 0.4408376963350785,
      "low": 0.3892261001517451,
      "high": 0.48480930833872005,
@@ -1210,7 +1231,7 @@
    "piece": 4,
    "criterion": "Pass if gas uptake keeps pace with the rising water so that no gas is forced back through the grooves (00 section 7 item 9).",
    "status": "fail",
-   "basis": "A full stroke draws 573 m3 of gas into the Gallery and the King's Chamber holds 320 m3, so at least 44 percent of the gas over the water is the outside air of S14 (39 percent at the least). Its nitrogen hardly dissolves: if all the sulfur dioxide dissolved, the oxidation used every mole of oxygen it could and the water arrived free of dissolved gas, the rising water would still push 33 percent of the gas back (29 to 37 percent over the ranges of the inputs), and 54 percent of a mixture that carries the oxygen for all its sulfur. Nothing is pushed back only if air is under 2.0 percent of the gas (2.4 percent at most), which brings oxygen for 0.8 percent of the sulfur, while S14 to S17 carry air into the Gallery; the hypothesis states no gas fraction and no stroke. Taking the least air of a full stroke, not a gas without air, as the end most favourable to the hypothesis is a judgement call.",
+   "basis": "Emptying the whole Gallery draws 573 m3 of gas into it and the King's Chamber holds 320 m3, so at least 44 percent of the gas over the water is outside air, come down the shafts of S14 or in through the masonry joints (39 percent at the least). Its nitrogen hardly dissolves: if all the sulfur dioxide dissolved, the oxidation used every mole of oxygen it could and the water arrived free of dissolved gas, the rising water would still push 33 percent of the gas back (29 to 37 percent over the ranges of the inputs), and 54 percent of a mixture that carries the oxygen for all its sulfur. Nothing is pushed back only if air is under 2.0 percent of the gas (2.4 percent at most), which brings oxygen for 0.8 percent of the sulfur, while S14 to S17 carry air into the Gallery; the hypothesis states no gas fraction, and the whole Gallery is taken as emptied because S18 raises the water again in the four activations with which S12 fills it. Taking the least air that emptying the whole Gallery admits, not a gas without air, as the end most favourable to the hypothesis is a judgement call.",
    "source": "chem",
    "numbers": [
     {
@@ -1228,7 +1249,7 @@
      "unit": "1"
     },
     {
-     "label": "Least share of air in the gas a full stroke draws into the Gallery",
+     "label": "Least share of air in the gas that emptying the whole Gallery draws into it",
      "value": 0.4408376963350785,
      "low": 0.3892261001517451,
      "high": 0.48480930833872005,
@@ -1303,7 +1324,7 @@
      "unit": "1"
     },
     {
-     "label": "Least share of air in the gas a full stroke draws into the Gallery",
+     "label": "Least share of air in the gas that emptying the whole Gallery draws into it",
      "value": 0.4408376963350785,
      "low": 0.3892261001517451,
      "high": 0.48480930833872005,
@@ -1447,7 +1468,7 @@
      "unit": "m"
     },
     {
-     "label": "Least share of air in the gas a full stroke draws into the Gallery",
+     "label": "Least share of air in the gas that emptying the whole Gallery draws into it",
      "value": 0.4408376963350785,
      "low": 0.3892261001517451,
      "high": 0.48480930833872005,
@@ -1631,7 +1652,7 @@
      "unit": "mol/m3"
     },
     {
-     "label": "Least share of air in the gas a full stroke draws into the Gallery",
+     "label": "Least share of air in the gas that emptying the whole Gallery draws into it",
      "value": 0.4408376963350785,
      "low": 0.3892261001517451,
      "high": 0.48480930833872005,
@@ -1681,7 +1702,7 @@
    "piece": 5,
    "criterion": "Pass if an opened source gives a measured hydrogen sulfide flux, composition or source pressure under the plateau that meets the chemistry model's minimum feed; fail if the required flux exceeds active-seep analogues by orders of magnitude (07 section 4.4).",
    "status": "undefined",
-   "basis": "No opened source gives a measured hydrogen sulfide flux, composition or source pressure under the plateau: 07 read the cited paper in full, and it measured no gas and reports no present-day seepage, so the passing clause is not met. The failing clause cannot be evaluated either: one full batch needs 13319 mol of hydrogen sulfide, 454 kg, a mole for each mole of sulfur dioxide in the King's Chamber, which is 0.15 mol/s and 166 t a year at one batch every 24 h, and 0.00041 to 3.8 mol/s over the cycle times taken; the hypothesis states no cycle rate, so the required flux is undefined (07 section 4.4). 07 gives no flux for any seep or spring to set against it: its one analogue is a concentration, read from an abstract, at which one batch is the sulfide in 5.3 million m3 of cave air.",
+   "basis": "No opened source gives a measured hydrogen sulfide flux, composition or source pressure under the plateau: 07 read the cited paper in full, and it measured no gas and reports no present-day seepage, so the passing clause is not met. The failing clause cannot be evaluated either. 07 gives no flux for any seep or spring, so a required flux has nothing to be set against at any cycle time: its one analogue is a concentration, read from an abstract, at which one batch is the sulfide in 5.3 million m3 of cave air. One full batch needs 13319 mol of hydrogen sulfide, 454 kg, a mole for each mole of sulfur dioxide in the King's Chamber, which is 0.15 mol/s and 166 t a year at one batch every 24 h, and 0.00041 to 3.8 mol/s over the cycle times taken; the hypothesis states no cycle rate either, so the required flux is itself undefined (07 section 4.4).",
    "source": "chem",
    "numbers": [
     {
@@ -1738,7 +1759,7 @@
    "piece": 5,
    "criterion": "Documentary check, not simulated: pass if the elements and levels reported in the cited paper match those reported for the iron-oxide vein samples.",
    "status": "fail",
-   "basis": "No evidence found: both datasets were read in full and they do not match. The cited paper analysed one sulfate nodule and one host mudstone by X-ray fluorescence; of the ten elements the speaker names for the iron deposits it reports four, all common trace elements, and none of cerium, neodymium, silver, gold, platinum or tin. The iron-deposit data are 16 samples from Khafre's boat pits, in a report that is not peer-reviewed. The one level the files give for both, thorium, is 139 ppm in the paper's nodule and 0.25 to 1.36 ppm in the pit samples. The research file calls the claim weak.",
+   "basis": "No evidence found: no match between the two datasets was found. Both were read in full; the research file calls the claim weak and does not call it contradicted. The cited paper analysed one sulfate nodule and one host mudstone by X-ray fluorescence; of the ten elements the speaker names for the iron deposits it reports four, all common trace elements, and none of cerium, neodymium, silver, gold, platinum or tin. The iron-deposit data are 16 samples from Khafre's boat pits, in a report that is not peer-reviewed. The one level the files give for both, thorium, is 139 ppm in the paper's nodule and 0.25 to 1.36 ppm in the pit samples.",
    "source": "evidence",
    "numbers": [],
    "spaces": []
@@ -1752,7 +1773,7 @@
    "piece": 5,
    "criterion": "Documentary check, not simulated: pass if a survey of the Giza caves shows cave forms cut in iron ore; cases at other sites do not decide it.",
    "status": "fail",
-   "basis": "No evidence found: no survey of a Giza cave shows cave forms cut in iron ore. The one study of Giza cave deposits that was read in full describes a mudstone exposure on the west side of the plateau and reports iron and manganese oxide as a minor part of gypsum and fracture fills (0.65 and 6.19 percent iron oxide by weight in its two samples), and the research file finds no ore body documented at Giza: the plateau is carbonate rock with minor oxide fills. That exposure is not the Tomb of the Birds, of which no survey was found. The paper the claim cites concerns iron-ore caves at other sites, which the criterion sets aside, and no research file opened it.",
+   "basis": "No evidence found: no survey of a Giza cave shows cave forms cut in iron ore. The one study of Giza cave deposits that was read in full describes a mudstone exposure on the west side of the plateau and reports iron and manganese oxide as a minor part of gypsum and fracture fills (0.65 and 6.19 percent iron oxide by weight in its two samples), and the research file finds no ore body documented at Giza: the plateau is carbonate rock with minor oxide fills. That exposure is not the Tomb of the Birds; the research files read no survey of that cave and record no search for one. The paper the claim cites concerns iron-ore caves at other sites, which the criterion sets aside, and no research file opened it.",
    "source": "evidence",
    "numbers": [],
    "spaces": []
@@ -1808,7 +1829,7 @@
    "piece": 4,
    "criterion": "Pass only if every step of the cited patent can run at ambient temperature without a catalyst, since the hypothesis supplies neither heat nor catalyst (03 section 2c and check V14).",
    "status": "fail",
-   "basis": "Contradicted: the patent does describe three steps with heat exchangers, but none of them can run as the hypothesis needs. Its claims were re-read at source (US 9,108,846): the first step burns hydrogen sulfide at 900 C or more, or oxidises it over a catalyst from 200 C; the second runs at 390 to 430 C over a vanadium catalyst; the third cools the gas to 60 to 120 C. No step runs at ambient temperature without a catalyst, and the hypothesis supplies neither heat nor catalyst. The three steps are the whole route from hydrogen sulfide to acid, not three stages of making sulfur dioxide.",
+   "basis": "Contradicted: the patent does describe three steps with heat exchangers, but none of them can run as the hypothesis needs. Its claims were re-read at source (US 9,108,846): the first step burns hydrogen sulfide at 900 C or more, or oxidises it over a catalyst from 200 C; the second runs at 390 to 430 C, over a vanadium catalyst by the patent's description; the third cools the gas to 60 to 120 C. No step runs at ambient temperature without a catalyst, and the hypothesis supplies neither heat nor catalyst. The three steps are the whole route from hydrogen sulfide to acid, not three stages of making sulfur dioxide.",
    "source": "evidence",
    "numbers": [],
    "spaces": []
@@ -2628,7 +2649,7 @@
    "piece": 2,
    "criterion": "Pass only if a direct-current conduction model with conductive sheets for the ore bodies gives a non-negligible field or charge at the summit or in the granite (04 section 5.3).",
    "status": "fail",
-   "basis": "With two vertical sheets of the most conductive hematite measured (0.003 ohm m) in line with the far field and ending at the base, the conduction model puts 2.3 times the far field in the King's Chamber granite or at the summit (0.4 to 4.2 over sheets 0.1 to 10 m thick, 10 to 300 m deep and up to 500 m long, all assumed), against 2.2 without sheets: 0.08 V/m at the most, which is 8.5 orders of magnitude below the 2.7e+07 V/m that is, at its most generous, the field at which the piezoelectric chain first reaches a documented acoustic effect, the line this rule takes for non-negligible as a judgement call; a charge held by such a field is short by the same factor. Sheets would have to gather the far field over 1.3e+09 m to offer the chain its voltage.",
+   "basis": "With two vertical sheets of the most conductive hematite measured (0.003 ohm m) in line with the far field and ending at the base, the conduction model puts 2.3 times the far field in the King's Chamber granite or at the summit (0.4 to 4.2 over sheets 0.1 to 10 m thick, 10 to 300 m deep and up to 500 m long, all assumed), against 2.2 without sheets: 0.08 V/m at the most, which is 8.5 orders of magnitude below the 2.7e+07 V/m at which Tier 0's single-pulse piezoelectric chain, a field applied across 1 m of granite within the 5 microsecond rise of a stroke, first reaches a documented acoustic effect with every input at its generous end, the line this rule takes for non-negligible as a judgement call; a charge held by such a field is short by the same factor. Tier 0's S07 chain, a sustained drive of 1 MHz across the antechamber's granite leaf for which no source is proposed, reaches the same effect at 2.1e+06 V/m with every input at its generous end, and the field is 7.4 orders of magnitude below that too. Sheets would have to gather the far field over 1.3e+09 m to offer the pulse chain its voltage.",
    "source": "electro",
    "numbers": [
     {
@@ -2692,6 +2713,13 @@
      "value": 13612646541.779581,
      "low": 26743959.44460631,
      "high": 28336983468.77279,
+     "unit": "V/m"
+    },
+    {
+     "label": "Field in the antechamber's granite leaf for the weakest documented gas-solid acoustic effect, under a sustained drive",
+     "value": 27197087442.719265,
+     "low": 2068740.38564193,
+     "high": 117111685052.4152,
      "unit": "V/m"
     },
     {
@@ -2773,7 +2801,7 @@
    "piece": 1,
    "criterion": "Geometric premise: pass if the survey record shows the shaft mouths closed by uncut wall stone of about that thickness until they were opened (01 claim 3).",
    "status": "pass",
-   "basis": "The survey record has each Queen's Chamber shaft mouth closed by a plate of the wall stone left uncut until both were cut through in 1872: 127 mm (5.0 in) on one witness, quoted twice at second hand, and Petrie describes the plate without a thickness. The claim's 3 to 5 in is 76 to 127 mm and the ledger carries 76 to 127 mm, so the whole range carried for the record lies within the claimed thickness, read to half an inch either side (a judgement call on 'about'); no source was found for 3 in.",
+   "basis": "The survey record has each Queen's Chamber shaft mouth closed by a plate of the wall stone left uncut until both were cut through in 1872. Petrie describes the plate without a thickness (his section 44, re-read in its online edition in 06 and read in 01 as quoted by Thomas). The thickness, 127 mm (5.0 in), comes from one witness, quoted twice at second hand. Counting that as what the survey record shows is a judgement call, and it decides the word: held to rest on a secondary source, the claim would be conditional. The claim's 3 to 5 in is 76 to 127 mm. The record is the 127 mm alone: the 76 mm at the low end of the range the ledger carries (76 to 127 mm) is the claim's own figure, and no source was found for 3 in. So the whole range carried for the record lies within the claimed thickness, read to half an inch either side, a reading of 'about' that decides nothing here.",
    "source": "premises",
    "numbers": [
     {
@@ -2815,7 +2843,7 @@
    "piece": 4,
    "criterion": "Counts for the hypothesis only if the acid-wall model predicts something the no-acid salt model cannot, such as no sodium chloride in the wetted zone, and that is then found (06, pass/fail item 4).",
    "status": "fail",
-   "basis": "No evidence found: nothing that the acid model predicts and the salt model cannot has been found, and the example the criterion names is the opposite of what was read. Sodium chloride is present in the Queen's Chamber, which the hypothesis fills: the 1978 letter lists some halite, and a laboratory study of 2026, read by two routes, identifies the efflorescence there as halite. No height-resolved salt map exists. The research file calls the inference from missing calcium chloride weak, since calcium chloride takes up water from the air and would not last as a crust (general knowledge there, not sourced).",
+   "basis": "Contradicted: the example the criterion names, no sodium chloride in the wetted zone, is the opposite of what was read, and nothing else that the acid model predicts and the salt model cannot has been found. Sodium chloride is present in the Queen's Chamber, which the hypothesis fills: the 1978 letter lists some halite, and a laboratory study of 2026, read by two routes, identifies the efflorescence there as halite. The same study has efflorescence on the west wall and ceiling growing visibly between 2022 and 2024 (read by one extraction route only), which shows a present-day process, and the chamber was cleaned in 1995 to 1997 without surviving documentation, so today's surface need not match the crust before the cleaning. The 1978 letter is older than that cleaning; who took its sample, when and from what height is not stated. The test, as the criterion words it, is of the surface as sampled. No height-resolved salt map exists. The research file calls the inference from missing calcium chloride weak, since calcium chloride takes up water from the air and would not last as a crust (general knowledge there, not sourced).",
    "source": "evidence",
    "numbers": [],
    "spaces": [
@@ -2873,7 +2901,7 @@
      "unit": "1"
     },
     {
-     "label": "Least share of air in the gas a full stroke draws into the Gallery",
+     "label": "Least share of air in the gas that emptying the whole Gallery draws into it",
      "value": 0.4408376963350785,
      "low": 0.3892261001517451,
      "high": 0.48480930833872005,

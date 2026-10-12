@@ -1,8 +1,8 @@
 {
   "case": "electro",
-  "timestamp": "2026-10-12T04:35:28+00:00",
-  "commit": "af2ae1fe3264bbed1a294dc51581c6af5468f65c",
-  "ledger": "047e50229caf4b6b69e88337948e08553d335c0a5065bafca5ff57a91659d08e",
+  "timestamp": "2026-10-12T05:32:48+00:00",
+  "commit": "f9851eb7d794200fdac4a88419b90b39c95fcc06",
+  "ledger": "65789d95c1dec923392a5a5b0ba69aa1aa88bea46625ef45efbe1078778b7bf5",
   "python": "3.12.12",
   "versions": {
     "numpy": "2.5.3",
@@ -20,8 +20,9 @@
     "The granite's peak field is the largest cell value on cells of about one metre; it grows by about a tenth each time the cells are halved because the field is singular along the cavity's edges, while the volume mean is converged to about 2 percent.",
     "An ore body is a pair of vertical sheets of the most conductive hematite measured, in line with the far field and ending at the base edges; their thickness, depth and length are assumed and swept.",
     "The telluric far field runs north-south, across the chamber's short side, which gives a resistive body the larger field.",
-    "The field the granite needs is Tier 0's pulse chain run backwards, with every part of the chain at its most generous for the favourable end.",
-    "Non-negligible, in the criteria of S04 and E21, is read as reaching the field that chain needs: a judgement call.",
+    "The field the granite needs is Tier 0's single-pulse chain run backwards, with every input of that chain at its generous end for the favourable end. Tier 0's S07 chain, a sustained drive across the antechamber's granite leaf for which no source is proposed, needs a lower field at its generous end; its figure is reported beside the pulse chain's and decides no status.",
+    "Non-negligible, in the criteria of S04 and E21, is read as reaching the field the pulse chain needs: a judgement call.",
+    "The fail clause of S06's criterion, a field screened to the conduction value of order kV/m or less, is read as the field staying below the pulse chain's need at the favourable end: a judgement call. The model is a conduction model, so its field is the conduction value by construction.",
     "The rooms are hard-walled boxes with Sabine decay from the walls and the air: one assumed wall absorption shared by the three rooms, and air absorption as frequency squared scaled to the ledger's 13 kHz value; open passage mouths are a sensitivity case only.",
     "The field in the lining of a gas-filled chamber is capped at the air-breakdown field, whatever the masonry's resistivity.",
     "Ranks first, in the criterion of E13, is read as first in both decay time and modal quality factor: a judgement call."

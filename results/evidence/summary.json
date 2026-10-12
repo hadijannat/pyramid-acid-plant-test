@@ -31,11 +31,11 @@
     },
     "E02": {
       "status": "fail",
-      "basis": "No evidence found: both datasets were read in full and they do not match. The cited paper analysed one sulfate nodule and one host mudstone by X-ray fluorescence; of the ten elements the speaker names for the iron deposits it reports four, all common trace elements, and none of cerium, neodymium, silver, gold, platinum or tin. The iron-deposit data are 16 samples from Khafre's boat pits, in a report that is not peer-reviewed. The one level the files give for both, thorium, is 139 ppm in the paper's nodule and 0.25 to 1.36 ppm in the pit samples. The research file calls the claim weak."
+      "basis": "No evidence found: no match between the two datasets was found. Both were read in full; the research file calls the claim weak and does not call it contradicted. The cited paper analysed one sulfate nodule and one host mudstone by X-ray fluorescence; of the ten elements the speaker names for the iron deposits it reports four, all common trace elements, and none of cerium, neodymium, silver, gold, platinum or tin. The iron-deposit data are 16 samples from Khafre's boat pits, in a report that is not peer-reviewed. The one level the files give for both, thorium, is 139 ppm in the paper's nodule and 0.25 to 1.36 ppm in the pit samples."
     },
     "E03": {
       "status": "fail",
-      "basis": "No evidence found: no survey of a Giza cave shows cave forms cut in iron ore. The one study of Giza cave deposits that was read in full describes a mudstone exposure on the west side of the plateau and reports iron and manganese oxide as a minor part of gypsum and fracture fills (0.65 and 6.19 percent iron oxide by weight in its two samples), and the research file finds no ore body documented at Giza: the plateau is carbonate rock with minor oxide fills. That exposure is not the Tomb of the Birds, of which no survey was found. The paper the claim cites concerns iron-ore caves at other sites, which the criterion sets aside, and no research file opened it."
+      "basis": "No evidence found: no survey of a Giza cave shows cave forms cut in iron ore. The one study of Giza cave deposits that was read in full describes a mudstone exposure on the west side of the plateau and reports iron and manganese oxide as a minor part of gypsum and fracture fills (0.65 and 6.19 percent iron oxide by weight in its two samples), and the research file finds no ore body documented at Giza: the plateau is carbonate rock with minor oxide fills. That exposure is not the Tomb of the Birds; the research files read no survey of that cave and record no search for one. The paper the claim cites concerns iron-ore caves at other sites, which the criterion sets aside, and no research file opened it."
     },
     "E04": {
       "status": "conditional",
@@ -47,7 +47,7 @@
     },
     "E07": {
       "status": "fail",
-      "basis": "Contradicted: the patent does describe three steps with heat exchangers, but none of them can run as the hypothesis needs. Its claims were re-read at source (US 9,108,846): the first step burns hydrogen sulfide at 900 C or more, or oxidises it over a catalyst from 200 C; the second runs at 390 to 430 C over a vanadium catalyst; the third cools the gas to 60 to 120 C. No step runs at ambient temperature without a catalyst, and the hypothesis supplies neither heat nor catalyst. The three steps are the whole route from hydrogen sulfide to acid, not three stages of making sulfur dioxide."
+      "basis": "Contradicted: the patent does describe three steps with heat exchangers, but none of them can run as the hypothesis needs. Its claims were re-read at source (US 9,108,846): the first step burns hydrogen sulfide at 900 C or more, or oxidises it over a catalyst from 200 C; the second runs at 390 to 430 C, over a vanadium catalyst by the patent's description; the third cools the gas to 60 to 120 C. No step runs at ambient temperature without a catalyst, and the hypothesis supplies neither heat nor catalyst. The three steps are the whole route from hydrogen sulfide to acid, not three stages of making sulfur dioxide."
     },
     "E08": {
       "status": "fail",
@@ -71,7 +71,7 @@
     },
     "E27": {
       "status": "fail",
-      "basis": "No evidence found: nothing that the acid model predicts and the salt model cannot has been found, and the example the criterion names is the opposite of what was read. Sodium chloride is present in the Queen's Chamber, which the hypothesis fills: the 1978 letter lists some halite, and a laboratory study of 2026, read by two routes, identifies the efflorescence there as halite. No height-resolved salt map exists. The research file calls the inference from missing calcium chloride weak, since calcium chloride takes up water from the air and would not last as a crust (general knowledge there, not sourced)."
+      "basis": "Contradicted: the example the criterion names, no sodium chloride in the wetted zone, is the opposite of what was read, and nothing else that the acid model predicts and the salt model cannot has been found. Sodium chloride is present in the Queen's Chamber, which the hypothesis fills: the 1978 letter lists some halite, and a laboratory study of 2026, read by two routes, identifies the efflorescence there as halite. The same study has efflorescence on the west wall and ceiling growing visibly between 2022 and 2024 (read by one extraction route only), which shows a present-day process, and the chamber was cleaned in 1995 to 1997 without surviving documentation, so today's surface need not match the crust before the cleaning. The 1978 letter is older than that cleaning; who took its sample, when and from what height is not stated. The test, as the criterion words it, is of the surface as sampled. No height-resolved salt map exists. The research file calls the inference from missing calcium chloride weak, since calcium chloride takes up water from the air and would not last as a crust (general knowledge there, not sourced)."
     },
     "E28": {
       "status": "conditional",
