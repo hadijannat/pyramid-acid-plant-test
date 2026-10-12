@@ -10,7 +10,7 @@
   "verdicts": {
     "S01": {
       "status": "undefined",
-      "basis": "07 gives no flux for any seep or spring, so a required flux has nothing to be set against at any cycle time: its one analogue is a concentration, read from an abstract, at which one batch is the sulfide in 5.3 million m3 of cave air (60 ppmv in active sulfuric-acid caves). One full batch needs 13319 mol of hydrogen sulfide, 454 kg, a mole for each mole of sulfur dioxide in the King's Chamber, which is 0.15 mol/s and 166 t a year at one batch every 24 h, and 0.00041 to 3.8 mol/s over the cycle times taken; the hypothesis states no cycle rate either, so the required flux is itself undefined (07 section 4.4).",
+      "basis": "The plateau geology file (07) gives no flux for any seep or spring, so a required flux has nothing to be set against at any cycle time: its one analogue is a concentration, read from an abstract, at which one batch is the sulfide in 5.3 million m3 of cave air (60 ppmv in active sulfuric-acid caves). One full batch needs 13319 mol of hydrogen sulfide, 454 kg, a mole for each mole of sulfur dioxide in the King's Chamber, which is 0.15 mol/s and 166 t a year at one batch every 24 h, and 0.00041 to 3.8 mol/s over the cycle times taken; the hypothesis states no cycle rate either, so the required flux is itself undefined (07 section 4.4).",
       "source": "chem"
     },
     "S02": {
@@ -165,7 +165,7 @@
     },
     "E01": {
       "status": "undefined",
-      "basis": "No opened source gives a measured hydrogen sulfide flux, composition or source pressure under the plateau: 07 read the cited paper in full, and it measured no gas and reports no present-day seepage, so the passing clause is not met. The failing clause cannot be evaluated either. 07 gives no flux for any seep or spring, so a required flux has nothing to be set against at any cycle time: its one analogue is a concentration, read from an abstract, at which one batch is the sulfide in 5.3 million m3 of cave air. One full batch needs 13319 mol of hydrogen sulfide, 454 kg, a mole for each mole of sulfur dioxide in the King's Chamber, which is 0.15 mol/s and 166 t a year at one batch every 24 h, and 0.00041 to 3.8 mol/s over the cycle times taken; the hypothesis states no cycle rate either, so the required flux is itself undefined (07 section 4.4).",
+      "basis": "No opened source gives a measured hydrogen sulfide flux, composition or source pressure under the plateau: 07 read the cited paper in full, and it measured no gas and reports no present-day seepage, so the passing clause is not met. The failing clause cannot be evaluated either. The plateau geology file (07) gives no flux for any seep or spring, so a required flux has nothing to be set against at any cycle time: its one analogue is a concentration, read from an abstract, at which one batch is the sulfide in 5.3 million m3 of cave air. One full batch needs 13319 mol of hydrogen sulfide, 454 kg, a mole for each mole of sulfur dioxide in the King's Chamber, which is 0.15 mol/s and 166 t a year at one batch every 24 h, and 0.00041 to 3.8 mol/s over the cycle times taken; the hypothesis states no cycle rate either, so the required flux is itself undefined (07 section 4.4).",
       "source": "chem"
     },
     "E02": {

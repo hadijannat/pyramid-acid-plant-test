@@ -1,9 +1,9 @@
 {
  "manifest": {
   "case": "viewer",
-  "timestamp": "2026-10-12T05:44:11+00:00",
-  "commit": "149bd1c23186fafb364599f119b82db1c4d500bc",
-  "ledger": "71439cbdbd50c1e12bef6db2bb6c257726760cbe158004fb7befa6ae41562ead",
+  "timestamp": "2026-10-12T11:39:11+00:00",
+  "commit": "5dc5d367ad9f3fb6f3c527da7a65f371ccd65884",
+  "ledger": "d45f97327cec62761b63a229cd38bb9576fc53ff02e76675f362458da580bda7",
   "python": "3.12.12",
   "versions": {
    "numpy": "2.5.3",
@@ -25,7 +25,7 @@
    "piece": 5,
    "criterion": "Pass if a geologically defensible hydrogen sulfide flux can supply the chemistry model's minimum feed; fail if the required flux exceeds active-seep analogues by orders of magnitude (07 section 4.4).",
    "status": "undefined",
-   "basis": "07 gives no flux for any seep or spring, so a required flux has nothing to be set against at any cycle time: its one analogue is a concentration, read from an abstract, at which one batch is the sulfide in 5.3 million m3 of cave air (60 ppmv in active sulfuric-acid caves). One full batch needs 13319 mol of hydrogen sulfide, 454 kg, a mole for each mole of sulfur dioxide in the King's Chamber, which is 0.15 mol/s and 166 t a year at one batch every 24 h, and 0.00041 to 3.8 mol/s over the cycle times taken; the hypothesis states no cycle rate either, so the required flux is itself undefined (07 section 4.4).",
+   "basis": "The plateau geology file (07) gives no flux for any seep or spring, so a required flux has nothing to be set against at any cycle time: its one analogue is a concentration, read from an abstract, at which one batch is the sulfide in 5.3 million m3 of cave air (60 ppmv in active sulfuric-acid caves). One full batch needs 13319 mol of hydrogen sulfide, 454 kg, a mole for each mole of sulfur dioxide in the King's Chamber, which is 0.15 mol/s and 166 t a year at one batch every 24 h, and 0.00041 to 3.8 mol/s over the cycle times taken; the hypothesis states no cycle rate either, so the required flux is itself undefined (07 section 4.4).",
    "source": "chem",
    "numbers": [
     {
@@ -99,6 +99,13 @@
    "basis": "With its shafts open a King's Chamber of pure sulfur dioxide loses half its charge by diffusion in 361 (271 to 460) years, and no wind below 29 (23 to 43) m/s can drive a through-flow, because the gas, 2.2 times as dense as air, would have to be lifted up the leeward shaft against 516 (472 to 551) Pa. The same weight carries it out of an opening at the chamber's floor while no water stands beyond it and the Gallery is open to the air, which the hypothesis does not say for the time before the fill: through the 202 cm2 of grooves and one slab's clearance in the antechamber, the gas path of the hypothesis, half the charge is gone in about 69 minutes (41 at the fastest, never with the path shut). In the 30 m/s at the top of the assumed wind range the half-time falls to 15 minutes, and to 11 with the floor opening draining at its fastest as well, against the interval between delivery and draw, which the hypothesis does not state and which is taken as 10 minutes to 30 days; a charge diluted to a tenth is held only below 9 m/s, and below the wind that lifts it the model loses gas up the shafts by diffusion alone, which is a limit of the model. Remaining is read as half the charge still being there at the draw (a judgement call), and the hypothesis states neither the composition of the charge nor what keeps it in.",
    "source": "flow",
    "numbers": [
+    {
+     "label": "King's Chamber volume, floor to ceiling",
+     "value": 320.416169419015,
+     "low": 317.002503781392,
+     "high": 324.003095458416,
+     "unit": "m3"
+    },
     {
      "label": "Sulfur dioxide the King's Chamber holds if filled with the pure gas",
      "value": 13319.411490797183,
@@ -441,6 +448,13 @@
      "low": 6.161529783035644,
      "high": 7.3338425755295145,
      "unit": "1"
+    },
+    {
+     "label": "Height of the pit bottom, as it stood before 1837, above the Old Kingdom flood peak",
+     "value": 11.43,
+     "low": 5.43,
+     "high": 14.43,
+     "unit": "m"
     },
     {
      "label": "Depth of the highest documented water below the foot of the Descending Passage",
@@ -1409,16 +1423,16 @@
     },
     {
      "label": "Limestone lost in a cycle that starts bare and comes to gypsum saturation",
-     "value": 0.0002057569726746237,
-     "low": 0.0001622299994642909,
-     "high": 0.0004895626544772999,
+     "value": 0.00020575697267462362,
+     "low": 0.00016222999946429096,
+     "high": 0.0004895626544773,
      "unit": "m"
     },
     {
      "label": "Limestone lost in ten such cycles, every fill stripping the layer",
-     "value": 0.002057569726746237,
-     "low": 0.001622299994642909,
-     "high": 0.0048956265447729986,
+     "value": 0.002057569726746236,
+     "low": 0.0016222999946429095,
+     "high": 0.004895626544772999,
      "unit": "m"
     },
     {
@@ -1716,7 +1730,7 @@
    "piece": 5,
    "criterion": "Pass if an opened source gives a measured hydrogen sulfide flux, composition or source pressure under the plateau that meets the chemistry model's minimum feed; fail if the required flux exceeds active-seep analogues by orders of magnitude (07 section 4.4).",
    "status": "undefined",
-   "basis": "No opened source gives a measured hydrogen sulfide flux, composition or source pressure under the plateau: 07 read the cited paper in full, and it measured no gas and reports no present-day seepage, so the passing clause is not met. The failing clause cannot be evaluated either. 07 gives no flux for any seep or spring, so a required flux has nothing to be set against at any cycle time: its one analogue is a concentration, read from an abstract, at which one batch is the sulfide in 5.3 million m3 of cave air. One full batch needs 13319 mol of hydrogen sulfide, 454 kg, a mole for each mole of sulfur dioxide in the King's Chamber, which is 0.15 mol/s and 166 t a year at one batch every 24 h, and 0.00041 to 3.8 mol/s over the cycle times taken; the hypothesis states no cycle rate either, so the required flux is itself undefined (07 section 4.4).",
+   "basis": "No opened source gives a measured hydrogen sulfide flux, composition or source pressure under the plateau: 07 read the cited paper in full, and it measured no gas and reports no present-day seepage, so the passing clause is not met. The failing clause cannot be evaluated either. The plateau geology file (07) gives no flux for any seep or spring, so a required flux has nothing to be set against at any cycle time: its one analogue is a concentration, read from an abstract, at which one batch is the sulfide in 5.3 million m3 of cave air. One full batch needs 13319 mol of hydrogen sulfide, 454 kg, a mole for each mole of sulfur dioxide in the King's Chamber, which is 0.15 mol/s and 166 t a year at one batch every 24 h, and 0.00041 to 3.8 mol/s over the cycle times taken; the hypothesis states no cycle rate either, so the required flux is itself undefined (07 section 4.4).",
    "source": "chem",
    "numbers": [
     {
