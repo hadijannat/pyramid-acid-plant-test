@@ -1,0 +1,224 @@
+{
+  "case": "evidence",
+  "timestamp": "2026-10-12T02:29:34+00:00",
+  "commit": "adabf9c9815657d864244fd72b7ec7e53d1cf0dd",
+  "ledger": "e2fd8b0861a3ca63a797c46a8956944aa2463740340537ec4bec909218694406",
+  "python": "3.12.12",
+  "versions": {
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "pyyaml": "6.0.3",
+    "gmsh": "4.15.2",
+    "trimesh": "5.1.1",
+    "matplotlib": "3.11.2",
+    "pytest": "9.1.1"
+  },
+  "assumptions": [
+    "The research files in research/ are the evidence base; no source outside them was consulted.",
+    "A documentary status follows the ruling of the simulations design, section 2: pass when a source the research files read meets the criterion, fail when a source that would show it was read and does not or contradicts it, conditional when it is partly met or rests on a secondary source or on a measurement nobody has made, undefined when the claim names no source that could be checked or the hypothesis leaves the matter unspecified.",
+    "Where a criterion joins two conditions with 'and', both must hold for a pass.",
+    "A claim whose own criterion says that nothing can decide it is not_testable; its basis records what was found."
+  ],
+  "register_sha256": "4d328381a90f16d559638dab8bb87430941c2c48f4152dc2953297be5dd2061d",
+  "register": {
+    "S02": {
+      "sources": [
+        "research/00-hypothesis.md S02",
+        "research/03-chemistry.md C2 and check V14"
+      ],
+      "verified": true
+    },
+    "S26": {
+      "sources": [
+        "research/00-hypothesis.md S26, section 5 items 27 and 28, section 6 item 10",
+        "research/06-evidence-archaeology.md, geometry and boundary facts handed to other domains",
+        "research/01-geometry.md claim 3"
+      ],
+      "verified": true
+    },
+    "S05": {
+      "sources": [
+        "research/06-evidence-archaeology.md claim 14 and the last paragraph of \"What pass/fail would look like\"",
+        "research/00-hypothesis.md S05"
+      ],
+      "verified": false
+    },
+    "E05": {
+      "sources": [
+        "research/00-hypothesis.md E05"
+      ],
+      "verified": false
+    },
+    "E23": {
+      "sources": [
+        "research/00-hypothesis.md E23",
+        "research/07-plateau-geology.md C15"
+      ],
+      "verified": false
+    },
+    "E24": {
+      "sources": [
+        "research/06-evidence-archaeology.md claim 14 and the last paragraph of \"What pass/fail would look like\"",
+        "research/00-hypothesis.md E24"
+      ],
+      "verified": false
+    },
+    "E40": {
+      "sources": [
+        "research/06-evidence-archaeology.md claim 12 and the last paragraph of \"What pass/fail would look like\"",
+        "research/01-geometry.md claim 11"
+      ],
+      "verified": false
+    },
+    "E02": {
+      "sources": [
+        "research/07-plateau-geology.md C6, second-pass note",
+        "research/07-plateau-geology.md Verification pass, checks 1, 7 and 8, the derived values, the last open item"
+      ],
+      "verified": true
+    },
+    "E03": {
+      "sources": [
+        "research/07-plateau-geology.md C1 with its second-pass note, and C10",
+        "research/07-plateau-geology.md Verification pass, check 1",
+        "research/00-hypothesis.md E03"
+      ],
+      "verified": true
+    },
+    "E04": {
+      "sources": [
+        "research/07-plateau-geology.md C1 with its second-pass note",
+        "research/07-plateau-geology.md Verification pass, checks 1 and 2"
+      ],
+      "verified": true
+    },
+    "E06": {
+      "sources": [
+        "research/00-hypothesis.md E06 and the superseded elemental-sulfur row of the feed table",
+        "research/03-chemistry.md, what the speaker says about the sulfur source"
+      ],
+      "verified": false
+    },
+    "E07": {
+      "sources": [
+        "research/03-chemistry.md C2 and section 2c",
+        "research/03-chemistry.md Verification pass, check V14"
+      ],
+      "verified": true
+    },
+    "E08": {
+      "sources": [
+        "research/01-geometry.md claim 9",
+        "research/00-hypothesis.md E08"
+      ],
+      "verified": true
+    },
+    "E09": {
+      "sources": [
+        "research/01-geometry.md claim 9",
+        "research/00-hypothesis.md E09"
+      ],
+      "verified": true
+    },
+    "E10": {
+      "sources": [
+        "research/01-geometry.md claim 1",
+        "research/01-geometry.md Verification pass, check 4 and the first item of the strongest case"
+      ],
+      "verified": true
+    },
+    "E16": {
+      "sources": [
+        "research/01-geometry.md claim 6",
+        "research/02-hydraulics.md C3",
+        "research/00-hypothesis.md E16"
+      ],
+      "verified": true
+    },
+    "E26": {
+      "sources": [
+        "research/06-evidence-archaeology.md claim 1",
+        "research/06-evidence-archaeology.md Verification pass, checks 1 to 3"
+      ],
+      "verified": true
+    },
+    "E27": {
+      "sources": [
+        "research/06-evidence-archaeology.md, \"What pass/fail would look like\", item 4",
+        "research/06-evidence-archaeology.md Verification pass, checks 1, 4 and 22",
+        "research/03-chemistry.md C9"
+      ],
+      "verified": true
+    },
+    "E28": {
+      "sources": [
+        "research/06-evidence-archaeology.md claim 3",
+        "research/06-evidence-archaeology.md, \"What pass/fail would look like\", item 1",
+        "research/06-evidence-archaeology.md Verification pass, checks 4, 8, 9, 10 and 22"
+      ],
+      "verified": true
+    },
+    "E30": {
+      "sources": [
+        "research/06-evidence-archaeology.md claim 4",
+        "research/06-evidence-archaeology.md, \"What pass/fail would look like\", item 2",
+        "research/06-evidence-archaeology.md Verification pass, check 4 and the note under the verdict changes"
+      ],
+      "verified": false
+    },
+    "E31": {
+      "sources": [
+        "research/06-evidence-archaeology.md claim 7 and open questions 6 and 7",
+        "research/06-evidence-archaeology.md Verification pass, check 17",
+        "research/05-sonochemistry-acoustics.md, the verdict on the quartz comparison and the parameter row citing [S10]"
+      ],
+      "verified": false
+    },
+    "E33": {
+      "sources": [
+        "research/06-evidence-archaeology.md claim 11",
+        "research/07-plateau-geology.md C13 with its second-pass note"
+      ],
+      "verified": false
+    },
+    "E34": {
+      "sources": [
+        "research/00-hypothesis.md E34",
+        "research/07-plateau-geology.md C15"
+      ],
+      "verified": false
+    },
+    "E35": {
+      "sources": [
+        "research/06-evidence-archaeology.md claim 13 and Verification pass, check 13",
+        "research/07-plateau-geology.md C7, C8 and C9 with their second-pass notes",
+        "research/07-plateau-geology.md Verification pass, checks 4, 5 and 6"
+      ],
+      "verified": false
+    },
+    "E36": {
+      "sources": [
+        "research/07-plateau-geology.md C6 and C7 with their second-pass notes",
+        "research/07-plateau-geology.md Verification pass, checks 4, 7 and 8, and the first item of the evidence in favour"
+      ],
+      "verified": true
+    },
+    "E37": {
+      "sources": [
+        "research/07-plateau-geology.md section 4.2 with its second-pass notes",
+        "research/07-plateau-geology.md C8 and C11 with their second-pass notes",
+        "research/07-plateau-geology.md Verification pass, check 10 and the verdict changes",
+        "research/00-hypothesis.md E37"
+      ],
+      "verified": false
+    },
+    "E39": {
+      "sources": [
+        "research/07-plateau-geology.md C11, second-pass note, and section 4.3",
+        "research/07-plateau-geology.md Verification pass, check 9",
+        "research/06-evidence-archaeology.md claim 10 and Verification pass, check 14"
+      ],
+      "verified": true
+    }
+  }
+}

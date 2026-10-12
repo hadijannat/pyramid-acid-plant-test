@@ -1,0 +1,31 @@
+{
+  "case": "electro",
+  "timestamp": "2026-10-12T02:30:48+00:00",
+  "commit": "adabf9c9815657d864244fd72b7ec7e53d1cf0dd",
+  "ledger": "e2fd8b0861a3ca63a797c46a8956944aa2463740340537ec4bec909218694406",
+  "python": "3.12.12",
+  "versions": {
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "pyyaml": "6.0.3",
+    "gmsh": "4.15.2",
+    "trimesh": "5.1.1",
+    "matplotlib": "3.11.2",
+    "pytest": "9.1.1"
+  },
+  "assumptions": [
+    "Conduction is steady; the stroke is taken at its peak current as if steady, which leaves out induction and so overstates the field at the chamber.",
+    "The pyramid is homogeneous masonry in its designed square shape, cut off at today's platform, on a half-space of bedrock; the air is insulating; joints, casing and a wetter skin are not drawn.",
+    "The King's Chamber is an insulating cavity lined with a granite shell of one assumed thickness; the relieving chambers, the antechamber and every other void are left out.",
+    "The granite's peak field is the largest cell value on cells of about one metre; it grows by about a tenth each time the cells are halved because the field is singular along the cavity's edges, while the volume mean is converged to about 2 percent.",
+    "An ore body is a pair of vertical sheets of the most conductive hematite measured, in line with the far field and ending at the base edges; their thickness, depth and length are assumed and swept.",
+    "The telluric far field runs north-south, across the chamber's short side, which gives a resistive body the larger field.",
+    "The field the granite needs is Tier 0's pulse chain run backwards, with every part of the chain at its most generous for the favourable end.",
+    "Non-negligible, in the criteria of S04 and E21, is read as reaching the field that chain needs: a judgement call.",
+    "The rooms are hard-walled boxes with Sabine decay from the walls and the air: one assumed wall absorption shared by the three rooms, and air absorption as frequency squared scaled to the ledger's 13 kHz value; open passage mouths are a sensitivity case only.",
+    "The field in the lining of a gas-filled chamber is capped at the air-breakdown field, whatever the masonry's resistivity.",
+    "Ranks first, in the criterion of E13, is read as first in both decay time and modal quality factor: a judgement call."
+  ],
+  "cell_at_the_chamber_m": 1.0,
+  "half_width_of_the_ground_m": 3000.0
+}

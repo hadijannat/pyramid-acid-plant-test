@@ -1,9 +1,9 @@
 {
  "manifest": {
   "case": "viewer",
-  "timestamp": "2026-10-11T16:04:12+00:00",
-  "commit": "f007fe82b5bafe2efbd36321469295aea9ec9b4b",
-  "ledger": "b5b35856040bd5f70825dbcafd7052954d4898de5ff7c8165d87c5c3159affdd",
+  "timestamp": "2026-10-12T02:31:17+00:00",
+  "commit": "adabf9c9815657d864244fd72b7ec7e53d1cf0dd",
+  "ledger": "e2fd8b0861a3ca63a797c46a8956944aa2463740340537ec4bec909218694406",
   "python": "3.12.12",
   "versions": {
    "numpy": "2.5.3",
@@ -38,9 +38,9 @@
    "tier": 2,
    "piece": 4,
    "criterion": "Undefined until the hypothesis names the three steps; then pass if a mass balance for a plausible hydrogen sulfide flux gives a stated mass of acid per cycle and per year (00 section 7 item 12).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 4.",
-   "source": "none",
+   "status": "undefined",
+   "basis": "Not specified by the hypothesis: the transcripts assign the conversion of hydrogen sulfide to sulfur dioxide to three steps in the satellite pyramids and name none of them, so no mass balance can be written, and the criterion holds the claim undefined until they are named. The patent cited for three steps covers the whole route from hydrogen sulfide to sulfuric acid, not this conversion.",
+   "source": "evidence",
    "numbers": [],
    "spaces": []
   },
@@ -70,10 +70,67 @@
    "tier": 1,
    "piece": 2,
    "criterion": "Pass only if a direct-current conduction model with a far field of 1e-7 to 2e-2 V/m gives a non-negligible field or charge at the summit or in the granite (04 section 5.3).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 2.",
-   "source": "none",
-   "numbers": [],
+   "status": "fail",
+   "basis": "In a steady conduction model of the pyramid on bedrock, a far field of 1e-07 to 2e-02 V/m leaves 0.58 of itself (0.14 to 0.62 over the ranges of the inputs) in the masonry at chamber level and 0.036 (0.008 to 0.039) at the summit, and puts 2.2 (0.4 to 2.2) times itself in the King's Chamber granite at the peak: 0.04 V/m at the most, which is 8.8 orders of magnitude below the 2.7e+07 V/m that is, at its most generous, the field at which the piezoelectric chain first reaches a documented acoustic effect, the line this rule takes for non-negligible as a judgement call; a charge held by such a field is short by the same factor.",
+   "source": "electro",
+   "numbers": [
+    {
+     "label": "Peak telluric field in the King's Chamber granite over the far field",
+     "value": 2.177243916540785,
+     "low": 0.445188365115548,
+     "high": 2.2028667121472845,
+     "unit": "1"
+    },
+    {
+     "label": "Volume-mean telluric field in the King's Chamber granite over the far field",
+     "value": 0.9224244476353297,
+     "low": 0.19749212540457034,
+     "high": 1.0620933624267646,
+     "unit": "1"
+    },
+    {
+     "label": "Telluric field in the masonry beside the King's Chamber over the far field",
+     "value": 0.5820224741922158,
+     "low": 0.14258797054726421,
+     "high": 0.6249142493622257,
+     "unit": "1"
+    },
+    {
+     "label": "Telluric field in the summit masonry over the far field",
+     "value": 0.03582857002080367,
+     "low": 0.008023317224212343,
+     "high": 0.038766461589762616,
+     "unit": "1"
+    },
+    {
+     "label": "Largest telluric field at the summit or in the granite",
+     "value": 0.0002177243916540785,
+     "low": 4.45188365115548e-08,
+     "high": 0.04405733424294569,
+     "unit": "V/m"
+    },
+    {
+     "label": "Peak field in the granite over the even-spreading conduction value",
+     "value": 7.25778108749484,
+     "low": 5.104296201397493,
+     "high": 7.378166438094948,
+     "unit": "1"
+    },
+    {
+     "label": "Field in the granite for the weakest documented gas-solid acoustic effect",
+     "value": 13612646541.779581,
+     "low": 26743959.44460631,
+     "high": 28336983468.77279,
+     "unit": "V/m"
+    },
+    {
+     "label": "Length of ore sheet whose whole telluric voltage would equal what the chain needs",
+     "value": 136126465417795.8,
+     "low": 1337197972.2303154,
+     "high": 2.833698346877279e+17,
+     "unit": "m"
+    }
+   ],
    "spaces": []
   },
   {
@@ -84,9 +141,9 @@
    "tier": 2,
    "piece": 6,
    "criterion": "Cannot be simulated; held as a documented constraint with no computed verdict (06, evidence that cannot be simulated).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 6.",
-   "source": "none",
+   "status": "not_testable",
+   "basis": "No test exists: the criterion holds this as a documented constraint with no computed verdict. Nothing about the formations was found outside the speaker's own videos: no location, no dimensions and no acoustic measurement.",
+   "source": "evidence",
    "numbers": [],
    "spaces": []
   },
@@ -98,10 +155,109 @@
    "tier": 1,
    "piece": 2,
    "criterion": "Pass if the peak field in the granite exceeds what the piezoelectric model needs to reach the acoustic threshold; fail if the interior field is screened to the conduction value of order kV/m or less (04 section 5.2).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 2.",
-   "source": "none",
-   "numbers": [],
+   "status": "fail",
+   "basis": "A stroke of 30 kA entering at the summit and spreading by steady conduction puts 4.3 kV/m in the King's Chamber granite at the peak (1.7 kV/m as a volume mean), 7.3 times the even-spreading conduction value, and 88 kV/m at the favourable corner of the ranges, the 200 kA design maximum in the most resistive masonry measured (884 V/m at the least). The piezoelectric chain needs 2.7e+07 V/m at its most generous to reach a documented acoustic effect, 303 times more than that and 8.9 times the 3e+06 V/m at which air breaks down, so the field in the granite is the conduction value and no more. A core of 5e+04 ohm m, 34 times the most resistive masonry measured in place, would bring that peak to the breakdown field, which caps it below the need. The chamber lies 1.5 skin depths (0.3 to 5.9) inside the nearest face, and induction, left out here, lowers the field there further.",
+   "source": "electro",
+   "numbers": [
+    {
+     "label": "Charge relaxation time of the limestone masonry",
+     "value": 3.0989e-08,
+     "low": 1.3280999999999998e-08,
+     "high": 1.1952899999999998e-07,
+     "unit": "s"
+    },
+    {
+     "label": "Charge relaxation time of the granite, driest measured case",
+     "value": 0.005312399999999999,
+     "low": 3.0989e-07,
+     "high": 0.021249599999999997,
+     "unit": "s"
+    },
+    {
+     "label": "Skin depth in the masonry at a lightning return-stroke frequency",
+     "value": 35.93679455960648,
+     "low": 9.088380087956361,
+     "high": 195.6604173579737,
+     "unit": "m"
+    },
+    {
+     "label": "Peak telluric field in the King's Chamber granite over the far field",
+     "value": 2.177243916540785,
+     "low": 0.445188365115548,
+     "high": 2.2028667121472845,
+     "unit": "1"
+    },
+    {
+     "label": "Volume-mean telluric field in the King's Chamber granite over the far field",
+     "value": 0.9224244476353297,
+     "low": 0.19749212540457034,
+     "high": 1.0620933624267646,
+     "unit": "1"
+    },
+    {
+     "label": "Telluric field in the masonry beside the King's Chamber over the far field",
+     "value": 0.5820224741922158,
+     "low": 0.14258797054726421,
+     "high": 0.6249142493622257,
+     "unit": "1"
+    },
+    {
+     "label": "Telluric field in the summit masonry over the far field",
+     "value": 0.03582857002080367,
+     "low": 0.008023317224212343,
+     "high": 0.038766461589762616,
+     "unit": "1"
+    },
+    {
+     "label": "Peak field in the King's Chamber granite at the stroke's peak current",
+     "value": 4346.891852123566,
+     "low": 884.3743213519567,
+     "high": 88379.88136243656,
+     "unit": "V/m"
+    },
+    {
+     "label": "Volume-mean field in the King's Chamber granite at the stroke's peak current",
+     "value": 1748.7099230697634,
+     "low": 360.33059133990804,
+     "high": 38640.074614633355,
+     "unit": "V/m"
+    },
+    {
+     "label": "Peak field in the granite over the even-spreading conduction value",
+     "value": 7.25778108749484,
+     "low": 5.104296201397493,
+     "high": 7.378166438094948,
+     "unit": "1"
+    },
+    {
+     "label": "Field in the granite for the weakest documented gas-solid acoustic effect",
+     "value": 13612646541.779581,
+     "low": 26743959.44460631,
+     "high": 28336983468.77279,
+     "unit": "V/m"
+    },
+    {
+     "label": "Field the chain needs over the peak field a stroke puts in the granite",
+     "value": 3131581.6001103087,
+     "low": 302.60234605806,
+     "high": 32041843.351414368,
+     "unit": "1"
+    },
+    {
+     "label": "Masonry resistivity at which the design-maximum stroke brings the granite's peak field to air breakdown",
+     "value": 50916.565293247855,
+     "low": 50916.565293247855,
+     "high": 50916.565293247855,
+     "unit": "ohm m"
+    },
+    {
+     "label": "Depth of the King's Chamber inside the nearest face, in skin depths at the stroke's frequency",
+     "value": 1.4906709026492617,
+     "low": 0.2737903491562114,
+     "high": 5.894332484562225,
+     "unit": "1"
+    }
+   ],
    "spaces": [
     "kings_chamber",
     "antechamber"
@@ -353,10 +509,32 @@
    "tier": 2,
    "piece": 3,
    "criterion": "Pass only if a connected duct from the King's Chamber to the Gallery exists in the as-surveyed geometry with the slabs down; the blind-groove case fails and the connected case allows at most about 0.002 m2 (01 premise P3).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 3.",
-   "source": "none",
-   "numbers": [],
+   "status": "conditional",
+   "basis": "With the slabs down, the duct the claim names from the King's Chamber to the Gallery is the grooves, and the criterion tests them: it fails the blind case and allows the connected one about 0.002 m2. Petrie's depths for the 4 grooves in the south wall run out to between 0.0 and 5.1 mm at the top of the doorway, where the stone is broken away, so a connected duct exists only in the reading that lets them reach the doorway, and the blind reading, which is Petrie's own, has none: the connected area is 0.0021 m2 at most (4 grooves 0.105 m wide) against 0.030 m2 for grooves of the full 71 mm, which the measured taper rules out. The clearance round one slab, 0.018 m2 from the one surviving fragment, is 8 times the grooves at their most, so the grooves would not be the only way past the slabs.",
+   "source": "premises",
+   "numbers": [
+    {
+     "label": "Largest connected area of the antechamber grooves at the door top",
+     "value": 0.0021420000000000002,
+     "low": 0.0,
+     "high": 0.0021420000000000002,
+     "unit": "m2"
+    },
+    {
+     "label": "Area of the antechamber grooves at their full measured depth",
+     "value": 0.029861999999999996,
+     "low": 0.029861999999999996,
+     "high": 0.029861999999999996,
+     "unit": "m2"
+    },
+    {
+     "label": "Clearance round one portcullis slab",
+     "value": 0.018150000000000017,
+     "low": 0.018150000000000017,
+     "high": 0.018150000000000017,
+     "unit": "m2"
+    }
+   ],
    "spaces": [
     "kings_chamber",
     "antechamber"
@@ -622,6 +800,13 @@
      "low": 1.5077124917119311,
      "high": 2.0287422212216213,
      "unit": "K"
+    },
+    {
+     "label": "Big Void centre above the top of the Gallery roof",
+     "value": 14.689999999999998,
+     "low": 9.64,
+     "high": 19.839999999999996,
+     "unit": "m"
     }
    ],
    "spaces": [
@@ -654,6 +839,13 @@
      "low": 83.92844290698613,
      "high": 103.26400657527503,
      "unit": "dB"
+    },
+    {
+     "label": "Uncut wall stone at each Queen's Chamber shaft mouth, as recorded",
+     "value": 0.127,
+     "low": 0.0762,
+     "high": 0.127,
+     "unit": "m"
     }
    ],
    "spaces": [
@@ -670,10 +862,18 @@
    "tier": 2,
    "piece": 3,
    "criterion": "Undefined until the hypothesis names the outlet, driver and destination; the Queen's Chamber shafts are dead-end ducts and no other outlet is surveyed (06, geometry facts handed to other domains).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 3.",
-   "source": "none",
-   "numbers": [],
+   "status": "undefined",
+   "basis": "Not specified by the hypothesis: the transcripts name no outlet, no driver and no destination for the liquid said to leave through the Queen's Chamber, and the criterion holds the claim undefined until they are named. The chamber's two shafts were closed at the chamber by about 127 mm of uncut wall stone until 1872, and the southern one is closed again by a slab 63.6 m up, so they are dead-end ducts; no other outlet is surveyed.",
+   "source": "evidence",
+   "numbers": [
+    {
+     "label": "Uncut wall stone at each Queen's Chamber shaft mouth, as recorded",
+     "value": 0.127,
+     "low": 0.0762,
+     "high": 0.127,
+     "unit": "m"
+    }
+   ],
    "spaces": [
     "queens_chamber",
     "queens_passage"
@@ -828,9 +1028,9 @@
    "tier": 2,
    "piece": 5,
    "criterion": "Documentary check, not simulated: pass if the elements and levels reported in the cited paper match those reported for the iron-oxide vein samples.",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 5.",
-   "source": "none",
+   "status": "fail",
+   "basis": "No evidence found: both datasets were read in full and they do not match. The cited paper analysed one sulfate nodule and one host mudstone by X-ray fluorescence; of the ten elements the speaker names for the iron deposits it reports four, all common trace elements, and none of cerium, neodymium, silver, gold, platinum or tin. The iron-deposit data are 16 samples from Khafre's boat pits, in a report that is not peer-reviewed. The one level the files give for both, thorium, is 139 ppm in the paper's nodule and 0.25 to 1.36 ppm in the pit samples. The research file calls the claim weak.",
+   "source": "evidence",
    "numbers": [],
    "spaces": []
   },
@@ -842,9 +1042,9 @@
    "tier": 2,
    "piece": 5,
    "criterion": "Documentary check, not simulated: pass if a survey of the Giza caves shows cave forms cut in iron ore; cases at other sites do not decide it.",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 5.",
-   "source": "none",
+   "status": "fail",
+   "basis": "No evidence found: no survey of a Giza cave shows cave forms cut in iron ore. The one study of Giza cave deposits that was read in full describes a mudstone exposure on the west side of the plateau and reports iron and manganese oxide as a minor part of gypsum and fracture fills (0.65 and 6.19 percent iron oxide by weight in its two samples), and the research file finds no ore body documented at Giza: the plateau is carbonate rock with minor oxide fills. That exposure is not the Tomb of the Birds, of which no survey was found. The paper the claim cites concerns iron-ore caves at other sites, which the criterion sets aside, and no research file opened it.",
+   "source": "evidence",
    "numbers": [],
    "spaces": []
   },
@@ -856,9 +1056,9 @@
    "tier": 2,
    "piece": 5,
    "criterion": "Documentary check, not simulated: pass only if mineral evidence of sulfuric-acid cave formation is published for those sites; visual likeness does not decide it.",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 5.",
-   "source": "none",
+   "status": "conditional",
+   "basis": "Partly supported: mineral evidence of sulfuric-acid cave formation is published for the plateau, but not for the sites named. One paper, read in full, argues it from natroalunite, replacive gypsum and related minerals at a single exposure at Darb El Fayum on the west side, in a mudstone unit it lists apart from the formation the pyramids stand on. That exposure is not the trial passages, the Tomb of the Birds or any cave the speaker names, and no sulfur isotopes were measured. Likeness in photographs is not evidence.",
+   "source": "evidence",
    "numbers": [],
    "spaces": []
   },
@@ -870,9 +1070,9 @@
    "tier": 2,
    "piece": 6,
    "criterion": "Analogy only, no test: recorded so that the reply can state what the cited paper does and does not say about the pyramid.",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 6.",
-   "source": "none",
+   "status": "not_testable",
+   "basis": "No test exists: the claim is an analogy between a planned off-world sulfuric-acid process and the pyramid, which the criterion records without a test. No research file opened the cited paper, so nothing is asserted here about what it says.",
+   "source": "evidence",
    "numbers": [],
    "spaces": []
   },
@@ -884,9 +1084,9 @@
    "tier": 2,
    "piece": 6,
    "criterion": "Documentary check, not simulated: pass if a dated archaeological source records Old Kingdom sulfur mining; the claim belongs to the superseded sulfur-burning version of the hypothesis.",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 6.",
-   "source": "none",
+   "status": "undefined",
+   "basis": "No evidence found: the transcripts call sulfur mining near the Suez Canal well documented but attribute it to no source and garble the place names, so there is nothing to check, and the research files hold no dated archaeological source for Old Kingdom sulfur mining. The claim belongs to the sulfur-burning version of the hypothesis, which the speaker has replaced.",
+   "source": "evidence",
    "numbers": [],
    "spaces": []
   },
@@ -898,9 +1098,9 @@
    "tier": 2,
    "piece": 4,
    "criterion": "Pass only if every step of the cited patent can run at ambient temperature without a catalyst, since the hypothesis supplies neither heat nor catalyst (03 section 2c and check V14).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 4.",
-   "source": "none",
+   "status": "fail",
+   "basis": "Contradicted: the patent does describe three steps with heat exchangers, but none of them can run as the hypothesis needs. Its claims were re-read at source (US 9,108,846): the first step burns hydrogen sulfide at 900 C or more, or oxidises it over a catalyst from 200 C; the second runs at 390 to 430 C over a vanadium catalyst; the third cools the gas to 60 to 120 C. No step runs at ambient temperature without a catalyst, and the hypothesis supplies neither heat nor catalyst. The three steps are the whole route from hydrogen sulfide to acid, not three stages of making sulfur dioxide.",
+   "source": "evidence",
    "numbers": [],
    "spaces": []
   },
@@ -912,9 +1112,9 @@
    "tier": 2,
    "piece": 6,
    "criterion": "Documentary check, not simulated: pass if a survey older than the excavations records an original lined shaft in the King's Chamber floor.",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 6.",
-   "source": "none",
+   "status": "fail",
+   "basis": "No evidence found: no source opened, of any date, describes an original lined shaft in the King's Chamber floor. Petrie's survey records only that the floor had been dug under at its west end, below the coffer, which is an excavation in masonry about 43 m above the ground. The research files name no survey older than that digging which records a shaft; the hole is known from the speaker's photographs and a video.",
+   "source": "evidence",
    "numbers": [],
    "spaces": [
     "kings_chamber"
@@ -928,9 +1128,9 @@
    "tier": 2,
    "piece": 6,
    "criterion": "Pass only if a surveyed conduit from below the structure to the King's Chamber floor exists; the chamber floor is about 43 m above the pavement.",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 6.",
-   "source": "none",
+   "status": "fail",
+   "basis": "No evidence found: no conduit is surveyed between the ground and the King's Chamber floor, which lies about 43 m above the pavement in masonry. The only feature recorded under the floor is the excavation at its west end, and the speaker himself says the connection is not known.",
+   "source": "evidence",
    "numbers": [],
    "spaces": [
     "kings_chamber"
@@ -944,9 +1144,9 @@
    "tier": 2,
    "piece": 6,
    "criterion": "Documentary check, not simulated: pass if the excavation record reports air flow resuming when a shaft was cleared.",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 6.",
-   "source": "none",
+   "status": "pass",
+   "basis": "Supported: for the southern shaft. Vyse's narrative of 1837 has a large stone removed from the southern channel about 7 ft inside the surface on 29 May, after which air rushed into the chamber. It was read as OCR text by one route; a paper of 1964, read on the page, reports the same. The northern channel had already been forced open, so the record covers one shaft, which is what the criterion asks for.",
+   "source": "evidence",
    "numbers": [],
    "spaces": [
     "kc_shaft_north",
@@ -962,10 +1162,39 @@
    "tier": 2,
    "piece": 1,
    "criterion": "Geometric premise: pass for a shaft only if a survey shows its outer end running level through the casing; carried as the kc_shaft_ends_level variant, and the shaft exits must fall on the casing plane at Z = 80 +/- 1 m in either case (01 fidelity criterion).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 1.",
-   "source": "none",
-   "numbers": [],
+   "status": "conditional",
+   "basis": "A level outer end is on record for one shaft only: one survey party of 1837 to 1839, known here through a later citation of its unread plate, drew the last 3.0 m of the southern channel level, in core masonry, while the 1881 survey found the incline continuing to that mouth; the northern outlet was forced open before any survey and its level end is only presumed, and the casing is gone at both, so no survey can show a run through it. Carried to the casing plane at the surveyed slopes, the shafts come out at Z = 80.3 m in the north (78.8 to 81.3 m over the ranges of the inputs) and 80.9 m in the south (79.5 to 81.7 m), and with a level last 3.0 m at 79.0 m (77.6 to 80.0 m) and 79.1 m (77.8 to 79.9 m): 4 of the 4 lie inside the criterion's 80 +/- 1 m at the surveyed values and 0 of the 4 over the whole of their ranges.",
+   "source": "premises",
+   "numbers": [
+    {
+     "label": "Level at which the northern King's Chamber shaft meets the casing plane, inclined to the face",
+     "value": 80.2717744030474,
+     "low": 78.81333653424524,
+     "high": 81.34467957078954,
+     "unit": "m"
+    },
+    {
+     "label": "Level at which the southern King's Chamber shaft meets the casing plane, inclined to the face",
+     "value": 80.85240499421656,
+     "low": 79.46708733134699,
+     "high": 81.65694563369453,
+     "unit": "m"
+    },
+    {
+     "label": "Level at which the northern King's Chamber shaft meets the casing plane, with a level last stretch",
+     "value": 79.0089834643987,
+     "low": 77.58441879177433,
+     "high": 80.04644315344613,
+     "unit": "m"
+    },
+    {
+     "label": "Level at which the southern King's Chamber shaft meets the casing plane, with a level last stretch",
+     "value": 79.13727156334086,
+     "low": 77.78615135888498,
+     "high": 79.90741198249243,
+     "unit": "m"
+    }
+   ],
    "spaces": [
     "kc_shaft_north",
     "kc_shaft_south"
@@ -979,10 +1208,25 @@
    "tier": 2,
    "piece": 1,
    "criterion": "Geometric premise: pass for the grooves as a gas path only if a connected duct exists in the as-surveyed geometry; the blind-groove case fails (01 premise P3).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 1.",
-   "source": "none",
-   "numbers": [],
+   "status": "conditional",
+   "basis": "Petrie's depths for the 4 grooves in the south wall run out to between 0.0 and 5.1 mm at the top of the doorway, where the stone is broken away, so a connected duct exists only in the reading that lets them reach the doorway, and the blind reading, which is Petrie's own, has none: the connected area is 0.0021 m2 at most (4 grooves 0.105 m wide) against 0.030 m2 for grooves of the full 71 mm, which the measured taper rules out. The 3 pairs of slots for the slabs and the 4 grooves themselves are on record.",
+   "source": "premises",
+   "numbers": [
+    {
+     "label": "Largest connected area of the antechamber grooves at the door top",
+     "value": 0.0021420000000000002,
+     "low": 0.0,
+     "high": 0.0021420000000000002,
+     "unit": "m2"
+    },
+    {
+     "label": "Area of the antechamber grooves at their full measured depth",
+     "value": 0.029861999999999996,
+     "low": 0.029861999999999996,
+     "high": 0.029861999999999996,
+     "unit": "m2"
+    }
+   ],
    "spaces": [
     "antechamber"
    ]
@@ -995,9 +1239,9 @@
    "tier": 1,
    "piece": 2,
    "criterion": "Rank the modal quality factor and decay time of the antechamber, King's Chamber and Grand Gallery in an audio-band model; pass if the antechamber ranks first (05 section 5.5 item 4).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 2.",
-   "source": "none",
+   "status": "fail",
+   "basis": "As hard-walled boxes with one assumed wall absorption, the three rooms decay at 45 Hz in: antechamber 3.3 s, King's Chamber 8.8 s, Grand Gallery 4.6 s; the quality factors of their lowest modes (45.2, 16.4, 3.6 Hz) are: antechamber 69, King's Chamber 66, Grand Gallery 8. The antechamber ranks last of three in decay time, with 0.38 of the longest other (0.27 to 0.52 over the ranges of the inputs), and first in modal quality factor, with 1.05 of the highest other (0.73 to 1.42). It is never first in decay time, so it does not rank first in both, the reading this rule takes of the criterion as a judgement call; the decay times go as volume over wall area, whatever the absorption the rooms share. With the passage mouths open it falls to 0.13 of the longest decay and 0.35 of the highest quality factor. No acoustic measurement of the antechamber exists to check the model.",
+   "source": "electro",
    "numbers": [
     {
      "label": "King's Chamber volume, floor to ceiling",
@@ -1005,6 +1249,97 @@
      "low": 317.002503781392,
      "high": 324.003095458416,
      "unit": "m3"
+    },
+    {
+     "label": "Lowest mode of the antechamber as a hard-walled box",
+     "value": 45.23527085804666,
+     "low": 45.23527085804666,
+     "high": 45.23527085804666,
+     "unit": "Hz"
+    },
+    {
+     "label": "Decay time of the antechamber at the antechamber's lowest mode",
+     "value": 3.331871971000333,
+     "low": 0.9397894791542534,
+     "high": 9.024874734250067,
+     "unit": "s"
+    },
+    {
+     "label": "Quality factor of the lowest mode of the antechamber",
+     "value": 68.54541804353347,
+     "low": 19.333954990534192,
+     "high": 185.66554082327676,
+     "unit": "1"
+    },
+    {
+     "label": "Lowest mode of the King's Chamber as a hard-walled box",
+     "value": 16.387963060232448,
+     "low": 16.37435828928033,
+     "high": 16.393442622950822,
+     "unit": "Hz"
+    },
+    {
+     "label": "Decay time of the King's Chamber at the antechamber's lowest mode",
+     "value": 8.795644803895346,
+     "low": 3.50456429504064,
+     "high": 17.662686428273503,
+     "unit": "s"
+    },
+    {
+     "label": "Quality factor of the lowest mode of the King's Chamber",
+     "value": 65.56381250735015,
+     "low": 26.105964911805792,
+     "high": 131.67171792310697,
+     "unit": "1"
+    },
+    {
+     "label": "Lowest mode of the Grand Gallery as a hard-walled box",
+     "value": 3.586701614015726,
+     "low": 3.586701614015726,
+     "high": 3.586701614015726,
+     "unit": "Hz"
+    },
+    {
+     "label": "Decay time of the Grand Gallery at the antechamber's lowest mode",
+     "value": 4.612845365256767,
+     "low": 1.6977433061638898,
+     "high": 12.453527825584443,
+     "unit": "s"
+    },
+    {
+     "label": "Quality factor of the lowest mode of the Grand Gallery",
+     "value": 7.525099254942263,
+     "low": 2.769447547222933,
+     "high": 20.316451121325137,
+     "unit": "1"
+    },
+    {
+     "label": "Antechamber decay time over the longest of the other two rooms",
+     "value": 0.37880929088049803,
+     "low": 0.26600724387577834,
+     "high": 0.5151217731936574,
+     "unit": "1"
+    },
+    {
+     "label": "Quality factor of the antechamber's lowest mode over the highest of the other two rooms",
+     "value": 1.0454763904379274,
+     "low": 0.7341390142628665,
+     "high": 1.4224839154876676,
+     "unit": "1"
+    },
+    {
+     "label": "Antechamber decay time over the longest of the other two rooms, passage mouths open",
+     "value": 0.12577288884285054,
+     "low": 0.06697594611893011,
+     "high": 0.249627696801049,
+     "unit": "1"
+    },
+    {
+     "label": "Quality factor of the antechamber's lowest mode over the highest other, passage mouths open",
+     "value": 0.34712858022792276,
+     "low": 0.18488563310064088,
+     "high": 0.6893672830643174,
+     "unit": "1"
     }
    ],
    "spaces": [
@@ -1046,10 +1381,18 @@
    "tier": 2,
    "piece": 1,
    "criterion": "Geometric premise: pass if the surveyed passage ends blind in rock with no outlet (01 claim 6).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 1.",
-   "source": "none",
-   "numbers": [],
+   "status": "pass",
+   "basis": "The survey record has the south passage end blind in rock, 30.8 m below the pavement, with no opening at its south end: Petrie's stations make it 16.41 m long and his coordinates for its two ends 16.41 m (16.28 to 16.54 m over their stated errors), and a second survey, read on the page, gives the same length and the same blind end.",
+   "source": "premises",
+   "numbers": [
+    {
+     "label": "South passage, distance between its surveyed ends",
+     "value": 16.410304676025977,
+     "low": 16.282440789083186,
+     "high": 16.53867212958767,
+     "unit": "m"
+    }
+   ],
    "spaces": [
     "south_passage"
    ]
@@ -1062,9 +1405,9 @@
    "tier": 2,
    "piece": 3,
    "criterion": "Documentary check, not simulated: pass if valve seats or valve parts are recorded in the Subterranean Chamber or its pit.",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 3.",
-   "source": "none",
+   "status": "fail",
+   "basis": "No evidence found: the surveys of the Subterranean Chamber and its pit that were read record no valve seat, hinge socket, fitting or valve part, and the drawing by a German engineering team that the claim rests on could not be identified.",
+   "source": "evidence",
    "numbers": [],
    "spaces": [
     "subterranean_chamber",
@@ -1160,10 +1503,81 @@
    "tier": 1,
    "piece": 2,
    "criterion": "Pass only if a direct-current conduction model with conductive sheets for the ore bodies gives a non-negligible field or charge at the summit or in the granite (04 section 5.3).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 2.",
-   "source": "none",
-   "numbers": [],
+   "status": "fail",
+   "basis": "With two vertical sheets of the most conductive hematite measured (0.003 ohm m) in line with the far field and ending at the base, the conduction model puts 2.3 times the far field in the King's Chamber granite or at the summit (0.4 to 4.2 over sheets 0.1 to 10 m thick, 10 to 300 m deep and up to 500 m long, all assumed), against 2.2 without sheets: 0.08 V/m at the most, which is 8.5 orders of magnitude below the 2.7e+07 V/m that is, at its most generous, the field at which the piezoelectric chain first reaches a documented acoustic effect, the line this rule takes for non-negligible as a judgement call; a charge held by such a field is short by the same factor. Sheets would have to gather the far field over 1.3e+09 m to offer the chain its voltage.",
+   "source": "electro",
+   "numbers": [
+    {
+     "label": "Peak telluric field in the King's Chamber granite over the far field",
+     "value": 2.177243916540785,
+     "low": 0.445188365115548,
+     "high": 2.2028667121472845,
+     "unit": "1"
+    },
+    {
+     "label": "Volume-mean telluric field in the King's Chamber granite over the far field",
+     "value": 0.9224244476353297,
+     "low": 0.19749212540457034,
+     "high": 1.0620933624267646,
+     "unit": "1"
+    },
+    {
+     "label": "Telluric field in the masonry beside the King's Chamber over the far field",
+     "value": 0.5820224741922158,
+     "low": 0.14258797054726421,
+     "high": 0.6249142493622257,
+     "unit": "1"
+    },
+    {
+     "label": "Telluric field in the summit masonry over the far field",
+     "value": 0.03582857002080367,
+     "low": 0.008023317224212343,
+     "high": 0.038766461589762616,
+     "unit": "1"
+    },
+    {
+     "label": "Largest telluric field at the summit or in the granite",
+     "value": 0.0002177243916540785,
+     "low": 4.45188365115548e-08,
+     "high": 0.04405733424294569,
+     "unit": "V/m"
+    },
+    {
+     "label": "Largest telluric field at the summit or in the granite over the far field, with ore sheets",
+     "value": 2.283431062770358,
+     "low": 0.445188365115548,
+     "high": 4.172901455081829,
+     "unit": "1"
+    },
+    {
+     "label": "Largest telluric field at the summit or in the granite, with ore sheets",
+     "value": 0.0002283431062770358,
+     "low": 4.45188365115548e-08,
+     "high": 0.08345802910163658,
+     "unit": "V/m"
+    },
+    {
+     "label": "Peak field in the granite over the even-spreading conduction value",
+     "value": 7.25778108749484,
+     "low": 5.104296201397493,
+     "high": 7.378166438094948,
+     "unit": "1"
+    },
+    {
+     "label": "Field in the granite for the weakest documented gas-solid acoustic effect",
+     "value": 13612646541.779581,
+     "low": 26743959.44460631,
+     "high": 28336983468.77279,
+     "unit": "V/m"
+    },
+    {
+     "label": "Length of ore sheet whose whole telluric voltage would equal what the chain needs",
+     "value": 136126465417795.8,
+     "low": 1337197972.2303154,
+     "high": 2.833698346877279e+17,
+     "unit": "m"
+    }
+   ],
    "spaces": []
   },
   {
@@ -1206,9 +1620,9 @@
    "tier": 2,
    "piece": 6,
    "criterion": "Analogy only, no test in this project.",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 6.",
-   "source": "none",
+   "status": "not_testable",
+   "basis": "No test exists: the claim is the speaker's own earlier hypothesis about the Serapeum boxes, an analogy that the criterion records without a test in this project. The research files did not assess the Serapeum.",
+   "source": "evidence",
    "numbers": [],
    "spaces": []
   },
@@ -1220,9 +1634,9 @@
    "tier": 2,
    "piece": 6,
    "criterion": "Cannot be simulated; held as a documented constraint with no computed verdict (06, evidence that cannot be simulated).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 6.",
-   "source": "none",
+   "status": "not_testable",
+   "basis": "No test exists: the criterion holds this as a documented constraint with no computed verdict. The formations are known only from the speaker's own site videos; no location, dimensions or acoustic measurement was found, so there is no geometry to model.",
+   "source": "evidence",
    "numbers": [],
    "spaces": []
   },
@@ -1234,10 +1648,18 @@
    "tier": 2,
    "piece": 1,
    "criterion": "Geometric premise: pass if the survey record shows the shaft mouths closed by uncut wall stone of about that thickness until they were opened (01 claim 3).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 1.",
-   "source": "none",
-   "numbers": [],
+   "status": "pass",
+   "basis": "The survey record has each Queen's Chamber shaft mouth closed by a plate of the wall stone left uncut until both were cut through in 1872: 127 mm (5.0 in) on one witness, quoted twice at second hand, and Petrie describes the plate without a thickness. The claim's 3 to 5 in is 76 to 127 mm and the ledger carries 76 to 127 mm, so the whole range carried for the record lies within the claimed thickness, read to half an inch either side (a judgement call on 'about'); no source was found for 3 in.",
+   "source": "premises",
+   "numbers": [
+    {
+     "label": "Uncut wall stone at each Queen's Chamber shaft mouth, as recorded",
+     "value": 0.127,
+     "low": 0.0762,
+     "high": 0.127,
+     "unit": "m"
+    }
+   ],
    "spaces": [
     "qc_shaft_north",
     "qc_shaft_south",
@@ -1252,9 +1674,9 @@
    "tier": 2,
    "piece": 4,
    "criterion": "Documentary check, not simulated: pass if the 1978 analysis letter lists those three phases.",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 4.",
-   "source": "none",
+   "status": "pass",
+   "basis": "Supported: a letter of 27 November 1978 from the Arizona Bureau of Geology and Mineral Technology (sample no. 56411) ranks the sample as mostly calcite with some halite and gypsum, which are the three phases named. The letter was read as OCR text of its reproduction in a later book. It is qualitative: it gives no method, no quantities, no sampler and no sampling position.",
+   "source": "evidence",
    "numbers": [],
    "spaces": [
     "queens_chamber"
@@ -1268,9 +1690,9 @@
    "tier": 2,
    "piece": 4,
    "criterion": "Counts for the hypothesis only if the acid-wall model predicts something the no-acid salt model cannot, such as no sodium chloride in the wetted zone, and that is then found (06, pass/fail item 4).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 4.",
-   "source": "none",
+   "status": "fail",
+   "basis": "No evidence found: nothing that the acid model predicts and the salt model cannot has been found, and the example the criterion names is the opposite of what was read. Sodium chloride is present in the Queen's Chamber, which the hypothesis fills: the 1978 letter lists some halite, and a laboratory study of 2026, read by two routes, identifies the efflorescence there as halite. No height-resolved salt map exists. The research file calls the inference from missing calcium chloride weak, since calcium chloride takes up water from the air and would not last as a crust (general knowledge there, not sourced).",
+   "source": "evidence",
    "numbers": [],
    "spaces": [
     "queens_chamber"
@@ -1284,9 +1706,9 @@
    "tier": 2,
    "piece": 4,
    "criterion": "Pass if a crust is found whose upper limit follows a level surface at the modelled fill height in both the Queen's Chamber and the Grand Gallery (06, pass/fail item 1).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 4.",
-   "source": "none",
+   "status": "conditional",
+   "basis": "Partly supported: a salt crust on the Grand Gallery walls is documented for the 1990s, when twelve months were spent cleaning it off in 1998, but its composition was never published, an account of 1910 records no salt in the Gallery, and Petrie does not describe its walls. A crust limit at one level in the Queen's Chamber and the Gallery, which the criterion asks for, has not been looked for: no height-resolved salt map exists. The one height-resolved datum, Petrie's note that the two lower laps of the Queen's Chamber niche were salted and the three upper ones not, is not what a complete fill predicts, and the study of 2026 found no gypsum crust in that chamber.",
+   "source": "evidence",
    "numbers": [],
    "spaces": [
     "grand_gallery",
@@ -1340,9 +1762,9 @@
    "tier": 2,
    "piece": 4,
    "criterion": "Pass if gypsum is found as a replacement rind on etched calcite with dissolution textures beneath it, not as efflorescence on an intact tooled surface (06, pass/fail item 2).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 4.",
-   "source": "none",
+   "status": "conditional",
+   "basis": "No evidence found: no published description or survey of pitting in the Queen's Chamber was found. Petrie and the Edgars describe salt incrustation and fine joints there, not pits, and the pits are the speaker's own observation. The test the criterion names, which tells a gypsum rind on etched calcite from efflorescence on tooled stone, has not been made: the study of 2026 sampled efflorescence and loose material only, and found halite and no gypsum crust. Pitting is a normal result of salt crystallising in porous limestone.",
+   "source": "evidence",
    "numbers": [],
    "spaces": [
     "queens_chamber"
@@ -1356,9 +1778,9 @@
    "tier": 2,
    "piece": 2,
    "criterion": "Documentary check, not simulated: pass if quantitative mineralogy shows Tura limestone to be quartz-rich compared with Mokattam bedrock.",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 2.",
-   "source": "none",
+   "status": "undefined",
+   "basis": "No evidence found: the quartz claim is attributed to no source, and the research files found no matched mineralogy of Tura limestone and Giza bedrock. The one compositional source opened, an author's summary of a study of 1984, pools six Tura and Mokattam quarry sites at 0.5 to 2.5 percent quartz and 96 to 99 percent calcite, which cannot show one richer than the other. That the slab is Tura limestone and its pins copper are judgements by eye, from polish and colour; neither was assayed.",
+   "source": "evidence",
    "numbers": [],
    "spaces": [
     "qc_shaft_south"
@@ -1372,10 +1794,25 @@
    "tier": 2,
    "piece": 1,
    "criterion": "Geometric premise: pass if a published void of comparable size lies above the Gallery; its use as a heat exchanger is judged separately by the thermal criterion for the masonry between them (01 premise P5).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 1.",
-   "source": "none",
-   "numbers": [],
+   "status": "pass",
+   "basis": "The muon paper of 2017 gives a void at least 30 m long, 0.64 of the Gallery's 46.7 m (0.64 to 0.86 over the 30 to 40 m carried for it), with its centre 14.7 m above the top of the Gallery roof (9.6 to 19.8 m) and its south end within 5 m of the pyramid's centre, over the Gallery in plan. Taking comparable as within a factor of 10 in the one dimension published, the order of magnitude that 01 allows (a judgement call), a published void of comparable size lies above the Gallery (it also holds within a factor of two). The section is inferred from the muon excess and not measured, and shape, inclination and the number of voids are open; the heat-exchanger use is judged separately.",
+   "source": "premises",
+   "numbers": [
+    {
+     "label": "Big Void length over the Grand Gallery's",
+     "value": 0.6423927846442429,
+     "low": 0.6423927846442429,
+     "high": 0.8565237128589904,
+     "unit": "1"
+    },
+    {
+     "label": "Big Void centre above the top of the Gallery roof",
+     "value": 14.689999999999998,
+     "low": 9.64,
+     "high": 19.839999999999996,
+     "unit": "m"
+    }
+   ],
    "spaces": [
     "big_void",
     "grand_gallery"
@@ -1389,9 +1826,9 @@
    "tier": 2,
    "piece": 5,
    "criterion": "Documentary check, not simulated: pass if a published analysis identifies sodium chloride on the walls of Khafre's burial chamber.",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 5.",
-   "source": "none",
+   "status": "conditional",
+   "basis": "Partly supported: salt is documented in Khafre's burial chamber, but no analysis of it was found. Salt residue was cleaned from the chamber walls in 2003 to 2004, on a news report that was not re-checked, and Petrie, re-read at source, noted a good deal of crystallised salt inside the coffer. Sodium chloride is plausible, since halite is native to the bedrock the chamber is cut in, and for the same reason it would not show an acid process.",
+   "source": "evidence",
    "numbers": [],
    "spaces": []
   },
@@ -1403,9 +1840,9 @@
    "tier": 2,
    "piece": 6,
    "criterion": "Documentary check, not simulated: pass if a published analysis is produced; none is attributed in the transcripts.",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 6.",
-   "source": "none",
+   "status": "undefined",
+   "basis": "No evidence found: no analysis is attributed in the transcripts, so there is no source to check, and the research files hold none. The research file lists the Red Pyramid's claimed function as not assessed, with no evidence found in its domain.",
+   "source": "evidence",
    "numbers": [],
    "spaces": []
   },
@@ -1417,9 +1854,9 @@
    "tier": 2,
    "piece": 5,
    "criterion": "Documentary check, not simulated: pass if laboratory data show vitrified vein material and if the stela's lightning passage stands in a primary edition of the text.",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 5.",
-   "source": "none",
+   "status": "conditional",
+   "basis": "Partly supported: the cited article does say both things, but neither condition of the criterion is met in full. The article, read in full, calls the features veins of vitrification, grants that iron-rich hydrothermal deposits may occur as well, and reports no sampling and no analysis, so there are no laboratory data for vitrified vein material; nobody has published that analysis. The lightning is in the Inventory Stela, an object of the 26th Dynasty: the translations attributed to Maspero and to Daressy have one great tree struck at the Place of the Sycamore, in an abraded passage whose reading is doubted, and Breasted's partial translation has no lightning at all. All three were seen as quoted on secondary pages, not in a primary edition. The passage records one strike, not how often lightning struck.",
+   "source": "evidence",
    "numbers": [],
    "spaces": []
   },
@@ -1431,9 +1868,9 @@
    "tier": 2,
    "piece": 5,
    "criterion": "Documentary check, not simulated: pass if the sample analyses report fulgurite, glass or spherules, and metal levels above those of the local control sample.",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 5.",
-   "source": "none",
+   "status": "fail",
+   "basis": "No evidence found: the sample analyses were located and read in full, and they do not report what the claim says. The report, by an independent group and not peer-reviewed, covers 16 samples of iron-stained material from four of Khafre's boat pits and one control sample, not veins across the plateau, and it has no word for fulgurite, glass or sphere. Lanthanum, cerium and neodymium exceed the control in 3, 4 and 5 of the 16 samples, with medians about half the control, and thorium is below it in all 16; nickel, cobalt, vanadium, zinc and uranium are above it, as is usual for iron and manganese oxide fills. No fulgurite, vitrified rock or microspherule from Giza is documented in any source found.",
+   "source": "evidence",
    "numbers": [],
    "spaces": []
   },
@@ -1445,9 +1882,9 @@
    "tier": 2,
    "piece": 5,
    "criterion": "Counts as wiring only if a four-point measurement along a vein against the adjacent rock gives a conductivity contrast high enough for the claimed link lengths; fail below 1e3 (07 section 4.2).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 5.",
-   "source": "none",
+   "status": "conditional",
+   "basis": "No evidence found: no four-point measurement along a Giza vein has been made, so the test the criterion names cannot be applied. Measured dry hematite spans the whole range: earthy red material is more resistive than the limestone, and the best specular sample gives a contrast of about 3e4 in 100 ohm m rock, above the criterion's fail line of 1e3 and below the 2.7e5 derived for a 100 m link. Observers describe the Giza fills as red, ochreous or dull black, the resistive end. Veins in the Osiris Shaft are reported from personal observation, and those in the two pyramids rest on the speaker's photographs. The research file expects a fail and says a measurement is needed.",
+   "source": "evidence",
    "numbers": [],
    "spaces": [
     "pit",
@@ -1484,9 +1921,9 @@
    "tier": 2,
    "piece": 5,
    "criterion": "Pass if the pit walls show metres of retreat or thick gypsum crusts in the Khufu pits and none in the Khafre pits; tool-marked, uncorroded walls count against it (07 section 4.3).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 5.",
-   "source": "none",
+   "status": "conditional",
+   "basis": "Partly supported: chloride in Khafre's pits is supported, exclusivity is not, and the test the criterion names has not been made. The analyses behind the claim, an independent group's report that is not peer-reviewed and was read in full, cover Khafre's pits only: chlorine reaches 26.7 percent by weight, with gypsum named in almost every phase description, barite and celestine imaged and sulfur up to 5 percent, so chloride only is contradicted there. No analysis of Khufu's pits was found. No survey of the pit walls for retreat, gypsum crust or tool marks was found, which is what the criterion asks for. Khufu's two southern pits were found sealed over dismantled boats, on secondary accounts.",
+   "source": "evidence",
    "numbers": [],
    "spaces": []
   },
@@ -1498,9 +1935,9 @@
    "tier": 2,
    "piece": 6,
    "criterion": "Cannot be simulated; held as a documented constraint with no computed verdict (06, evidence that cannot be simulated).",
-   "status": "pending",
-   "basis": "No Tier 0 rule; tested in piece 6.",
-   "source": "none",
+   "status": "not_testable",
+   "basis": "No test exists: the criterion holds this as a documented constraint with no computed verdict. The basis is an unnamed acquaintance speaking on a tour. No survey, excavation report or publication describing such a tunnel was found, and the cavities known at the Sphinx are a few metres long, on secondary pages that were not opened.",
+   "source": "evidence",
    "numbers": [],
    "spaces": []
   }

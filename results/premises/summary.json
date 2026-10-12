@@ -1,0 +1,205 @@
+{
+  "results": [
+    {
+      "id": "premises.kcs_north_exit_z",
+      "label": "Level at which the northern King's Chamber shaft meets the casing plane, inclined to the face",
+      "value": 80.2717744030474,
+      "low": 78.81333653424524,
+      "high": 81.34467957078954,
+      "unit": "m",
+      "formula": "z = z_mouth + s sin(slope); s = (face distance - level runs) / (cos(slope) + (half / apex) sin(slope))",
+      "inputs": [
+        "pyr.base_side",
+        "pyr.height_original",
+        "kc.floor.z",
+        "kcs.mouth_height",
+        "kcs.north.height",
+        "kcs.north.angle",
+        "kcs.horizontal_length",
+        "kc.north_wall.y"
+      ]
+    },
+    {
+      "id": "premises.kcs_south_exit_z",
+      "label": "Level at which the southern King's Chamber shaft meets the casing plane, inclined to the face",
+      "value": 80.85240499421656,
+      "low": 79.46708733134699,
+      "high": 81.65694563369453,
+      "unit": "m",
+      "formula": "z = z_mouth + s sin(slope); s = (face distance - level runs) / (cos(slope) + (half / apex) sin(slope))",
+      "inputs": [
+        "pyr.base_side",
+        "pyr.height_original",
+        "kc.floor.z",
+        "kcs.mouth_height",
+        "kcs.south.height",
+        "kcs.south.angle",
+        "kcs.horizontal_length",
+        "kc.south_wall.y"
+      ]
+    },
+    {
+      "id": "premises.kcs_north_exit_z_level",
+      "label": "Level at which the northern King's Chamber shaft meets the casing plane, with a level last stretch",
+      "value": 79.0089834643987,
+      "low": 77.58441879177433,
+      "high": 80.04644315344613,
+      "unit": "m",
+      "formula": "z = z_mouth + s sin(slope); s = (face distance - level runs) / (cos(slope) + (half / apex) sin(slope))",
+      "inputs": [
+        "pyr.base_side",
+        "pyr.height_original",
+        "kc.floor.z",
+        "kcs.mouth_height",
+        "kcs.north.height",
+        "kcs.north.angle",
+        "kcs.horizontal_length",
+        "kc.north_wall.y",
+        "kcs.level_end_length"
+      ]
+    },
+    {
+      "id": "premises.kcs_south_exit_z_level",
+      "label": "Level at which the southern King's Chamber shaft meets the casing plane, with a level last stretch",
+      "value": 79.13727156334086,
+      "low": 77.78615135888498,
+      "high": 79.90741198249243,
+      "unit": "m",
+      "formula": "z = z_mouth + s sin(slope); s = (face distance - level runs) / (cos(slope) + (half / apex) sin(slope))",
+      "inputs": [
+        "pyr.base_side",
+        "pyr.height_original",
+        "kc.floor.z",
+        "kcs.mouth_height",
+        "kcs.south.height",
+        "kcs.south.angle",
+        "kcs.horizontal_length",
+        "kc.south_wall.y",
+        "kcs.level_end_length"
+      ]
+    },
+    {
+      "id": "premises.groove_connected_area",
+      "label": "Largest connected area of the antechamber grooves at the door top",
+      "value": 0.0021420000000000002,
+      "low": 0.0,
+      "high": 0.0021420000000000002,
+      "unit": "m2",
+      "formula": "A = grooves x width x residual depth",
+      "inputs": [
+        "ante.groove_count",
+        "ante.groove_width",
+        "ante.groove_residual_depth"
+      ]
+    },
+    {
+      "id": "premises.groove_full_area",
+      "label": "Area of the antechamber grooves at their full measured depth",
+      "value": 0.029861999999999996,
+      "low": 0.029861999999999996,
+      "high": 0.029861999999999996,
+      "unit": "m2",
+      "formula": "A = grooves x width x depth",
+      "inputs": [
+        "ante.groove_count",
+        "ante.groove_width",
+        "ante.groove_depth"
+      ]
+    },
+    {
+      "id": "premises.slab_clearance_area",
+      "label": "Clearance round one portcullis slab",
+      "value": 0.018150000000000017,
+      "low": 0.018150000000000017,
+      "high": 0.018150000000000017,
+      "unit": "m2",
+      "formula": "A = (slot width - slab thickness) x slab width",
+      "inputs": [
+        "ante.slot_width",
+        "ante.slab_thickness",
+        "ante.slab_width"
+      ]
+    },
+    {
+      "id": "premises.sp_length_between_ends",
+      "label": "South passage, distance between its surveyed ends",
+      "value": 16.410304676025977,
+      "low": 16.282440789083186,
+      "high": 16.53867212958767,
+      "unit": "m",
+      "formula": "L = |south end - north end|",
+      "inputs": [
+        "sp.north_end.x",
+        "sp.north_end.y",
+        "sp.north_end.z",
+        "sp.south_end.x",
+        "sp.south_end.y",
+        "sp.south_end.z"
+      ]
+    },
+    {
+      "id": "premises.qcs_stone_left",
+      "label": "Uncut wall stone at each Queen's Chamber shaft mouth, as recorded",
+      "value": 0.127,
+      "low": 0.0762,
+      "high": 0.127,
+      "unit": "m",
+      "formula": "t = the thickness in the survey record",
+      "inputs": [
+        "qcs.stone_left"
+      ]
+    },
+    {
+      "id": "premises.void_length_ratio",
+      "label": "Big Void length over the Grand Gallery's",
+      "value": 0.6423927846442429,
+      "low": 0.6423927846442429,
+      "high": 0.8565237128589904,
+      "unit": "1",
+      "formula": "L_void / L_gallery",
+      "inputs": [
+        "bv.length",
+        "gg.roof_length_sloping"
+      ]
+    },
+    {
+      "id": "premises.void_centre_above_roof",
+      "label": "Big Void centre above the top of the Gallery roof",
+      "value": 14.689999999999998,
+      "low": 9.64,
+      "high": 19.839999999999996,
+      "unit": "m",
+      "formula": "z_void - z_roof",
+      "inputs": [
+        "bv.centre.z",
+        "gg.roof_top.z"
+      ]
+    }
+  ],
+  "verdicts": {
+    "E11": {
+      "status": "conditional",
+      "basis": "A level outer end is on record for one shaft only: one survey party of 1837 to 1839, known here through a later citation of its unread plate, drew the last 3.0 m of the southern channel level, in core masonry, while the 1881 survey found the incline continuing to that mouth; the northern outlet was forced open before any survey and its level end is only presumed, and the casing is gone at both, so no survey can show a run through it. Carried to the casing plane at the surveyed slopes, the shafts come out at Z = 80.3 m in the north (78.8 to 81.3 m over the ranges of the inputs) and 80.9 m in the south (79.5 to 81.7 m), and with a level last 3.0 m at 79.0 m (77.6 to 80.0 m) and 79.1 m (77.8 to 79.9 m): 4 of the 4 lie inside the criterion's 80 +/- 1 m at the surveyed values and 0 of the 4 over the whole of their ranges."
+    },
+    "E12": {
+      "status": "conditional",
+      "basis": "Petrie's depths for the 4 grooves in the south wall run out to between 0.0 and 5.1 mm at the top of the doorway, where the stone is broken away, so a connected duct exists only in the reading that lets them reach the doorway, and the blind reading, which is Petrie's own, has none: the connected area is 0.0021 m2 at most (4 grooves 0.105 m wide) against 0.030 m2 for grooves of the full 71 mm, which the measured taper rules out. The 3 pairs of slots for the slabs and the 4 grooves themselves are on record."
+    },
+    "E15": {
+      "status": "pass",
+      "basis": "The survey record has the south passage end blind in rock, 30.8 m below the pavement, with no opening at its south end: Petrie's stations make it 16.41 m long and his coordinates for its two ends 16.41 m (16.28 to 16.54 m over their stated errors), and a second survey, read on the page, gives the same length and the same blind end."
+    },
+    "E25": {
+      "status": "pass",
+      "basis": "The survey record has each Queen's Chamber shaft mouth closed by a plate of the wall stone left uncut until both were cut through in 1872: 127 mm (5.0 in) on one witness, quoted twice at second hand, and Petrie describes the plate without a thickness. The claim's 3 to 5 in is 76 to 127 mm and the ledger carries 76 to 127 mm, so the whole range carried for the record lies within the claimed thickness, read to half an inch either side (a judgement call on 'about'); no source was found for 3 in."
+    },
+    "E32": {
+      "status": "pass",
+      "basis": "The muon paper of 2017 gives a void at least 30 m long, 0.64 of the Gallery's 46.7 m (0.64 to 0.86 over the 30 to 40 m carried for it), with its centre 14.7 m above the top of the Gallery roof (9.6 to 19.8 m) and its south end within 5 m of the pyramid's centre, over the Gallery in plan. Taking comparable as within a factor of 10 in the one dimension published, the order of magnitude that 01 allows (a judgement call), a published void of comparable size lies above the Gallery (it also holds within a factor of two). The section is inferred from the muon excess and not measured, and shape, inclination and the number of voids are open; the heat-exchanger use is judged separately."
+    },
+    "S15": {
+      "status": "conditional",
+      "basis": "With the slabs down, the duct the claim names from the King's Chamber to the Gallery is the grooves, and the criterion tests them: it fails the blind case and allows the connected one about 0.002 m2. Petrie's depths for the 4 grooves in the south wall run out to between 0.0 and 5.1 mm at the top of the doorway, where the stone is broken away, so a connected duct exists only in the reading that lets them reach the doorway, and the blind reading, which is Petrie's own, has none: the connected area is 0.0021 m2 at most (4 grooves 0.105 m wide) against 0.030 m2 for grooves of the full 71 mm, which the measured taper rules out. The clearance round one slab, 0.018 m2 from the one surviving fragment, is 8 times the grooves at their most, so the grooves would not be the only way past the slabs."
+    }
+  }
+}
