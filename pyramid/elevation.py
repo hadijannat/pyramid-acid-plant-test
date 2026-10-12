@@ -14,6 +14,8 @@ import trimesh
 from matplotlib.collections import PolyCollection
 from scipy.spatial import ConvexHull
 
+from pyramid.simkit import save_figure
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
@@ -81,7 +83,7 @@ def main(out: Path = OUT) -> None:
             transform=ax.transAxes, ha="right", va="bottom", fontsize=7.5, color="#666")
 
     out.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out, bbox_inches="tight", metadata={"Date": None}, facecolor="white")   # white: readable on a dark page
+    save_figure(fig, out, bbox_inches="tight", facecolor="white")   # white: readable on a dark page
     print("wrote", out)
 
 

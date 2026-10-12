@@ -147,7 +147,7 @@ def main() -> None:
         "verdicts": {claim: {"status": status, "basis": basis, "source": source[claim]}
                      for claim, (status, basis) in verdicts.items()},
     }
-    (OUT_DIR / "verdicts.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n")
+    (OUT_DIR / "verdicts.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False) + "\n")
     verdict_map(ledger, verdicts, OUT_DIR / "verdict-map.svg")
     (OUT_DIR / "report.md").write_text(report(ledger, verdicts, source))
     write_manifest(OUT_DIR, "summary", ledger)

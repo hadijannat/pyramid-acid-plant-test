@@ -76,6 +76,8 @@ def grow(times, product: float, start: float):
     """The same growth integrated in time, from a layer that already has some thickness."""
     solution = solve_ivp(lambda _, d: product / (2 * d), (0.0, float(times[-1])), [start], t_eval=times,
                          method="LSODA", rtol=1e-10, atol=1e-16)
+    if not solution.success:
+        raise RuntimeError(solution.message)
     return solution.y[0]
 
 

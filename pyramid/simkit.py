@@ -54,7 +54,7 @@ def band(values) -> tuple[float, float, float]:
 
 
 def save_figure(fig, path: Path, **kw) -> None:
-    """Write a figure with no library version or time stamp in the file, so a regeneration reproduces it byte for byte."""
+    """Write a figure with no time stamp, and for a PNG no library version, so a regeneration reproduces it byte for byte."""
     stamp = {"Date": None} if str(path).endswith(".svg") else {"Software": None, "Creation Time": None}
     fig.savefig(path, metadata=stamp, **kw)
 
