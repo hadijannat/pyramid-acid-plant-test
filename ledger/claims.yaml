@@ -503,7 +503,7 @@
   piece: 1
   criterion: "As modelled, pass if the band-maximum volume-mean field-intensity ratio in the King's Chamber in case R1 is at least twice that of its control; under realism, pass if in case V4 the ratio is at least 2 and at least twice its control across 6.7e-4 to 3.3e-3 S/m, fail if it is below 2 at 6.7e-4 S/m, otherwise conditional (spec section 6)."
   status: pending
-  depends_on: [paper.height, paper.base_side, paper.eps_real, paper.eps_imag, paper.wavelength_min, paper.wavelength_max, paper.kc.centre.z, paper.peak1.wavelength, paper.peak2.wavelength, paper.ground_peak.wavelength, em.limestone_resistivity]
+  depends_on: [paper.height, paper.base_side, paper.eps_real, paper.eps_imag, paper.wavelength_min, paper.wavelength_max, paper.kc.centre.z, paper.peak1.wavelength, paper.peak2.wavelength, paper.ground_peak.wavelength, em.limestone_resistivity, em.granite_conductivity, em.granite_eps, em.limestone_eps, emx.cell_coarse, emx.granite_shell, emx.sphere_radius, gg.height, gg.north_end.x, gg.north_end.y, gg.north_end.z, gg.roof_width, gg.south_end.x, gg.south_end.y, gg.south_end.z, gg.width, kc.ceiling.z, kc.east_wall.x, kc.floor.z, kc.north_wall.y, kc.south_wall.y, kc.west_wall.x, pyr.base_side, pyr.height_original, pyr.height_present, qc.east_wall.x, qc.floor.z, qc.north_wall.y, qc.ridge_height, qc.wall_height, qc.west_wall.x, qc.width_ns]
   spaces: [paper_kings_chamber, paper_queens_chamber, paper_lower_chamber, kings_chamber]
 - id: E20
   statement: "The speaker's reading of that study: the field excludes the tip, so the flat top is functional and there never was a capstone."
@@ -513,7 +513,7 @@
   piece: 1
   criterion: "Pass only if the band-maximum summit metric, the volume mean of the field-intensity ratio in the masonry between Z 132.4 m and 137.4 m, for the apex truncated at 137.4 m is at least twice that for the apex pointed at 146.71 m in the on-ground case (spec section 6)."
   status: pending
-  depends_on: [pyr.height_present, pyr.height_original, paper.height, pyr.base_side, pyr.face_slope]
+  depends_on: [pyr.height_present, pyr.height_original, paper.height, pyr.base_side, pyr.face_slope, emx.cell_coarse, emx.summit_depth, paper.eps_imag, paper.eps_real, paper.wavelength_max, paper.wavelength_min]
   spaces: []
 - id: E21
   statement: "Telluric currents concentrate over ore deposits, and the pyramids were sited for that."
