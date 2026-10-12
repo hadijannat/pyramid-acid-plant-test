@@ -178,6 +178,8 @@ def e19(modelled: list[tuple], realism: list[tuple]) -> tuple[str, str]:
 
     modelled: one (cell, R1, its control) per cell size.
     realism: one (cell, rows) per cell size, rows being (label, conductivity, V4, its control or None).
+    A row without a label is V4 as defined and needs its control; a labelled row is V4 at another permittivity
+    of the ledger's range, run without a control: it must reach 2 for a pass and stay below 2 for a fail.
     """
     part_a = _agree(["pass" if r1 >= FACTOR * c0 else "fail" for _, r1, c0 in modelled])
     part_b = []
@@ -185,7 +187,8 @@ def e19(modelled: list[tuple], realism: list[tuple]) -> tuple[str, str]:
         lowest = min(sigma for _, sigma, _, _ in rows)
         if all(v4 < FACTOR for _, sigma, v4, _ in rows if sigma == lowest):
             part_b.append("fail")
-        elif all(c0 is not None and v4 >= FACTOR and v4 >= FACTOR * c0 for _, _, v4, c0 in rows):
+        elif all(v4 >= FACTOR and (c0 is None if label else c0 is not None and v4 >= FACTOR * c0)
+                 for label, _, v4, c0 in rows):
             part_b.append("pass")
         else:
             part_b.append("conditional")

@@ -92,6 +92,10 @@ def test_e19_runs_through_its_statuses():
     assert metrics.e19(holds, split_real)[0] == "conditional"
     other_eps = [(2.5, [("", low, 0.4, 0.3), ("eps 9", low, 2.4, None)])]        # fails only if every permittivity fails
     assert metrics.e19(holds, other_eps)[0] == "conditional"
+    all_eps = [(2.5, [("", low, 9.0, 2.0), ("", high, 5.0, 2.0), ("eps 5", low, 8.0, None), ("eps 9", low, 7.0, None)])]
+    assert metrics.e19(holds, all_eps)[0] == "pass"              # the other permittivities need no control to pass
+    weak_eps = [(2.5, [("", low, 9.0, 2.0), ("", high, 5.0, 2.0), ("eps 9", low, 1.5, None)])]
+    assert metrics.e19(holds, weak_eps)[0] == "conditional"
 
 
 def test_e20_runs_through_its_statuses():
