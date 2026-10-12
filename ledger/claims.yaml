@@ -11,7 +11,7 @@
   piece: 5
   criterion: "Pass if a geologically defensible hydrogen sulfide flux can supply the chemistry model's minimum feed; fail if the required flux exceeds active-seep analogues by orders of magnitude (07 section 4.4)."
   status: pending
-  depends_on: [chem.molar_mass_h2s, chem.molar_mass_h2so4]
+  depends_on: [chem.molar_mass_h2s, chem.molar_mass_h2so4, site.atm_pressure, kc.volume, chem.temperature, rx.cycle_time, rx.h2s_cave_air]
   spaces: []
 - id: S02
   statement: "Hydrogen sulfide is turned into sulfur dioxide in three unnamed steps inside the satellite pyramids."
@@ -31,7 +31,7 @@
   piece: 4
   criterion: "Pass if sulfur dioxide remains in the King's Chamber between delivery and draw with the air shafts open (00 section 7 item 5)."
   status: pending
-  depends_on: [kc.volume, kcs.north.width, kcs.south.width, kcs.mouth_height]
+  depends_on: [kc.volume, kcs.north.width, kcs.south.width, kcs.mouth_height, flow.so2_diffusivity, flow.wind_speed, flow.wind_pressure_coefficient_difference, flow.delivery_to_draw_interval, kcs.north.height, kcs.north.length, kcs.south.height, kcs.south.length, hydro.air_density, kcs.exit.z, kc.floor.z, site.atm_pressure, chem.molar_mass_so2, chem.temperature, hydro.kcs_north_loss_coefficient, hydro.kcs_south_loss_coefficient]
   spaces: [kings_chamber, kc_shaft_north, kc_shaft_south]
 - id: S04
   statement: "Ground currents, concentrated by ore deposits and iron veins, enter from below and build a positive electric field at the flat top."
@@ -81,7 +81,7 @@
   piece: 3
   criterion: "Pass requires an explicitly assumed reservoir, because the evidence-based boundary has no water at base level; report the level and volume it must have (02 section 5.5 item 1)."
   status: pending
-  depends_on: [site.base_elevation_asl, hydro.ok_flood_peak_asl, hydro.modern_water_table_asl, dp.entrance.z]
+  depends_on: [site.base_elevation_asl, hydro.ok_flood_peak_asl, hydro.modern_water_table_asl, dp.entrance.z, dp.south_end.z, gg.roof_top.z, gg.volume, qc.volume, qc.niche.volume, qp.volume, ap.volume, ws.volume, sub.volume, dp.angle, dp.width, dp.height, flow.fill_time]
   spaces: [subterranean_chamber, descending_passage]
 - id: S09
   statement: "Blocked by the dead-end south passage and the lower valve, the water rises in the well shaft until it stands at the reservoir's level."
@@ -131,7 +131,7 @@
   piece: 3
   criterion: "Pass if, with the gallery filled, water stays out of the King's Chamber while gas can still pass the antechamber, and a drain route is stated (02 section 5.5 item 6)."
   status: pending
-  depends_on: [gg.volume, gg.roof_top.z, gg.south_end.z, ante.floor.z, kc.floor.z]
+  depends_on: [gg.volume, gg.roof_top.z, gg.south_end.z, ante.floor.z, kc.floor.z, hydro.water_density, ante.slab_clearance, ante.slab_width, ante.groove_connected_area, flow.discharge_coefficient, kcs.mouth_height, kc.length, kc.width, ante.length, ante.width, ante.passage_to_kc.length, ante.low_passage.width, kc.volume, kcs.north.width, kcs.north.height, kcs.south.width, kcs.south.height, hydro.kcs_north_loss_coefficient, hydro.kcs_south_loss_coefficient, site.atm_pressure, chem.molar_mass_so2, chem.temperature, kc.height]
   spaces: [grand_gallery, antechamber, kings_chamber]
 - id: S14
   statement: "The falling water draws outside air down the King's Chamber shafts into the chamber."
@@ -141,7 +141,7 @@
   piece: 3
   criterion: "Pass if, for a stated drain rate and realistic leak areas, most of the replacement gas comes down the shafts; report the pressure difference (02 section 5.5 item 7)."
   status: pending
-  depends_on: [kcs.north.width, kcs.north.height, kcs.south.width, kcs.south.height, kcs.north.length, kcs.south.length, hydro.kcs_north_loss_coefficient, hydro.kcs_south_loss_coefficient, hydro.air_density, hydro.drain_time, gg.volume]
+  depends_on: [kcs.north.width, kcs.north.height, kcs.south.width, kcs.south.height, kcs.north.length, kcs.south.length, hydro.kcs_north_loss_coefficient, hydro.kcs_south_loss_coefficient, hydro.air_density, hydro.drain_time, gg.volume, ante.floor.z, ante.groove_connected_area, ante.low_passage.height, ante.low_passage.width, flow.discharge_coefficient, flow.joint_path_length, flow.slab_leak_area, gg.angle, gg.first_lap_height, gg.floor_length, gg.height, gg.laps, gg.overhang, gg.ramp_height, gg.slot_width, gg.south_end.z, gg.width, hydro.air_kinematic_viscosity, hydro.joint_aperture, hydro.joint_length, hydro.vapour_pressure, hydro.water_density, rc.davison.height, rc.davison.length, rc.davison.width, site.atm_pressure]
   spaces: [kc_shaft_north, kc_shaft_south, kings_chamber, grand_gallery]
 - id: S15
   statement: "The same suction pulls sulfur dioxide and air from the King's Chamber through the four grooves, past the three slabs, into the antechamber."
@@ -171,7 +171,7 @@
   piece: 3
   criterion: "Pass if, with the openings as surveyed, more than 90 percent of the displaced volume is drawn through the antechamber path rather than through other openings (01 premise P4)."
   status: pending
-  depends_on: [gg.volume, ante.groove_connected_area, ws.upper_side, rc.davison_passage.width, rc.davison_passage.height, ap.width, ap.height]
+  depends_on: [gg.volume, ante.groove_connected_area, ws.upper_side, rc.davison_passage.width, rc.davison_passage.height, ap.width, ap.height, ante.floor.z, ante.low_passage.height, ante.low_passage.width, ap.angle, ap.end.z, flow.discharge_coefficient, flow.joint_path_length, flow.slab_leak_area, gg.angle, gg.first_lap_height, gg.floor_length, gg.height, gg.laps, gg.north_end.z, gg.overhang, gg.ramp_height, gg.slot_width, gg.south_end.z, gg.width, hydro.air_density, hydro.air_kinematic_viscosity, hydro.drain_time, hydro.joint_aperture, hydro.joint_length, hydro.kcs_north_loss_coefficient, hydro.kcs_south_loss_coefficient, hydro.vapour_pressure, hydro.water_density, kcs.north.height, kcs.north.width, kcs.south.height, kcs.south.width, qp.floor_north.z, qp.height_north, qp.width, rc.davison.height, rc.davison.length, rc.davison.width, site.atm_pressure, ws.top.z]
   spaces: [antechamber, grand_gallery]
 - id: S18
   statement: "The pump is worked again and the gallery level is raised slowly, again in four activations, bringing the gases into contact with water."
@@ -191,7 +191,7 @@
   piece: 4
   criterion: "Pass if at least 90 percent of the sulfur is captured into the liquid in any oxidation state within the cycle; fail below 50 percent (03 section 4.4)."
   status: pending
-  depends_on: [chem.henry_so2, chem.pka1_so2, chem.pka2_so2]
+  depends_on: [chem.henry_so2, chem.pka1_so2, chem.pka2_so2, gg.slot_width, gg.ramp_height, gg.width, gg.first_lap_height, gg.height, gg.overhang, gg.laps, gg.angle, gg.volume, chem.temperature, chem.kl_surface, rx.kg_gas, rx.cycle_time, site.atm_pressure, kc.volume]
   spaces: [grand_gallery]
 - id: S20
   statement: "Sulfurous acid is oxidised quickly by air to dilute sulfuric acid."
@@ -221,7 +221,7 @@
   piece: 4
   criterion: "Pass if gas uptake keeps pace with the rising water so that no gas is forced back through the grooves (00 section 7 item 9)."
   status: pending
-  depends_on: [chem.henry_so2, ante.groove_connected_area, gg.volume]
+  depends_on: [chem.henry_so2, ante.groove_connected_area, gg.volume, kc.volume, chem.o2_fraction, chem.henry_o2, rx.henry_n2, chem.temperature, gg.slot_width, gg.ramp_height, gg.width, gg.first_lap_height, gg.height, gg.overhang, gg.laps, gg.angle, chem.kl_surface, rx.kg_gas, rx.cycle_time]
   spaces: [grand_gallery, antechamber, kings_chamber]
 - id: S23
   statement: "Acid attacks the limestone walls of the gallery and Queen's Chamber, forming a calcium sulfate layer that stops further attack and re-forms where it chips off."
@@ -231,7 +231,7 @@
   piece: 4
   criterion: "Pass if a calcium sulfate layer forms and persists over ten fill and drain cycles with fresh water and limits wall loss to a rate compatible with the surviving surfaces; fail if it is stripped each cycle (03 section 4.4; 00 section 7 item 11)."
   status: pending
-  depends_on: [chem.gypsum_h_diffusivity, chem.gypsum_solubility, chem.gypsum_log_k, gg.wall_area]
+  depends_on: [chem.gypsum_h_diffusivity, chem.gypsum_solubility, chem.gypsum_log_k, gg.wall_area, site.atm_pressure, kc.volume, chem.temperature, gg.volume, chem.gypsum_molar_volume, rx.cycle_time, hydro.water_density, rx.ion_diffusivity, rx.fresh_dwell, chem.ka2_sulfuric, chem.calcite_molar_volume]
   spaces: [grand_gallery, queens_chamber]
 - id: S24
   statement: "Offered as speculation: heat from the gallery reaction is removed by a water-filled chamber in the Big Void above the gallery."
@@ -323,7 +323,7 @@
   piece: 5
   criterion: "Pass if an opened source gives a measured hydrogen sulfide flux, composition or source pressure under the plateau that meets the chemistry model's minimum feed; fail if the required flux exceeds active-seep analogues by orders of magnitude (07 section 4.4)."
   status: pending
-  depends_on: [chem.molar_mass_h2s, chem.molar_mass_h2so4]
+  depends_on: [chem.molar_mass_h2s, chem.molar_mass_h2so4, site.atm_pressure, kc.volume, chem.temperature, rx.cycle_time, rx.h2s_cave_air]
   spaces: []
 - id: E02
   statement: "That paper's X-ray fluorescence analyses found metal compounds matching samples from the plateau's iron deposits."
