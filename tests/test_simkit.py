@@ -106,6 +106,20 @@ def test_the_summary_counts_every_claim_once_and_its_table_has_a_row_for_each():
     assert [row.split(" | ")[0].lstrip("| ") for row in rows] == list(LEDGER.claims)
 
 
+def test_the_report_gives_every_claim_one_row_and_embeds_only_files_that_exist(tmp_path):
+    import re
+
+    from pyramid import summary
+    _, decided, source = verdicts.merged(LEDGER)
+    text = summary.report(LEDGER, decided, source)
+    assert sorted(re.findall(r"^\| ([SE]\d\d) \|", text, re.M)) == sorted(LEDGER.claims)
+    embedded = re.findall(r"\]\((\.\./[^)]+)\)", text)
+    assert embedded and all((summary.OUT_DIR / link).exists() for link in embedded)
+    for name in ("a.svg", "b.svg"):
+        summary.verdict_map(LEDGER, decided, tmp_path / name)
+    assert (tmp_path / "a.svg").read_bytes() == (tmp_path / "b.svg").read_bytes() != b""  # no date, no random ids
+
+
 def test_stale_names_the_packages_generated_from_another_ledger(tmp_path):
     simkit.write_results("flow", LEDGER, {}, {}, root=tmp_path)
     assert verdicts.stale(LEDGER, tmp_path) == []
