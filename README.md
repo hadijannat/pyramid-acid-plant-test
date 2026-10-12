@@ -67,7 +67,7 @@ flowchart LR
 - **Ledger** ([`ledger/`](ledger/)): the single source of truth. A strict loader rejects unknown keys, non-finite values and unverified-as-text flags, so a typo cannot pass as a measurement.
 - **Screening** ([`pyramid/screening.py`](pyramid/screening.py)): 37 hand calculations as pure functions of ledger values. Ranges are evaluated at the corners of the input ranges; verdicts apply the three-way rule; each basis sentence is generated from the numbers it cites.
 - **Geometry** ([`pyramid/geometry/`](pyramid/geometry/)): a parametric model of the interior from Petrie's survey, with nine variant switches for readings the sources leave open, self-checks against ledger volumes, and exporters for field solvers (STEP, Gmsh msh) and the viewer (glTF). A second model reproduces the simplified geometry of Balezin et al. (2018), the electromagnetic study the hypothesis cites.
-- **Viewer** ([`viewer/`](viewer/)): a browser scene that animates the cycle exactly as claimed, step by step, with the verdict and the deciding numbers beside each step. Mechanisms the hypothesis leaves unspecified are drawn as dashed, labelled placeholders. A fixed notice reads: *Animation of the claim. Not a simulation result.*
+- **Viewer** ([`viewer/`](viewer/)): a full-screen three.js scene that tours the 31 steps of the cycle exactly as claimed, with each step's claim, verdict and deciding sentence in a caption, and the compounds the hypothesis names labelled in the spaces it puts them in; products of steps that fail or are undefined are marked *claimed*. Mechanisms the hypothesis leaves unspecified are drawn as dashed, labelled placeholders. The inspector, with the deciding numbers of each step and space, comes with the next plan. A fixed notice reads: *Animation of the claim. Not a simulation result.*
 - **Provenance**: every generated file carries a manifest with the commit, the ledger digest and library versions, and a test fails if the committed results were generated from a different ledger than the one in the tree.
 
 ## Evidence base
@@ -101,7 +101,24 @@ To edit an assumption, change the ledger line, rerun the three commands, and rea
 python3 -m http.server 8765 --directory viewer
 ```
 
-Then open http://localhost:8765/. Step through the 31 claimed steps, switch between the survey reading and an alternative, click any space for the ledger values that define it (unverified values are marked), and read the verdict for the step. It is an animation of the claim, not a simulation result.
+Then open http://localhost:8765/. three.js 0.170.0 loads from the jsDelivr CDN, so the page needs a network connection and a browser with WebGL 2; nothing is installed.
+
+The page is one full-screen scene. From outside, the pyramid stands on a plain sand plateau under a sky. On the steps that act inside the stone, the masonry turns to dark glass and the passages and chambers show through it as a lit schematic; the plateau fades, and the sky behind the glass darkens, only while the camera is inside the masonry. *Play the claimed cycle* flies in from far outside, then rides a camera path through each of the 31 claimed steps: water rises and falls in the spaces the claim names, gases light up the chambers they pass through, and a storm sky appears only on the two steps whose claim states a storm (S05 and S06), with the lightning strike on the top in S06. The water and gases in each space carry the formulas of the compounds the hypothesis names for them and take those compounds' colours; a product of a step whose verdict is fail or undefined is drawn hatched and labelled *(claimed)*, and the calcium sulfate coat of S23 is drawn as a faint film with its edges outlined. Mechanisms the hypothesis leaves unspecified (the pump, the valves, the reservoir, the drains) are dashed, labelled boxes. A caption gives each step's claim as stated, its verdict and the sentence that decides it, above a strip of 31 ticks coloured by verdict. A fixed notice reads: *Animation of the claim. Not a simulation result.*
+
+| Input | Action |
+|---|---|
+| Space | play or pause |
+| Left, Right | previous or next step |
+| drag on the strip | scrub |
+| F | fullscreen |
+| H | hide or show the caption and controls (the notice stays) |
+| Esc | back to the cinematic view |
+| I | the inspector (next plan; does nothing yet) |
+| pointer on the scene | orbit; this pauses the ride, and *Resume ride* rejoins it |
+
+Deep links: `#S16` opens that step; any other fragment opens the prologue. `?quality=low`, `?quality=medium` or `?quality=high` fixes the rendering tier (pixel ratio, shadows, bloom, gas particles); without it the page times two seconds of frames and picks one. A tier set from the browser console with `viewer.store.set({quality: 'high'})` is remembered in that browser. With the system setting for reduced motion, steps cut instead of flying. `viewer.state()` in the console summarises what the scene shows.
+
+The inspector (step and space cards with the deciding numbers, layers, a cutaway, the chemistry legend and the reaction equations), Results mode for the process model's output, the phone layout polish, and a public URL come with the next plan ([design](docs/superpowers/specs/2026-10-10-cinematic-viewer-design.md)).
 
 ## Roadmap
 
@@ -119,6 +136,8 @@ Open-source tools only (FEniCSx, MEEP, OpenFOAM, Gmsh): anyone can rerun every r
 
 - Verdicts are screening-level: single-point calculations with corner-evaluated ranges, not solved fields. Where a solver could change a verdict, the roadmap schedules one.
 - Thresholds such as "one day" for a cycle or 0.05 mol/L for a usable acid are judgement calls recorded beside the criterion; the hypothesis sets none. Two verdicts (S09, S20) have an alternative reading recorded in the [handover notes](docs/superpowers/plans/2026-10-10-foundation-ledger-geometry-viewer-handover.md).
+- The viewer draws only the modelled interior, so hydrogen chloride (S27, in Khafre's pyramid) appears in no scene: S27 and S28 have no actors. The next plan's chemistry legend lists the compounds outside the modelled interior.
+- The display colour of dilute sulfuric acid sits close to the verdict colour for *fail*; the *(claimed)* label beside the liquid tells them apart.
 - Licensed under the [MIT License](LICENSE). The cited sources keep their own rights; transcripts of the source videos are not redistributed.
 
 ## Sources

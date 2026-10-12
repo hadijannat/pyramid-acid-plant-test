@@ -120,8 +120,8 @@ def cycle_payload(ledger: Ledger, curves: dict[str, list[tuple[float, float]]],
         where = step["id"]
         if where not in ledger.claims:
             raise LedgerError(f"cycle.yaml: {where} is not a claim id")
-        if not 2 <= len(step["path"]) <= 4:
-            raise LedgerError(f"cycle.yaml: {where}: path needs 2 to 4 keyframes")
+        if not 1 <= len(step["path"]) <= 4:
+            raise LedgerError(f"cycle.yaml: {where}: path needs 1 to 4 keyframes")
         if step["scene"]["weather"] not in WEATHER:
             raise LedgerError(f"cycle.yaml: {where}: weather must be clear or storm")
         step["path"] = _viewer_path(step["path"])

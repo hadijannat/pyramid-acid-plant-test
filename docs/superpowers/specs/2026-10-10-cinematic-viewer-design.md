@@ -126,7 +126,7 @@ The viewer starts at `medium`, measures frame times for two seconds, and moves t
 
 ### 5.1 Paths
 
-Each step carries `path`, two to four keyframes of `position` and `target` in the ledger frame; `viewer_data.py` converts them to viewer coordinates as it converts the single camera today. The player builds a centripetal Catmull-Rom spline through the previous step's last keyframe and the step's keyframes, and rides it over the step's duration with ease-in-out. Any pointer or touch on the canvas pauses the ride where it is and hands the camera to the orbit controls; *Resume*, or the next step, rejoins the path.
+Each step carries `path`, one to four keyframes of `position` and `target` in the ledger frame; `viewer_data.py` converts them to viewer coordinates as it converts the single camera today. The player eases the camera from the previous pose to the step's first keyframe; a path of several keyframes (the prologue) is then ridden as a centripetal Catmull-Rom spline with ease-in-out. Any pointer or touch on the canvas pauses the ride where it is and hands the camera to the orbit controls; *Resume*, or the next step, rejoins the path. The flight into a step's first keyframe takes at most 1.5 s; a step with one keyframe then holds its framing with a slow orbital drift (about 0.5 degrees per second) that carries across consecutive steps with the same camera, so the audience never spends a step in transit and never loses the subject. Each camera is authored so that its subject (the whole pyramid on an exterior step, the claim's spaces on an interior one) stays in the free area between the notice and the caption card through the hold. (Amended 2026-10-11 after the owner watched the tour: the first rule, a generated 30-degree orbit per step ridden from the previous pose, spent most of each step flying and swung identical cameras back at every step.)
 
 ### 5.2 Prologue
 
@@ -193,7 +193,7 @@ The viewer side ships complete against the contract of section 7.3 and a committ
 
 ### 7.1 `cycle.yaml` and `cycle.json`
 
-Additions: `prologue: {path, duration}`; per step `path` (2 to 4 keyframes), `scene` (`interior`, `weather`), `species` (list of ids), optional `reaction` (`equation`, `timestamp`, `note`); actors: `gas` and `water` carry `species` instead of `color`; new actor type `coat` with `space`. The single `camera` of plan A is removed; its pose becomes the first keyframe, and plan A's tests of the `camera` key are rewritten for `path`. `viewer_data.py` converts every keyframe and placeholder position to viewer coordinates and attaches each species' `status` from the producing step's verdict. Every other existing key keeps its meaning. The `field` actor stays in the claim cycle and, in claim mode, always draws the "Solver result pending" label: a solver's slice is a result and belongs to a field case (section 7.3).
+Additions: `prologue: {path, duration}`; per step `path` (1 to 4 keyframes), `scene` (`interior`, `weather`), `species` (list of ids), optional `reaction` (`equation`, `timestamp`, `note`); actors: `gas` and `water` carry `species` instead of `color`; new actor type `coat` with `space`. The single `camera` of plan A is removed; its pose becomes the first keyframe, and plan A's tests of the `camera` key are rewritten for `path`. `viewer_data.py` converts every keyframe and placeholder position to viewer coordinates and attaches each species' `status` from the producing step's verdict. Every other existing key keeps its meaning. The `field` actor stays in the claim cycle and, in claim mode, always draws the "Solver result pending" label: a solver's slice is a result and belongs to a field case (section 7.3).
 
 ### 7.2 `species.yaml`
 
@@ -239,7 +239,7 @@ Interior steps at `high` on a recent laptop: under 16 ms per frame with bloom an
 
 ## 10. Testing
 
-Python: contract tests for `cycle.json` (every step has a path of 2 to 4 keyframes, `scene.interior` follows the rule of section 5.4, species ids exist, reaction steps carry `reaction`), for `species.yaml`, for the results schema against the fixture and against a deliberately broken copy, and for the marking rule driven through every status. Generated files are regenerated on a clean tree after the code commit, as the README says.
+Python: contract tests for `cycle.json` (every step has a path of 1 to 4 keyframes, `scene.interior` follows the rule of section 5.4, species ids exist, reaction steps carry `reaction`), for `species.yaml`, for the results schema against the fixture and against a deliberately broken copy, and for the marking rule driven through every status. Generated files are regenerated on a clean tree after the code commit, as the README says.
 
 Browser, reviewer-driven through `window.viewer` as in plan A: the prologue plays and the page does not autoplay; the cross-fade occurs on the first interior step; a hydraulic step, a reaction step and a gas step are checked at 1280 px and 375 px; the inspector opens without a camera jump; the cutaway clips masonry only; species labels and hatching appear on S16 and S20; results mode loads the fixture and draws its plots and the outline where claim and result differ; `?quality=low` yields the low tier; `prefers-reduced-motion` cuts instead of flying; no console errors from the page.
 

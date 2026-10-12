@@ -17,21 +17,10 @@
 </head>
 <body>
   <div id="notice" role="note">Animation of the claim. Not a simulation result.</div>
-  <main id="app">
-    <section id="stage" aria-label="3D view of the interior">
-      <div id="toolbar">
-        <button id="toggle-masonry" type="button" aria-pressed="true">Masonry</button>
-        <button id="toggle-geometry" type="button" aria-pressed="false">Alternative survey reading</button>
-        <details id="spaces-menu">
-          <summary>Spaces</summary>
-          <div id="space-toggles"></div>
-        </details>
-      </div>
-      <div id="picked" role="status"></div>
-    </section>
-    <aside id="panel" aria-label="Step and space details"></aside>
-    <footer id="timeline" aria-label="Cycle timeline"></footer>
-  </main>
-  <script type="module" src="main.js"></script>
+  <p id="message" role="alert" hidden></p>
+  <main id="stage" aria-label="3D view of the pyramid and its interior"></main>
+  <div id="hud"></div>
+  <div id="inspector" hidden></div>
+  <script type="module" src="app.js"></script>
 </body>
 </html>

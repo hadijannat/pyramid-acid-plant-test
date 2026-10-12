@@ -8,143 +8,145 @@
   --text: #e7e3da;
   --muted: #9da3ab;
   --accent: #c9b891;
-  /* verdict colours, used by the panel */
+  /* verdict colours: badges, chips and the progress strip only, never a scene material */
   --pass: #56b884;
   --fail: #e0655f;
   --conditional: #e3aa45;
   --undefined: #8f949c;
   --pending: #7f9db8;
+  --notice-height: 28px;
 }
 
 * { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; }
+[hidden] { display: none !important; }   /* no display rule below may show a hidden element */
+html, body { height: 100%; margin: 0; overflow: hidden; }   /* full screen: the page itself never scrolls */
 body {
   background: var(--bg);
   color: var(--text);
   font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-/* canvas on the left, a 360 px panel on the right, the timeline along the bottom */
-#app {
-  display: grid;
-  height: 100dvh;
-  grid-template-columns: minmax(0, 1fr) 360px;
-  grid-template-rows: minmax(0, 1fr) auto;
-  grid-template-areas: "stage panel" "timeline timeline";
-}
-#stage { grid-area: stage; position: relative; min-height: 0; overflow: hidden; }
-#stage canvas { display: block; }
-#stage .labels { position: absolute; top: 0; left: 0; pointer-events: none; }
-#panel {
-  grid-area: panel; overflow-y: auto; padding: 16px;
-  background: var(--surface); border-left: 1px solid var(--line);
-}
-#timeline {
-  grid-area: timeline; min-height: 48px; padding: 8px 16px;
-  background: var(--surface); border-top: 1px solid var(--line);
-}
-
-button, summary {
+button {
   font: inherit; color: var(--text); background: var(--raised);
   border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; cursor: pointer;
 }
-button[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); }
-button:focus-visible, summary:focus-visible, input:focus-visible {
-  outline: 2px solid var(--accent); outline-offset: 2px;
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* the notice: first in the page, fixed over everything, in every mode, in fullscreen and with the HUD hidden */
+#notice {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+  height: var(--notice-height); line-height: var(--notice-height); padding: 0 8px; text-align: center;
+  font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  background: var(--raised); border-bottom: 1px solid var(--line);
 }
 
-/* the toolbar floats over the canvas; only its controls take the pointer */
-#toolbar {
-  position: absolute; top: 12px; left: 12px; right: 12px; z-index: 2;
-  display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; pointer-events: none;
-}
-#toolbar > * { pointer-events: auto; }
-#spaces-menu { position: relative; }
-#spaces-menu summary { list-style: none; }
-#spaces-menu summary::-webkit-details-marker { display: none; }
-#space-toggles {
-  position: absolute; top: calc(100% + 6px); left: 0;
-  display: grid; gap: 4px; padding: 10px; max-height: 50vh; overflow-y: auto; white-space: nowrap;
-  background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
-}
-#picked {
-  position: absolute; left: 12px; bottom: 12px; z-index: 2;
-  color: var(--muted); font-size: 13px; pointer-events: none;
-}
+/* the scene fills the window; the notice lies over its top edge */
+#stage { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
+#stage canvas { display: block; }
+#stage .labels { position: absolute; top: 0; left: 0; pointer-events: none; }
 
-/* phone width: the panel goes below the canvas and the page scrolls */
-@media (max-width: 760px) {
-  #app {
-    height: auto; min-height: 100dvh;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: 58dvh auto auto;
-    grid-template-areas: "stage" "timeline" "panel";
-  }
-  #panel { overflow-y: visible; border-left: 0; border-top: 1px solid var(--line); }
-}
+/* the HUD covers the stage below the notice; only its controls take the pointer, so the canvas still orbits */
+#hud { position: fixed; inset: var(--notice-height) 0 0 0; z-index: 5; pointer-events: none; }
+#hud > * { pointer-events: auto; }
 
-/* timeline bar */
-#timeline { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-#timeline input[type="range"] { flex: 1 1 220px; min-width: 0; accent-color: var(--accent); }
-#tl-label { font-weight: 600; }
-#tl-time { color: var(--muted); font-variant-numeric: tabular-nums; }
+/* why the page stopped: a missing or malformed data file, or no WebGL 2 */
+#message {
+  position: fixed; top: calc(var(--notice-height) + 16px); left: 16px; right: 16px; z-index: 9;
+  max-width: 640px; margin: 0 auto; padding: 12px 16px;
+  background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 6px;
+}
 
 /* labels drawn in the scene by CSS2DRenderer */
 .placeholder-label, .pending-label {
   padding: 2px 6px; border-radius: 4px; font-size: 12px; white-space: nowrap;
-  background: rgba(21, 23, 26, 0.85); color: var(--text); border: 1px dashed var(--undefined);
+  background: rgba(21, 23, 26, 0.85); color: var(--text); border: 1px dashed var(--line);
 }
-.pending-label { color: var(--pending); border-color: var(--pending); }
-
-/* the notice: fixed to the top of the window, so it is on screen wherever the page is scrolled */
-#notice {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 10;
-  height: 28px; line-height: 28px; padding: 0 8px; text-align: center;
-  font-size: 13px; white-space: nowrap;
-  background: var(--raised); border-bottom: 1px solid var(--line);
+.pending-label { color: var(--muted); border-color: var(--muted); }
+/* species labels (Task 9): the formulas present in a space; a solid border, unlike the dashed placeholders */
+.species-label {
+  padding: 2px 6px; border-radius: 4px; font-size: 12px; white-space: nowrap;
+  background: rgba(21, 23, 26, 0.85); color: var(--text); border: 1px solid var(--line);
 }
-#app { padding-top: 28px; }
-
-/* panel cards */
-.card { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
-.card header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-.card h2 { margin: 0 0 8px; font-size: 16px; line-height: 1.3; }
-.card h3 {
-  margin: 12px 0 4px; font-size: 12px; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
-}
-.card p { margin: 0 0 8px; }
-.meta, .criterion, .source { color: var(--muted); font-size: 12px; }
-.basis { padding-left: 10px; border-left: 3px solid var(--line); }
-.numbers { width: 100%; margin-bottom: 8px; border-collapse: collapse; font-size: 13px; }
-.numbers td { padding: 3px 8px 3px 0; vertical-align: top; border-top: 1px solid var(--line); }
-.numbers td:nth-child(n+2) { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
-.numbers td:last-child { padding-right: 0; color: var(--muted); }
-.quantities, .involved { margin: 0; padding: 0; list-style: none; font-size: 13px; }
-.quantities li, .involved li { padding: 5px 0; border-top: 1px solid var(--line); }
-.quantities code { color: var(--accent); }
-/* a figure not read in its source: a dashed tag after the value, and the ledger's note under it */
-.unverified {
-  padding: 0 6px; border: 1px dashed var(--conditional); border-radius: 4px;
-  color: var(--conditional); font-size: 11px; white-space: nowrap;
-}
-.note { font-size: 12px; }
-.involved .chip { margin-right: 4px; }
-
-/* verdict badge and step chips: one colour per verdict; "undefined" is an outline with no fill */
-.badge, .chip { border: 1px solid transparent; font-weight: 600; font-size: 12px; color: #14161a; }
-.badge { flex: none; padding: 2px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.05em; }
-.chip { display: inline-block; width: 44px; padding: 3px 0; border-radius: 4px; text-align: center; }
-.status-pass { background: var(--pass); }
-.status-fail { background: var(--fail); }
-.status-conditional { background: var(--conditional); }
-.status-pending { background: var(--pending); }
-.status-undefined { background: transparent; color: var(--undefined); border: 1px dashed var(--undefined); }
-#step-list { display: flex; flex-wrap: wrap; gap: 6px; }
-.chip[aria-current="step"] { box-shadow: 0 0 0 2px var(--text); }
-
-/* On a phone the page scrolls, so scrollIntoView would put the inspector's top under the fixed notice (28 px).
-   Not on a wide window: there the panel scrolls inside its own box, below the notice. */
 @media (max-width: 760px) {
-  #space-card { scroll-margin-top: 36px; }
+  .species-label { font-size: 11px; }   /* as the placeholder labels on a phone */
+}
+
+/* phone width: the notice keeps one line; scene labels shrink so they cover less of the view */
+@media (max-width: 760px) {
+  #notice { font-size: 12px; }
+  .placeholder-label, .pending-label { font-size: 11px; }
+}
+
+/* ---- the cinematic HUD (Task 8). Verdict colours appear only on the badge and the strip's ticks. */
+#hud.hidden { display: none; }                /* H hides the HUD; the notice sits outside #hud and stays */
+#hud [hidden] { display: none !important; }   /* the hidden attribute beats the display rules below */
+
+#hud .hud-card {
+  position: fixed; left: 50%; bottom: 16px; z-index: 5; transform: translateX(-50%);
+  box-sizing: border-box; width: calc(100% - 32px); max-width: 720px; padding: 18px 20px;
+  display: grid; gap: 12px; pointer-events: auto;
+  color: var(--text);
+  /* display choice: dark glass; at 0.86 the muted text keeps 4.5:1 over the brightest interior */
+  background: rgba(21, 23, 26, 0.86);
+  -webkit-backdrop-filter: blur(16px) saturate(130%); backdrop-filter: blur(16px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+#hud .caption { max-height: 40vh; overflow-y: auto; overflow-wrap: break-word; }
+#hud .caption h2 { margin: 0 0 6px; font-size: 20px; line-height: 1.3; letter-spacing: -0.01em; }
+#hud .caption .step-id {
+  display: block; margin-bottom: 2px; color: var(--accent);
+  font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+}
+#hud .caption p { margin: 0 0 6px; }
+#hud .caption .statement { font-size: 16px; line-height: 1.5; }
+#hud .verdict { display: flex; gap: 10px; align-items: flex-start; }
+#hud .verdict .basis { margin: 0; color: var(--muted); }
+#hud .badge {
+  flex: none; padding: 2px 10px; border: 1px solid transparent; border-radius: 999px;
+  font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #14161a;
+}
+
+/* the strip is 24 px tall; the current tick (18 px and its 2 px ring) stays inside it */
+#hud .strip { display: flex; gap: 2px; align-items: center; height: 24px; cursor: pointer; touch-action: none; }
+#hud .tick {
+  flex: 1 1 0; min-width: 0; height: 8px; box-sizing: border-box;
+  border: 1px solid transparent; border-radius: 2px;
+}
+#hud .tick.current { height: 18px; box-shadow: 0 0 0 2px var(--accent); }
+#hud .badge.status-pass, #hud .tick.status-pass { background: var(--pass); }
+#hud .badge.status-fail, #hud .tick.status-fail { background: var(--fail); }
+#hud .badge.status-conditional, #hud .tick.status-conditional { background: var(--conditional); }
+#hud .badge.status-pending, #hud .tick.status-pending { background: var(--pending); }
+#hud .badge.status-undefined, #hud .tick.status-undefined {
+  background: transparent; color: var(--text); border: 1px dashed var(--undefined);   /* the dashed border is the mark */
+}
+
+#hud .controls { display: flex; flex-wrap: wrap; gap: 8px; }
+#hud button {
+  font: inherit; color: var(--text); background: var(--raised);
+  border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; cursor: pointer;
+}
+/* display choice: quiet controls in the muted colour; Play carries the accent; Fullscreen, Hide and Resume sit right */
+#hud .controls button { background: transparent; border-color: transparent; color: var(--muted); }
+#hud .controls button:hover:enabled { background: var(--raised); color: var(--text); }
+#hud .controls button[aria-label="Play"], #hud .controls button[aria-label="Pause"] { border-color: var(--accent); color: var(--text); }
+#hud .controls button[aria-label="Next step"] { margin-right: auto; }
+#hud button:disabled { opacity: 0.45; cursor: default; }
+#hud button:focus-visible, #hud .strip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+#hud .overlay { position: fixed; inset: 0; z-index: 6; display: grid; place-items: center; pointer-events: none; }
+#hud .overlay button {
+  pointer-events: auto; padding: 14px 28px; font-size: 18px; border-color: var(--accent); border-radius: 999px;
+  background: rgba(21, 23, 26, 0.72);   /* display choice */
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  box-shadow: 0 0 0 1px var(--accent), 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* phone width: the card spans the bottom edge, with its 16 px gutters inside */
+@media (max-width: 760px) {
+  #hud .hud-card {
+    left: 0; right: 0; bottom: 0; transform: none; width: 100%; max-width: none;
+    border-width: 1px 0 0; border-radius: 0;
+  }
 }
