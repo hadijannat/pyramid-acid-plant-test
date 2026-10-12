@@ -18,7 +18,22 @@ def led() -> ledger.Ledger:
 
 @pytest.fixture(scope="module")
 def q(led) -> dict[str, float]:
-    return {i: led.q(i) for i in walls.WALL}
+    # The ledger's values, with the fresh water standing as long as the acid: the case the hand figures below set a
+    # day of still water against a day's layer for. The ledger's own dwell has its own test.
+    return {i: led.q(i) for i in walls.WALL} | {"rx.fresh_dwell": 1.0}
+
+
+def test_the_fresh_dwell_is_built_from_the_ledgers_own_times(led, q):
+    # The hypothesis states no dwell. The ledger's one time for water moving past the wall is the drain of S13, so
+    # the value is that over the cycle time, 3600 s in 86400 s, and the low end the shortest drain in the longest
+    # cycle, 600 s in a year; both are written to two or three figures, hence the half percent.
+    value, (low, high) = led.q("rx.fresh_dwell"), led.rng("rx.fresh_dwell")
+    assert value == pytest.approx(led.q("hydro.drain_time") / led.q("rx.cycle_time"), rel=0.005)
+    assert low == pytest.approx(led.rng("hydro.drain_time")[0] / led.rng("rx.cycle_time")[1], rel=0.005)
+    assert (value, low, high) == pytest.approx((3600 / 86400, 600 / 31557600, 1.0), rel=0.005)
+    # At that value a still fill takes 3.16 x sqrt(1 / 24) = 0.65 of the layer a bare wall grows in one cycle.
+    assert walls.still_margin(q | {"rx.fresh_dwell": value}) == pytest.approx(3.1614 / math.sqrt(24), rel=0.001)
+    assert walls.still_margin(q | {"rx.fresh_dwell": value}) == pytest.approx(0.645, abs=0.001)
 
 
 def test_a_diffusion_limited_layer_grows_parabolically():
@@ -105,12 +120,18 @@ def test_still_acid_thins_a_layer_and_cannot_strip_it(q):
     assert end_and_least(1e-9)[0] == pytest.approx(left, rel=0.01)  # a nanometre comes up to the same solution
     ended, least = end_and_least(full)  # a whole cycle's layer is thinned to half and never near nothing
     assert ended == pytest.approx(0.511, abs=0.005) and least == pytest.approx(0.418, abs=0.005)
+    # A still fill at the ledger's own dwell takes 0.65 of a bare wall's layer. The 0.35 it leaves comes up to the
+    # same 0.49 under the next batch, less than that fill takes: stripped in alternate cycles, not in each.
+    assert end_and_least(0.354 * full)[0] == pytest.approx(left, rel=0.01)
     # The length of the cycle cancels, and however much the acid takes a share of the layer stands.
     assert walls.left_under_acid(q | {"rx.cycle_time": 3600.0}) == pytest.approx(left, rel=1e-9)
     assert 0 < walls.left_under_acid(q | {"rx.ion_diffusivity": 1e-6}) < 0.03
+    # A layer that outlasted a fill stands at that share of a bare wall's layer when the next fill comes, so a still
+    # fill strips it from a dwell of 0.100 x 0.49^2 = 0.024 of the acid's; the bare wall's own layer needs 0.100.
+    assert walls.dwell_to_strip(q) * left**2 == pytest.approx(0.0241, abs=0.0002)
 
 
-def test_counting_bisulfate_the_acid_takes_more_gypsum_than_fresh_water(led):
+def test_counting_bisulfate_the_acid_takes_more_gypsum_and_leaves_half_as_much_of_the_layer(led, q):
     # What acid_takes leaves out. With the ledger's second dissociation constant the batch's free sulfate y obeys
     # Ka2 = H+ y / HSO4-. Free of calcium, H+ = c + y and HSO4- = c - y: 26 percent of the sulfate is free (03 V8).
     # With x of gypsum dissolved, y = (s rho)^2 / x, H+ = c - x + y and HSO4- = c + x - y.
@@ -118,18 +139,34 @@ def test_counting_bisulfate_the_acid_takes_more_gypsum_than_fresh_water(led):
         return brentq(lambda x: (c - x + s * s / x) * s * s / x - ka2 * (c + x - s * s / x),
                       2 * s * s / (c + math.hypot(c, 2 * s)), 5 * s)  # from the root without bisulfate upward
 
-    ids = walls.DEPOSIT + ("chem.ka2_sulfuric",)
-    q = {i: led.q(i) for i in ids}
     c, s, ka2 = walls._strength(q), walls._solubility(q), q["chem.ka2_sulfuric"]
     assert brentq(lambda y: (c + y) * y - ka2 * (c - y), 0.0, c) / c == pytest.approx(0.26, abs=0.005)
-    assert counted(c, s, ka2) / s == pytest.approx(1.11, abs=0.005)
+    x = counted(c, s, ka2)
+    assert x / s == pytest.approx(1.11, abs=0.005)
+    assert walls.acid_takes_with_bisulfate(q) == pytest.approx(x, rel=1e-9)
+    free = s * s / x  # every species is there, and the constant is met
+    assert c - x + free > 0 and c + x - free > 0 and (c - x + free) * free / (c + x - free) == pytest.approx(ka2)
     assert walls.acid_takes(q) / s == pytest.approx(0.49, abs=0.005)
-    # At every corner of the ranges the acid takes more than fresh water (1.10 to 1.16 times), and acid_takes less
-    # (0.45 to 0.58 times). Taking more thins the layer further and still leaves a share of it standing.
+
+    # Taking more thins the layer further and still leaves a share of it standing. Alone the acid would take
+    # r = 2 x sqrt(D_w t / pi) Vm over the day's layer of 3.67 micrometres = 3.51 layers; 2 / (r + sqrt(r^2 + 4)) of
+    # the layer stands, 26 percent against the 49 with all the sulfate free.
+    r = 2 * x * math.sqrt(1e-9 * 86400 / math.pi) * 7.39e-5 / math.sqrt(7.39e-5 * 4.54e-14 * 2 * c * 86400)
+    left = 2 / (r + math.sqrt(r * r + 4))
+    assert r == pytest.approx(3.51, abs=0.01) and left == pytest.approx(0.265, abs=0.001)
+    assert walls.left_under_acid(q, walls.acid_takes_with_bisulfate) == pytest.approx(left, rel=1e-9)
+    assert left / walls.left_under_acid(q) == pytest.approx(0.54, abs=0.005)
+    assert walls.dwell_to_strip(q) * left**2 == pytest.approx(0.0070, abs=0.0001)  # a still fill strips that from here
+
+    # At every corner of the ranges the batch is stronger than the solubility, so a layer can grow (1.14 times at
+    # the least); the acid takes more than fresh water (1.10 to 1.16 times), and acid_takes less (0.45 to 0.58).
+    ids = walls.DEPOSIT + ("chem.ka2_sulfuric",)
     for corner in itertools.product(*(set(led.rng(i)) for i in ids)):
         q = dict(zip(ids, corner))
         c, s = walls._strength(q), walls._solubility(q)
+        assert c / s > 1.13
         assert 0.45 < walls.acid_takes(q) / s < 0.59 and 1.09 < counted(c, s, q["chem.ka2_sulfuric"]) / s < 1.17
+        assert walls.acid_takes_with_bisulfate(q) == pytest.approx(counted(c, s, q["chem.ka2_sulfuric"]), rel=1e-9)
 
 
 def test_a_whole_batch_cannot_lay_down_what_one_fresh_fill_dissolves(q):
@@ -142,8 +179,8 @@ def test_a_whole_batch_cannot_lay_down_what_one_fresh_fill_dissolves(q):
     assert walls.deposit_over_fill(q | {"kc.volume": 100.0}) == 0.0  # a batch under the solubility deposits nothing
 
 
-def test_ten_cycles_strip_the_layer_each_time_and_keep_dissolving_the_wall(q):
-    for fill in ("saturating", "still"):
+def test_ten_cycles_strip_the_layer_each_time_and_keep_dissolving_the_wall(led, q):
+    for fill in ("saturating", "still"):  # the still fill standing as long as the acid, as the fixture has it
         run = walls.cycles(q, fill)
         assert len(run["after_acid"]) == len(run["after_fill"]) == len(run["loss"]) == 10
         assert run["after_fill"] == [0.0] * 10  # stripped by every fill
@@ -167,3 +204,10 @@ def test_ten_cycles_strip_the_layer_each_time_and_keep_dissolving_the_wall(q):
     assert run["after_fill"][0] == pytest.approx((1 - 0.316) * walls.layer_per_cycle(q), rel=0.005)
     assert all(b > a > 0 for a, b in zip(run["after_fill"], run["after_fill"][1:]))
     assert walls.bare_loss(q) < run["loss"][-1] < 1.1 * walls.bare_loss(q)  # the wall is bare only once
+
+    # At the ledger's own dwell the first still fill takes 0.65 of the layer and leaves 0.35. What survives is let
+    # grow undisturbed here, the thickest it can be, so this series only thickens; the thinning under still acid
+    # that would have the next fill strip it is in the test of left_under_acid above.
+    run = walls.cycles(q | {"rx.fresh_dwell": led.q("rx.fresh_dwell")}, "still")
+    assert run["after_fill"][0] == pytest.approx((1 - 0.6456) * walls.layer_per_cycle(q), rel=0.005)
+    assert all(b > a > 0 for a, b in zip(run["after_fill"], run["after_fill"][1:]))

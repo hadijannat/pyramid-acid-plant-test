@@ -11,17 +11,24 @@ Assumptions:
 - The fresh water of the next cycle takes gypsum off the wall, and nothing grows while it stands: up to its
   solubility if it comes to saturation (03 check V17), and at the least what diffusion alone carries into still
   water in the time it stands. That time the hypothesis does not give: it is rx.fresh_dwell, a share of the time
-  the acid stands, with a range.
+  the acid stands, whose value is the ledger's drain time over its cycle time and whose range runs from the
+  shortest drain in the longest cycle to a dwell equal to the acid's.
 - The acid of the next batch cannot strip a layer. Free of calcium it is undersaturated, and a layer that covers
   the wall keeps it so, because the batch saturates only on calcium from bare limestone; but the layer grows from
   beneath as the acid dissolves it from outside, the faster the thinner it is. Gypsum dissolving into the acid
   adds its own sulfate to the batch's; calcium and sulfate diffuse alike (rx.ion_diffusivity).
+- How much the acid takes is counted twice. With all the batch's sulfate free, as Tier 0 counts it, the acid takes
+  the least and the most of the layer is left; with the bisulfate of the ledger's second dissociation constant it
+  takes more than fresh water does and about half as much is left. Concentrations stand for activities in both.
+- The batch is stronger than the solubility of gypsum (c over s rho is 1.14 at the least over the ledger's
+  ranges). A weaker batch could grow no layer, and the layer and the shares of it below would mean nothing.
 - The wall is the Gallery's wetted area in the ledger; the Queen's Chamber is left out.
 """
 import math
 
 import numpy as np
 from scipy.integrate import solve_ivp
+from scipy.optimize import brentq
 
 from pyramid.screening import _SO2, _so2_moles
 
@@ -31,8 +38,9 @@ STILL = ("chem.gypsum_solubility", "hydro.water_density", "rx.ion_diffusivity", 
          "chem.gypsum_molar_volume", "rx.fresh_dwell")
 DEPOSIT = _SO2 + ("gg.volume", "chem.gypsum_solubility", "hydro.water_density")
 ACID = LAYER + ("chem.gypsum_solubility", "hydro.water_density", "rx.ion_diffusivity")
+BISULFATE = ACID + ("chem.ka2_sulfuric",)
 LOSS = LAYER + ("gg.wall_area", "chem.gypsum_solubility", "hydro.water_density", "chem.calcite_molar_volume")
-WALL = tuple(dict.fromkeys(LOSS + STILL))  # every input of the wall model, once
+WALL = tuple(dict.fromkeys(LOSS + STILL + BISULFATE))  # every input of the wall model, once
 H_PER_SULFUR = 2  # H2SO4 gives two hydrogen ions, and CaCO3 takes two: stoichiometry
 
 
@@ -86,13 +94,29 @@ def acid_takes(q) -> float:
     """Gypsum, mol/m3, that the strongest batch dissolves while it holds no calcium: x (c + x) = (s rho)^2.
 
     Gypsum brings its own sulfate, so this is less than the calcium at which Tier 0's batch saturates on calcite,
-    (s rho)^2 / c, and always less than what fresh water takes, s rho.
+    (s rho)^2 / c, and always less than what fresh water takes, s rho. All the batch's sulfate counts as free, as
+    in Tier 0, so this is the least the acid takes; acid_takes_with_bisulfate counts the bisulfate.
     """
-    # ponytail: all the batch's sulfate counts as free, as in Tier 0. With the ledger's bisulfate constant the acid
-    # takes more gypsum than fresh water does (tests/test_chem_walls.py); that thins the layer further and still
-    # cannot strip it (left_under_acid). Solve that balance here if the share left ever decides a verdict.
     strength, solubility = _strength(q), _solubility(q)
     return 2 * solubility**2 / (strength + math.hypot(strength, 2 * solubility))  # the positive root, no cancellation
+
+
+def acid_takes_with_bisulfate(q) -> float:
+    """The same with the batch's bisulfate counted by the ledger's second dissociation constant, mol/m3.
+
+    Free of calcium the batch holds most of its sulfate as bisulfate (03 check V8), so less of it stands against
+    the calcium. With x of gypsum dissolved the free sulfate is y = (s rho)^2 / x, the charges give H+ = c - x + y
+    and the sulfate HSO4- = c + x - y, and Ka2 = H+ y / HSO4- fixes x: more than fresh water takes.
+    """
+    strength, solubility, ka2 = _strength(q), _solubility(q), q["chem.ka2_sulfuric"]
+
+    def excess(x):
+        free = solubility**2 / x
+        return (strength - x + free) * free - ka2 * (strength + x - free)
+
+    # One sign change between the root with no bisulfate, where HSO4- is nothing, and the x at which H+ would be:
+    # H+ y falls and HSO4- rises all the way.
+    return brentq(excess, acid_takes(q), (strength + math.hypot(strength, 2 * solubility)) / 2)
 
 
 def still_fill_dissolves(q) -> float:
@@ -116,17 +140,18 @@ def dwell_to_strip(q) -> float:
     return q["rx.fresh_dwell"] / still_margin(q) ** 2  # the margin goes as the root of the dwell
 
 
-def left_under_acid(q) -> float:
+def left_under_acid(q, takes=acid_takes) -> float:
     """Share of a cycle's layer that stands at its end under still acid that dissolves it from outside.
 
-    Outside, diffusion into the still acid takes b sqrt(t) in all, b = 2 x sqrt(D_w / pi) Vm with x = acid_takes;
+    Outside, diffusion into the still acid takes b sqrt(t) in all, b = 2 x sqrt(D_w / pi) Vm with x = takes(q);
     beneath, the acid that crosses the layer adds Vm D C / (2 d) a second: dd/dt = a / (2 d) - b / (2 sqrt(t)).
     The solution from a bare start is d = k sqrt(t) with k^2 + b k - a = 0, and layers that start thicker or
     thinner come to it. Over the layer that grows undisturbed, sqrt(a t), that is 2 / (r + sqrt(r^2 + 4)) with
-    r = b / sqrt(a): always above zero, so the acid thins the layer and cannot strip it.
+    r = b / sqrt(a): always above zero, so the acid thins the layer and cannot strip it. With acid_takes, the
+    least the acid takes, this is the most that is left.
     """
     reach = math.sqrt(q["rx.ion_diffusivity"] * q["rx.cycle_time"] / math.pi)
-    r = 2 * acid_takes(q) * reach * q["chem.gypsum_molar_volume"] / layer_per_cycle(q)
+    r = 2 * takes(q) * reach * q["chem.gypsum_molar_volume"] / layer_per_cycle(q)
     return 2 / (r + math.hypot(r, 2))
 
 

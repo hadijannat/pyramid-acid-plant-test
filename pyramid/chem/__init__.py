@@ -57,9 +57,14 @@ QUANTITIES = [
      "Dwell of still fresh water, as a share of the acid's, at which it just dissolves the layer one cycle grows",
      "1", "f / chem.still_margin^2; f cancels", tuple(dict.fromkeys(walls.LAYER + walls.STILL)), walls.dwell_to_strip),
     ("chem.layer_left_under_acid",
-     "Share of a cycle's layer that stands under still acid, which dissolves it outside while it grows beneath",
+     "Most of a cycle's layer that stands under still acid, which dissolves it outside while it grows beneath: all "
+     "the batch's sulfate counted as free",
      "1", "2 / (r + sqrt(r^2 + 4)); r = 2 x sqrt(D_w t / pi) Vm / chem.gypsum_layer_per_cycle; x (c + x) = "
      "(s rho)^2; from dd/dt = Vm D C / (2 d) - x Vm sqrt(D_w / (pi t))", walls.ACID, walls.left_under_acid),
+    ("chem.layer_left_counting_bisulfate",
+     "Share of a cycle's layer that stands under still acid once the batch's bisulfate is counted",
+     "1", "as chem.layer_left_under_acid with x from Ka2 = H+ y / HSO4-; y = (s rho)^2 / x, H+ = c - x + y, "
+     "HSO4- = c + x - y", walls.BISULFATE, lambda q: walls.left_under_acid(q, walls.acid_takes_with_bisulfate)),
     ("chem.deposit_over_fill", "Most gypsum a whole batch can lay down over what one fresh fill dissolves",
      "1", "max(0, c / (s rho) - 1): (c - s rho) V_gallery over s rho V_gallery", walls.DEPOSIT,
      walls.deposit_over_fill),
@@ -89,7 +94,8 @@ SHOWN = {
             "chem.air_without_pushback", "chem.sulfur_oxidisable_without_pushback", "chem.uptake_pace"),
     "S23": ("chem.gypsum_layer_per_cycle", "chem.fill_dissolves", "chem.still_fill_dissolves",
             "chem.saturating_margin", "chem.still_margin", "chem.fresh_dwell_to_strip", "chem.layer_left_under_acid",
-            "chem.deposit_over_fill", "chem.wall_loss_per_cycle", "chem.wall_loss_ten_cycles"),
+            "chem.layer_left_counting_bisulfate", "chem.deposit_over_fill", "chem.wall_loss_per_cycle",
+            "chem.wall_loss_ten_cycles"),
 }
 SHOWN["E01"] = SHOWN["S01"]
 
@@ -196,15 +202,19 @@ def _s22(ledger, r):
 def _s23(ledger, r):
     layer, fill = r["chem.gypsum_layer_per_cycle"], r["chem.fill_dissolves"]
     saturating, still = r["chem.saturating_margin"], r["chem.still_margin"]
-    needed, left = r["chem.fresh_dwell_to_strip"], r["chem.layer_left_under_acid"]
+    needed, left, counted = (r["chem.fresh_dwell_to_strip"], r["chem.layer_left_under_acid"],
+                             r["chem.layer_left_counting_bisulfate"])
     ten, share, deposit = r["chem.wall_loss_ten_cycles"], r["t0.gypsum_saturation_loss"], r["chem.deposit_over_fill"]
     # The criterion as written: fail if the layer is stripped each cycle. Only the fresh water can strip it: the
     # acid of the next batch thins it and it grows back from beneath (chem.layer_left_under_acid is above zero).
     # The unfavourable end is a fill that comes to saturation (03 check V17). The favourable end is a fill that
     # stands still, dissolves by diffusion alone and stays for the shortest dwell of the range the ledger takes,
     # because the hypothesis states none.
+    # Both margins are set against the layer a bare wall grows in one cycle, which is the layer the fail clause
+    # needs: a wall that a fill has stripped starts the next cycle bare and grows that layer again, so a fill that
+    # cannot take it cannot strip the wall each cycle, whatever it does to a survivor the acid has thinned.
     status = three_way(saturating.high < 1, still.low < 1)
-    shortest, longest = ledger.rng("rx.fresh_dwell")
+    dwell, (shortest, longest) = ledger.q("rx.fresh_dwell"), ledger.rng("rx.fresh_dwell")
     head = (
         f"Fresh water lets bare limestone neutralise {100 * share.value:.0f} percent of the strongest batch before "
         f"gypsum can form (Tier 0), and the layer that then grows by acid diffusing through it reaches "
@@ -236,14 +246,17 @@ def _s23(ledger, r):
             "the ledger holds no measured bound on it."
         )
     return status, head + (
-        f"so a fill that comes to saturation strips it; {stripped}. A fill that stands still strips it by diffusion "
-        f"alone only if it stands at least {needed.value:.2g} times as long as the acid stood ({needed.high:.2g} "
-        f"times at most). The hypothesis does not state that time; over the range taken, {shortest:g} to {longest:g} "
-        f"of the acid's, a still fill dissolves {still.low:.2g} to {still.high:.2g} times the layer. The acid of the "
-        "next batch does not strip it: still acid dissolves it from outside while it grows from beneath and leaves "
-        f"{100 * left.value:.0f} percent of it ({100 * left.low:.0f} to {100 * left.high:.0f} percent). So whether "
-        "the layer lasts depends on how long the fresh water stands against the wall and on how it moves, neither "
-        "of which the hypothesis states."
+        f"so a fill that comes to saturation strips it; {stripped}. A fill that stands still strips the layer a bare "
+        f"wall grows in one cycle by diffusion alone only if it stands at least {needed.value:.2g} times as long as "
+        f"the acid stood ({needed.high:.2g} times at most). The hypothesis does not state that time; over the range "
+        f"taken, {shortest:g} to {longest:g} of the acid's, a still fill dissolves {still.low:.2g} to "
+        f"{still.high:.2g} times that layer, and {still.value:.2g} times at the {dwell:.2g} the ledger takes as its "
+        "value. The acid of the next batch does not strip it: still acid dissolves it from outside while it grows "
+        f"from beneath and leaves at most {100 * left.value:.0f} percent of it ({100 * left.low:.0f} to "
+        f"{100 * left.high:.0f} percent), about {100 * counted.value:.0f} percent once the batch's bisulfate is "
+        f"counted ({100 * counted.low:.0f} to {100 * counted.high:.0f} percent). So whether the layer lasts depends "
+        "on how long the fresh water stands against the wall and on how it moves, neither of which the hypothesis "
+        "states."
     )
 
 

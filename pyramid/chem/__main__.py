@@ -32,9 +32,11 @@ ASSUMPTIONS = [
     "grows only as fast as acid diffuses through it, with the measured diffusivity of the ledger.",
     "S23: the fresh water of the next cycle dissolves gypsum up to its solubility if it comes to saturation, and at "
     "the least what diffusion alone carries into still water in the time it stands, which the hypothesis does not "
-    "state and the ledger takes as a range.",
+    "state; the ledger takes its drain time over its cycle time, with a range from the shortest drain in the "
+    "longest cycle to a dwell equal to the acid's.",
     "S23: the acid of the next batch thins a layer and cannot strip it, because the layer grows from beneath as it "
-    "dissolves outside; all the batch's sulfate is counted as free, which thins it least.",
+    "dissolves outside; counting all the batch's sulfate as free thins it least, and the share left with the "
+    "ledger's bisulfate constant is given beside it.",
     "S01 and E01: one mole of hydrogen sulfide per mole of sulfur dioxide, with no loss in the conversion.",
     "The oxidation follows the ledger's iron law and stops when the dissolved oxygen is used up; concentrations "
     "stand for activities.",
@@ -86,25 +88,26 @@ def _pushback(q, results, out: Path) -> dict:
 
 
 def _layer(q, ledger: Ledger, out: Path) -> dict:
-    shortest = ledger.rng("rx.fresh_dwell")[0]
-    runs = {"saturating": walls.cycles(q, "saturating"), "still": walls.cycles(q, "still"),
-            "still_shortest_dwell": walls.cycles(q | {"rx.fresh_dwell": shortest}, "still")}
+    shortest, longest = ledger.rng("rx.fresh_dwell")
+    # The fresh water's dwell at the long end of its range, at the ledger's value and at the short end.
+    dwells = {"still_longest_dwell": longest, "still": q["rx.fresh_dwell"], "still_shortest_dwell": shortest}
+    runs = {"saturating": walls.cycles(q, "saturating")} | {
+        name: walls.cycles(q | {"rx.fresh_dwell": dwell}, "still") for name, dwell in dwells.items()}
     product, within = walls.growth_product(q), np.linspace(0.0, 1.0, 25)
     fig, (top, bottom) = plt.subplots(2, 1, figsize=(7, 5.6), sharex=True)
-    cases = (("still", "C0", f"a still fill stands {q['rx.fresh_dwell']:g} times as long as the acid"),
-             ("still_shortest_dwell", "C2", f"a still fill stands {shortest:g} times as long (the layer grown "
-                                            "undisturbed, an upper bound)"))
-    for name, colour, label in cases:
+    for (name, dwell), colour in zip(dwells.items(), ("C1", "C0", "C2")):
         run, steps, layer, left = runs[name], [], [], 0.0
         for k in range(chem.CYCLES):  # the layer grows through each acid dwell and meets the next fill at its end
             steps += list(k + within) + [k + 1.0]
             layer += list(walls.thickness(product, within * q["rx.cycle_time"], left)) + [run["after_fill"][k]]
             left = run["after_fill"][k]
-        top.plot(steps, 1e6 * np.array(layer), color=colour, label=label)
+        top.plot(steps, 1e6 * np.array(layer), color=colour, label=f"{dwell:g} times as long as the acid")
         bottom.step(range(0, chem.CYCLES + 1), [0.0] + [1e3 * w for w in run["loss"]], where="pre", color=colour)
     top.set(ylabel="gypsum layer, micrometres", title="S23: gypsum layer and wall loss over ten cycles")
-    top.annotate(f"a saturating fill dissolves {1e6 * walls.fill_dissolves(q):.0f} micrometres", (0.3, 8.5), fontsize=8)
-    top.legend(fontsize=8, loc="upper left")
+    top.annotate(f"a saturating fill dissolves {1e6 * walls.fill_dissolves(q):.0f} micrometres\na layer that "
+                 "survives is drawn as grown undisturbed,\nan upper bound: still acid thins it",
+                 (0.98, 0.40), xycoords="axes fraction", ha="right", va="bottom", fontsize=8)
+    top.legend(title="a still fill stands", fontsize=8, title_fontsize=8, loc="upper left")
     bottom.set(xlabel="fill and drain cycles", ylabel="limestone lost, mm")
     _save(fig, out / "figures" / "layer.png")
     return runs
