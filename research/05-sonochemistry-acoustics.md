@@ -391,7 +391,7 @@ Opened and read this session unless marked otherwise.
 - [S33] C. H. Smith, S. Beibin (was: C. H. Smith et al.), "Resonant Chambers: comparative impulse-response study inside the Great Pyramid of Khufu", EVA London 2026. DOI 10.14236/ewic/eva2026.35. **Not opened (HTTP 403 and a bot check, 2026-10-10); title and authors confirmed from [S48].**
 - [S34] M. Balezin, K. V. Baryshnikova, P. Kapitanova, A. B. Evlyukhin, "Electromagnetic properties of the Great Pyramid: first multipole resonances and energy concentration", *J. Appl. Phys.* 124:034903 (2018). DOI 10.1063/1.5026556. **Abstract seen in search summary only.**
 - [S35] M. Vinatoru, T. J. Mason, "Can sonochemistry take place in the absence of cavitation? - A complementary view of how ultrasound can interact with materials" (2019), *Ultrasonics Sonochemistry* 52:2-5, DOI 10.1016/j.ultsonch.2018.07.036. **Abstract read 2026-10-10** (was: search summary only). https://pureportal.coventry.ac.uk/en/publications/can-sonochemistry-take-place-in-the-absence-of-cavitation-a-compl/
-- [S36] Local transcripts: `/Users/aeroshariati/Pyramid/youtube-transcript/history-drops/incredible-new-evidence-reveals-the-great-pyramids-true-purpose-podcast-pyramid-history-ancient/transcript.md` (Part 1), `.../incredible-new-evidence-reveals-the-great-pyramids-true-purpose-podcast-science-history-ancient/transcript.md` (Part 2), `/Users/aeroshariati/Pyramid/youtube-transcript/danny-jones/new-scans-expose-an-unfortunate-secret-under-the-pyramids-geoffrey-drumm/transcript.md` (full episode, 00:37-01:24).
+- [S36] Local transcripts: `youtube-transcript/history-drops/incredible-new-evidence-reveals-the-great-pyramids-true-purpose-podcast-pyramid-history-ancient/transcript.md` (Part 1), `.../incredible-new-evidence-reveals-the-great-pyramids-true-purpose-podcast-science-history-ancient/transcript.md` (Part 2), `youtube-transcript/danny-jones/new-scans-expose-an-unfortunate-secret-under-the-pyramids-geoffrey-drumm/transcript.md` (full episode, 00:37-01:24).
 
 Added in the verification pass (2026-10-10); all opened and read this session to the extent stated.
 
@@ -417,7 +417,7 @@ Searched without a usable result: any peer-reviewed gas-phase (liquid-free) sono
 
 Section 8 of this file. Second review of the first-pass content above. Rules applied: a value is `confirmed` only if it was read this session in a source that was opened (or, for derived values, recomputed independently); `corrected` means the first-pass value was changed in place with the old value kept in a `was:` note; `unverifiable` means no openable source was reached. Nothing from the first pass was deleted.
 
-Working files (not in the project folder): `/private/tmp/claude-501/-Users-aeroshariati-Pyramid/4a93d66c-12de-49a2-8aa6-a84a56de75a2/scratchpad/verify05.py` (ISO 9613-1, source level, requirement, room gain, link budget), `check_s5.py` (comparison with [S5]) and `leaf_resonance.py` (damped free-slab model). Python standard library only. The ISO 9613-1 implementation was validated by reproducing all seven entries of [S4] Table 2 (2-40 kHz) to within 0.001 dB/m.
+Working files, throwaway scripts not kept in the project: `verify05.py` (ISO 9613-1, source level, requirement, room gain, link budget), `check_s5.py` (comparison with [S5]) and `leaf_resonance.py` (damped free-slab model). Python standard library only. The ISO 9613-1 implementation was validated by reproducing all seven entries of [S4] Table 2 (2-40 kHz) to within 0.001 dB/m.
 
 ### 8.1 Checks
 

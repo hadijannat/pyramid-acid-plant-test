@@ -403,7 +403,7 @@ How to read the statuses
 - CORRECTED = the first-pass value or wording was wrong or misleading; the table has been changed.
 - UNVERIFIABLE = the source could not be opened; the reason is given.
 - Raw-text download with curl was refused by the sandbox, so no source was read as plain text; every non-PDF read went through the extraction model, which paraphrases. Short quoted phrases below are as returned by that model unless the source is a PDF.
-- All arithmetic was redone independently with a standard-library Python script kept outside the project folder (session scratchpad, geom_check.py).
+- All arithmetic was redone independently with a standard-library Python script not kept in the project (geom_check.py, a throwaway script).
 
 ### Checks
 

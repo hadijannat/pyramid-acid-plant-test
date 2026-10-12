@@ -4,7 +4,7 @@ Date: 2026-10-10. Scope: every derived estimate in files 01 to 07, recomputed fr
 
 How this was done
 - I read the Parameters tables first, wrote one script that computes each quantity from the raw inputs with my own formulas, ran it, and only then read the first-pass working sections (02 sec. 4, 03 sec. 3, 04 sec. 4, 05 sec. 4, 07 sec. 4.2) and compared. For file 01 the inputs and the volume table sit side by side, so that comparison was not blind; the arithmetic is still independent.
-- Tool: python3, standard library only. Scripts: `/private/tmp/claude-501/-Users-aeroshariati-Pyramid/4a93d66c-12de-49a2-8aa6-a84a56de75a2/scratchpad/recompute.py` and `extra.py` (session scratchpad; not in the project folder).
+- Tool: python3, standard library only. Scripts: `recompute.py` and `extra.py`, throwaway scripts not kept in the project; the ledger and the `pyramid` packages are the reproducible record.
 - Constants used here: 1 in = 0.0254 m; g = 9.80665 m/s2; water density 998.2 kg/m3 (20 C); R = 8.3145 J/mol/K; 1 atm = 101 325 Pa; eps0 = 8.854e-12 F/m; mu0 = 4 pi e-7 H/m; c0 = 2.998e8 m/s. The first pass used 1000 kg/m3 and 9.81, which is why some of my pressures are 0.2 percent lower.
 - "Agree" means within the uncertainty the first pass itself stated, or within 3 percent where none was stated. "Partly" means the arithmetic reproduces but a label, range or input choice is wrong or too narrow.
 - This file checks arithmetic and internal consistency. It does not re-verify the sourced inputs, except for four spot checks listed in section 5. A recomputed value is only as good as its inputs.

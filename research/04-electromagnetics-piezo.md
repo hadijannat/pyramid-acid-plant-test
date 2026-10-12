@@ -366,7 +366,7 @@ Read in this session unless marked otherwise.
 27. Saksala T. (2021). Piezoelectric effect does not contribute in thermal drilling of quartz bearing rocks. IOP Conference Series: Earth and Environmental Science 833, 012097. https://doi.org/10.1088/1755-1315/833/1/012097 (abstract read).
 28. Lanzerotti L. J., Gregori G. P. (1986). Telluric currents: the natural environment and interactions with man-made systems. In The Earth's Electrical Environment, National Academies Press. https://nap.nationalacademies.org/read/898/chapter/145 (NOT read: page text failed to load).
 29. Aufort J., et al. (2015). Effect of pores and grain size on the elastic and piezoelectric properties of quartz-based materials. American Mineralogist. https://doi.org/10.2138/am-2015-5180CCBY (abstract read; agate comparable to single crystal, sandstone and novaculite weak, porous silica glass none).
-30. Transcripts (local): full episode /Users/aeroshariati/Pyramid/youtube-transcript/danny-jones/new-scans-expose-an-unfortunate-secret-under-the-pyramids-geoffrey-drumm/transcript.md (lines 373-461, 478-527, 564-609 read); clip transcripts under /Users/aeroshariati/Pyramid/youtube-transcript/history-drops/ (searched for the same passages).
+30. Transcripts (local): full episode youtube-transcript/danny-jones/new-scans-expose-an-unfortunate-secret-under-the-pyramids-geoffrey-drumm/transcript.md (lines 373-461, 478-527, 564-609 read); clip transcripts under youtube-transcript/history-drops/ (searched for the same passages).
 
 Added in the verification pass of 2026-10-10 (each opened in that session unless marked):
 

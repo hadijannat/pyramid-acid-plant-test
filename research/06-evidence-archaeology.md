@@ -286,9 +286,9 @@ Evidence that cannot be simulated and must be handled as priors or documented co
 
 Opened and read in this session unless marked otherwise.
 
-1. Local transcript, History Drops clip part 1: `/Users/aeroshariati/Pyramid/youtube-transcript/history-drops/incredible-new-evidence-reveals-the-great-pyramids-true-purpose-podcast-pyramid-history-ancient/transcript.md` (https://www.youtube.com/watch?v=_Afl9FvO03k)
-2. Local transcript, History Drops clip part 2: `/Users/aeroshariati/Pyramid/youtube-transcript/history-drops/incredible-new-evidence-reveals-the-great-pyramids-true-purpose-podcast-science-history-ancient/transcript.md` (https://www.youtube.com/watch?v=W14V4jNsCRQ)
-3. Local transcript, Danny Jones full episode (00:00-1:37:17 used): `/Users/aeroshariati/Pyramid/youtube-transcript/danny-jones/new-scans-expose-an-unfortunate-secret-under-the-pyramids-geoffrey-drumm/transcript.md`
+1. Local transcript, History Drops clip part 1: `youtube-transcript/history-drops/incredible-new-evidence-reveals-the-great-pyramids-true-purpose-podcast-pyramid-history-ancient/transcript.md` (https://www.youtube.com/watch?v=_Afl9FvO03k)
+2. Local transcript, History Drops clip part 2: `youtube-transcript/history-drops/incredible-new-evidence-reveals-the-great-pyramids-true-purpose-podcast-science-history-ancient/transcript.md` (https://www.youtube.com/watch?v=W14V4jNsCRQ)
+3. Local transcript, Danny Jones full episode (00:00-1:37:17 used): `youtube-transcript/danny-jones/new-scans-expose-an-unfortunate-secret-under-the-pyramids-geoffrey-drumm/transcript.md`
 4. C. Dunn, The Giza Power Plant (1998), passage on the 1978 salt analysis as reproduced at https://www.goodreads.com/quotes/9728952-i-was-hoping-to-be-able-to-get-into-the (secondary reproduction of the book text; the book itself and the lab report were not opened)
 5. W. M. F. Petrie, The Pyramids and Temples of Gizeh (1883), ch. 7, online edition: https://www.ronaldbirdsall.com/gizeh/petrie/c7.html
 6. J. and M. Edgar, The Great Pyramid Passages and Chambers, p. 317 (authorship and date from memory; the page itself shows only the title): https://pretraziva.rs/show/the-great-pyramid-passages-and-chambers/317 *[2026-10-10: archive.org lists the work as "Edgar, John; Edgar, Morton", 1910, vol. I. On this site the digital page number is 18 higher than the printed one: digital 317 = printed 299, digital 311 = printed 293 (par. 584).]*
