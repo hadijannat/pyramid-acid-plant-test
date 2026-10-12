@@ -9,8 +9,8 @@ Assumptions:
   as the dissolved oxygen runs out.
 - S22 credits the rising water with all it could take: every mole of sulfur dioxide, every mole of oxygen the
   oxidation can use, and nitrogen and oxygen up to their solubility in water that arrives free of dissolved gas.
-- The whole Gallery emptied is taken for the least air: the Gallery draws its own volume of gas and the King's Chamber holds
-  less, so the rest is outside air, come down the shafts of S14 or in through the masonry joints.
+- The whole Gallery emptied is taken for the least air: the Gallery draws its own volume of gas and the King's
+  Chamber holds less, so the rest is outside air, come down the shafts of S14 or in through the masonry joints.
 """
 import math
 
