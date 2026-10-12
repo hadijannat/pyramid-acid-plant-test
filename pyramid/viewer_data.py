@@ -12,7 +12,7 @@ from pyramid.geometry.model import level_volume_curve
 from pyramid.ledger import Ledger, LedgerError, load
 from pyramid.screening import Result
 from pyramid.species import Species, load_species, species_payload
-from pyramid.verdicts import merged
+from pyramid.verdicts import merged, stale
 
 NOTICE = "Animation of the claim. Not a simulation result."
 CYCLE_FILE = REPO_ROOT / "ledger" / "cycle.yaml"
@@ -144,6 +144,8 @@ def cycle_payload(ledger: Ledger, curves: dict[str, list[tuple[float, float]]],
 def main() -> None:
     led = load()
     # Tier 0 and every simulation package whose results are committed (pyramid.verdicts refuses an overruling)
+    if old := stale(led):   # their verdicts would go out under this ledger's digest
+        raise LedgerError(f"results of {', '.join(old)} were generated from another ledger: run those packages first")
     results, decided, source = merged(led)
     species = load_species(step_ids=set(led.claims))
     wet = sorted({

@@ -65,3 +65,18 @@ def test_committed_results_were_generated_from_the_ledger_in_the_repository():
         )
     from pyramid.verdicts import stale
     assert stale(ledger.load()) == [], "run `uv run python -m pyramid.<package>` for each on a clean tree and commit"
+
+
+def test_the_committed_cycle_is_what_its_sources_give_today():
+    """The ledger digest covers parameters.yaml and claims.yaml; cycle.yaml, species.yaml and the verdicts are the
+    viewer's other sources, and an edit of any of them leaves cycle.json stale until it is regenerated."""
+    from pyramid import viewer_data
+    from pyramid.species import load_species
+    from pyramid.verdicts import merged
+
+    led = ledger.load()
+    committed = json.loads((REPO_ROOT / "viewer" / "data" / "cycle.json").read_text())
+    statuses = {claim: status for claim, (status, _) in merged(led)[1].items()}
+    fresh = viewer_data.cycle_payload(led, committed["curves"], load_species(step_ids=set(led.claims)), statuses)
+    assert json.loads(json.dumps(fresh)) == committed, (
+        "viewer/data/cycle.json is stale: run `uv run python -m pyramid.viewer_data` on a clean tree and commit")

@@ -48,7 +48,7 @@ export function mountCinematic(root, { store, cycle, claims, player, ride, rende
   const ticks = steps.map(step => {
     const status = claims.claims[step.id].status;
     const tick = el('span', `tick status-${status}`);
-    tick.title = `${step.id} ${step.title} (${status})`;
+    tick.title = `${step.id} ${step.title} (${status.replace('_', ' ')})`;
     strip.append(tick);
     return tick;
   });
@@ -106,6 +106,7 @@ export function mountCinematic(root, { store, cycle, claims, player, ride, rende
       badge.className = `badge status-${claim.status}`;
       badge.textContent = claim.status.replace('_', ' ');   // "not_testable" reads "not testable"
       basis.textContent = claim.basis;
+      basis.title = claim.basis;   // the card clamps a long basis to two lines; the whole of it is one hover away
     }
     ticks.forEach((tick, i) => tick.classList.toggle('current', i === stepIndex));
     strip.setAttribute('aria-valuenow', String(stepIndex + 1));
