@@ -41,7 +41,7 @@
   piece: 2
   criterion: "Pass only if a direct-current conduction model with a far field of 1e-7 to 2e-2 V/m gives a non-negligible field or charge at the summit or in the granite (04 section 5.3)."
   status: pending
-  depends_on: [em.telluric_field_storm, em.telluric_field_extreme, em.limestone_resistivity, pyr.base_side]
+  depends_on: [em.telluric_field_storm, em.telluric_field_extreme, em.limestone_resistivity, pyr.base_side, plateau.host_resistivity, em.granite_conductivity, elec.granite_shell_thickness, pyr.height_original, pyr.height_present, kc.west_wall.x, kc.east_wall.x, kc.south_wall.y, kc.north_wall.y, kc.floor.z, kc.ceiling.z, em.granite_piezo_d, em.piezo_thickness, em.pulse_rise_time, ac.air_impedance, ac.gas_solid_intensity]
   spaces: []
 - id: S05
   statement: "Operators wait for a storm, warned by wind-driven whistle formations in the western field."
@@ -61,7 +61,7 @@
   piece: 2
   criterion: "Pass if the peak field in the granite exceeds what the piezoelectric model needs to reach the acoustic threshold; fail if the interior field is screened to the conduction value of order kV/m or less (04 section 5.2)."
   status: pending
-  depends_on: [em.stroke_current_median, em.stroke_current_max, em.limestone_resistivity, em.granite_eps, em.granite_conductivity, em.lightning_frequency, em.storm_field]
+  depends_on: [em.stroke_current_median, em.stroke_current_max, em.limestone_resistivity, em.granite_eps, em.granite_conductivity, em.lightning_frequency, em.storm_field, plateau.host_resistivity, elec.granite_shell_thickness, pyr.base_side, pyr.height_original, pyr.height_present, kc.west_wall.x, kc.east_wall.x, kc.south_wall.y, kc.north_wall.y, kc.floor.z, kc.ceiling.z, em.granite_piezo_d, em.piezo_thickness, em.pulse_rise_time, ac.air_impedance, ac.gas_solid_intensity, em.air_breakdown_field, em.mu0, em.eps0, em.limestone_eps]
   spaces: [kings_chamber, antechamber]
 - id: S07
   statement: "The field drives the inverse piezoelectric effect in the granite's quartz, giving ultrasound that the antechamber's upper cavity focuses and amplifies."
@@ -151,7 +151,7 @@
   piece: 3
   criterion: "Pass only if a connected duct from the King's Chamber to the Gallery exists in the as-surveyed geometry with the slabs down; the blind-groove case fails and the connected case allows at most about 0.002 m2 (01 premise P3)."
   status: pending
-  depends_on: [ante.groove_count, ante.groove_width, ante.groove_depth, ante.groove_connected_area, ante.slab_clearance, ante.slot_count]
+  depends_on: [ante.groove_count, ante.groove_width, ante.groove_depth, ante.groove_connected_area, ante.slab_clearance, ante.slot_count, ante.groove_residual_depth, ante.slot_width, ante.slab_thickness, ante.slab_width]
   spaces: [kings_chamber, antechamber]
 - id: S16
   statement: "In the antechamber, ultrasound from the granite makes sulfur dioxide react with oxygen from the air to give sulfur trioxide."
@@ -423,7 +423,7 @@
   piece: 1
   criterion: "Geometric premise: pass for a shaft only if a survey shows its outer end running level through the casing; carried as the kc_shaft_ends_level variant, and the shaft exits must fall on the casing plane at Z = 80 +/- 1 m in either case (01 fidelity criterion)."
   status: pending
-  depends_on: [kcs.level_end_length, kcs.north.angle, kcs.south.angle, kcs.exit.z]
+  depends_on: [kcs.level_end_length, kcs.north.angle, kcs.south.angle, kcs.exit.z, pyr.base_side, pyr.height_original, kc.floor.z, kcs.mouth_height, kcs.north.height, kcs.south.height, kcs.horizontal_length, kc.north_wall.y, kc.south_wall.y]
   spaces: [kc_shaft_north, kc_shaft_south]
 - id: E12
   statement: "The antechamber held three granite slabs and has four grooves on its south wall."
@@ -433,7 +433,7 @@
   piece: 1
   criterion: "Geometric premise: pass for the grooves as a gas path only if a connected duct exists in the as-surveyed geometry; the blind-groove case fails (01 premise P3)."
   status: pending
-  depends_on: [ante.slot_count, ante.slot_width, ante.slab_width, ante.groove_count, ante.groove_depth, ante.groove_connected_area]
+  depends_on: [ante.slot_count, ante.slot_width, ante.slab_width, ante.groove_count, ante.groove_depth, ante.groove_connected_area, ante.groove_width, ante.groove_residual_depth]
   spaces: [antechamber]
 - id: E13
   statement: "The antechamber's upper cavity has the most striking acoustics in the pyramid."
@@ -443,7 +443,7 @@
   piece: 2
   criterion: "Rank the modal quality factor and decay time of the antechamber, King's Chamber and Grand Gallery in an audio-band model; pass if the antechamber ranks first (05 section 5.5 item 4)."
   status: pending
-  depends_on: [ante.length, ante.width, ante.height, kc.length, kc.width, kc.height, ac.sound_speed_air]
+  depends_on: [ante.length, ante.width, ante.height, kc.length, kc.width, kc.height, ac.sound_speed_air, ante.volume, ante.surface_area, gg.floor_length, gg.width, gg.height, gg.volume, gg.wall_area, ac.wall_absorption, ac.absorption_13khz, ac.link_frequency, ante.low_passage.width, ante.low_passage.height]
   spaces: [antechamber, kings_chamber, grand_gallery]
 - id: E14
   statement: "An external reservoir fed the Subterranean Chamber and check valves existed there, after Cadman's ram-pump model."
@@ -463,7 +463,7 @@
   piece: 1
   criterion: "Geometric premise: pass if the surveyed passage ends blind in rock with no outlet (01 claim 6)."
   status: pending
-  depends_on: [sp.length, sp.south_end.y]
+  depends_on: [sp.length, sp.south_end.y, sp.north_end.x, sp.north_end.y, sp.north_end.z, sp.south_end.x, sp.south_end.z]
   spaces: [south_passage]
 - id: E16
   statement: "One-way valves sat at the base of the shaft, after a drawing by an unnamed German engineering team."
@@ -523,7 +523,7 @@
   piece: 2
   criterion: "Pass only if a direct-current conduction model with conductive sheets for the ore bodies gives a non-negligible field or charge at the summit or in the granite (04 section 5.3)."
   status: pending
-  depends_on: [em.telluric_field_storm, em.telluric_field_extreme, plateau.host_resistivity, plateau.hematite_resistivity_specular]
+  depends_on: [em.telluric_field_storm, em.telluric_field_extreme, plateau.host_resistivity, plateau.hematite_resistivity_specular, em.limestone_resistivity, pyr.base_side, em.granite_conductivity, elec.granite_shell_thickness, pyr.height_original, pyr.height_present, kc.west_wall.x, kc.east_wall.x, kc.south_wall.y, kc.north_wall.y, kc.floor.z, kc.ceiling.z, elec.ore_sheet_thickness, elec.ore_sheet_depth, plateau.vein_leakage_length, em.granite_piezo_d, em.piezo_thickness, em.pulse_rise_time, ac.air_impedance, ac.gas_solid_intensity]
   spaces: []
 - id: E22
   statement: "Red granite has a dielectric constant of 9 and stores electric field better than limestone."
@@ -633,7 +633,7 @@
   piece: 1
   criterion: "Geometric premise: pass if a published void of comparable size lies above the Gallery; its use as a heat exchanger is judged separately by the thermal criterion for the masonry between them (01 premise P5)."
   status: pending
-  depends_on: [bv.length, bv.centre.z, bv.section_area, gg.roof_top.z]
+  depends_on: [bv.length, bv.centre.z, bv.section_area, gg.roof_top.z, gg.roof_length_sloping, bv.south_end.y, bv.incline_angle, gg.south_end.y, gg.north_end.y]
   spaces: [big_void, grand_gallery]
 - id: E33
   statement: "Sodium chloride deposits cover the inside of the central pyramid's main chamber."
