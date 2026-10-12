@@ -67,6 +67,30 @@ def test_every_basis_opens_with_a_standing_and_is_plain_prose(register):
         assert entry.basis.startswith(opening[entry.status]), key
 
 
+def test_a_fail_by_contradiction_opens_as_one_only_where_the_research_file_says_so(register):
+    # E27 fails because what was read is the opposite of the criterion's own example, and 06 gives its revised
+    # verdict on the salt as evidence of acid as "contradicted". E02 fails on two datasets that do not match, which
+    # 07 calls weak and does not call contradicted, so it keeps the opening of its research file and says so.
+    assert register["E27"].basis.startswith("Contradicted: the example the criterion names")
+    assert register["E07"].basis.startswith("Contradicted:")
+    assert register["E02"].basis.startswith("No evidence found: no match between the two datasets was found.")
+    assert "calls the claim weak and does not call it contradicted" in register["E02"].basis
+    # E27 carries 06's caveat on its second witness with the grade of the read: the halite of the 2026 study is
+    # present-day growth in a chamber cleaned in 1995 to 1997, and the 1978 sample's position is not stated
+    for text in ("a laboratory study of 2026, read by two routes",
+                 "growing visibly between 2022 and 2024 (read by one extraction route only), which shows a "
+                 "present-day process", "cleaned in 1995 to 1997 without surviving documentation, so today's surface "
+                 "need not match the crust before the cleaning",
+                 "who took its sample, when and from what height is not stated",
+                 "The test, as the criterion words it, is of the surface as sampled."):
+        assert text in register["E27"].basis, text
+    assert any("claim 2" in source for source in register["E27"].sources)
+    # two smaller points of the same kind: what the files did not look for, and where a detail was read
+    assert "the research files read no survey of that cave and record no search for one" in register["E03"].basis
+    assert "of which no survey was found" not in register["E03"].basis
+    assert "over a vanadium catalyst by the patent's description" in register["E07"].basis
+
+
 def test_every_source_is_a_research_file_that_exists(register):
     for key, entry in register.items():
         assert entry.sources, key
