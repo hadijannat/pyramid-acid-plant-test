@@ -4,14 +4,16 @@
 // position and one for the point it looks at, with ease-in-out (more than one: the prologue). A step
 // with the same camera as the hold before it carries the orbit on without a flight. A press on the
 // canvas hands the camera to the orbit controls; resume() or the next step takes it back. While the
-// prologue waits for Play, the camera drifts slowly about its target (spec 5.2).
+// prologue waits for Play, the camera sways a few degrees to and fro about its target (spec 5.2): a turn
+// without a bound left the camera far from the path, and Play then whipped it back.
 import * as THREE from 'three';
 
 export const RESUME_SECONDS = 1;          // display choice: the glide back onto the path after resume()
 export const TRANSITION_SECONDS = 1.5;    // display choice: the flight into a step's first keyframe takes at most this
 export const HOLD_DRIFT = 0.5;            // display choice: degrees per second of orbit about the target while a step holds
 export const SAME_CAMERA_EPSILON = 0.5;   // display choice: metres; a first keyframe this close to the previous hold's, in position and in target, is the same camera
-const DRIFT_SPEED = 0.3;           // display choice: OrbitControls.autoRotateSpeed, one turn in about 200 s at 60 frames a second
+const SWAY_DEGREES = 8;            // display choice: how far the waiting prologue turns to either side of the pose it waits in
+const SWAY_SECONDS = 40;           // display choice: one sway there and back; at most 1.3 degrees per second
 const UP = new THREE.Vector3(0, 1, 0);
 
 const ease = k => k * k * (3 - 2 * k);   // smoothstep: ease in and out
@@ -27,13 +29,12 @@ export function createRide(camera, controls, store) {
   let span = 0;           // the step's seconds (D)
   let theta0 = 0;         // radians of orbit the hold starts from: the previous hold's when it carries on
   let riding = true;
-  let drifting = false;   // the prologue's drift: OrbitControls turns the camera, the ride leaves it alone
+  let sway = null;        // { position, target, t } while the prologue waits for Play: the pose it sways about, and its clock
   let glide = null;       // { position, target, k } while the camera comes back to the path
   const start = { position: new THREE.Vector3(), target: new THREE.Vector3() };   // the first keyframe
   const position = new THREE.Vector3();
   const target = new THREE.Vector3();
   const offset = new THREE.Vector3();
-  controls.autoRotateSpeed = DRIFT_SPEED;
 
   function place(keyframe) {
     camera.position.fromArray(keyframe.position);
@@ -95,9 +96,17 @@ export function createRide(camera, controls, store) {
   }
 
   function update(dt, u) {
-    if (!riding || drifting || !first || store.get().reducedMotion) return;
+    if (!riding || !first || store.get().reducedMotion) return;
+    if (sway) {   // the pose the wait began in, turned about the vertical through its target; a time's function, like a hold
+      if (!sway.position) Object.assign(sway, pose());   // taken here, after setPath has placed the camera
+      sway.t += dt;
+      const theta = THREE.MathUtils.degToRad(SWAY_DEGREES) * Math.sin(2 * Math.PI * sway.t / SWAY_SECONDS);
+      camera.position.subVectors(sway.position, sway.target).applyAxisAngle(UP, theta).add(sway.target);
+      controls.target.copy(sway.target);
+      return;
+    }
     poseAt(u * span);
-    if (glide) {   // from where the user or the drift left the camera to the moving point of the path
+    if (glide) {   // from where the user or the sway left the camera to the moving point of the path
       glide.k = Math.min(1, glide.k + dt / RESUME_SECONDS);
       const k = ease(glide.k);
       position.lerpVectors(glide.position, position, k);
@@ -108,19 +117,14 @@ export function createRide(camera, controls, store) {
     controls.target.copy(target);
   }
 
-  // A press or a wheel turn hands the camera to the user, who keeps the pose they took: the drift stops too.
+  // A press or a wheel turn hands the camera to the user, who keeps the pose they took: the sway stops too.
   function pause() {
     glide = null;
-    drifting = false;
-    controls.autoRotate = false;
-    // ponytail: the damping keeps the drift's momentum (about 7 m of coasting at the prologue's distance); this internal of the pinned
-    // three 0.170.0 stops it. If an upgrade renames it, spend it instead with one controls.update() with
-    // enableDamping off, then put the camera and the target back.
-    controls._sphericalDelta.set(0, 0, 0);
+    sway = null;
     setRiding(false);
   }
 
-  // Back onto the path. On the prologue the drift stays off after a resume until the player switches it on
+  // Back onto the path. On the prologue the sway stays off after a resume until the player switches it on
   // again (a step change, or a pause of the clock): the simplest honest behaviour.
   function resume() {
     if (riding) return;
@@ -132,15 +136,15 @@ export function createRide(camera, controls, store) {
     glide = { position: camera.position.clone(), target: controls.target.clone(), k: 0 };
   }
 
-  // The player's switch for the prologue's drift: on while the prologue waits for Play, off when play
-  // starts or the step changes. Switched off, the camera glides from where the drift left it to the path;
-  // a step change lays a new path just after, which drops that glide.
+  // The player's switch for the prologue's sway: on while the prologue waits for Play, off when play
+  // starts or the step changes. Switched off, the camera glides from where the sway left it (at most
+  // SWAY_DEGREES from the pose it waited in) to the path; a step change lays a new path just after, which
+  // drops that glide.
   function drift(on) {
     on = on && !store.get().reducedMotion;   // reduced motion: the camera holds still
-    if (on === drifting) return;
-    drifting = on;
-    controls.autoRotate = on;
-    if (!on && riding) glide = { position: camera.position.clone(), target: controls.target.clone(), k: 0 };
+    if (on === Boolean(sway)) return;
+    sway = on ? { position: null, target: null, t: 0 } : null;
+    glide = !on && riding ? { position: camera.position.clone(), target: controls.target.clone(), k: 0 } : null;
   }
 
   // The pose now, which the player passes as the next path's "from".

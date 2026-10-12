@@ -130,10 +130,29 @@ export function mountCinematic(root, { store, cycle, claims, player, ride, rende
     const height = card.offsetHeight;   // 0 while #hud is hidden
     rendererApi.setInset(height ? height + CARD_GUTTER : 0);
   }
-  const cardObserver = new ResizeObserver(fitInset);   // the caption's height changes with each step
+  const cardObserver = new ResizeObserver(fitInset);   // the card's height changes with the stage's width
   cardObserver.observe(card);
+  // One height for every step at this width. The card's height sets the scene's frame, so a card that grew and
+  // shrank with its text moved the picture at every step, also while the camera held still. Each step is laid
+  // out once and the card keeps the tallest height; the resume button, which comes and goes, is counted in.
+  function levelCard() {
+    card.style.minHeight = '';
+    if (!card.offsetHeight) return;   // #hud is hidden: levelled when it shows again
+    const resumeHidden = resumeButton.hidden;
+    resumeButton.hidden = false;
+    let tallest = 0;
+    for (let i = -1; i < steps.length; i++) {
+      renderStep({ stepIndex: i });
+      tallest = Math.max(tallest, card.offsetHeight);
+    }
+    resumeButton.hidden = resumeHidden;
+    renderStep(store.get());
+    card.style.minHeight = `${tallest}px`;
+  }
+  window.addEventListener('resize', levelCard);
   function renderHud({ hud }) {
     root.classList.toggle('hidden', !hud.visible);
+    levelCard();
     fitInset();   // at once, not on the observer's next frame
   }
 
@@ -177,6 +196,7 @@ export function mountCinematic(root, { store, cycle, claims, player, ride, rende
       cardObserver.disconnect();
       rendererApi.setInset(0);
       window.removeEventListener('keydown', onKey);
+      window.removeEventListener('resize', levelCard);
       root.replaceChildren();
       root.classList.remove('hidden');
     },

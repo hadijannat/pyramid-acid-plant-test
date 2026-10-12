@@ -86,6 +86,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   position: fixed; left: 50%; bottom: 16px; z-index: 5; transform: translateX(-50%);
   box-sizing: border-box; width: calc(100% - 32px); max-width: 720px; padding: 18px 20px;
   display: grid; gap: 12px; pointer-events: auto;
+  grid-template-rows: 1fr auto auto;   /* the card keeps one height (cinematic.js): the caption takes the slack */
   color: var(--text);
   /* display choice: dark glass; at 0.86 the muted text keeps 4.5:1 over the brightest interior */
   background: rgba(21, 23, 26, 0.86);
