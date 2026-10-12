@@ -479,6 +479,24 @@ def test_last_six_rules_can_go_either_way(led, results):
        gypsum_saturation_loss=(0.95, 0.9, 1.0))
 
 
+def test_the_one_day_of_s20_is_the_day_the_ledger_carries(led):
+    """One judgement call carried in three places, which this test makes move together.
+
+    The hypothesis states no cycle time. Tier 0 reads the "quickly" of S20 as one day and holds it in code
+    (screening.DAY); the ledger carries the same day as the value of rx.cycle_time (chem) and of
+    flow.delivery_to_draw_interval (flow), each with its own range. S20 reads neither entry, so a change to one of
+    the three would otherwise leave the others behind.
+    """
+    assert led.q("rx.cycle_time") == led.q("flow.delivery_to_draw_interval") == screening.DAY
+    # the note of rx.cycle_time says both, and that the strike pace of S31 lies beyond the year its range stops at
+    note = led.quantities["rx.cycle_time"].note
+    every = 1 / screening.all_results(led)["t0.lightning_strikes"].value  # years between direct strikes, at the least
+    assert "holds its day in code (screening.DAY) and does not read this entry" in note
+    assert f"at most once in about {every:.0f} years (Tier 0, S31)" in note
+    assert every * screening.YEAR > led.rng("rx.cycle_time")[1] == pytest.approx(screening.YEAR)
+    assert "does not read this entry" in led.quantities["flow.delivery_to_draw_interval"].note
+
+
 def test_s20_evaluates_the_yield_criterion_at_one_day(led):
     # The yield and the time to reach 5 percent are both recomputed from the ledger, so they cannot disagree.
     def at_transfer(value, low, high):

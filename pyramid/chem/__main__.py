@@ -24,8 +24,10 @@ ASSUMPTIONS = [
     "S19: the water takes the undissociated gas in proportion to its pressure; dissociation enters the equilibrium "
     "share only, and sulfur dioxide carried out with displaced air is not deducted.",
     "S19: the gas-side coefficient runs from diffusion through still gas to natural convection; no source gives it.",
-    "S22: a full stroke draws one Gallery volume of gas, of which the King's Chamber can supply only its own "
-    "volume; the rest is the outside air of S14.",
+    "S19: the gas is given the whole cycle over the half-full Gallery, as if the rise lasted that long; the share "
+    "for a contact of the ledger's fill time, which is shorter, is given beside it.",
+    "S22: emptying the whole Gallery draws one Gallery volume of gas, of which the King's Chamber can supply only "
+    "its own volume; the rest is outside air, come down the shafts of S14 or in through the masonry joints.",
     "S22: the rising water is credited with all the sulfur dioxide, every mole of oxygen the oxidation can use, and "
     "nitrogen and oxygen up to their solubility in water that arrives free of dissolved gas.",
     "S23: each cycle starts with fresh water; bare limestone neutralises acid until gypsum saturates, then a layer "

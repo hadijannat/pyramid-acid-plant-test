@@ -69,7 +69,7 @@ def _s03(ledger, r):
         )
     interval = ("the interval between delivery and draw, which the hypothesis does not state and which is taken "
                 f"as {shortest / 60:.0f} minutes to {longest / DAY:.0f} days")
-    reading = "Remaining is read as half the charge still being there at the draw"
+    reading = "Remaining is read as half the charge still being there at the draw (a judgement call)"
     if status == "pass":
         return status, text + (
             f"Even in a wind of {strongest:.0f} m/s the half-time is {kept_low / DAY:.0f} days or more, no shorter "
@@ -181,7 +181,8 @@ def _s14(ledger, r):
     tight, wide = ledger.rng("hydro.joint_aperture")
     short, long = ledger.rng("flow.joint_path_length")
     # The same share with the path held open at its ledger area: what the leaks and the drain rate do by
-    # themselves, apart from whether a path exists at all, which is S15's question.
+    # themselves, apart from whether a path exists at all: S15 decides that for the grooves, and no claim decides
+    # whether the slabs seat tight.
     area = gas.opening_area(q)
     _, open_low, open_high = corners(ledger, gas.SWEPT, lambda v: gas.draw(q | v, area=area)[1])
     turn = gas.flip_drain_time(q, fastest, slowest) if area > 0 else None
@@ -192,7 +193,9 @@ def _s14(ledger, r):
     # evaluates, as Tier 0 does for S16, and the sentence names the rate at which the share crosses one half.
     status = three_way(share.low > 0.5, share.high > 0.5)
     return status, (
-        f"The antechamber opening {under_water}. Draining the Gallery in {q['hydro.drain_time'] / 3600:.0f} h "
+        f"The antechamber opening {under_water}; where the path past the slabs is open, that water runs through it "
+        f"into the King's Chamber meanwhile, which S13 judges. Draining the Gallery in "
+        f"{q['hydro.drain_time'] / 3600:.0f} h "
         f"through {area * 1e4:.0f} cm2 of grooves and one slab's clearance, with masonry joints of "
         f"{q['hydro.joint_aperture'] * 1e3:.2f} mm leaking along a path of {q['flow.joint_path_length']:.1f} m, "
         f"{100 * share.value:.0f} percent of the replacement gas comes down the King's Chamber shafts; the "
@@ -220,12 +223,16 @@ def _s17(ledger, r):
     short, long = ledger.rng("flow.joint_path_length")
     fastest, slowest = ledger.rng("hydro.drain_time")
     area = gas.opening_area(q)
-    # Judgement calls. "The openings as surveyed" have no slab in the antechamber passage (02 section 5.3), so the
-    # status follows the share through that passage; whether a path exists with the slabs down is S15's question
-    # and is reported, not judged. And 01 calls the syringe "a leakage question" (summary and claim 4), so gas
-    # leaking through the joints counts against the passage at the unfavourable end, though no survey lists a
-    # joint as an opening: worst is the leaking Gallery, best the gas-tight one.
+    # Judgement calls, both named in the basis. "The openings as surveyed" have no slab in the antechamber passage
+    # (02 section 5.3), so the status follows the share through that passage; whether a path exists with the slabs
+    # down is reported, not judged: S15 decides it for the grooves, and no claim decides whether the slabs seat
+    # tight. And 01 calls the syringe "a leakage question" (summary and claim 4), so gas leaking through the joints
+    # counts against the passage at the unfavourable end, though no survey lists a joint as an opening: worst is
+    # the leaking Gallery, best the gas-tight one. That second call decides the word: the surveyed openings alone
+    # give the status below.
     status = three_way(leaky.low > 0.9, tight.high > 0.9)
+    surveyed_alone = {"pass": "pass", "fail": "fail", "conditional": "stay conditional"}[
+        three_way(tight.low > 0.9, tight.high > 0.9)]
     return status, (
         "Of the Gallery's five surveyed openings the Ascending Passage, the Queen's passage and the well shaft meet "
         f"it at its foot and stay under water until {100 * wedge.high:.1f} percent of it or less is left, and "
@@ -237,10 +244,13 @@ def _s17(ledger, r):
         "that is assumed and that 01 leaves open for the syringe, the share is "
         f"{_span(leaky, 100)} percent over drain times of {fastest / 60:.0f} minutes to {slowest / 3600:.0f} h and "
         f"passes 90 percent with joints tighter than {_span(flip, 1e3, 2)} mm or somewhat wider, the model letting "
-        "neither the pocket's gas thin nor Davison's chamber lend. With the slabs of the hypothesis "
+        "neither the pocket's gas thin nor Davison's chamber lend. Counting that leak against 'the openings as "
+        "surveyed', though no survey lists a joint as an opening, is a judgement call: with the surveyed openings "
+        f"alone the claim would {surveyed_alone}. That the status follows the passage as surveyed, with no slab in "
+        "it, is a second one: with the slabs of the hypothesis "
         f"down the two shares are {100 * down.value:.1f} and {100 * down_leaky.value:.0f} percent through "
-        f"{area * 1e4:.0f} cm2 of grooves and one slab's clearance, and nothing if that path is shut, which is the "
-        "question of S15."
+        f"{area * 1e4:.0f} cm2 of grooves and one slab's clearance, and nothing if that path is shut, which takes "
+        "blind grooves, the question of S15, and slabs seated tight as well, which no claim decides."
     )
 
 

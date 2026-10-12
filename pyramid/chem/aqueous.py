@@ -9,8 +9,8 @@ Assumptions:
   as the dissolved oxygen runs out.
 - S22 credits the rising water with all it could take: every mole of sulfur dioxide, every mole of oxygen the
   oxidation can use, and nitrogen and oxygen up to their solubility in water that arrives free of dissolved gas.
-- A full stroke is taken for the least air: the Gallery draws its own volume of gas and the King's Chamber holds
-  less, so the rest is the outside air of S14.
+- The whole Gallery emptied is taken for the least air: the Gallery draws its own volume of gas and the King's
+  Chamber holds less, so the rest is outside air, come down the shafts of S14 or in through the masonry joints.
 """
 import math
 
@@ -105,7 +105,7 @@ def oxidise(q, seconds: float, n: int = 200, h: float | None = None, oxygen: boo
 
 
 def least_air(q) -> float:
-    """Least share of air in the gas of a full stroke: the Gallery draws more than the King's Chamber holds."""
+    """Least share of air when the whole Gallery is emptied: it draws more gas than the King's Chamber holds."""
     return max(0.0, 1 - q["kc.volume"] / q["gg.volume"])
 
 

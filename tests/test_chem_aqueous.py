@@ -88,7 +88,7 @@ def test_equilibrium_capture_of_the_largest_batch(q):
 
 
 def test_the_gas_the_rising_water_must_push_back(q):
-    # A full stroke draws 573 m3 and the King's Chamber holds 320.4 m3: 44.1 percent of the gas is air.
+    # Emptying the whole Gallery draws 573 m3 and the King's Chamber holds 320.4 m3: 44.1 percent of the gas is air.
     air = aqueous.least_air(q)
     assert air == pytest.approx(1 - 320.4 / 573.0)
     # Its nitrogen is 0.7905 x 0.441 = 34.9 percent of the gas; the oxygen (9.2 percent) is all used by the 55.9

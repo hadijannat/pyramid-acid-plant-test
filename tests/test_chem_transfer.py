@@ -56,3 +56,29 @@ def test_gallery_capture_in_one_day_at_the_ledger_values(q):
     times, share = transfer.capture_series(q, 1.5e-3)
     assert times[-1] == 86400 and share[-1] == pytest.approx(transfer.capture_share(q), rel=1e-6)
     assert np.all(np.diff(share) > 0)
+
+
+def test_the_time_to_a_share_inverts_the_closed_form(q):
+    # At the ledger's coefficients the half-full Gallery has a time constant of 10.7 h toward the 96.9 percent that
+    # Henry's law alone lets the water hold, so the capture passes 50 percent after 7.8 h and 90 percent after 28 h:
+    # t = -tau ln(1 - y / y_eq), 10.70 x ln(1 / (1 - 0.5 / 0.9694)) and 10.70 x ln(1 / (1 - 0.9 / 0.9694)).
+    k, area, half, m = transfer._vessel(q)
+    tau, end = transfer.time_constant(k, area, half, half, m), transfer.equilibrium_share(half, half, m)
+    assert tau / 3600 == pytest.approx(10.70, abs=0.01) and end == pytest.approx(0.9694, abs=0.0001)
+    assert transfer.time_to_capture(q, 0.50) / 3600 == pytest.approx(7.76, abs=0.01)
+    assert transfer.time_to_capture(q, 0.90) / 3600 == pytest.approx(28.22, abs=0.01)
+    for share in (0.10, 0.50, 0.90):
+        after = transfer.time_to_capture(q, share)
+        assert after == pytest.approx(-tau * math.log(1 - share / end), rel=1e-12)
+        assert transfer.capture_share(q | {"rx.cycle_time": after}) == pytest.approx(share, rel=1e-9)
+    # a share the water never holds by Henry's law alone is never reached
+    assert transfer.time_to_capture(q, end) == math.inf and transfer.time_to_capture(q, 0.98) == math.inf
+
+
+def test_capture_in_a_rise_of_the_ledgers_fill_time(q):
+    # The model gives the gas the whole cycle. In the 1 h the ledger carries for one fill, the time the rise takes
+    # in flow, the same closed form gives 0.9694 x (1 - exp(-1 / 10.70)) = 8.6 percent, not the 86.6 of a day.
+    led = ledger.load()
+    assert led.q("flow.fill_time") == 3600.0 < led.q("rx.cycle_time")
+    assert transfer.capture_share(q | {"rx.cycle_time": led.q("flow.fill_time")}) == pytest.approx(
+        0.9694 * (1 - math.exp(-1 / 10.70)), abs=0.0005)

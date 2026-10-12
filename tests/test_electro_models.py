@@ -16,7 +16,7 @@ def led() -> ledger.Ledger:
 def q(led):
     """Every ledger value the models read."""
     ids = (sources.GEOMETRY + sources.MATERIALS + (sources.SHELL,) + sources.SHEETS + piezo.GAS_SOLID + piezo.WET_FILM
-           + rooms.ALL + rooms.PASSAGE)
+           + piezo.SUSTAINED + rooms.ALL + rooms.PASSAGE)
     return {i: led.q(i) for i in ids}
 
 
@@ -93,9 +93,35 @@ def test_the_needed_field_inverts_tier_0s_chain(q):
     speed = math.sqrt(2 * 3000.0 / 413.0)
     assert piezo.needed_field_gas_solid(q) == pytest.approx(speed * 5e-6 / (1.4e-15 * 1.0), rel=1e-9)
     assert piezo.needed_field_gas_solid(q) == pytest.approx(1.361e10, rel=1e-3)
-    # the most generous chain: the local-probe coefficient and the heavier air, 2.67e7 V/m, 8.9 times air breakdown
+    # this chain at its generous end: the local-probe coefficient and the heavier air, 2.67e7 V/m, 8.9 times air
+    # breakdown
     generous = q | {"em.granite_piezo_d": 7.0e-13, "ac.air_impedance": 428.0}
     assert piezo.needed_field_gas_solid(generous) == pytest.approx(2.674e7, rel=1e-3)
+
+
+def test_the_sustained_field_inverts_tier_0s_s07_chain(led, q):
+    # Tier 0's other chain: the antechamber's leaf under a sustained drive, v = 2 pi f d E L. Driven at the field
+    # this returns, it radiates the level of 0.30 W/cm2 in air, 10 log10(I Z / p_ref^2) = 154.9 dB.
+    needed = piezo.needed_field_sustained(q)
+    level = 10 * math.log10(3000.0 * 413.0 / 2e-5**2)
+    assert level == pytest.approx(154.9, abs=0.05)
+    assert screening.leaf_sound_level(q | {"em.air_breakdown_field": needed}) == pytest.approx(level, abs=1e-9)
+    # closed form: E = sqrt(2 I / Z) / (2 pi f d L), 2.72e10 V/m at the ledger's 40 kHz and bulk coefficient
+    speed = math.sqrt(2 * 3000.0 / 413.0)
+    assert needed == pytest.approx(speed / (2 * math.pi * 40e3 * 1.4e-15 * 0.3983), rel=1e-9)
+    assert needed == pytest.approx(2.72e10, rel=1e-3)
+    # at its generous end (the local-probe coefficient, 1 MHz, the thickest leaf, the heavier air) it needs 2.07e6
+    # V/m: less than the air-breakdown field, and 13 times less than the pulse chain at its own generous end. That
+    # is Tier 0's 158.3 dB at breakdown against the 155.1 dB of 0.30 W/cm2 in that air.
+    generous = q | {"em.granite_piezo_d": 7.0e-13, "ac.drive_frequency": 1e6, "ante.leaf_thickness": 0.4115,
+                    "ac.air_impedance": 428.0}
+    least = piezo.needed_field_sustained(generous)
+    assert least == pytest.approx(2.069e6, rel=1e-3) and least < led.q("em.air_breakdown_field")
+    assert piezo.needed_field_gas_solid(generous) / least == pytest.approx(12.9, abs=0.05)
+    at_breakdown = screening.all_results(led)["t0.leaf_sound_level"].high
+    assert at_breakdown == pytest.approx(158.3, abs=0.05)
+    assert 20 * math.log10(led.q("em.air_breakdown_field") / least) == pytest.approx(
+        at_breakdown - 10 * math.log10(3000.0 * 428.0 / 2e-5**2), abs=1e-9)
 
 
 def test_the_wet_film_field_carries_tier_0s_required_level(q):
