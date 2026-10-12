@@ -168,9 +168,12 @@ def test_s23_follows_what_a_fill_dissolves_against_the_layer_a_cycle_grows(led):
         assert text in basis, basis
     assert "strips it by diffusion" not in basis  # the basis says which layer a still fill strips
 
-    # The word does not lean on setting the shortest drain against the longest cycle. The shortest drain in the
-    # shortest cycle, 600 s in 3600 s, is a dwell of 0.167, still under the 0.193 at which the favourable corner
-    # turns (2.277 x sqrt(1 / 6) = 0.93); only a dwell from 0.193 up fails the claim, as the cases below show.
+    # The word does not lean on setting the shortest drain against the longest cycle. The shortest drain in a
+    # one-day cycle, 600 s in 86400 s, takes 2.277 x sqrt(1 / 144) = 0.19 of the layer at the favourable corner.
+    # Only in the shortest cycle, 600 s in 3600 s = 0.167, does it come near the 0.193 at which that corner turns
+    # (0.93 of the layer); a dwell from 0.193 up fails the claim, as the cases below show.
+    status, basis = with_quantities(led, {"rx.fresh_dwell": fixed(600 / 86400)})["S23"]
+    assert status == "conditional" and "a still fill dissolves 0.19 to 1.9 times that layer" in basis
     status, basis = with_quantities(led, {"rx.fresh_dwell": fixed(600 / 3600)})["S23"]
     assert status == "conditional" and "a still fill dissolves 0.93 to 9.4 times that layer" in basis
 
