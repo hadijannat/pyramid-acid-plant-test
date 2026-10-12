@@ -104,13 +104,13 @@ The tables below follow the claimed cycle. Each row gives the number that decide
 
 ![Intensity in the King's Chamber against the conductivity of the masonry, for the study's pyramid and for the surveyed one on ground](results/em/figures/kings_chamber_against_conductivity.png)
 
-*E19: the intensity in the King's Chamber against the conductivity of the masonry. The line is the criterion's 2; the masonry measured in place lies between 6.7 x 10^-4 and 3.3 x 10^-3 S/m. Both solvers first reproduce the study's published extinction peaks: 336 m and 230 m in free space, within 1 % in wavelength and 5 % in extinction, and 247 m on ground, 1.2 % and 13.7 % off.*
+*E19: the intensity in the King's Chamber against the conductivity of the masonry. The line is the criterion's 2; the masonry measured in place lies between 6.7 x 10^-4 and 3.3 x 10^-3 S/m. The squares, at a 1 m cell, decide; the curves, at a 2.5 m cell, show the trend and decide nothing. Both solvers first reproduce the study's free-space extinction peaks (336 m and 230 m, within 1.1 % in wavelength and 5 % in extinction); the time-domain solver, the one that carries a ground, gives the on-ground maximum at 247 m, 1.2 % off in wavelength and 13.7 % in extinction.*
 
 ### The plateau and the cycle's pace
 
 | Claim | What the hypothesis claims | Verdict | The deciding number |
 |---|---|---|---|
-| S28, S29, E38 | Iron-oxide veins wire the plateau | conditional | Needs a conductivity contrast of 2.7 x 10^5; the best measured hematite reaches 3.3 x 10^4; no Giza vein has been measured |
+| S28, S29, E38 | Iron-oxide veins wire the plateau | conditional | Needs a conductivity contrast of 2.7 x 10^5; the best measured hematite reaches 3.3 x 10^4 in 100 ohm m rock and 1.0 x 10^6 in the most resistive rock; no Giza vein has been measured |
 | S31 | The cycle is paced by storms | undefined | At most 0.12 direct strikes per year; the hypothesis states no cycle rate |
 
 ### The building and the documents
@@ -179,16 +179,17 @@ uv run python -m pyramid.evidence           # results/evidence/
 uv run python -m pyramid.flow               # results/flow/
 uv run python -m pyramid.chem               # results/chem/
 uv run python -m pyramid.electro            # results/electro/: about three minutes
-uv run python -m pyramid.em --certified     # results/em/cache/: the deciding field runs, hours on eight cores (ignored by git)
-uv run python -m pyramid.em                 # results/em/: gates, results and verdicts from the cached runs
+uv run python -m pyramid.em --certified     # results/em/cache/ (ignored by git): the 41 deciding field runs, hours on eight cores
+uv run python -m pyramid.em                 # the 171 gate and variant runs not yet cached, hours again; then results/em/
 uv run python -m pyramid.geometry.export    # results/geometry/: STEP files of both levels (ignored by git)
 uv run python -m pyramid.viewer_data        # viewer/data/: the viewer's models, claims and cycle
+uv run python -m pyramid.elevation          # docs/figures/interior-elevation.svg, drawn from the viewer's model
 uv run python -m pyramid.summary            # results/summary/: the verdict table, the verdict map and the report
 ```
 
 Generated files are regenerated on a clean tree, after the commit that changes the code or the ledger, and are committed separately. The `manifest.json` beside them then records the commit that produced them. A test fails while any committed result was generated from another ledger than the one in the repository.
 
-To edit an assumption, change the ledger line, rerun the commands, and read the new report: no number is hard-coded anywhere else.
+To edit an assumption, change the ledger line, rerun the commands, and read the new report (the field runs need repeating only if the line is one the field package reads; see [Status and limits](#status-and-limits)): no number is hard-coded anywhere else.
 
 ## Viewer
 
@@ -230,8 +231,8 @@ Open-source tools only: numpy, scipy, Gmsh and three.js today, MEEP and FEniCSx 
 ## Status and limits
 
 - Tier 0 verdicts are single-point calculations with corner-evaluated ranges. The package verdicts come from reduced models, whose assumptions are listed with them in the [report](results/summary/report.md): prismatic vessels and an orifice law for water and gas, film coefficients for transfer across the water's surface, steady conduction for ground current and for a lightning stroke, hard-walled boxes for the rooms. None is a solved flow or a reacting field. Where a verdict is `conditional`, its basis names the input that a stated quantity, a measurement or a fuller model would have to supply.
-- The two field solvers were written for this project because MEEP and FEniCSx have no pip packages. They agree with each other within 1 % in extinction and reproduce the study's published peaks, and a verdict rests only on runs at a cell size where the solver matches the exact (Mie) solution for a sphere within 2 % across the band. The cross-check in independent codes is still to come.
-- The deciding field runs take hours and their cache is not in the repository. `python -m pyramid.em --certified` recomputes it; the plain `python -m pyramid.em` only evaluates what is cached and writes no verdict for a claim whose deciding runs are missing, so on a fresh clone run it after the certified runs or not at all: the committed `results/em/` stands.
+- The two field solvers were written for this project because MEEP and FEniCSx have no pip packages. At a 2.5 m cell they agree with each other within 1 % in extinction and reproduce the study's published peaks; at that cell neither matches the exact (Mie) solution for a sphere within the 2 % the benchmark asks, so those runs gate the reproduction and decide nothing. A verdict rests only on runs at a finer cell where the solver does match it: 1.67 m for the dipole solver, 1 m for the time-domain one. Only the time-domain solver carries a ground, so E20 and the realism part of E19 rest on one solver, and the as-modelled part of E19 is settled at the study's own permittivity of 5 only. A cross-check in independent codes is still to come.
+- The field runs take hours and their cache is not in the repository. `python -m pyramid.em --certified` recomputes the deciding runs and the plain `python -m pyramid.em` the gate and variant runs, and until every deciding run is cached the package writes nothing, so the committed `results/em/` stands. An edit of a ledger line the field package does not read leaves `results/em/` valid; an edit of one it reads (an id beginning `paper.`, `em.`, `emx.`, `pyr.`, `kc.`, `qc.` or `gg.`) makes it refuse its cache, and the runs have to be repeated.
 - Thresholds such as "one day" for a cycle or 0.05 mol/L for a usable acid are judgement calls recorded beside the criterion; the hypothesis sets none. Where a package had to read a word the criterion leaves open ("ranks first", "about", "comparable", "non-negligible"), the basis says so. Two Tier 0 verdicts (S09, S20) have an alternative reading recorded in the [handover notes](docs/superpowers/plans/2026-10-10-foundation-ledger-geometry-viewer-handover.md).
 - The viewer's caption shows the opening of each basis; the whole sentence is in the report. The viewer draws only the modelled interior, so hydrogen chloride (S27, in Khafre's pyramid) appears in no scene: S27 and S28 have no actors.
 - The display colour of dilute sulfuric acid sits close to the verdict colour for *fail*; the *(claimed)* label beside the liquid tells them apart.
