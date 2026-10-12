@@ -15,6 +15,8 @@ Accuracy: the error falls a little faster than the cell size (the surface cells 
 sphere, whose resonances are sharp at this permittivity, the worst wavelength found is 7 percent off at a 5 m
 cell and 2.4 percent at 2.5 m, so the benchmark is run at the fine cell.
 """
+import time
+
 import numpy as np
 from scipy import fft
 from scipy.sparse.linalg import LinearOperator, gmres
@@ -157,24 +159,37 @@ def region_metrics(model, field: np.ndarray, mixing, eps_masonry) -> dict:
             for name, (slices, weights) in model.regions.items()}
 
 
-def spectrum(model, wavelengths, permittivity, direction: int, dtype=np.complex128) -> dict:
+def spectrum(model, wavelengths, permittivity, direction: int, dtype=np.complex128, partial=None,
+             deadline: float = np.inf) -> dict | None:
     """The solver over a run of wavelengths, each started from its neighbour's solution.
 
     permittivity(wavelength) gives (masonry, granite). Returns arrays over the wavelengths: extinction and
-    absorption (m2), region means and maxima, the axial section, the number of products.
+    absorption (m2), region means and maxima, the axial section, the number of products. With a `partial` path
+    the rows done so far are kept there when the clock passes `deadline` (None is returned) and picked up again.
     """
     lattice, start, rows = Lattice(model, dtype), None, []
-    for wavelength in wavelengths:
+    names = [f"{kind}.{name}" for name in model.regions for kind in ("mean", "max")]
+    if partial is not None and partial.exists():
+        with np.load(partial, allow_pickle=True) as kept:
+            start, rows = kept["driving"], list(kept["rows"])
+    for wavelength in wavelengths[len(rows):]:
+        if time.time() > deadline:
+            if rows:
+                np.savez(partial, driving=start, rows=np.array(rows + [None], dtype=object)[:-1])
+            return None
         eps_masonry, eps_granite = permittivity(wavelength)
         solved = solve(lattice, eps_masonry, eps_granite, wavelength, direction, start)
         start = solved["driving"]
-        rows.append((solved["extinction"], solved["absorption"], solved["products"],
-                     region_metrics(model, solved["field"], solved["mixing"], eps_masonry),
-                     section(model, np.sum(np.abs(solved["field"]) ** 2, axis=0)).astype(np.float32)))
-    out = {"wavelengths": np.asarray(wavelengths, float), "extinction": np.array([r[0] for r in rows]),
-           "absorption": np.array([r[1] for r in rows]), "products": np.array([r[2] for r in rows]),
-           "section": np.array([r[4] for r in rows])}
-    for name in model.regions:
-        out[f"mean.{name}"] = np.array([r[3][name][0] for r in rows])
-        out[f"max.{name}"] = np.array([r[3][name][1] for r in rows])
+        found = region_metrics(model, solved["field"], solved["mixing"], eps_masonry)
+        rows.append({"extinction": solved["extinction"], "absorption": solved["absorption"],
+                     "products": solved["products"],
+                     "section": section(model, np.sum(np.abs(solved["field"]) ** 2, axis=0)).astype(np.float32)}
+                    | {f"mean.{name}": value[0] for name, value in found.items()}
+                    | {f"max.{name}": value[1] for name, value in found.items()})
+    if partial is not None:
+        partial.unlink(missing_ok=True)
+    out = {key: np.array([row[key] for row in rows]) for key in ("extinction", "absorption", "products", "section", *names)}
+    out["scattering"] = out["extinction"] - out["absorption"]
+    out["wavelengths"] = np.asarray(wavelengths, float)
+    out["section_extent"] = np.array([model.edges(1)[0], model.edges(1)[-1], model.edges(2)[0], model.edges(2)[-1]])
     return out
