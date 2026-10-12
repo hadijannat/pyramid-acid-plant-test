@@ -74,6 +74,10 @@ def test_s04_compares_the_telluric_field_with_what_the_chain_needs(led, conducti
     # Tier 0's S07 chain at its generous end needs 2.07e6 V/m, less than the pulse chain's 2.67e7: both stand in the
     # basis, each with the orders of magnitude the field falls short of it, computed here from the same results
     assert sustained.low == pytest.approx(2.069e6, rel=1e-3) and sustained.low < needed.low
+    # what the basis says of the two chains is the ledger's: 1 m and 5 microseconds with no range, 1 MHz at the most
+    assert led.rng("em.piezo_thickness") == (1.0, 1.0) and led.rng("em.pulse_rise_time") == (5e-6, 5e-6)
+    assert led.rng("ac.drive_frequency")[1] == 1e6 and "no such source is proposed" in led.quantities[
+        "ac.drive_frequency"].note
     for text in ("1e-07 to 2e-02 V/m", "a judgement call", "in the masonry at chamber level",
                  f"is {math.log10(needed.low / field.high):.1f} orders of magnitude below the 2.7e+07 V/m at which "
                  "Tier 0's single-pulse piezoelectric chain, a field applied across 1 m of granite within the 5 "
@@ -81,8 +85,8 @@ def test_s04_compares_the_telluric_field_with_what_the_chain_needs(led, conducti
                  "generous end, the line this rule takes for non-negligible as a judgement call; a charge held by "
                  "such a field is short by the same factor.",
                  "Tier 0's S07 chain, a sustained drive of 1 MHz across the antechamber's granite leaf for which no "
-                 "source is proposed, reaches the same effect at 2.1e+06 V/m, and the field is "
-                 f"{math.log10(sustained.low / field.high):.1f} orders of magnitude below that too."):
+                 "source is proposed, reaches the same effect at 2.1e+06 V/m with every input at its generous end, "
+                 f"and the field is {math.log10(sustained.low / field.high):.1f} orders of magnitude below that too."):
         assert text in basis, basis
     assert "most generous" not in basis
     # 13 times between the two chains is 1.1 orders between the two shortfalls
@@ -99,7 +103,8 @@ def test_s04_compares_the_telluric_field_with_what_the_chain_needs(led, conducti
     # a field between the two chains' needs still fails by the pulse chain, and the basis does not call it below both
     status, basis = with_results(led, results, telluric_field=(1e7, 1e7, 1e7))["S04"]
     assert status == "fail" and "below that too" not in basis
-    assert "reaches the same effect at 2.1e+06 V/m, which the field reaches at the favourable end." in basis
+    assert ("reaches the same effect at 2.1e+06 V/m with every input at its generous end, which the field reaches "
+            "at the favourable end.") in basis
 
     # the same three through the ledger: a granite a great deal more piezoelectric than any measured
     assert with_quantities(led, conduction, {"em.granite_piezo_d": (1e4, 1e4, 1e4)})["S04"][0] == "pass"
@@ -120,7 +125,7 @@ def test_e21_adds_the_ore_sheets_and_the_voltage_they_could_gather(led, conducti
     for text in ("0.003 ohm m", "0.1 to 10 m thick, 10 to 300 m deep and up to 500 m long, all assumed",
                  f"is {math.log10(needed.low / field.high):.1f} orders of magnitude below the 2.7e+07 V/m at which "
                  "Tier 0's single-pulse piezoelectric chain",
-                 "reaches the same effect at 2.1e+06 V/m, and the field is "
+                 "reaches the same effect at 2.1e+06 V/m with every input at its generous end, and the field is "
                  f"{math.log10(sustained.low / field.high):.1f} orders of magnitude below that too.",
                  "over 1.3e+09 m to offer the pulse chain its voltage"):
         assert text in basis, basis
@@ -153,9 +158,9 @@ def test_s06_compares_the_stroke_field_with_the_need_under_the_breakdown_cap(led
                  f"documented acoustic effect, {needed.low / peak.high:.0f} times the {peak.high / 1e3:.0f} kV/m of "
                  "that corner and 8.9 times the 3e+06 V/m at which air breaks down.",
                  "Tier 0's S07 chain, a sustained drive of 1 MHz across the antechamber's granite leaf for which no "
-                 f"source is proposed, reaches the same effect at 2.1e+06 V/m, {sustained.low / peak.high:.0f} times "
-                 "that corner and below the breakdown field; a return stroke is a single pulse (04 claim C6), so the "
-                 "claim is held to the pulse chain.",
+                 "source is proposed, reaches the same effect at 2.1e+06 V/m with every input at its generous end, "
+                 f"{sustained.low / peak.high:.0f} times that corner and below the breakdown field; a return stroke "
+                 "is a single pulse (04 claim C6), so the claim is held to the pulse chain.",
                  "The criterion's fail clause, a field screened to the conduction value of order kV/m or less, is "
                  "read as the field staying below the pulse chain's need at the favourable end, the order kV/m being "
                  "04's own estimate of the conduction value (0.07 to 11 kV/m by even spreading): a judgement call.",
@@ -168,7 +173,7 @@ def test_s06_compares_the_stroke_field_with_the_need_under_the_breakdown_cap(led
     # however resistive the core is taken to be, the breakdown field caps the peak below the pulse chain's need; the
     # basis then does not put the sustained chain's need above a corner that has passed it
     status, basis = with_results(led, results, lightning_granite_field=(1e6, 1e3, 1e9))["S06"]
-    assert status == "fail" and "reaches the same effect at 2.1e+06 V/m, which that corner reaches and below" in basis
+    assert status == "fail" and "at its generous end, which that corner reaches and below the breakdown" in basis
     # a chain that needed less than the breakdown field would leave the claim open, and a field above every need
     # would pass it
     easier = {"em.granite_piezo_d": (1e-9, 1e-12, 1e-9)}  # needs 1.9e4 V/m at the generous end, 1.9e7 at the other

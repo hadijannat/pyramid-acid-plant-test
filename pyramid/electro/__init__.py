@@ -263,7 +263,8 @@ def _against_the_chain(ledger: Ledger, r, field: Result, holds_at_best: bool) ->
         return status, (
             f"is {_orders(needed.low, field.high):.1f} orders of magnitude below the {needed.low:.1e} V/m {reaches} "
             f"with every input at its generous end, {call}; a charge held by such a field is short by the same "
-            f"factor. {_sustained_chain(ledger)} reaches the same effect at {sustained.low:.1e} V/m, {beside}.")
+            f"factor. {_sustained_chain(ledger)} reaches the same effect at {sustained.low:.1e} V/m with every input "
+            f"at its generous end, {beside}.")
     if status == "pass":
         return status, (f"is above the {needed.high:.1e} V/m {reaches} with every input at its least generous end, "
                         f"{call}.")
@@ -342,12 +343,13 @@ def _s06(ledger, r):
         return status, head + (
             f"{_pulse_chain(ledger)} needs {needed.low:.1e} V/m with every input at its generous end to reach a "
             f"documented acoustic effect, {shortfall.low:.0f} times the {peak.high / 1e3:.0f} kV/m of that corner and "
-            f"{ceiling}. {_sustained_chain(ledger)} reaches the same effect at {sustained.low:.1e} V/m, {beside}; a "
-            "return stroke is a single pulse (04 claim C6), so the claim is held to the pulse chain. The criterion's "
-            "fail clause, a field screened to the conduction value of order kV/m or less, is read as the field "
-            "staying below the pulse chain's need at the favourable end, the order kV/m being 04's own estimate of "
-            f"the conduction value ({even_low / 1e3:.2f} to {even_high / 1e3:.0f} kV/m by even spreading): a "
-            "judgement call. In this model the field in the granite is the conduction value by construction."
+            f"{ceiling}. {_sustained_chain(ledger)} reaches the same effect at {sustained.low:.1e} V/m with every input "
+            f"at its generous end, {beside}; a return stroke is a single pulse (04 claim C6), so the claim is held "
+            "to the pulse chain. The criterion's fail clause, a field screened to the conduction value of order kV/m "
+            "or less, is read as the field staying below the pulse chain's need at the favourable end, the order "
+            f"kV/m being 04's own estimate of the conduction value ({even_low / 1e3:.2f} to {even_high / 1e3:.0f} "
+            "kV/m by even spreading): a judgement call. In this model the field in the granite is the conduction "
+            "value by construction."
             + capped + induction)
     if status == "pass":
         return status, head + (

@@ -140,6 +140,7 @@ def test_s19_follows_the_capture_against_the_90_and_50_percent_lines(led):
         v | {"rx.cycle_time": v["flow.fill_time"]}))
     assert in_rise == pytest.approx(0.0865, abs=0.0005) and least == pytest.approx(0.000142, rel=0.01)
     assert most == pytest.approx(high)  # the longest fill is a day, the ledger's cycle
+    assert (led.q("flow.fill_time"), *led.rng("flow.fill_time")) == (3600.0, 600.0, 86400.0)
     # the word does not rest on which of the two times is taken: a cycle no longer than the fill is conditional too
     hour = with_quantities(led, {"rx.cycle_time": (3600.0, 600.0, 86400.0)})["S19"]
     assert hour[0] == "conditional" and "9 percent of the sulfur dioxide crosses" in hour[1]
