@@ -10,7 +10,7 @@ Assumptions (also written to the manifest):
 - Masonry joints leak gas as laminar slots, over their whole length from the start of the draw, from air-filled masonry at outside pressure; a gas-tight Gallery is what the tight end of the joint aperture approaches.
 - The chamber behind Davison's passage is closed and only gives up the gas its pressure drop releases; what it lends while the suction is high and takes back later is left out.
 - Sulfur dioxide fills the King's Chamber pure, as S03 and S13 say, and is well mixed; it leaves by diffusion up the shafts and by a wind-driven through-flow that must lift the dense gas up the leeward shaft. Gusts, the breathing of the chamber with the barometer and temperature differences are not modelled.
-- The same charge runs out by its own weight through an opening at the chamber's floor that has no water beyond it. S03 counts this for the antechamber path, as an unmixed layer; the floor inlet by which the gas arrives is taken as closed, which the hypothesis does not say.
+- The same charge runs out by its own weight through an opening at the chamber's floor that has no water beyond it, under the head of the gas below the shaft mouths, where the air comes in. S03 counts this for the antechamber path, as an unmixed layer, with the Gallery open to the air; the floor inlet by which the gas arrives is taken as closed, which the hypothesis does not say. With the Gallery closed only an exchange through the one opening is left, hours to more than a day; with water over the opening nothing drains, and S13's water pushes out at most the 16 percent of the charge below the shaft mouths.
 """
 from pyramid.flow import gas, hydraulics, retention  # noqa: F401  (importing them registers their quantities)
 from pyramid.flow.network import all_results  # noqa: F401
@@ -40,12 +40,15 @@ def _s03(ledger, r):
     shortest, longest = ledger.rng("flow.delivery_to_draw_interval")
     strongest = ledger.rng("flow.wind_speed")[1]
     # The gas path of the hypothesis leaves the chamber at its floor, and a gas this dense runs out of a floor
-    # opening by its own weight. So the charge lasts no longer than that takes through the antechamber path:
-    # at its widest at the unfavourable end, shut (and the time without end) at the favourable one.
+    # opening by its own weight, through the antechamber path: at its fastest at the unfavourable end, shut (and
+    # the time without end) at the favourable one.
     path = ("ante.groove_connected_area", "flow.slab_leak_area")
     drain, drain_low, drain_high = corners(ledger, retention.DRAIN_IDS + path,
                                            lambda v: retention.drain_half_time(v, gas.opening_area(v)))
-    kept_low, kept_high = min(half.low, drain_low), min(half.high, drain_high)
+    # That loss and the shafts' run together, in a storm with the path open, so their rates add and the charge
+    # lasts a shorter time than under either. 1 / inf is 0.0: the shut path leaves the shafts' time.
+    kept_low = 1 / (1 / half.low + 1 / drain_low)
+    kept_high = 1 / (1 / half.high + 1 / drain_high)
     # Judgement call: the criterion and 00 section 7 item 5 set no measure of "remains". It is read as at least
     # half the charge still being in the chamber at the draw, so the half-time is set against the interval.
     status = three_way(kept_low >= longest, kept_high >= shortest)
@@ -56,11 +59,13 @@ def _s03(ledger, r):
         f"{_span(head)} Pa. "
     )
     if drain < float("inf"):
+        slowest = "never with the path shut" if drain_high == float("inf") else f"{drain_high / 60:.0f} at the slowest"
         text += (
-            "The same weight carries it out of an opening at the chamber's floor with no water beyond it: through "
-            f"the {gas.opening_area(_at(ledger, path)) * 1e4:.0f} cm2 of grooves and one slab's clearance in the "
-            f"antechamber, the gas path of the hypothesis, half the charge is gone in about {drain / 60:.0f} "
-            "minutes. "
+            "The same weight carries it out of an opening at the chamber's floor while no water stands beyond it "
+            "and the Gallery is open to the air, which the hypothesis does not say for the time before the fill: "
+            f"through the {gas.opening_area(_at(ledger, path)) * 1e4:.0f} cm2 of grooves and one slab's clearance "
+            "in the antechamber, the gas path of the hypothesis, half the charge is gone in about "
+            f"{drain / 60:.0f} minutes ({drain_low / 60:.0f} at the fastest, {slowest}). "
         )
     interval = ("the interval between delivery and draw, which the hypothesis does not state and which is taken "
                 f"as {shortest / 60:.0f} minutes to {longest / DAY:.0f} days")
@@ -75,8 +80,10 @@ def _s03(ledger, r):
             f"Yet the half-time is {kept_high / 60:.0f} minutes at the most, shorter than {interval}. {reading}."
         )
     if half.low < longest:
+        both = (f", and to {kept_low / 60:.0f} with the floor opening draining at its fastest as well"
+                if drain_low < float("inf") else "")
         storm = (f"In the {strongest:.0f} m/s at the top of the assumed wind range the half-time falls to "
-                 f"{half.low / 60:.0f} minutes, against {interval}")
+                 f"{half.low / 60:.0f} minutes{both}, against {interval}")
     else:
         storm = (f"Up to the {strongest:.0f} m/s of the assumed wind range the shafts keep half the charge for "
                  f"{half.low / YEAR:.0f} years or more, against {interval}")
@@ -229,7 +236,8 @@ def _s17(ledger, r):
         f"air-filled masonry at outside pressure {short:.1f} to {long:.1f} m behind the Gallery's face, a leak "
         "that is assumed and that 01 leaves open for the syringe, the share is "
         f"{_span(leaky, 100)} percent over drain times of {fastest / 60:.0f} minutes to {slowest / 3600:.0f} h and "
-        f"passes 90 percent with joints tighter than {_span(flip, 1e3, 2)} mm. With the slabs of the hypothesis "
+        f"passes 90 percent with joints tighter than {_span(flip, 1e3, 2)} mm or somewhat wider, the model letting "
+        "neither the pocket's gas thin nor Davison's chamber lend. With the slabs of the hypothesis "
         f"down the two shares are {100 * down.value:.1f} and {100 * down_leaky.value:.0f} percent through "
         f"{area * 1e4:.0f} cm2 of grooves and one slab's clearance, and nothing if that path is shut, which is the "
         "question of S15."

@@ -222,6 +222,10 @@ def _draw(items, area, joints, submerged):
     # closed space above the water (the four above it were first reached in 1837).
     # ponytail: what it lends while the opening is under water and dp is high is left out. That gas is repaid
     # later, at the later mix, so the antechamber's share is understated by at most V (dp_start - dp) / (p V_g).
+    # Nor does the pocket's own gas thin under the suction, 10 to 72 kPa where the joints are tight: that is the
+    # incompressible gas at its limit, and it errs the same way. Together up to about 2.5 points at the
+    # nine-tenths line, against the hypothesis; 0.14 (0.05 to 0.26) mm with both in, for 0.11 (0.04 to 0.24).
+    # Carry p V in summed() if that matters.
     chamber = q["rc.davison.length"] * q["rc.davison.width"] * q["rc.davison.height"]
     stored = min(1.0, chamber * dp / q["site.atm_pressure"] / q["gg.volume"])
     return dp, (1 - stored) * through, (1 - stored) * leaked, stored, start

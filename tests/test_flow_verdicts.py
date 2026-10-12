@@ -63,10 +63,15 @@ def test_s03_sets_the_half_time_against_the_interval(led):
     status, basis = judge(led)["S03"]
     assert status == "conditional"
     has(basis, "by diffusion in 361 (271 to 460) years", "no wind below 29 (23 to 43) m/s", "2.2 times as dense",
-        "against 516 (472 to 551) Pa", "through the 202 cm2 of grooves and one slab's clearance",
-        "half the charge is gone in about 32 minutes", "In the 30 m/s at the top of the assumed wind range the "
-        "half-time falls to 15 minutes", "10 minutes to 30 days", "held only below 9 m/s",
+        "against 516 (472 to 551) Pa", "while no water stands beyond it and the Gallery is open to the air, which "
+        "the hypothesis does not say for the time before the fill",
+        "through the 202 cm2 of grooves and one slab's clearance",
+        "half the charge is gone in about 69 minutes (41 at the fastest, never with the path shut)",
+        "In the 30 m/s at the top of the assumed wind range the half-time falls to 15 minutes, and to 11 with the "
+        "floor opening draining at its fastest as well, against", "10 minutes to 30 days", "held only below 9 m/s",
         "by diffusion alone, which is a limit of the model", "does not state")
+    # the assumption that goes with it names the share of the charge below the shaft mouths: 0.9144 / 5.8445
+    assert f"at most the {100 * led.q('kcs.mouth_height') / led.q('kc.height'):.0f} percent" in flow.ASSUMPTIONS[-1]
 
     # winds that never reach the 23 m/s which can lift the gas leave the shafts to diffusion, centuries against
     # 30 days, but the charge still runs out of the antechamber path at the chamber's floor
@@ -74,8 +79,12 @@ def test_s03_sets_the_half_time_against_the_interval(led):
     status, basis = judge(led, calm)["S03"]
     assert status == "conditional"
     has(basis, "Up to the 20 m/s of the assumed wind range the shafts keep half the charge for 104 years or more",
-        "half the charge is gone in about 32 minutes")
+        "half the charge is gone in about 69 minutes (41 at the fastest, never with the path shut)")
     assert "falls to" not in basis
+
+    # a path that cannot shut has a slowest time in place of the never
+    open_path = {"ante.groove_connected_area": (0.002, 0.002, 0.002), "flow.slab_leak_area": (0.018, 0.018, 0.018)}
+    assert "in about 70 minutes (42 at the fastest, 73 at the slowest)" in judge(led, open_path)["S03"][1]
 
     # it passes only with those winds and that path shut, and the shut path alone does not pass it in a storm
     shut = {"ante.groove_connected_area": (0.0, 0.0, 0.0), "flow.slab_leak_area": (0.0, 0.0, 0.0)}
@@ -85,8 +94,10 @@ def test_s03_sets_the_half_time_against_the_interval(led):
     assert "falls to" not in basis and "gone in about" not in basis
     assert judge(led, shut)["S03"][0] == "conditional"
 
-    # the storm and the open path both pass if the draw follows within the 15 minutes the charge lasts in them
-    assert judge(led, {"flow.delivery_to_draw_interval": (600.0, 300.0, 900.0)})["S03"][0] == "pass"
+    # the storm and the open path act at once, so their rates add: 1 / (1 / 904 + 1 / 2489) = 663 s, 11 minutes.
+    # It passes if the draw follows within them, and the storm's own 15 minutes (904 s) do not carry 900 s
+    assert judge(led, {"flow.delivery_to_draw_interval": (300.0, 200.0, 400.0)})["S03"][0] == "pass"
+    assert judge(led, {"flow.delivery_to_draw_interval": (600.0, 300.0, 900.0)})["S03"][0] == "conditional"
     assert judge(led, {"flow.delivery_to_draw_interval": (1800.0, 1500.0, 2100.0)})["S03"][0] == "conditional"
 
     # an interval longer than even diffusion allows fails it
@@ -186,7 +197,8 @@ def test_s17_asks_for_nine_tenths_through_the_antechamber_passage_as_surveyed(le
         "as surveyed, with no slab in it", "1350 m of masonry joints of 0.05 to 0.51 mm",
         "at outside pressure 0.3 to 3.0 m behind the Gallery's face, a leak that is assumed",
         "the share is 78 (38 to 100) percent over drain times of 10 minutes to 6 h",
-        "tighter than 0.11 (0.04 to 0.24) mm", "the two shares are 100.0 and 60 percent through 202 cm2",
+        "tighter than 0.11 (0.04 to 0.24) mm or somewhat wider, the model letting neither the pocket's gas thin nor "
+        "Davison's chamber lend", "the two shares are 100.0 and 60 percent through 202 cm2",
         "nothing if that path is shut, which is the question of S15")
 
     # whether the slabs' path is open or shut does not move the verdict: that is S15's question
@@ -195,8 +207,9 @@ def test_s17_asks_for_nine_tenths_through_the_antechamber_passage_as_surveyed(le
     assert status == "conditional"
     has(basis, "the two shares are 0.0 and 0 percent through 0 cm2")
 
-    # the ledger's tightest joints no longer carry it: in a slow drain they feed the pocket while the opening is
-    # under water, and the share falls under nine tenths with the shortest joint path
+    # in this model the ledger's tightest joints give 89 percent in a slow drain with the shortest joint path,
+    # feeding the pocket while the opening is under water. That is inside what the two omissions could add: with
+    # the pocket's gas thinning and Davison's chamber lending it is 91 percent
     status, basis = judge(led, {"hydro.joint_aperture": (5e-5, 5e-5, 5e-5)})["S17"]
     assert status == "conditional"
     has(basis, "the share is 99 (89 to 100) percent")

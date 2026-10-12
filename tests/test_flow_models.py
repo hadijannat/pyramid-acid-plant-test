@@ -379,14 +379,26 @@ def test_the_half_time_follows_the_models_equation(q):
     assert retention.half_time(q, wind, fraction=0.0) == pytest.approx(weightless, rel=1e-6)
 
 
-def test_a_dense_charge_runs_out_of_a_floor_opening_as_water_leaves_a_tank(q):
+def test_a_dense_charge_runs_out_of_a_floor_opening_under_the_head_up_to_the_shaft_mouths(q):
     area = gas.opening_area(q)  # 202 cm2, at the chamber's floor
     floor, depth, cda = q["kc.length"] * q["kc.width"], q["kc.height"], q["flow.discharge_coefficient"] * area
-    # the tank benchmark's own run, to half the depth; the gas falls under g (1 - rho_air / rho_so2), not g
-    times, _ = hydraulics.simulate([floor], [depth], [(0, None, 0.0, cda)], 1e5, until=(0, depth / 2))
-    reduced = 1 - 1 / retention.so2_density_ratio(q)
-    assert retention.drain_half_time(q, area) == pytest.approx(times[-1] / math.sqrt(reduced), rel=1e-6)
-    assert retention.drain_half_time(q, area) / 60 == pytest.approx(32, rel=0.02)  # about half an hour
+    # The chamber is closed above the shaft mouths, where the air comes in: they hold the pressure at their level,
+    # as the air tube of Mariotte's bottle does, so the head is steady and is that of the gas below them.
+    dense = q["site.atm_pressure"] * q["chem.molar_mass_so2"] / (screening.R * q["chem.temperature"])  # p M / (R T)
+    head = (dense - q["hydro.air_density"]) * G * q["kcs.mouth_height"]
+    assert head == pytest.approx(13.08, rel=1e-3)  # (2.663 - 1.204) x 9.807 x 0.9144 Pa
+    expected = floor * depth / 2 / (cda * math.sqrt(2 * head / dense))  # 160.2 / (0.01229 x 3.135) = 4158 s
+    assert expected == pytest.approx(4158, rel=1e-3)
+    assert retention.drain_half_time(q, area) == pytest.approx(expected, rel=1e-12)
+    assert retention.drain_half_time(q, area) / 60 == pytest.approx(69, rel=0.01)  # not the 32 of a falling head
+    # the orifice simulation's own run: water under a head held at h_mouth (1 - rho_air / rho_so2) over a sill
+    # discharges at the same rate, and has delivered half the chamber's volume when the lower vessel is half full
+    held = 100.0 + q["kcs.mouth_height"] * (1 - 1 / retention.so2_density_ratio(q))
+    times, _ = hydraulics.simulate([math.inf, floor], [held, 0.0], [(0, 1, 100.0, cda)], 1e5, until=(1, depth / 2))
+    assert retention.drain_half_time(q, area) == pytest.approx(times[-1], rel=1e-6)
+    # the gas above the mouths adds to what must leave, not to the head: twice the height takes twice as long
+    assert retention.drain_half_time(q | {"kc.height": 2 * depth}, area) == pytest.approx(2 * expected)
+    assert retention.drain_half_time(q | {"kcs.mouth_height": 4 * q["kcs.mouth_height"]}, area) == pytest.approx(expected / 2)
     assert retention.drain_half_time(q, 0.0) == math.inf  # a shut path lets nothing out
 
 
